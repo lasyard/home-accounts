@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+    },
+    "C/C++ Include Guard.Insert Blank Line": true,
+    "C/C++ Include Guard.Macro Type": "Filepath",
+    "C/C++ Include Guard.Path Depth": 1,
+    "C/C++ Include Guard.Prefix": "_",
+    "C/C++ Include Guard.Suffix": "_H_",
+    "C/C++ Include Guard.Auto Update Include Guard": false,
+    "C/C++ Include Guard.File Path Pascal Case to Snake Case": true
+}

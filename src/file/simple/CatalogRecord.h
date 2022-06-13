@@ -2,6 +2,7 @@
 #define _SIMPLE_CATALOG_RECORD_H_
 
 #include <cstring>
+#include <ostream>
 
 #include "../Crypto.h"
 
@@ -49,6 +50,8 @@ private:
         size = obj.size;
         memcpy(key, obj.key, CRYPTO_KEY_LEN);
     }
+
+    friend std::ostream &operator<<(std::ostream &os, const CatalogRecord &obj);
 };
 
 #endif /* _SIMPLE_CATALOG_RECORD_H_ */

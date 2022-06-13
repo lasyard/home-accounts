@@ -50,6 +50,8 @@ private:
     CryptoFile *encryptSection(const std::string &name, const std::string &content);
 
     off_t findSlot(size_t length) const;
+
+    friend std::ostream &operator<<(std::ostream &os, const CryptoFile &obj);
 };
 
 #endif /* _SIMPLE_CRYPTO_FILE_H_ */

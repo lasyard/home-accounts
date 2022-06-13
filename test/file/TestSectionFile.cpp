@@ -1,5 +1,6 @@
 #include "doctest/doctest.h"
 
+#include <filesystem>
 #include <vector>
 
 #include "SectionFile.h"
@@ -9,34 +10,34 @@ static const char *fileName = "crypto-file-test.dat";
 
 TEST_CASE("save_load")
 {
-    auto sd = new SectionFile();
+    auto file = new SectionFile();
     std::string str("This is a test.");
-    sd->put("a1", str);
-    sd->put("b2", "second");
-    sd->put("c3", "third");
-    sd->saveAs(new CryptoFile(fileName, "123", "ABC"));
-    delete sd;
+    file->put("a1", str);
+    file->put("b2", "second");
+    file->put("c3", "third");
+    file->saveAs(new CryptoFile(fileName, "123", "ABC"));
+    delete file;
     SUBCASE("load")
     {
-        sd = new SectionFile();
-        sd->attach(new CryptoFile(fileName, "123", "ABC"));
-        std::string str1 = sd->get("a1");
+        file = new SectionFile();
+        file->attach(new CryptoFile(fileName, "123", "ABC"));
+        std::string str1 = file->get("a1");
         CHECK(str1 == str);
-        delete sd;
+        delete file;
     }
     SUBCASE("iterator")
     {
-        sd = new SectionFile();
-        sd->attach(new CryptoFile(fileName, "123", "ABC"));
+        file = new SectionFile();
+        file->attach(new CryptoFile(fileName, "123", "ABC"));
         std::vector<std::string> names = {};
-        for (auto &[name, section] : *sd) {
+        for (auto &[name, section] : *file) {
             names.push_back(name);
         }
         CHECK(names.size() == 3);
         CHECK(std::find(names.begin(), names.end(), "a1") != names.end());
         CHECK(std::find(names.begin(), names.end(), "b2") != names.end());
         CHECK(std::find(names.begin(), names.end(), "c3") != names.end());
-        delete sd;
+        delete file;
     }
     std::filesystem::remove(fileName);
 }

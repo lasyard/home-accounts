@@ -1,3 +1,5 @@
+#include <iomanip>
+
 #include "CatalogRecord.h"
 
 void CatalogRecord::write(std::ostream &os) const
@@ -36,7 +38,15 @@ bool CatalogRecord::read(std::istream &is)
         return false;
     }
     // No better way to avoid this copying.
-    name = buf;
+    name = std::string(buf, len);
     delete[] buf;
     return true;
+}
+
+std::ostream &operator<<(std::ostream &os, const CatalogRecord &obj)
+{
+    os << "CatalogRecord (OFF: " << std::setw(10) << obj.offset;
+    os << ", LEN: " << std::setw(10) << obj.size;
+    os << ", NAME: " << obj.name << ")";
+    return os;
 }

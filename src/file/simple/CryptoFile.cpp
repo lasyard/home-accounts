@@ -254,3 +254,12 @@ off_t CryptoFile::findSlot(size_t size) const
     }
     return offset;
 }
+
+std::ostream &operator<<(std::ostream &os, const CryptoFile &obj)
+{
+    os << "Catalog of file \"" << obj.m_fileName << "\":" << std::endl;
+    for (auto const &[name, cr] : obj.m_catalog) {
+        os << cr << std::endl;
+    }
+    return os;
+}

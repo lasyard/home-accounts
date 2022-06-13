@@ -1,5 +1,8 @@
 {
     "files.associations": {
+        "__config": "cpp",
+        "fstream": "cpp",
+        "locale": "cpp"
     },
     "C/C++ Include Guard.Insert Blank Line": true,
     "C/C++ Include Guard.Macro Type": "Filepath",

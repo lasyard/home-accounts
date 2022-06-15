@@ -20,25 +20,9 @@ public:
     virtual SectionStore *create() = 0;
     virtual SectionStore *open() = 0;
     virtual SectionStore *readSection(const std::string &name, std::ostream &content) = 0;
-
-    virtual SectionStore *readSection(const std::string &name, std::string &content)
-    {
-        std::stringstream str;
-        readSection(name, str);
-        content = str.str();
-        return this;
-    }
-
+    virtual SectionStore *readSection(const std::string &name, std::string &content) = 0;
     virtual SectionStore *writeSection(const std::string &name, std::istream &content) = 0;
-
-    virtual SectionStore *writeSection(const std::string &name, const std::string &content)
-    {
-        std::stringstream str;
-        str << content;
-        writeSection(name, str);
-        return this;
-    }
-
+    virtual SectionStore *writeSection(const std::string &name, const std::string &content) = 0;
     virtual SectionStore *deleteSection(const std::string &name) = 0;
     virtual SectionStore *clear() = 0;
     virtual SectionStore *flush() = 0;

@@ -55,6 +55,8 @@ else()
     link_directories($ENV{HOME}/lib)
 endif()
 
+include_directories(external)
+
 set(LIB_CRYPTO_NAME crypto)
 set(LIB_FILE_NAME file)
 

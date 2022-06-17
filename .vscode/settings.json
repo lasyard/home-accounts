@@ -2,7 +2,13 @@
     "files.associations": {
         "__config": "cpp",
         "fstream": "cpp",
-        "locale": "cpp"
+        "locale": "cpp",
+        "concepts": "cpp",
+        "ios": "cpp",
+        "istream": "cpp",
+        "numeric": "cpp",
+        "ostream": "cpp",
+        "chrono": "cpp"
     },
     "C/C++ Include Guard.Insert Blank Line": true,
     "C/C++ Include Guard.Macro Type": "Filepath",

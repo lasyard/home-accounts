@@ -11,20 +11,19 @@ public:
     Directory(const std::string &dirName);
     virtual ~Directory();
 
-    Directory *create() override;
-    Directory *open() override;
-    Directory *readSection(const std::string &name, std::ostream &content) override;
-    Directory *readSection(const std::string &name, std::string &content) override;
-    Directory *writeSection(const std::string &name, std::istream &content) override;
-    Directory *writeSection(const std::string &name, const std::string &content) override;
-    Directory *deleteSection(const std::string &name) override;
-    Directory *clear() override;
-    Directory *flush() override;
+    void create() override;
+    void open() override;
+    void clear() override;
+
+    void readSection(const std::string &name, std::ostream &content) override;
+    void readSection(const std::string &name, std::string &content) override;
+    void writeSection(const std::string &name, std::istream &content) override;
+    void writeSection(const std::string &name, const std::string &content) override;
+    void deleteSection(const std::string &name) override;
+    void forEachSection(std::function<bool(const std::string &name)> fun) override;
 
     bool contains(const std::string &name) const override;
     bool operator==(const SectionStore &obj) const override;
-
-    void forEachSection(std::function<bool(const std::string &name)> fun) override;
 
 private:
     std::filesystem::path m_dirName;

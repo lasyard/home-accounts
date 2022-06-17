@@ -7,3 +7,4 @@ target_link_libraries(TestSectionFile PRIVATE ${LIB_FILE_NAME} file_simple)
 
 add_subdirectory(directory)
 add_subdirectory(simple)
+add_subdirectory(sqlite3)

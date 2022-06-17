@@ -4,3 +4,4 @@ add_lib(${LIB_FILE_NAME} SectionFile.cpp)
 
 add_subdirectory(directory)
 add_subdirectory(simple)
+add_subdirectory(sqlite3)

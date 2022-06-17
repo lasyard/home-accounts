@@ -1,0 +1,51 @@
+#ifndef _FILE_CRYPTED_SECTION_STORE_H_
+#define _FILE_CRYPTED_SECTION_STORE_H_
+
+#include "Crypto.h"
+#include "SectionStore.h"
+
+class CryptedSectionStore : public SectionStore
+{
+public:
+    CryptedSectionStore() : SectionStore()
+    {
+    }
+
+    virtual ~CryptedSectionStore()
+    {
+    }
+
+    void readSection(const std::string &name, std::ostream &content) override
+    {
+        std::string tmp;
+        decryptSection(name, tmp);
+        decompress(tmp, content);
+    }
+
+    void readSection(const std::string &name, std::string &content) override
+    {
+        std::string tmp;
+        decryptSection(name, tmp);
+        decompress(tmp, content);
+    }
+
+    void writeSection(const std::string &name, std::istream &content) override
+    {
+        std::string tmp;
+        compress(content, tmp);
+        encryptSection(name, tmp);
+    }
+
+    void writeSection(const std::string &name, const std::string &content) override
+    {
+        std::string tmp;
+        compress(content, tmp);
+        encryptSection(name, tmp);
+    }
+
+protected:
+    virtual void decryptSection(const std::string &name, std::string &content) = 0;
+    virtual void encryptSection(const std::string &name, const std::string &content) = 0;
+};
+
+#endif /* _FILE_CRYPTED_SECTION_STORE_H_ */

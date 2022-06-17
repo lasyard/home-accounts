@@ -39,7 +39,8 @@ SectionFile *SectionFile::attach(SectionStore *store)
     if (m_store != nullptr) {
         delete m_store;
     }
-    m_store = store->open();
+    store->open();
+    m_store = store;
     m_store->forEachSection([this](const std::string &name) {
         m_cache[name] = Section();
         return true;
@@ -72,10 +73,12 @@ SectionFile *SectionFile::saveAs(SectionStore *store)
                 }
             }
             delete m_store;
-            m_store = store->create();
+            store->create();
+            m_store = store;
         }
     } else {
-        m_store = store->create();
+        store->create();
+        m_store = store;
     }
     save();
     return this;

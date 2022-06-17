@@ -16,21 +16,27 @@ Directory::~Directory()
 {
 }
 
-Directory *Directory::create()
+void Directory::create()
 {
     if (!fs::is_directory(m_dirName)) {
         fs::create_directories(m_dirName);
-        return this;
+    } else {
+        throw DirCreate(m_dirName);
     }
-    throw DirCreate(m_dirName);
 }
 
-Directory *Directory::open()
+void Directory::open()
 {
-    return this;
 }
 
-Directory *Directory::readSection(const std::string &name, std::ostream &content)
+void Directory::clear()
+{
+    for (auto const &entry : fs::directory_iterator(m_dirName)) {
+        fs::remove_all(entry);
+    }
+}
+
+void Directory::readSection(const std::string &name, std::ostream &content)
 {
     std::ifstream file(m_dirName / name, std::ios::binary | std::ios::in);
     if (!file.is_open()) {
@@ -38,18 +44,16 @@ Directory *Directory::readSection(const std::string &name, std::ostream &content
     }
     streamCopy(file, content);
     file.close();
-    return this;
 }
 
-Directory *Directory::readSection(const std::string &name, std::string &content)
+void Directory::readSection(const std::string &name, std::string &content)
 {
     std::stringstream str;
     readSection(name, str);
     content = str.str();
-    return this;
 }
 
-Directory *Directory::writeSection(const std::string &name, std::istream &content)
+void Directory::writeSection(const std::string &name, std::istream &content)
 {
     auto path = m_dirName / name;
     if (!fs::is_directory(path.parent_path())) {
@@ -58,38 +62,31 @@ Directory *Directory::writeSection(const std::string &name, std::istream &conten
     std::ofstream file(m_dirName / name, std::ios::binary | std::ios::out | std::ios::trunc);
     streamCopy(content, file);
     file.close();
-    return this;
 }
 
-Directory *Directory::writeSection(const std::string &name, const std::string &content)
+void Directory::writeSection(const std::string &name, const std::string &content)
 {
     std::stringstream str;
     str << content;
     writeSection(name, str);
-    return this;
 }
 
-Directory *Directory::deleteSection(const std::string &name)
+void Directory::deleteSection(const std::string &name)
 {
     auto path = m_dirName / name;
     do {
         fs::remove(path);
         path = path.parent_path();
     } while (path != m_dirName && fs::is_empty(path));
-    return this;
 }
 
-Directory *Directory::clear()
+void Directory::forEachSection(std::function<bool(const std::string &name)> fun)
 {
-    for (auto const &entry : fs::directory_iterator(m_dirName)) {
-        fs::remove_all(entry);
+    for (auto const &entry : fs::recursive_directory_iterator(m_dirName)) {
+        if (!fun(entry.path().string().substr(m_dirName.string().length()))) {
+            break;
+        }
     }
-    return this;
-}
-
-Directory *Directory::flush()
-{
-    return this;
 }
 
 bool Directory::contains(const std::string &name) const
@@ -104,15 +101,6 @@ bool Directory::operator==(const SectionStore &obj) const
         return dir.m_dirName == m_dirName;
     } catch (std::bad_cast &e) {
         return false;
-    }
-}
-
-void Directory::forEachSection(std::function<bool(const std::string &name)> fun)
-{
-    for (auto const &entry : fs::recursive_directory_iterator(m_dirName)) {
-        if (!fun(entry.path().string().substr(m_dirName.string().length()))) {
-            break;
-        }
     }
 }
 

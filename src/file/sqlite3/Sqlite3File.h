@@ -1,24 +1,20 @@
-#ifndef _SIMPLE_CRYPTO_FILE_H_
-#define _SIMPLE_CRYPTO_FILE_H_
-
-#include <fstream>
-#include <map>
+#ifndef _SQLITE3_SQLITE3FILE_H_
+#define _SQLITE3_SQLITE3FILE_H_
 
 #include "../CryptedSectionStore.h"
-#include "CatalogRecord.h"
+#include "sqlite3/sqlite3.h"
 
-class CryptoFile : public CryptedSectionStore
+class Sqlite3File : public CryptedSectionStore
 {
 public:
     static const char *const CATALOG_NAME;
 
-    CryptoFile(const std::string &fileName, const std::string &pass, const std::string &iv);
-    virtual ~CryptoFile();
+    Sqlite3File(const std::string &fileName, const std::string &pass, const std::string &iv);
+    virtual ~Sqlite3File();
 
     void create() override;
     void open() override;
     void clear() override;
-    void flush() override;
 
     void deleteSection(const std::string &name) override;
     void forEachSection(std::function<bool(const std::string &name)> fun) override;
@@ -29,21 +25,23 @@ public:
     void changePass(const std::string &pass);
 
 private:
+    static const char *const GET_SQL;
+
     byte m_iv[CRYPTO_IV_LEN];
     byte m_key[CRYPTO_KEY_LEN];
     std::string m_fileName;
-    std::fstream m_file;
-    std::map<std::string, CatalogRecord> m_catalog;
+    sqlite3 *m_db;
+
+    mutable sqlite3_stmt *m_getStmt;
+    mutable sqlite3_stmt *m_putStmt;
+    mutable sqlite3_stmt *m_delStmt;
 
     void decryptSection(const std::string &name, std::string &content) override;
     void encryptSection(const std::string &name, const std::string &content) override;
 
-    void loadCatalog();
-    void saveCatalog();
-
-    off_t findSlot(size_t length) const;
-
-    friend std::ostream &operator<<(std::ostream &os, const CryptoFile &obj);
+    void init();
+    void prepareSql(sqlite3_stmt *&stmt, const std::string &sql) const;
+    void execSql(const char *sql);
 };
 
-#endif /* _SIMPLE_CRYPTO_FILE_H_ */
+#endif /* _SQLITE3_SQLITE3FILE_H_ */

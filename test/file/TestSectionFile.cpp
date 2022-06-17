@@ -30,7 +30,7 @@ TEST_CASE("simple_save_load")
     {
         file = new SectionFile();
         file->attach(new CryptoFile(fileName, "123", "ABC"));
-        std::vector<const std::string> names;
+        std::vector<std::string> names;
         file->getSectionNames(names);
         CHECK(names.size() == 3);
         CHECK(std::find(names.begin(), names.end(), "a1") != names.end());
@@ -62,7 +62,7 @@ TEST_CASE("sqlite3_save_load")
     {
         file = new SectionFile();
         file->attach(new Sqlite3File(fileName, "123", "ABC"));
-        std::vector<const std::string> names;
+        std::vector<std::string> names;
         file->getSectionNames(names);
         CHECK(names.size() == 3);
         CHECK(std::find(names.begin(), names.end(), "a1") != names.end());

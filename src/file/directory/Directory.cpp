@@ -80,7 +80,7 @@ void Directory::deleteSection(const std::string &name)
     } while (path != m_dirName && fs::is_empty(path));
 }
 
-void Directory::getSectionNames(std::vector<const std::string> &names) const
+void Directory::getSectionNames(std::vector<std::string> &names) const
 {
     for (auto const &entry : fs::recursive_directory_iterator(m_dirName)) {
         names.push_back(entry.path().string().substr(m_dirName.string().length()));

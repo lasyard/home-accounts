@@ -41,7 +41,7 @@ void SectionFile::attach(SectionStore *store)
     }
     store->open();
     m_store = store;
-    std::vector<const std::string> names;
+    std::vector<std::string> names;
     m_store->getSectionNames(names);
     for (auto &name : names) {
         m_cache[name] = Section();
@@ -82,7 +82,7 @@ void SectionFile::saveAs(SectionStore *store)
     save();
 }
 
-void SectionFile::getSectionNames(std::vector<const std::string> &names) const
+void SectionFile::getSectionNames(std::vector<std::string> &names) const
 {
     for (auto const &[name, section] : m_cache) {
         names.push_back(name);

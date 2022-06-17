@@ -34,7 +34,7 @@ public:
     virtual void writeSection(const std::string &name, const std::string &content) = 0;
     virtual void deleteSection(const std::string &name) = 0;
 
-    virtual void getSectionNames(std::vector<const std::string> &names) const = 0;
+    virtual void getSectionNames(std::vector<std::string> &names) const = 0;
 
     virtual bool contains(const std::string &name) const = 0;
     virtual bool operator==(const SectionStore &obj) const = 0;

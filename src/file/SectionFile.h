@@ -4,7 +4,7 @@
 #include <map>
 #include <string>
 
-class SectionStore;
+#include "SectionStore.h"
 
 class Section
 {
@@ -40,7 +40,7 @@ public:
     void save();
     void saveAs(SectionStore *store);
 
-    void getSectionNames(std::vector<const std::string> &names) const;
+    void getSectionNames(std::vector<std::string> &names) const;
 
 private:
     std::map<std::string, Section> m_cache;

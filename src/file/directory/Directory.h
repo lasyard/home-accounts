@@ -21,7 +21,7 @@ public:
     void writeSection(const std::string &name, const std::string &content) override;
     void deleteSection(const std::string &name) override;
 
-    void getSectionNames(std::vector<const std::string> &names) const override;
+    void getSectionNames(std::vector<std::string> &names) const override;
 
     bool contains(const std::string &name) const override;
     bool operator==(const SectionStore &obj) const override;

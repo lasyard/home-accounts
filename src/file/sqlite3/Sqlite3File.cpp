@@ -74,7 +74,7 @@ void Sqlite3File::deleteSection(const std::string &name)
     }
 }
 
-void Sqlite3File::getSectionNames(std::vector<const std::string> &names) const
+void Sqlite3File::getSectionNames(std::vector<std::string> &names) const
 {
     prepareSql(m_enumStmt, "SELECT name FROM files");
     auto rc = sqlite3_step(m_enumStmt);

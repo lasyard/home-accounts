@@ -1,6 +1,7 @@
 #include <stdexcept>
 
 #include <wx/listbook.h>
+#include <wx/textdlg.h>
 #include <wx/wx.h>
 #include <wx/xrc/xmlres.h>
 
@@ -14,6 +15,11 @@ IMPLEMENT_TM(RawDocument)
 
 BEGIN_EVENT_TABLE(RawDocument, wxDocument)
 END_EVENT_TABLE()
+
+bool RawDocument::OnCloseDocument()
+{
+    return wxDocument::OnCloseDocument();
+}
 
 // Called twice when closing, one in doc close, one in view close.
 bool RawDocument::DeleteContents()
@@ -29,8 +35,12 @@ bool RawDocument::DeleteContents()
 bool RawDocument::DoOpenDocument(const wxString &fileName)
 {
     wxLogTrace(TM, "\"%s(%s)\" called.", __WXFUNCTION__, fileName);
+    wxPasswordEntryDialog dlgPass(nullptr, _("Input the password for the file:"));
+    if (dlgPass.ShowModal() == wxID_OK) {
+        m_pass = dlgPass.GetValue();
+    }
     try {
-        auto store = new Sqlite3File(fileName.ToStdString(), "ABC", "123");
+        auto store = new Sqlite3File(fileName.ToStdString(), m_pass.ToStdString(), "123");
         m_doc = new SectionFile();
         m_doc->attach(store);
         RawView *view = GetView();
@@ -43,6 +53,7 @@ bool RawDocument::DoOpenDocument(const wxString &fileName)
         }
     } catch (std::runtime_error &e) {
         wxLogError("Failed to open \"%s\": %s", (const char *)fileName, e.what());
+        return false;
     }
     return true;
 }
@@ -57,7 +68,7 @@ bool RawDocument::DoSaveDocument(const wxString &fileName)
     if (view != nullptr) {
         view->SavePages();
     }
-    auto store = new Sqlite3File(fileName.ToStdString(), "ABC", "123");
+    auto store = new Sqlite3File(fileName.ToStdString(), m_pass.ToStdString(), "123");
     m_doc->saveAs(store);
     return true;
 }

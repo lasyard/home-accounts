@@ -16,7 +16,7 @@ class RawDocument : public wxDocument
 public:
     DECLARE_TM()
 
-    RawDocument() : wxDocument(), m_doc(nullptr)
+    RawDocument() : wxDocument(), m_doc(nullptr), m_pass()
     {
         wxLog::AddTraceMask(TM);
     }
@@ -24,6 +24,8 @@ public:
     virtual ~RawDocument()
     {
     }
+
+    bool OnCloseDocument() override;
 
     bool DeleteContents() override;
     bool DoOpenDocument(const wxString &fileName) override;
@@ -38,6 +40,7 @@ public:
 
 private:
     SectionFile *m_doc;
+    wxString m_pass;
 
     RawView *GetView() const;
 };

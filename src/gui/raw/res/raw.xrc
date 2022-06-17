@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
+	<object class="wxFrame" name="main">
+		<style>wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL</style>
+		<size>500,300</size>
+		<title></title>
+		<centered>1</centered>
+		<aui_managed>0</aui_managed>
+		<object class="wxStatusBar" name="m_statusBar">
+			<style>wxSTB_SIZEGRIP</style>
+			<fields>1</fields>
+		</object>
+		<object class="wxMenuBar" name="m_menuBar">
+			<object class="wxMenu" name="m_fileMenu">
+				<label>_File</label>
+				<object class="wxMenuItem" name="wxID_NEW">
+					<label>_New</label>
+					<help></help>
+				</object>
+				<object class="wxMenuItem" name="wxID_OPEN">
+					<label>_Open</label>
+					<help></help>
+				</object>
+				<object class="wxMenuItem" name="wxID_SAVE">
+					<label>_Save</label>
+					<help></help>
+				</object>
+				<object class="wxMenuItem" name="wxID_SAVEAS">
+					<label>Save _As</label>
+					<help></help>
+				</object>
+				<object class="wxMenuItem" name="wxID_CLOSE">
+					<label>_Close</label>
+					<help></help>
+				</object>
+			</object>
+			<object class="wxMenu" name="section">
+				<label>_Section</label>
+				<object class="wxMenuItem" name="sectionAdd">
+					<label>_Add</label>
+					<help></help>
+				</object>
+				<object class="wxMenuItem" name="sectionDelete">
+					<label>_Delete</label>
+					<help></help>
+				</object>
+			</object>
+			<object class="wxMenu" name="m_helpMenu">
+				<label>_Help</label>
+				<object class="wxMenuItem" name="about">
+					<label>_About</label>
+					<help></help>
+				</object>
+			</object>
+		</object>
+		<object class="wxListbook" name="listbook">
+			<style>wxLB_LEFT</style>
+		</object>
+	</object>
+</resource>

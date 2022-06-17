@@ -52,7 +52,7 @@ TEST_CASE("smoke")
     std::filesystem::remove(fileName);
 }
 
-TEST_CASE("change_pass" * doctest::skip())
+TEST_CASE("change_pass")
 {
     auto file = new Sqlite3File(fileName, "123", "ABC");
     file->create();

@@ -63,13 +63,11 @@ void CryptoFile::deleteSection(const std::string &name)
     m_catalog.erase(name);
 }
 
-void CryptoFile::forEachSection(std::function<bool(const std::string &name)> fun)
+void CryptoFile::getSectionNames(std::vector<const std::string> &names) const
 {
-    for (auto &[name, c] : m_catalog) {
+    for (auto const &[name, c] : m_catalog) {
         if (name != CATALOG_NAME) {
-            if (!fun(name)) {
-                break;
-            }
+            names.push_back(name);
         }
     }
 }

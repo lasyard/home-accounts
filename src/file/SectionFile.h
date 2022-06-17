@@ -1,5 +1,5 @@
-#ifndef _FILE_SECTION_DOC_H_
-#define _FILE_SECTION_DOC_H_
+#ifndef _FILE_SECTION_FILE_H_
+#define _FILE_SECTION_FILE_H_
 
 #include <map>
 #include <string>
@@ -36,23 +36,15 @@ public:
     void put(const std::string &name, const std::string &content);
     void remove(const std::string &name);
 
-    SectionFile *attach(SectionStore *store);
-    SectionFile *save();
-    SectionFile *saveAs(SectionStore *store);
+    void attach(SectionStore *store);
+    void save();
+    void saveAs(SectionStore *store);
 
-    auto begin() const
-    {
-        return m_cache.cbegin();
-    }
-
-    auto end() const
-    {
-        return m_cache.cend();
-    }
+    void getSectionNames(std::vector<const std::string> &names) const;
 
 private:
     std::map<std::string, Section> m_cache;
     SectionStore *m_store;
 };
 
-#endif /* _FILE_SECTION_DOC_H_ */
+#endif /* _FILE_SECTION_FILE_H_ */

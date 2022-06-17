@@ -34,21 +34,21 @@ void SectionFile::remove(const std::string &name)
     m_cache.erase(name);
 }
 
-SectionFile *SectionFile::attach(SectionStore *store)
+void SectionFile::attach(SectionStore *store)
 {
     if (m_store != nullptr) {
         delete m_store;
     }
     store->open();
     m_store = store;
-    m_store->forEachSection([this](const std::string &name) {
+    std::vector<const std::string> names;
+    m_store->getSectionNames(names);
+    for (auto &name : names) {
         m_cache[name] = Section();
-        return true;
-    });
-    return this;
+    }
 }
 
-SectionFile *SectionFile::save()
+void SectionFile::save()
 {
     if (m_store == nullptr) {
         throw NoFileSpecified();
@@ -60,10 +60,9 @@ SectionFile *SectionFile::save()
         }
     }
     m_store->flush();
-    return this;
 }
 
-SectionFile *SectionFile::saveAs(SectionStore *store)
+void SectionFile::saveAs(SectionStore *store)
 {
     if (m_store != nullptr) {
         if (*m_store != *store) {
@@ -81,5 +80,11 @@ SectionFile *SectionFile::saveAs(SectionStore *store)
         m_store = store;
     }
     save();
-    return this;
+}
+
+void SectionFile::getSectionNames(std::vector<const std::string> &names) const
+{
+    for (auto const &[name, section] : m_cache) {
+        names.push_back(name);
+    }
 }

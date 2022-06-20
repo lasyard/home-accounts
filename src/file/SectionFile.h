@@ -42,6 +42,11 @@ public:
 
     void getSectionNames(std::vector<std::string> &names) const;
 
+    SectionStore *getStore() const
+    {
+        return m_store;
+    }
+
 private:
     std::map<std::string, Section> m_cache;
     SectionStore *m_store;

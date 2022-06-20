@@ -2,6 +2,7 @@
 #include <wx/textctrl.h>
 #include <wx/textdlg.h>
 
+#include "ChangePassDialog.h"
 #include "Defs.h"
 #include "RawApp.h"
 #include "RawDocument.h"
@@ -13,6 +14,7 @@ IMPLEMENT_TM(RawView)
 BEGIN_EVENT_TABLE(RawView, wxView)
 EVT_MENU(ID_SECTION_ADD, RawView::OnSectionAdd)
 EVT_MENU(ID_SECTION_DELETE, RawView::OnSectionDelete)
+EVT_MENU(ID_CHANGE_PASS, RawView::OnChangePass)
 END_EVENT_TABLE()
 
 bool RawView::OnCreate([[maybe_unused]] wxDocument *doc, [[maybe_unused]] long flags)
@@ -99,6 +101,16 @@ void RawView::OnSectionDelete([[maybe_unused]] wxCommandEvent &event)
         doc->Modify(true);
         m_listbook->DeletePage(sel);
         m_listbook->Refresh();
+    }
+}
+
+void RawView::OnChangePass([[maybe_unused]] wxCommandEvent &event)
+{
+    wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
+    auto doc = GetRawDocument();
+    ChangePassDialog dlg(nullptr, doc->GetPass());
+    if (dlg.ShowModal() == wxID_OK) {
+        doc->ChangePass(dlg.GetPass());
     }
 }
 

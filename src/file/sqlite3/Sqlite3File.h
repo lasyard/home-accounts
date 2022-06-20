@@ -23,7 +23,7 @@ public:
     bool contains(const std::string &name) const override;
     bool operator==(const SectionStore &obj) const override;
 
-    void changePass(const std::string &pass);
+    void changePass(const std::string &pass) override;
 
 private:
     static const char *const GET_SQL;

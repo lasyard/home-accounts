@@ -35,6 +35,7 @@ public:
 
     virtual void OnSectionAdd(wxCommandEvent &event);
     virtual void OnSectionDelete(wxCommandEvent &event);
+    virtual void OnChangePass(wxCommandEvent &event);
 
 private:
     wxListbook *m_listbook;

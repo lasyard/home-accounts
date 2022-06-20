@@ -16,6 +16,7 @@ BEGIN_EVENT_TABLE(RawMainFrame, wxDocParentFrame)
 EVT_CLOSE(RawMainFrame::OnClose)
 EVT_UPDATE_UI(ID_SECTION_ADD, RawMainFrame::OnUpdateSectionAdd)
 EVT_UPDATE_UI(ID_SECTION_DELETE, RawMainFrame::OnUpdateSectionDelete)
+EVT_UPDATE_UI(ID_CHANGE_PASS, RawMainFrame::OnUpdateChangePass)
 EVT_MENU(XRCID("about"), RawMainFrame::OnAbout)
 END_EVENT_TABLE()
 
@@ -52,6 +53,13 @@ void RawMainFrame::OnUpdateSectionDelete(wxUpdateUIEvent &event)
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     RawView *view = GetCurrentView();
     event.Enable(view != nullptr && view->IsSelected());
+}
+
+void RawMainFrame::OnUpdateChangePass(wxUpdateUIEvent &event)
+{
+    wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
+    RawView *view = GetCurrentView();
+    event.Enable(view != nullptr);
 }
 
 void RawMainFrame::OnAbout([[maybe_unused]] wxCommandEvent &event)

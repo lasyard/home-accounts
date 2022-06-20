@@ -39,6 +39,7 @@ public:
     virtual void OnClose(wxCloseEvent &event);
     virtual void OnUpdateSectionAdd(wxUpdateUIEvent &event);
     virtual void OnUpdateSectionDelete(wxUpdateUIEvent &event);
+    virtual void OnUpdateChangePass(wxUpdateUIEvent &event);
     virtual void OnAbout(wxCommandEvent &event);
 
 private:

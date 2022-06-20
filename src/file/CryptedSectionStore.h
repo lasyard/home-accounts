@@ -43,6 +43,8 @@ public:
         encryptSection(name, tmp);
     }
 
+    virtual void changePass(const std::string &pass) = 0;
+
 protected:
     virtual void decryptSection(const std::string &name, std::string &content) = 0;
     virtual void encryptSection(const std::string &name, const std::string &content) = 0;

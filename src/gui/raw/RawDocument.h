@@ -38,6 +38,13 @@ public:
 
     virtual void OnTextChange(wxCommandEvent &event);
 
+    wxString GetPass() const
+    {
+        return m_pass;
+    }
+
+    void ChangePass(const wxString &pass);
+
 private:
     SectionFile *m_doc;
     wxString m_pass;

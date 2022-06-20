@@ -4,6 +4,8 @@ set(XRS_FILE resource.xrs)
 add_compile_definitions(XRS_FILE="${XRS_FILE}")
 
 add_exe(${APP_NAME}
+    ChangePassDialogBase.cpp
+    ChangePassDialog.cpp
     RawApp.cpp
     RawDocument.cpp
     RawMainFrame.cpp

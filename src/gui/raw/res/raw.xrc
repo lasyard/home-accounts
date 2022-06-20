@@ -33,6 +33,11 @@
 					<label>_Close</label>
 					<help></help>
 				</object>
+				<object class="separator" />
+				<object class="wxMenuItem" name="changePass">
+					<label>Change Password</label>
+					<help></help>
+				</object>
 			</object>
 			<object class="wxMenu" name="section">
 				<label>_Section</label>

@@ -107,3 +107,14 @@ RawView *RawDocument::GetView() const
     auto view = this->GetFirstView();
     return view != nullptr ? static_cast<RawView *>(view) : nullptr;
 }
+
+void RawDocument::ChangePass(const wxString &pass)
+{
+    if (m_doc != nullptr) {
+        CryptedSectionStore *store = dynamic_cast<CryptedSectionStore *>(m_doc->getStore());
+        if (store != nullptr) {
+            store->changePass(pass.ToStdString());
+        }
+    }
+    m_pass = pass;
+}

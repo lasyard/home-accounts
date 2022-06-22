@@ -2,6 +2,7 @@
 #define _CSV_STR_H_
 
 #include <stdbool.h>
+#include <stddef.h>
 
 struct string {
     const char *buf;

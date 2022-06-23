@@ -1,6 +1,8 @@
 #ifndef _CSV_INT_H_
 #define _CSV_INT_H_
 
+#include <stdbool.h>
+
 typedef int int32_t;
 typedef long long int64_t;
 
@@ -8,6 +10,7 @@ typedef long long int64_t;
 extern "C" {
 #endif
 
+const char *parse_sign(const char *buf, bool *pos);
 const char *parse_int32(const char *buf, int32_t *data, char sep);
 const char *parse_int64(const char *buf, int64_t *data, char sep);
 

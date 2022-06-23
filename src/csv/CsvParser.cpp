@@ -1,16 +1,11 @@
 #include "CsvParser.h"
 
 #include "int.h"
+#include "money.h"
 #include "str.h"
 
-CsvParser::CsvParser(int cols, const ColumnType *types) : m_cols(cols), m_types(types)
+CsvParser::CsvParser(int cols, const ColumnType *types) : m_cols(cols), m_types(types), m_sep(','), m_moneyMul(100)
 {
-    m_sep = ',';
-}
-
-void CsvParser::setSeparator(char sep)
-{
-    m_sep = sep;
 }
 
 void CsvParser::parseLine(const char *line, void *datum[])
@@ -28,6 +23,8 @@ void CsvParser::parseLine(const char *line, void *datum[])
             p = parse_int64(p, (int64_t *)datum[i], m_sep);
             break;
         case MONEY:
+            p = parse_money(p, (money_t *)datum[i], m_sep, m_moneyMul);
+            break;
         case TIME:
             break;
         }

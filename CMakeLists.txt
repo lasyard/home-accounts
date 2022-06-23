@@ -19,6 +19,7 @@ function(add_test target)
     add_executable(${target} ${ARGN})
     target_common_settings(${target})
     target_link_libraries(${target} PRIVATE doctest)
+
     # Here `ADD_LABELS` must be provided.
     doctest_discover_tests(${target} ADD_LABELS 1)
 endfunction()

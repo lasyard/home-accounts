@@ -2,6 +2,23 @@
 
 #include "int.h"
 
+TEST_CASE("parse_sign")
+{
+    const char *s = "+";
+    bool pos;
+    const char *p = parse_sign(s, &pos);
+    CHECK(p - s == 1);
+    CHECK(pos);
+    s = "-";
+    p = parse_sign(s, &pos);
+    CHECK(p - s == 1);
+    CHECK(!pos);
+    s = "123";
+    p = parse_sign(s, &pos);
+    CHECK(p == s);
+    CHECK(pos);
+}
+
 TEST_CASE("parse_int32")
 {
     const char *s = " 123,45 ,6 789";

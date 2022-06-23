@@ -1,5 +1,5 @@
 add_lib(${LIB_CSV_NAME}
-    csv.c
+    CsvParser.cpp
     int.c
     str.c
 )

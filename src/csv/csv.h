@@ -9,7 +9,8 @@ extern "C" {
 
 enum csv_column_type_t {
     STR,
-    INT,
+    INT32,
+    INT64,
     MONEY,
     TIME,
 };

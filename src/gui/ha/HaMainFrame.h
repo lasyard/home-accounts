@@ -1,27 +1,27 @@
-#ifndef _RAW_RAW_MAIN_FRAME_H_
-#define _RAW_RAW_MAIN_FRAME_H_
+#ifndef _HA_HA_MAIN_FRAME_H_
+#define _HA_HA_MAIN_FRAME_H_
 
 #include <wx/docview.h>
 
 #include "../Common.h"
 
-class HaDocumentBase;
-class RawView;
+class HaDocument;
+class HaView;
 
-class RawMainFrame : public wxDocParentFrame
+class HaMainFrame : public wxDocParentFrame
 {
-    DECLARE_DYNAMIC_CLASS(RawMainFrame)
+    DECLARE_DYNAMIC_CLASS(HaMainFrame)
     DECLARE_EVENT_TABLE()
 
 public:
     DECLARE_TM()
 
-    RawMainFrame() : wxDocParentFrame()
+    HaMainFrame() : wxDocParentFrame()
     {
         wxLog::AddTraceMask(TM);
     }
 
-    RawMainFrame(
+    HaMainFrame(
         wxDocManager *manager,
         wxFrame *frame,
         wxWindowID id,
@@ -32,19 +32,17 @@ public:
         const wxString &name = wxFrameNameStr // `wxASCII_STR` is not defined on Linux.
     );
 
-    virtual ~RawMainFrame()
+    virtual ~HaMainFrame()
     {
     }
 
     virtual void OnClose(wxCloseEvent &event);
-    virtual void OnUpdateSectionAdd(wxUpdateUIEvent &event);
-    virtual void OnUpdateSectionDelete(wxUpdateUIEvent &event);
     virtual void OnUpdateChangePass(wxUpdateUIEvent &event);
     virtual void OnAbout(wxCommandEvent &event);
 
 private:
-    HaDocumentBase *GetCurrentDocument() const;
-    RawView *GetCurrentView() const;
+    HaDocument *GetCurrentDocument() const;
+    HaView *GetCurrentView() const;
 };
 
-#endif /* _RAW_RAW_MAIN_FRAME_H_ */
+#endif /* _HA_HA_MAIN_FRAME_H_ */

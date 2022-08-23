@@ -1,15 +1,15 @@
 #include <wx/fs_arc.h>
 #include <wx/xrc/xmlres.h>
 
-#include "../HaDocumentBase.h"
-#include "RawApp.h"
-#include "RawMainFrame.h"
-#include "RawView.h"
+#include "HaApp.h"
+#include "HaDocument.h"
+#include "HaMainFrame.h"
+#include "HaView.h"
 
-IMPLEMENT_APP(RawApp)
-IMPLEMENT_TM(RawApp)
+IMPLEMENT_APP(HaApp)
+IMPLEMENT_TM(HaApp)
 
-bool RawApp::OnInit()
+bool HaApp::OnInit()
 {
     if (!wxApp::OnInit()) {
         return false;
@@ -30,19 +30,19 @@ bool RawApp::OnInit()
         "",
         "ha",
         GetAppDisplayName() + _(" Doc"),
-        _("Raw View"),
-        CLASSINFO(HaDocumentBase),
-        CLASSINFO(RawView)
+        _("Accounts View"),
+        CLASSINFO(HaDocument),
+        CLASSINFO(HaView)
     );
     m_docManager->SetMaxDocsOpen(1);
-    wxFrame *frame = new RawMainFrame(m_docManager, nullptr, wxID_ANY, GetAppDisplayName());
+    wxFrame *frame = new HaMainFrame(m_docManager, nullptr, wxID_ANY, GetAppDisplayName());
     frame->Center(wxBOTH);
     frame->Show();
     SetTopWindow(frame);
     return true;
 }
 
-int RawApp::OnExit()
+int HaApp::OnExit()
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     delete m_docManager;

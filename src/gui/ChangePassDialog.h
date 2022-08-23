@@ -1,5 +1,5 @@
-#ifndef _RAW_CHANGE_PASS_DIALOG_H_
-#define _RAW_CHANGE_PASS_DIALOG_H_
+#ifndef _GUI_CHANGE_PASS_DIALOG_H_
+#define _GUI_CHANGE_PASS_DIALOG_H_
 
 #include "ChangePassDialogBase.h"
 
@@ -20,4 +20,4 @@ protected:
     bool TransferDataFromWindow() override;
 };
 
-#endif /* _RAW_CHANGE_PASS_DIALOG_H_ */
+#endif /* _GUI_CHANGE_PASS_DIALOG_H_ */

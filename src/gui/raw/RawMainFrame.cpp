@@ -1,11 +1,10 @@
 #include <wx/msgdlg.h>
-#include <wx/textdlg.h>
 #include <wx/wx.h>
 #include <wx/xrc/xmlres.h>
 
+#include "../HaDocumentBase.h"
 #include "Defs.h"
 #include "RawApp.h"
-#include "RawDocument.h"
 #include "RawMainFrame.h"
 #include "RawView.h"
 
@@ -17,7 +16,7 @@ EVT_CLOSE(RawMainFrame::OnClose)
 EVT_UPDATE_UI(ID_SECTION_ADD, RawMainFrame::OnUpdateSectionAdd)
 EVT_UPDATE_UI(ID_SECTION_DELETE, RawMainFrame::OnUpdateSectionDelete)
 EVT_UPDATE_UI(ID_CHANGE_PASS, RawMainFrame::OnUpdateChangePass)
-EVT_MENU(XRCID("about"), RawMainFrame::OnAbout)
+EVT_MENU(ID_ABOUT, RawMainFrame::OnAbout)
 END_EVENT_TABLE()
 
 RawMainFrame::RawMainFrame(
@@ -68,10 +67,10 @@ void RawMainFrame::OnAbout([[maybe_unused]] wxCommandEvent &event)
     wxMessageBox(appName + "\n(c) 2022, Lasy", wxString(_("About ")) + appName);
 }
 
-RawDocument *RawMainFrame::GetCurrentDocument() const
+HaDocumentBase *RawMainFrame::GetCurrentDocument() const
 {
     auto doc = GetDocumentManager()->GetCurrentDocument();
-    return doc == nullptr ? nullptr : static_cast<RawDocument *>(doc);
+    return doc == nullptr ? nullptr : static_cast<HaDocumentBase *>(doc);
 }
 
 RawView *RawMainFrame::GetCurrentView() const

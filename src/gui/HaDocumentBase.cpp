@@ -1,38 +1,41 @@
 #include <stdexcept>
 
-#include <wx/listbook.h>
 #include <wx/textdlg.h>
 #include <wx/wx.h>
 #include <wx/xrc/xmlres.h>
 
-#include "../../file/SectionFile.h"
-#include "../../file/sqlite3/Sqlite3File.h"
-#include "RawDocument.h"
-#include "RawView.h"
+#include "../file/SectionFile.h"
+#include "../file/sqlite3/Sqlite3File.h"
+#include "HaDocumentBase.h"
+#include "HaViewBase.h"
 
-IMPLEMENT_DYNAMIC_CLASS(RawDocument, wxDocument)
-IMPLEMENT_TM(RawDocument)
+IMPLEMENT_DYNAMIC_CLASS(HaDocumentBase, wxDocument)
+IMPLEMENT_TM(HaDocumentBase)
 
-BEGIN_EVENT_TABLE(RawDocument, wxDocument)
+BEGIN_EVENT_TABLE(HaDocumentBase, wxDocument)
 END_EVENT_TABLE()
 
-bool RawDocument::OnCloseDocument()
+bool HaDocumentBase::OnCloseDocument()
 {
     return wxDocument::OnCloseDocument();
 }
 
 // Called twice when closing, one in doc close, one in view close.
-bool RawDocument::DeleteContents()
+bool HaDocumentBase::DeleteContents()
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     if (m_doc != nullptr) {
         delete m_doc;
         m_doc = nullptr;
     }
+    auto view = GetView<HaViewBase>();
+    if (view != nullptr) {
+        view->DeletePages();
+    }
     return true;
 }
 
-bool RawDocument::DoOpenDocument(const wxString &fileName)
+bool HaDocumentBase::DoOpenDocument(const wxString &fileName)
 {
     wxLogTrace(TM, "\"%s(%s)\" called.", __WXFUNCTION__, fileName);
     wxPasswordEntryDialog dlgPass(nullptr, _("Input the password for the file:"));
@@ -43,13 +46,9 @@ bool RawDocument::DoOpenDocument(const wxString &fileName)
         auto store = new Sqlite3File(fileName.ToStdString(), m_pass.ToStdString(), "123");
         m_doc = new SectionFile();
         m_doc->attach(store);
-        RawView *view = GetView();
+        auto view = GetView<HaViewBase>();
         if (view != nullptr) {
-            std::vector<std::string> names;
-            m_doc->getSectionNames(names);
-            for (auto const &name : names) {
-                view->AddPage(name, m_doc->get(name));
-            }
+            view->OnOpenDocument();
         }
     } catch (std::runtime_error &e) {
         wxLogError("Failed to open \"%s\": %s", (const char *)fileName, e.what());
@@ -58,13 +57,13 @@ bool RawDocument::DoOpenDocument(const wxString &fileName)
     return true;
 }
 
-bool RawDocument::DoSaveDocument(const wxString &fileName)
+bool HaDocumentBase::DoSaveDocument(const wxString &fileName)
 {
     wxLogTrace(TM, "\"%s(%s)\" called.", __WXFUNCTION__, fileName);
     if (m_doc == nullptr) {
         m_doc = new SectionFile();
     }
-    RawView *view = GetView();
+    auto view = GetView<HaViewBase>();
     if (view != nullptr) {
         view->SavePages();
     }
@@ -73,42 +72,52 @@ bool RawDocument::DoSaveDocument(const wxString &fileName)
     return true;
 }
 
-void RawDocument::Modify(bool modified)
+void HaDocumentBase::Modify(bool modified)
 {
     wxLogTrace(TM, "\"%s(%i)\" called.", __WXFUNCTION__, modified);
     wxDocument::Modify(modified);
-    RawView *view = GetView();
+    auto view = GetView<HaViewBase>();
     if (view != nullptr && !modified) {
         view->DiscardEdits();
     }
 }
 
-void RawDocument::SaveSection(const wxString &name, const wxString &content)
+void HaDocumentBase::GetSectionNames(wxVector<wxString> &names) const
+{
+    wxASSERT(m_doc != nullptr);
+    std::vector<std::string> stdNames;
+    m_doc->getSectionNames(stdNames);
+    for (auto const &name : stdNames) {
+        names.push_back(name);
+    }
+}
+
+void HaDocumentBase::GetSection(const wxString &name, wxString &content) const
+{
+    wxASSERT(m_doc != nullptr);
+    content = m_doc->get(name.ToStdString());
+}
+
+void HaDocumentBase::SaveSection(const wxString &name, const wxString &content)
 {
     wxASSERT(m_doc != nullptr);
     m_doc->put(name.ToStdString(), content.ToStdString());
 }
 
-void RawDocument::DeleteSection(const wxString &name)
+void HaDocumentBase::DeleteSection(const wxString &name)
 {
     wxASSERT(m_doc != nullptr);
     m_doc->remove(name.ToStdString());
 }
 
-void RawDocument::OnTextChange(wxCommandEvent &event)
+void HaDocumentBase::OnChange(wxCommandEvent &event)
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     Modify(true);
     event.Skip();
 }
 
-RawView *RawDocument::GetView() const
-{
-    auto view = this->GetFirstView();
-    return view != nullptr ? static_cast<RawView *>(view) : nullptr;
-}
-
-void RawDocument::ChangePass(const wxString &pass)
+void HaDocumentBase::ChangePass(const wxString &pass)
 {
     if (m_doc != nullptr) {
         CryptedSectionStore *store = dynamic_cast<CryptedSectionStore *>(m_doc->getStore());

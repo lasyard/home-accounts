@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
+	<object class="wxFrame" name="main">
+		<style>wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL</style>
+		<size>1132,689</size>
+		<title></title>
+		<centered>1</centered>
+		<aui_managed>0</aui_managed>
+		<object class="wxStatusBar" name="m_statusBar">
+			<style>wxSTB_SIZEGRIP</style>
+			<fields>1</fields>
+		</object>
+		<object class="wxMenuBar" name="m_menuBar">
+			<object class="wxMenu" name="m_fileMenu">
+				<label>_File</label>
+				<object class="wxMenuItem" name="wxID_NEW">
+					<label>_New</label>
+					<help></help>
+				</object>
+				<object class="wxMenuItem" name="wxID_OPEN">
+					<label>_Open</label>
+					<help></help>
+				</object>
+				<object class="wxMenuItem" name="wxID_SAVE">
+					<label>_Save</label>
+					<help></help>
+				</object>
+				<object class="wxMenuItem" name="wxID_SAVEAS">
+					<label>Save _As</label>
+					<help></help>
+				</object>
+				<object class="wxMenuItem" name="wxID_CLOSE">
+					<label>_Close</label>
+					<help></help>
+				</object>
+				<object class="separator" />
+				<object class="wxMenuItem" name="changePass">
+					<label>Change Password</label>
+					<help></help>
+				</object>
+			</object>
+			<object class="wxMenu" name="m_helpMenu">
+				<label>_Help</label>
+				<object class="wxMenuItem" name="about">
+					<label>_About</label>
+					<help></help>
+				</object>
+			</object>
+		</object>
+		<object class="wxNotebook" name="m_book">
+			<size>1080,720</size>
+			<object class="notebookpage">
+				<label>Transactions</label>
+				<selected>1</selected>
+				<object class="wxPanel" name="m_transactions">
+					<style>wxTAB_TRAVERSAL</style>
+					<object class="wxBoxSizer">
+						<orient>wxVERTICAL</orient>
+						<object class="sizeritem">
+							<option>1</option>
+							<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_TOP|wxALL</flag>
+							<border>9</border>
+							<object class="wxDatePickerCtrl" name="date">
+								<style>wxDP_DEFAULT</style>
+								<font>
+									<size>24</size>
+									<family>modern</family>
+									<style>normal</style>
+									<weight>normal</weight>
+									<underlined>0</underlined>
+								</font>
+							</object>
+						</object>
+						<object class="sizeritem">
+							<option>1</option>
+							<flag>wxEXPAND|wxALL</flag>
+							<border>0</border>
+							<object class="wxGrid" name="transactions" subclass="DailyGrid" />
+						</object>
+					</object>
+				</object>
+			</object>
+			<object class="notebookpage">
+				<label>Statistics</label>
+				<selected>0</selected>
+				<object class="wxPanel" name="m_statistics">
+					<style>wxTAB_TRAVERSAL</style>
+					<object class="wxBoxSizer">
+						<orient>wxVERTICAL</orient>
+					</object>
+				</object>
+			</object>
+		</object>
+	</object>
+</resource>

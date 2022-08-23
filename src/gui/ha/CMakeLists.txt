@@ -1,12 +1,13 @@
-set(APP_NAME HaRawView)
+set(APP_NAME HaApp)
 add_compile_definitions(APP_NAME="${APP_NAME}")
 set(XRS_FILE resource.xrs)
 add_compile_definitions(XRS_FILE="${XRS_FILE}")
 
 add_exe(${APP_NAME}
-    RawApp.cpp
-    RawMainFrame.cpp
-    RawView.cpp
+    HaApp.cpp
+    HaMainFrame.cpp
+    HaDocument.cpp
+    HaView.cpp
     ../ChangePassDialogBase.cpp
     ../ChangePassDialog.cpp
     ../HaDocumentBase.cpp

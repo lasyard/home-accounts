@@ -7,6 +7,7 @@
 
 class HaDocument;
 class HaView;
+class DataGrid;
 
 class HaMainFrame : public wxDocParentFrame
 {
@@ -41,8 +42,12 @@ public:
     virtual void OnAbout(wxCommandEvent &event);
 
 private:
+    DataGrid *m_transactionsGrid;
+
     HaDocument *GetCurrentDocument() const;
     HaView *GetCurrentView() const;
+
+    friend class HaView;
 };
 
 #endif /* _HA_HA_MAIN_FRAME_H_ */

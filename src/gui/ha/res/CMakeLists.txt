@@ -1,8 +1,1 @@
-set(XRC_SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/ha.xrc)
-set(XRS_TARGET_FILE ${CMAKE_CURRENT_BINARY_DIR}/${XRS_FILE})
-add_custom_target(${APP_NAME}_xrs ALL DEPENDS ${XRS_TARGET_FILE})
-add_custom_command(
-    OUTPUT ${XRS_TARGET_FILE}
-    COMMAND wxrc ${XRC_SRC_FILES} -o ${XRS_TARGET_FILE}
-    DEPENDS ${XRC_SRC_FILES}
-)
+# Generating resource files should be implemented in the same directory of target.

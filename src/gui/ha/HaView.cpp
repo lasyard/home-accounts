@@ -1,7 +1,10 @@
 #include "HaView.h"
+#include "DataGrid.h"
+#include "DataTable.h"
 #include "Defs.h"
 #include "HaApp.h"
 #include "HaDocument.h"
+#include "HaMainFrame.h"
 
 IMPLEMENT_DYNAMIC_CLASS(HaView, HaViewBase)
 IMPLEMENT_TM(HaView)
@@ -20,6 +23,11 @@ bool HaView::OnCreate([[maybe_unused]] wxDocument *doc, [[maybe_unused]] long fl
 
 void HaView::OnOpenDocument()
 {
+    auto grid = GetTransactionsGrid();
+    grid->SetTable(new DataTable());
+    // Row labels are not updated even by SetTable, so do this.
+    grid->ForceRefresh();
+    grid->SetAttributes();
 }
 
 void HaView::DeletePages()
@@ -32,4 +40,9 @@ void HaView::SavePages()
 
 void HaView::DiscardEdits()
 {
+}
+
+DataGrid *HaView::GetTransactionsGrid() const
+{
+    return static_cast<HaMainFrame *>(GetFrame())->m_transactionsGrid;
 }

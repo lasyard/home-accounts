@@ -1,6 +1,8 @@
 #include <wx/fs_arc.h>
+#include <wx/stdpaths.h>
 #include <wx/xrc/xmlres.h>
 
+#include "../HaArtProvider.h"
 #include "HaApp.h"
 #include "HaDocument.h"
 #include "HaMainFrame.h"
@@ -18,7 +20,10 @@ bool HaApp::OnInit()
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     wxFileSystem::AddHandler(new wxArchiveFSHandler());
     wxXmlResource::Get()->InitAllHandlers();
-    wxXmlResource::Get()->LoadFile(wxFileName("res/", XRS_FILE));
+    wxString resDir = wxStandardPaths::Get().GetResourcesDir();
+    wxXmlResource::Get()->LoadFile(wxFileName(resDir, XRS_FILE));
+    wxImage::AddHandler(new wxPNGHandler());
+    wxArtProvider::Push(new HaArtProvider(resDir));
     SetVendorName("Lasy");
     SetAppName(_(APP_NAME));
     SetAppDisplayName(_(APP_NAME));

@@ -3,6 +3,9 @@
 
 #include "../HaViewBase.h"
 
+class DataGrid;
+class HaMainFrame;
+
 class HaView : public HaViewBase
 {
     DECLARE_DYNAMIC_CLASS(HaView)
@@ -22,6 +25,9 @@ public:
     void SavePages() override;
     void DeletePages() override;
     void DiscardEdits() override;
+
+private:
+    DataGrid *GetTransactionsGrid() const;
 };
 
 #endif /* _HA_HA_VIEW_H_ */

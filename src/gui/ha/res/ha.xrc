@@ -57,25 +57,33 @@
 					<object class="wxBoxSizer">
 						<orient>wxVERTICAL</orient>
 						<object class="sizeritem">
-							<option>1</option>
-							<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_TOP|wxALL</flag>
-							<border>9</border>
-							<object class="wxDatePickerCtrl" name="date">
-								<style>wxDP_DEFAULT</style>
-								<font>
-									<size>24</size>
-									<family>modern</family>
-									<style>normal</style>
-									<weight>normal</weight>
-									<underlined>0</underlined>
-								</font>
+							<option>0</option>
+							<flag></flag>
+							<border>5</border>
+							<object class="wxBoxSizer">
+								<orient>wxHORIZONTAL</orient>
+								<object class="sizeritem">
+									<option>1</option>
+									<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+									<border>5</border>
+									<object class="wxDatePickerCtrl" name="date">
+										<style>wxDP_DEFAULT</style>
+										<font>
+											<size>24</size>
+											<family>modern</family>
+											<style>normal</style>
+											<weight>normal</weight>
+											<underlined>0</underlined>
+										</font>
+									</object>
+								</object>
 							</object>
 						</object>
 						<object class="sizeritem">
 							<option>1</option>
 							<flag>wxEXPAND|wxALL</flag>
 							<border>0</border>
-							<object class="wxGrid" name="transactions" subclass="DailyGrid" />
+							<object class="wxGrid" name="transactions" subclass="DataGrid" />
 						</object>
 					</object>
 				</object>

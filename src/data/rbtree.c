@@ -1,5 +1,3 @@
-#include <stddef.h>
-
 #include "defs.h"
 #include "rbtree.h"
 

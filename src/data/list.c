@@ -1,5 +1,3 @@
-#include <stddef.h>
-
 #include "list.h"
 
 void list_item_init(struct list_item *item)

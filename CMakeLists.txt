@@ -60,6 +60,7 @@ include_directories(external)
 
 set(LIB_CRYPTO_NAME crypto)
 set(LIB_CSV_NAME csv)
+set(LIB_DATA_NAME data)
 set(LIB_FILE_NAME file)
 
 add_subdirectory(external)

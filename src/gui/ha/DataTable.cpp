@@ -1,3 +1,5 @@
+#include <vector>
+
 #include "DataTable.h"
 #include "csv/int.h"
 #include "csv/money.h"

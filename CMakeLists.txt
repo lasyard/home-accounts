@@ -57,6 +57,7 @@ else()
 endif()
 
 include_directories(external)
+include_directories(src)
 
 set(LIB_CRYPTO_NAME crypto)
 set(LIB_CSV_NAME csv)

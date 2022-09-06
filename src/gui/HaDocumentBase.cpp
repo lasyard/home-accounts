@@ -4,8 +4,8 @@
 #include <wx/wx.h>
 #include <wx/xrc/xmlres.h>
 
-#include "../file/SectionFile.h"
-#include "../file/sqlite3/Sqlite3File.h"
+#include "file/SectionFile.h"
+#include "file/sqlite3/Sqlite3File.h"
 #include "HaDocumentBase.h"
 #include "HaViewBase.h"
 
@@ -14,6 +14,8 @@ IMPLEMENT_TM(HaDocumentBase)
 
 BEGIN_EVENT_TABLE(HaDocumentBase, wxDocument)
 END_EVENT_TABLE()
+
+const char *const HaDocumentBase::IV = "HomeAccount";
 
 bool HaDocumentBase::OnCloseDocument()
 {
@@ -43,7 +45,7 @@ bool HaDocumentBase::DoOpenDocument(const wxString &fileName)
         m_pass = dlgPass.GetValue();
     }
     try {
-        auto store = new Sqlite3File(fileName.ToStdString(), m_pass.ToStdString(), "123");
+        auto store = new Sqlite3File(fileName.ToStdString(), m_pass.ToStdString(), IV);
         m_doc = new SectionFile();
         m_doc->attach(store);
         auto view = GetView<HaViewBase>();
@@ -67,7 +69,7 @@ bool HaDocumentBase::DoSaveDocument(const wxString &fileName)
     if (view != nullptr) {
         view->SavePages();
     }
-    auto store = new Sqlite3File(fileName.ToStdString(), m_pass.ToStdString(), "123");
+    auto store = new Sqlite3File(fileName.ToStdString(), m_pass.ToStdString(), IV);
     m_doc->saveAs(store);
     return true;
 }

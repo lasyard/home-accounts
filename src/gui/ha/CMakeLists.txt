@@ -42,6 +42,7 @@ add_exe(${APP_NAME}
 target_link_libraries(${APP_NAME} PRIVATE ${wxWidgets_LIBRARIES})
 target_link_libraries(${APP_NAME} PRIVATE ${LIB_FILE_NAME})
 target_link_libraries(${APP_NAME} PRIVATE file_sqlite3)
+target_link_libraries(${APP_NAME} PRIVATE csv)
 set_target_properties(${APP_NAME} PROPERTIES
     MACOSX_BUNDLE TRUE
     MACOSX_FRAMEWORK_IDENTIFIER io.github.lasyard.${APP_NAME}

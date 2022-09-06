@@ -23,11 +23,21 @@ bool HaView::OnCreate([[maybe_unused]] wxDocument *doc, [[maybe_unused]] long fl
 
 void HaView::OnOpenDocument()
 {
+    wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     auto grid = GetTransactionsGrid();
-    grid->SetTable(new DataTable());
+    ColumnType types[]{INT32, INT64, STR};
+    grid->SetTable(new DataTable(types, sizeof(types) / sizeof(ColumnType)));
+    grid->Show();
     // Row labels are not updated even by SetTable, so do this.
     grid->ForceRefresh();
     grid->SetAttributes();
+}
+
+void HaView::OnClosingDocument()
+{
+    wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
+    auto grid = GetTransactionsGrid();
+    grid->Show(false);
 }
 
 void HaView::DeletePages()

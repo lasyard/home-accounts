@@ -22,6 +22,7 @@ public:
     bool OnCreate(wxDocument *doc, long flags) override;
 
     void OnOpenDocument() override;
+    void OnClosingDocument() override;
     void SavePages() override;
     void DeletePages() override;
     void DiscardEdits() override;

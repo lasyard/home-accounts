@@ -48,6 +48,8 @@ public:
     void ChangePass(const wxString &pass);
 
 private:
+    static const char *const IV;
+
     SectionFile *m_doc;
     wxString m_pass;
 

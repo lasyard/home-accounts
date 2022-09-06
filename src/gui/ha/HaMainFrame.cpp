@@ -32,7 +32,8 @@ HaMainFrame::HaMainFrame(
 {
     wxXmlResource::Get()->LoadObject(this, nullptr, "main", "wxFrame");
     m_transactionsGrid = XRCCTRL(*this, "transactions", DataGrid);
-    m_transactionsGrid->SetAttributes();
+    m_transactionsGrid->Show(false);
+    // m_transactionsGrid->SetAttributes();
 }
 
 void HaMainFrame::OnClose([[maybe_unused]] wxCloseEvent &event)

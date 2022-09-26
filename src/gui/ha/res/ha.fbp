@@ -80,7 +80,7 @@
                 <property name="window_name"></property>
                 <property name="window_style"></property>
             </object>
-            <object class="wxMenuBar" expanded="1">
+            <object class="wxMenuBar" expanded="0">
                 <property name="bg"></property>
                 <property name="context_help"></property>
                 <property name="context_menu">1</property>
@@ -101,7 +101,7 @@
                 <property name="window_extra_style"></property>
                 <property name="window_name"></property>
                 <property name="window_style"></property>
-                <object class="wxMenu" expanded="1">
+                <object class="wxMenu" expanded="0">
                     <property name="label">&amp;File</property>
                     <property name="name">m_fileMenu</property>
                     <property name="permission">protected</property>
@@ -188,7 +188,7 @@
                         <property name="unchecked_bitmap"></property>
                     </object>
                 </object>
-                <object class="wxMenu" expanded="1">
+                <object class="wxMenu" expanded="0">
                     <property name="label">&amp;Help</property>
                     <property name="name">m_helpMenu</property>
                     <property name="permission">protected</property>
@@ -208,8 +208,8 @@
                 </object>
             </object>
             <object class="wxBoxSizer" expanded="1">
-                <property name="minimum_size"></property>
-                <property name="name">m_sizer</property>
+                <property name="minimum_size">-1,-1</property>
+                <property name="name">sizer</property>
                 <property name="orient">wxVERTICAL</property>
                 <property name="permission">none</property>
                 <object class="sizeritem" expanded="1">
@@ -496,7 +496,7 @@
                         <object class="notebookpage" expanded="1">
                             <property name="bitmap"></property>
                             <property name="label">Statistics</property>
-                            <property name="select"></property>
+                            <property name="select">0</property>
                             <object class="wxPanel" expanded="1">
                                 <property name="BottomDockable">1</property>
                                 <property name="LeftDockable">1</property>
@@ -556,6 +556,16 @@
                                 </object>
                             </object>
                         </object>
+                    </object>
+                </object>
+                <object class="sizeritem" expanded="1">
+                    <property name="border">5</property>
+                    <property name="flag"></property>
+                    <property name="proportion">0</property>
+                    <object class="spacer" expanded="1">
+                        <property name="height">0</property>
+                        <property name="permission">protected</property>
+                        <property name="width">0</property>
                     </object>
                 </object>
             </object>

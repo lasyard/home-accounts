@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
-	<object class="wxFrame" name="main">
+	<object class="wxFrame" name="main" subclass="HaMainFrame">
 		<style>wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL</style>
 		<size>1132,689</size>
 		<title></title>
@@ -47,56 +47,70 @@
 				</object>
 			</object>
 		</object>
-		<object class="wxNotebook" name="m_book">
-			<size>1080,720</size>
-			<object class="notebookpage">
-				<label>Transactions</label>
-				<selected>1</selected>
-				<object class="wxPanel" name="m_transactions">
-					<style>wxTAB_TRAVERSAL</style>
-					<object class="wxBoxSizer">
-						<orient>wxVERTICAL</orient>
-						<object class="sizeritem">
-							<option>0</option>
-							<flag></flag>
-							<border>5</border>
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<option>1</option>
+				<flag>wxEXPAND|wxALL</flag>
+				<border>0</border>
+				<object class="wxNotebook" name="book">
+					<size>1080,720</size>
+					<object class="notebookpage">
+						<label>Transactions</label>
+						<selected>1</selected>
+						<object class="wxPanel" name="panelTransactions">
+							<style>wxTAB_TRAVERSAL</style>
 							<object class="wxBoxSizer">
-								<orient>wxHORIZONTAL</orient>
+								<orient>wxVERTICAL</orient>
+								<object class="sizeritem">
+									<option>0</option>
+									<flag></flag>
+									<border>5</border>
+									<object class="wxBoxSizer">
+										<orient>wxHORIZONTAL</orient>
+										<object class="sizeritem">
+											<option>1</option>
+											<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+											<border>5</border>
+											<object class="wxDatePickerCtrl" name="date">
+												<style>wxDP_DEFAULT</style>
+												<font>
+													<size>24</size>
+													<family>modern</family>
+													<style>normal</style>
+													<weight>normal</weight>
+													<underlined>0</underlined>
+												</font>
+											</object>
+										</object>
+									</object>
+								</object>
 								<object class="sizeritem">
 									<option>1</option>
-									<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
-									<border>5</border>
-									<object class="wxDatePickerCtrl" name="date">
-										<style>wxDP_DEFAULT</style>
-										<font>
-											<size>24</size>
-											<family>modern</family>
-											<style>normal</style>
-											<weight>normal</weight>
-											<underlined>0</underlined>
-										</font>
-									</object>
+									<flag>wxEXPAND|wxALL</flag>
+									<border>0</border>
+									<object class="wxGrid" name="transactions" subclass="DataGrid" />
 								</object>
 							</object>
 						</object>
-						<object class="sizeritem">
-							<option>1</option>
-							<flag>wxEXPAND|wxALL</flag>
-							<border>0</border>
-							<object class="wxGrid" name="transactions" subclass="DataGrid" />
+					</object>
+					<object class="notebookpage">
+						<label>Statistics</label>
+						<selected>0</selected>
+						<object class="wxPanel" name="panelStatistics">
+							<style>wxTAB_TRAVERSAL</style>
+							<object class="wxBoxSizer">
+								<orient>wxVERTICAL</orient>
+							</object>
 						</object>
 					</object>
 				</object>
 			</object>
-			<object class="notebookpage">
-				<label>Statistics</label>
-				<selected>0</selected>
-				<object class="wxPanel" name="m_statistics">
-					<style>wxTAB_TRAVERSAL</style>
-					<object class="wxBoxSizer">
-						<orient>wxVERTICAL</orient>
-					</object>
-				</object>
+			<object class="spacer">
+				<option>0</option>
+				<flag></flag>
+				<border>5</border>
+				<size>0,0</size>
 			</object>
 		</object>
 	</object>

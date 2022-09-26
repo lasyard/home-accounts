@@ -6,7 +6,7 @@ add_compile_definitions(XRS_FILE="${XRS_FILE}")
 set(XRC_SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/res/ha.xrc)
 add_custom_command(
     OUTPUT res/${XRS_FILE}
-    COMMAND wxrc ${XRC_SRC_FILES} -o ${XRS_FILE}
+    COMMAND wxrc ${XRC_SRC_FILES} -o res/${XRS_FILE}
     DEPENDS ${XRC_SRC_FILES}
 )
 set(RESOURCE_FILES

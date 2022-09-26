@@ -5,7 +5,7 @@
 #include "../FileExeptions.h"
 #include "Sqlite3File.h"
 
-const char *const Sqlite3File::CATALOG_NAME = "__catalog__";
+const char *const Sqlite3File::CHECK_STUB = "__check_stub__";
 const char *const Sqlite3File::GET_SQL = "SELECT key, data FROM files WHERE name = ?";
 
 Sqlite3File::Sqlite3File(const std::string &fileName, const std::string &pass, const std::string &iv)
@@ -57,6 +57,9 @@ void Sqlite3File::open()
         throw FileOpen(m_fileName);
     }
     registerFun();
+    // To check if password is ok.
+    std::string content;
+    decryptSection(CHECK_STUB, content);
 }
 
 void Sqlite3File::clear()
@@ -178,6 +181,8 @@ void Sqlite3File::init()
             "key BLOB,\n"
             "data BLOB\n"
             ") WITHOUT ROWID");
+    // Create a stub to check password.
+    encryptSection(CHECK_STUB, "The journey of a thousand miles begins with one step.");
 }
 
 void Sqlite3File::prepareSql(sqlite3_stmt *&stmt, const std::string &sql) const

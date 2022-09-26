@@ -49,7 +49,7 @@
             <property name="pos"></property>
             <property name="size">1132,689</property>
             <property name="style">wxDEFAULT_FRAME_STYLE</property>
-            <property name="subclass">; ; forward_declare</property>
+            <property name="subclass">HaMainFrame; forward_declare</property>
             <property name="title"></property>
             <property name="tooltip"></property>
             <property name="two_step_creation">0</property>
@@ -252,7 +252,7 @@
                         <property name="minimize_button">0</property>
                         <property name="minimum_size"></property>
                         <property name="moveable">1</property>
-                        <property name="name">m_book</property>
+                        <property name="name">book</property>
                         <property name="pane_border">1</property>
                         <property name="pane_position"></property>
                         <property name="pane_size"></property>
@@ -308,7 +308,7 @@
                                 <property name="minimize_button">0</property>
                                 <property name="minimum_size"></property>
                                 <property name="moveable">1</property>
-                                <property name="name">m_transactions</property>
+                                <property name="name">panelTransactions</property>
                                 <property name="pane_border">1</property>
                                 <property name="pane_position"></property>
                                 <property name="pane_size"></property>
@@ -532,7 +532,7 @@
                                 <property name="minimize_button">0</property>
                                 <property name="minimum_size"></property>
                                 <property name="moveable">1</property>
-                                <property name="name">m_statistics</property>
+                                <property name="name">panelStatistics</property>
                                 <property name="pane_border">1</property>
                                 <property name="pane_position"></property>
                                 <property name="pane_size"></property>

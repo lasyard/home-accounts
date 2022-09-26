@@ -4,7 +4,7 @@
 #include "csv/int.h"
 #include "csv/money.h"
 
-DataTable::DataTable(ColumnType types[], int cols) : wxGridTableBase(), m_cols(cols)
+DataTable::DataTable(ColumnType types[], int cols) : wxGridTableBase(), m_cols(cols), m_rows(0)
 {
     m_types = new ColumnType[cols];
     for (int i = 0; i < cols; ++i) {

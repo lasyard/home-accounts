@@ -25,8 +25,8 @@ public:
     {
     }
 
+    bool OnNewDocument() override;
     bool OnCloseDocument() override;
-
     bool DeleteContents() override;
     bool DoOpenDocument(const wxString &fileName) override;
     bool DoSaveDocument(const wxString &fileName) override;

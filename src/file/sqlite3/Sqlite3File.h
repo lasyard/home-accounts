@@ -7,7 +7,7 @@
 class Sqlite3File : public CryptedSectionStore
 {
 public:
-    static const char *const CATALOG_NAME;
+    static const char *const CHECK_STUB;
 
     Sqlite3File(const std::string &fileName, const std::string &pass, const std::string &iv);
     virtual ~Sqlite3File();

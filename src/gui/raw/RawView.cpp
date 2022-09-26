@@ -20,7 +20,7 @@ bool RawView::OnCreate([[maybe_unused]] wxDocument *doc, [[maybe_unused]] long f
 {
     auto frame = wxGetApp().GetTopWindow();
     SetFrame(frame);
-    m_listbook = static_cast<wxListbook *>(frame->FindWindow("listbook"));
+    m_listbook = XRCCTRL(*frame, "listbook", wxListbook);
     Activate(true);
     return true;
 }
@@ -30,9 +30,12 @@ bool RawView::IsSelected() const
     return m_listbook->GetSelection() != wxNOT_FOUND;
 }
 
-void RawView::OnOpenDocument()
+void RawView::OnUpdate([[maybe_unused]] wxView *sender, [[maybe_unused]] wxObject *hint)
 {
+    wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
+    ClearContents();
     auto doc = GetHaDocument();
+    wxASSERT(doc != nullptr);
     wxVector<wxString> names;
     doc->GetSectionNames(names);
     for (auto const &name : names) {
@@ -42,18 +45,7 @@ void RawView::OnOpenDocument()
     }
 }
 
-void RawView::AddPage(const wxString &name, const wxString &content, bool dirty)
-{
-    auto text = new wxTextCtrl(m_listbook, wxID_ANY, content, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
-    text->Bind(wxEVT_TEXT, &HaDocumentBase::OnChange, GetHaDocument());
-    m_listbook->AddPage(text, name, true);
-    if (dirty) {
-        // To save the content even not modified.
-        text->MarkDirty();
-    }
-}
-
-void RawView::SavePages()
+void RawView::SaveContents()
 {
     auto doc = GetHaDocument();
     for (size_t i = 0; i < m_listbook->GetPageCount(); ++i) {
@@ -64,7 +56,7 @@ void RawView::SavePages()
     }
 }
 
-void RawView::DeletePages()
+void RawView::ClearContents()
 {
     m_listbook->DeleteAllPages();
 }
@@ -100,5 +92,16 @@ void RawView::OnSectionDelete([[maybe_unused]] wxCommandEvent &event)
         doc->Modify(true);
         m_listbook->DeletePage(sel);
         m_listbook->Refresh();
+    }
+}
+
+void RawView::AddPage(const wxString &name, const wxString &content, bool dirty)
+{
+    auto text = new wxTextCtrl(m_listbook, wxID_ANY, content, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
+    text->Bind(wxEVT_TEXT, &HaDocumentBase::OnChange, GetHaDocument());
+    m_listbook->AddPage(text, name, true);
+    if (dirty) {
+        // To save the content even not modified.
+        text->MarkDirty();
     }
 }

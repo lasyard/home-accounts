@@ -10,18 +10,21 @@ IMPLEMENT_TM(HaViewBase)
 
 bool HaViewBase::OnClose(bool deleteWindow)
 {
-    if (!wxView::OnClose(deleteWindow)) {
-        return false;
-    }
     Activate(false);
     // Not cleared defaultly, so clear it.
     static_cast<wxFrame *>(GetFrame())->SetTitle("");
-    return true;
+    ClearContents();
+    return wxView::OnClose(deleteWindow);
 }
 
 void HaViewBase::OnDraw([[maybe_unused]] wxDC *dc)
 {
     // Do nothing.
+}
+
+void HaViewBase::OnClosingDocument()
+{
+    wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
 }
 
 void HaViewBase::OnChangePass([[maybe_unused]] wxCommandEvent &event)

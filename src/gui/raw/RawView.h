@@ -22,18 +22,18 @@ public:
 
     bool IsSelected() const;
 
-    void OnOpenDocument() override;
-    void SavePages() override;
-    void DeletePages() override;
+    void OnUpdate(wxView *sender, wxObject *hint) override;
+    void SaveContents() override;
+    void ClearContents() override;
     void DiscardEdits() override;
-
-    void AddPage(const wxString &name, const wxString &content, bool dirty = false);
 
     virtual void OnSectionAdd(wxCommandEvent &event);
     virtual void OnSectionDelete(wxCommandEvent &event);
 
 private:
     wxListbook *m_listbook;
+
+    void AddPage(const wxString &name, const wxString &content, bool dirty = false);
 };
 
 #endif /* _RAW_RAW_VIEW_H_ */

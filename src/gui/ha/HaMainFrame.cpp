@@ -1,8 +1,10 @@
 #include <wx/msgdlg.h>
+#include <wx/notebook.h>
 #include <wx/wx.h>
 #include <wx/xrc/xmlres.h>
 
 #include "DataGrid.h"
+#include "DataTable.h"
 #include "Defs.h"
 #include "HaApp.h"
 #include "HaDocument.h"
@@ -31,9 +33,12 @@ HaMainFrame::HaMainFrame(
     : wxDocParentFrame(manager, parent, id, title, pos, size, type, name)
 {
     wxXmlResource::Get()->LoadObject(this, nullptr, "main", "wxFrame");
-    m_transactionsGrid = XRCCTRL(*this, "transactions", DataGrid);
-    m_transactionsGrid->Show(false);
-    // m_transactionsGrid->SetAttributes();
+    // `hide` in XRC is not effective.
+    XRCCTRL(*this, "book", wxNotebook)->Show(false);
+    DataGrid *grid = XRCCTRL(*this, "transactions", DataGrid);
+    ColumnType types[]{INT32, INT64, STR};
+    grid->AssignTable(new DataTable(types, sizeof(types) / sizeof(ColumnType)));
+    grid->SetAttributes();
 }
 
 void HaMainFrame::OnClose([[maybe_unused]] wxCloseEvent &event)

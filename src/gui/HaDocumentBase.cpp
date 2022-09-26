@@ -4,10 +4,10 @@
 #include <wx/wx.h>
 #include <wx/xrc/xmlres.h>
 
-#include "file/SectionFile.h"
-#include "file/sqlite3/Sqlite3File.h"
 #include "HaDocumentBase.h"
 #include "HaViewBase.h"
+#include "file/SectionFile.h"
+#include "file/sqlite3/Sqlite3File.h"
 
 IMPLEMENT_DYNAMIC_CLASS(HaDocumentBase, wxDocument)
 IMPLEMENT_TM(HaDocumentBase)
@@ -17,8 +17,19 @@ END_EVENT_TABLE()
 
 const char *const HaDocumentBase::IV = "HomeAccount";
 
+bool HaDocumentBase::OnNewDocument()
+{
+    wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
+    if (m_doc != nullptr) {
+        delete m_doc;
+    }
+    m_doc = new SectionFile();
+    return wxDocument::OnNewDocument();
+}
+
 bool HaDocumentBase::OnCloseDocument()
 {
+    wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     return wxDocument::OnCloseDocument();
 }
 
@@ -30,10 +41,6 @@ bool HaDocumentBase::DeleteContents()
         delete m_doc;
         m_doc = nullptr;
     }
-    auto view = GetView<HaViewBase>();
-    if (view != nullptr) {
-        view->DeletePages();
-    }
     return true;
 }
 
@@ -43,31 +50,27 @@ bool HaDocumentBase::DoOpenDocument(const wxString &fileName)
     wxPasswordEntryDialog dlgPass(nullptr, _("Input the password for the file:"));
     if (dlgPass.ShowModal() == wxID_OK) {
         m_pass = dlgPass.GetValue();
-    }
-    try {
-        auto store = new Sqlite3File(fileName.ToStdString(), m_pass.ToStdString(), IV);
-        m_doc = new SectionFile();
-        m_doc->attach(store);
-        auto view = GetView<HaViewBase>();
-        if (view != nullptr) {
-            view->OnOpenDocument();
+        try {
+            auto store = new Sqlite3File(fileName.ToStdString(), m_pass.ToStdString(), IV);
+            m_doc = new SectionFile();
+            m_doc->attach(store);
+            return true;
+        } catch (std::runtime_error &e) {
+            wxLogError("Failed to open \"%s\": %s", (const char *)fileName, e.what());
         }
-    } catch (std::runtime_error &e) {
-        wxLogError("Failed to open \"%s\": %s", (const char *)fileName, e.what());
-        return false;
     }
-    return true;
+    return false;
 }
 
 bool HaDocumentBase::DoSaveDocument(const wxString &fileName)
 {
     wxLogTrace(TM, "\"%s(%s)\" called.", __WXFUNCTION__, fileName);
+    auto view = GetView<HaViewBase>();
     if (m_doc == nullptr) {
         m_doc = new SectionFile();
     }
-    auto view = GetView<HaViewBase>();
     if (view != nullptr) {
-        view->SavePages();
+        view->SaveContents();
     }
     auto store = new Sqlite3File(fileName.ToStdString(), m_pass.ToStdString(), IV);
     m_doc->saveAs(store);

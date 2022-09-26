@@ -3,6 +3,8 @@
 
 #include "../HaViewBase.h"
 
+class wxNotebook;
+
 class DataGrid;
 class HaMainFrame;
 
@@ -21,14 +23,14 @@ public:
 
     bool OnCreate(wxDocument *doc, long flags) override;
 
-    void OnOpenDocument() override;
-    void OnClosingDocument() override;
-    void SavePages() override;
-    void DeletePages() override;
+    void OnUpdate(wxView *sender, wxObject *hint) override;
+    void SaveContents() override;
+    void ClearContents() override;
     void DiscardEdits() override;
 
 private:
-    DataGrid *GetTransactionsGrid() const;
+    wxNotebook *m_book;
+    DataGrid *m_transactionsGrid;
 };
 
 #endif /* _HA_HA_VIEW_H_ */

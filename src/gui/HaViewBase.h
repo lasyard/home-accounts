@@ -24,10 +24,10 @@ public:
     bool OnClose(bool deleteWindow) override;
 
     void OnDraw(wxDC *dc) override;
+    void OnClosingDocument() override;
 
-    virtual void OnOpenDocument() = 0;
-    virtual void SavePages() = 0;
-    virtual void DeletePages() = 0;
+    virtual void SaveContents() = 0;
+    virtual void ClearContents() = 0;
     virtual void DiscardEdits() = 0;
 
     virtual void OnChangePass(wxCommandEvent &event);

@@ -1,10 +1,12 @@
-#include "HaView.h"
+#include <wx/notebook.h>
+
 #include "DataGrid.h"
 #include "DataTable.h"
 #include "Defs.h"
 #include "HaApp.h"
 #include "HaDocument.h"
 #include "HaMainFrame.h"
+#include "HaView.h"
 
 IMPLEMENT_DYNAMIC_CLASS(HaView, HaViewBase)
 IMPLEMENT_TM(HaView)
@@ -15,44 +17,33 @@ END_EVENT_TABLE()
 
 bool HaView::OnCreate([[maybe_unused]] wxDocument *doc, [[maybe_unused]] long flags)
 {
+    wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     auto frame = wxGetApp().GetTopWindow();
     SetFrame(frame);
+    m_book = XRCCTRL(*frame, "book", wxNotebook);
+    m_transactionsGrid = XRCCTRL(*frame, "transactions", DataGrid);
+    m_book->Show();
     Activate(true);
     return true;
 }
 
-void HaView::OnOpenDocument()
+void HaView::OnUpdate([[maybe_unused]] wxView *sender, [[maybe_unused]] wxObject *hint)
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
-    auto grid = GetTransactionsGrid();
-    ColumnType types[]{INT32, INT64, STR};
-    grid->SetTable(new DataTable(types, sizeof(types) / sizeof(ColumnType)));
-    grid->Show();
     // Row labels are not updated even by SetTable, so do this.
-    grid->ForceRefresh();
-    grid->SetAttributes();
+    m_transactionsGrid->ForceRefresh();
 }
 
-void HaView::OnClosingDocument()
-{
-    wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
-    auto grid = GetTransactionsGrid();
-    grid->Show(false);
-}
-
-void HaView::DeletePages()
+void HaView::SaveContents()
 {
 }
 
-void HaView::SavePages()
+void HaView::ClearContents()
 {
+    wxASSERT(m_book != nullptr);
+    m_book->Show(false);
 }
 
 void HaView::DiscardEdits()
 {
-}
-
-DataGrid *HaView::GetTransactionsGrid() const
-{
-    return static_cast<HaMainFrame *>(GetFrame())->m_transactionsGrid;
 }

@@ -79,7 +79,7 @@ void Sqlite3File::deleteSection(const std::string &name)
 
 void Sqlite3File::getSectionNames(std::vector<std::string> &names) const
 {
-    prepareSql(m_enumStmt, "SELECT name FROM files");
+    prepareSql(m_enumStmt, std::string("SELECT name FROM files where name <> '") + CHECK_STUB + "'");
     auto rc = sqlite3_step(m_enumStmt);
     while (rc != SQLITE_DONE) {
         if (rc == SQLITE_ROW) {

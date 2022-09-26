@@ -37,7 +37,9 @@ HaMainFrame::HaMainFrame(
     XRCCTRL(*this, "book", wxNotebook)->Show(false);
     DataGrid *grid = XRCCTRL(*this, "transactions", DataGrid);
     ColumnType types[]{INT32, INT64, STR};
-    grid->AssignTable(new DataTable(types, sizeof(types) / sizeof(ColumnType)));
+    auto table = new DataTable(types, sizeof(types) / sizeof(ColumnType));
+    // `AssignTable` is not existing in earlier version of wxWidgets.
+    grid->SetTable(table, true);
     grid->SetAttributes();
 }
 

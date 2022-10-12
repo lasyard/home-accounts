@@ -3,4 +3,5 @@ add_lib(${LIB_CSV_NAME}
     int.c
     money.c
     str.c
+    timestamp.c
 )

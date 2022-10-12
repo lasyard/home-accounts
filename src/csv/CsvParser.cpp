@@ -3,6 +3,7 @@
 #include "int.h"
 #include "money.h"
 #include "str.h"
+#include "timestamp.h"
 
 CsvParser::CsvParser(int cols, const ColumnType *types) : m_cols(cols), m_types(types), m_sep(','), m_moneyMul(100)
 {
@@ -29,6 +30,7 @@ void CsvParser::parseLine(const char *line, void *datum[])
             p = parse_money(p, (money_t *)datum[i], m_sep, m_moneyMul);
             break;
         case TIME:
+            p = parse_time(p, (time_t *)datum[i], m_sep);
             break;
         }
     }

@@ -17,5 +17,5 @@ const char *parse_time(const char *buf, time_t *data, char sep)
         }
     }
     *data = t;
-    return p + 1;
+    return p;
 }

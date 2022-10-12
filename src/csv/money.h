@@ -1,7 +1,7 @@
 #ifndef _CSV_MONEY_H_
 #define _CSV_MONEY_H_
 
-#include "int.h"
+#include <sys/types.h>
 
 typedef int64_t money_t;
 

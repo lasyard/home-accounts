@@ -59,7 +59,6 @@ const char *parse_string(const char *buf, struct string *str, char sep)
         len = p - str->buf;
     }
     str->len = len;
-    ++p;
     return p;
 }
 

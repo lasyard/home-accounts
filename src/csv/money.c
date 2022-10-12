@@ -1,5 +1,6 @@
 #include <stddef.h>
 
+#include "int.h"
 #include "money.h"
 #include "str.h"
 
@@ -43,5 +44,5 @@ const char *parse_money(const char *buf, money_t *data, char sep, int mul)
         }
     }
     *data = (pos ? num : -num);
-    return p + 1;
+    return p;
 }

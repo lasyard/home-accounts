@@ -34,7 +34,6 @@ const char *parse_int32(const char *buf, int32_t *data, char sep)
         }
     }
     *data = (pos ? num : -num);
-    ++p;
     return p;
 }
 
@@ -54,6 +53,32 @@ const char *parse_int64(const char *buf, int64_t *data, char sep)
         }
     }
     *data = (pos ? num : -num);
-    ++p;
     return p;
+}
+
+char *output_int32(char *buf, int32_t data)
+{
+    return output_int64(buf, data);
+}
+
+char *output_int64(char *buf, int64_t data)
+{
+    if (data < 0) {
+        *(buf++) = '-';
+        data = -data;
+    }
+    size_t len = 1;
+    for (int64_t power = 10; power <= data; power *= 10) {
+        len++;
+    }
+    return output_int64_len(buf, data, len);
+}
+
+char *output_int64_len(char *buf, int64_t data, size_t len)
+{
+    for (char *p = buf + len - 1; p >= buf; --p) {
+        *p = data % 10 | ('0' & 0xF0);
+        data /= 10;
+    }
+    return buf + len;
 }

@@ -1,5 +1,8 @@
 #include "doctest/doctest.h"
 
+#include <cstdlib>
+#include <cstring>
+
 #include "str.h"
 
 TEST_CASE("is_space")
@@ -69,22 +72,22 @@ TEST_CASE("parse_string")
     const char *p = parse_string(s, &str, ':');
     CHECK(str.buf == s);
     CHECK(str.len == 3);
-    CHECK(p - s == 4);
-    s = p;
+    CHECK(p - s == 3);
+    s = p + 1;
     p = parse_string(s, &str, ':');
     CHECK(str.buf == s);
     CHECK(str.len == 0);
-    CHECK(p - s == 1);
-    s = p;
+    CHECK(p - s == 0);
+    s = p + 1;
     p = parse_string(s, &str, '/');
     CHECK(str.buf == s);
     CHECK(str.len == 3);
-    CHECK(p - s == 4);
-    s = p;
+    CHECK(p - s == 3);
+    s = p + 1;
     p = parse_string(s, &str, '/');
     CHECK(str.buf == s);
     CHECK(str.len == 2);
-    CHECK(p - s == 3);
+    CHECK(p - s == 2);
 }
 
 TEST_CASE("parse_cstring")
@@ -94,22 +97,22 @@ TEST_CASE("parse_cstring")
     const char *p = parse_cstring(s, &str, ':');
     CHECK(strcmp(str, "abc") == 0);
     free(str);
-    CHECK(p - s == 4);
-    s = p;
+    CHECK(p - s == 3);
+    s = p + 1;
     p = parse_cstring(s, &str, ':');
     CHECK(strcmp(str, "") == 0);
     free(str);
-    CHECK(p - s == 1);
-    s = p;
+    CHECK(p - s == 0);
+    s = p + 1;
     p = parse_cstring(s, &str, '/');
     CHECK(strcmp(str, "def") == 0);
     free(str);
-    CHECK(p - s == 4);
-    s = p;
+    CHECK(p - s == 3);
+    s = p + 1;
     p = parse_cstring(s, &str, '/');
     CHECK(strcmp(str, "gh") == 0);
     free(str);
-    CHECK(p - s == 3);
+    CHECK(p - s == 2);
 }
 
 TEST_CASE("string_compare")

@@ -16,6 +16,9 @@ void CsvParser::parseLine(const char *line, void *datum[])
         case STR:
             p = parse_string(p, (struct string *)datum[i], m_sep);
             break;
+        case CSTR:
+            p = parse_cstring(p, (char **)datum[i], m_sep);
+            break;
         case INT32:
             p = parse_int32(p, (int32_t *)datum[i], m_sep);
             break;

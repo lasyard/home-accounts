@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <string.h>
 
 #include "str.h"
@@ -59,6 +60,19 @@ const char *parse_string(const char *buf, struct string *str, char sep)
     }
     str->len = len;
     ++p;
+    return p;
+}
+
+const char *parse_cstring(const char *buf, char **data, char sep)
+{
+    struct string str;
+    const char *p = parse_string(buf, &str, sep);
+    char *s = malloc(str.len + 1);
+    if (s != NULL) {
+        strncpy(s, str.buf, str.len);
+        s[str.len] = '\0';
+    }
+    *data = s;
     return p;
 }
 

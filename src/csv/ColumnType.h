@@ -3,6 +3,7 @@
 
 enum ColumnType {
     STR,
+    CSTR,
     INT32,
     INT64,
     MONEY,

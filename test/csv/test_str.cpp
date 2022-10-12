@@ -87,6 +87,31 @@ TEST_CASE("parse_string")
     CHECK(p - s == 3);
 }
 
+TEST_CASE("parse_cstring")
+{
+    char *str;
+    const char *s = "abc::def/gh";
+    const char *p = parse_cstring(s, &str, ':');
+    CHECK(strcmp(str, "abc") == 0);
+    free(str);
+    CHECK(p - s == 4);
+    s = p;
+    p = parse_cstring(s, &str, ':');
+    CHECK(strcmp(str, "") == 0);
+    free(str);
+    CHECK(p - s == 1);
+    s = p;
+    p = parse_cstring(s, &str, '/');
+    CHECK(strcmp(str, "def") == 0);
+    free(str);
+    CHECK(p - s == 4);
+    s = p;
+    p = parse_cstring(s, &str, '/');
+    CHECK(strcmp(str, "gh") == 0);
+    free(str);
+    CHECK(p - s == 3);
+}
+
 TEST_CASE("string_compare")
 {
     struct string a;

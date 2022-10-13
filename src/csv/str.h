@@ -22,8 +22,11 @@ int digit_value(char ch);
 int hex_value(char ch);
 
 const char *skip_space(const char *buf);
-const char *parse_string(const char *buf, struct string *str, char sep);
+const char *parse_string(const char *buf, struct string *data, char sep);
 const char *parse_cstring(const char *buf, char **data, char sep);
+
+char *output_string(char *buf, const struct string *data);
+char *output_cstring(char *buf, const char *data);
 
 struct string *string_ref(struct string *dst, const char *buf, size_t len);
 

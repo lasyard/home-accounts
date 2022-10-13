@@ -41,24 +41,25 @@ const char *skip_space(const char *buf)
     return p;
 }
 
-const char *parse_string(const char *buf, struct string *str, char sep)
+const char *parse_string(const char *buf, struct string *data, char sep)
 {
     int len;
     const char *p = skip_space(buf);
-    str->buf = p;
+    const char *b = p;
     for (len = 0; *p != sep && !is_line_end(*p); ++p) {
         if (is_space(*p)) {
             if (len == 0) {
-                len = p - str->buf;
+                len = p - b;
             }
         } else {
             len = 0;
         }
     }
     if (len == 0) {
-        len = p - str->buf;
+        len = p - b;
     }
-    str->len = len;
+    data->buf = b;
+    data->len = len;
     return p;
 }
 
@@ -73,6 +74,20 @@ const char *parse_cstring(const char *buf, char **data, char sep)
     }
     *data = s;
     return p;
+}
+
+char *output_string(char *buf, const struct string *data)
+{
+    size_t len = data->len;
+    memcpy(buf, data->buf, len);
+    return buf + len;
+}
+
+char *output_cstring(char *buf, const char *data)
+{
+    size_t len = strlen(data);
+    memcpy(buf, data, len);
+    return buf + len;
 }
 
 struct string *string_ref(struct string *dst, const char *buf, size_t len)

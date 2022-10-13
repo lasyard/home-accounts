@@ -1,5 +1,3 @@
-#include <stddef.h>
-
 #include "int.h"
 #include "money.h"
 #include "str.h"
@@ -44,5 +42,17 @@ const char *parse_money(const char *buf, money_t *data, char sep, int mul)
         }
     }
     *data = (pos ? num : -num);
+    return p;
+}
+
+char *output_money(char *buf, money_t data, int prec, int mul)
+{
+    if (data < 0) {
+        *(buf++) = '-';
+        data = -data;
+    }
+    char *p = output_int64(buf, data / mul);
+    *(p++) = '.';
+    p = output_int64_len(p, data % mul, prec);
     return p;
 }

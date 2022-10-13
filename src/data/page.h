@@ -1,6 +1,7 @@
 #ifndef _DATA_PAGE_H_
 #define _DATA_PAGE_H_
 
+#include "../csv/date_time.h"
 #include "list.h"
 
 struct data;
@@ -8,6 +9,7 @@ struct data;
 struct page {
     struct list_item list;
     struct data *data;
+    date_t date;
     struct list_head items;
     int items_num;
 };

@@ -1,5 +1,3 @@
-#include <stddef.h>
-
 #include "int.h"
 #include "str.h"
 

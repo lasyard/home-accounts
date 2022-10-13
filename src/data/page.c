@@ -8,6 +8,7 @@ void init_page(struct page *page)
 {
     list_item_init(&page->list);
     page->data = NULL;
+    page->date = 0;
     list_head_init(&page->items);
     page->items_num = 0;
 }

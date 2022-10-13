@@ -7,7 +7,10 @@ enum ColumnType {
     INT32,
     INT64,
     MONEY,
+    DATE,
     TIME,
 };
+
+const char *nameOf(enum ColumnType type);
 
 #endif /* _CSV_COLUMN_TYPE_H_ */

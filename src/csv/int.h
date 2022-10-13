@@ -2,6 +2,7 @@
 #define _CSV_INT_H_
 
 #include <stdbool.h>
+#include <stddef.h>
 #include <sys/types.h>
 
 #ifdef __cplusplus

@@ -115,6 +115,26 @@ TEST_CASE("parse_cstring")
     CHECK(p - s == 2);
 }
 
+TEST_CASE("output_string")
+{
+    char buf[256];
+    struct string a;
+    string_ref(&a, "abc", 3);
+    char *p = output_string(buf, &a);
+    CHECK(p - buf == 3);
+    *p = '\0';
+    CHECK(strcmp(buf, "abc") == 0);
+}
+
+TEST_CASE("output_cstring")
+{
+    char buf[256];
+    char *p = output_cstring(buf, "abc");
+    CHECK(p - buf == 3);
+    *p = '\0';
+    CHECK(strcmp(buf, "abc") == 0);
+}
+
 TEST_CASE("string_compare")
 {
     struct string a;

@@ -33,7 +33,8 @@
         "__locale": "cpp",
         "__string": "cpp",
         "tuple": "cpp",
-        "version": "cpp"
+        "version": "cpp",
+        "stdexcept": "cpp"
     },
     "C/C++ Include Guard.Insert Blank Line": true,
     "C/C++ Include Guard.Macro Type": "Filepath",

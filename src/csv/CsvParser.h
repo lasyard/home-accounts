@@ -17,9 +17,13 @@ public:
         m_sep = sep;
     }
 
-    void setMoneyMul(int moneyMul)
+    void setMoneyPrec(int moneyPrec)
     {
-        m_moneyMul = moneyMul;
+        m_moneyPrec = moneyPrec;
+        m_moneyMul = 1;
+        for (int i = 0; i < moneyPrec; ++i) {
+            m_moneyMul *= 10;
+        }
     }
 
     void parseLine(const char *line, void *datum[]);
@@ -30,7 +34,8 @@ protected:
     int m_cols;                // The number of columns.
     const ColumnType *m_types; // The types of each column.
     char m_sep;                // The separator of fields.
-    int m_moneyMul;            // Control the precision of money.
+    int m_moneyPrec;           // The precision of money;
+    int m_moneyMul;            // The scale factor of money.
 
 private:
     const char *parseByType(const char *buf, ColumnType type, void *data);

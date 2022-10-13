@@ -20,6 +20,8 @@ extern "C" {
  */
 const char *parse_money(const char *buf, money_t *data, char sep, int mul);
 
+char *output_money(char *buf, money_t data, int prec, int mul);
+
 #ifdef __cplusplus
 }
 #endif

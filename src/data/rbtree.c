@@ -1,4 +1,3 @@
-#include "defs.h"
 #include "rbtree.h"
 
 #define RBTREE_RED   0

@@ -2,6 +2,7 @@
 #define _DATA_DATA_FILE_H_
 
 #include <istream>
+#include <ostream>
 
 #include "../csv/ColumnType.h"
 #include "data.h"
@@ -15,6 +16,7 @@ public:
     virtual ~DataFile();
 
     virtual void read(std::istream &is);
+    virtual void write(std::ostream &os);
 
     struct data *getData()
     {
@@ -30,7 +32,10 @@ private:
     char m_buf[MAX_LINE_LENGTH];
     CsvParser *m_parser;
 
+    void readPage(struct page *page);
     void readItem(struct item *item);
+    void writePage(std::ostream &os, const struct page *page);
+    void writeItem(std::ostream &os, const struct item *item);
 };
 
 #endif /* _DATA_DATA_FILE_H_ */

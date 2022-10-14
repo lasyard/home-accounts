@@ -13,6 +13,11 @@ void init_item(struct item *item)
 
 void release_item(struct item *item)
 {
+    release_item_desc(item);
+}
+
+void release_item_desc(struct item *item)
+{
     if (item->desc != NULL) {
         free(item->desc);
     }

@@ -4,6 +4,8 @@
 #include <cstring>
 #include <stdexcept>
 
+#include "ColumnType.h"
+
 class ParseError : public std::runtime_error
 {
 public:

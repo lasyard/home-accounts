@@ -1,7 +1,7 @@
 #ifndef _DATA_DATA_H_
 #define _DATA_DATA_H_
 
-#include "../csv/money.h"
+#include "csv/money.h"
 #include "list.h"
 
 struct data {

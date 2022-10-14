@@ -3,23 +3,25 @@
 
 #include <wx/grid.h>
 
+#include "DataTableCellAttrs.h"
 #include "csv/ColumnType.h"
+#include "data/DataFile.h"
 
 class DataTable : public wxGridTableBase
 {
 public:
-    DataTable(ColumnType types[], int cols);
+    DataTable(DataFile *dataFile);
 
     virtual ~DataTable();
 
     int GetNumberRows() override
     {
-        return m_rows;
+        return m_dataFile->getNumberRows();
     }
 
     int GetNumberCols() override
     {
-        return m_cols;
+        return m_dataFile->getNumberCols();
     }
 
     wxString GetValue(int row, int col) override;
@@ -30,17 +32,14 @@ public:
 
     bool CanHaveAttributes() override
     {
-        return false;
+        return true;
     }
 
-private:
-    int m_cols;
-    int m_rows;
-    ColumnType *m_types;
-    void **m_values;
+    wxGridCellAttr *GetAttr(int row, int col, wxGridCellAttr::wxAttrKind kind) override;
 
-    void AllocateVectors();
-    void ReleaseVectors();
+private:
+    DataFile *m_dataFile;
+    DataTableCellAttrs m_attrs;
 };
 
 #endif /* _HA_DATA_TABLE_H_ */

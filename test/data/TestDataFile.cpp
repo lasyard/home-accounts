@@ -4,8 +4,8 @@
 #include <sstream>
 
 #include "DataFile.h"
-#include "item.h"
-#include "page.h"
+#include "data/item.h"
+#include "data/page.h"
 
 TEST_CASE("read")
 {
@@ -18,17 +18,17 @@ TEST_CASE("read")
     text << str;
     DataFile dataFile;
     dataFile.read(text);
-    struct data *data = dataFile.getData();
-    CHECK(data->pages_num == 2);
-    CHECK(data->items_num == 3);
-    struct page *first = get_page(list_first(&data->pages));
+    struct data &data = dataFile.getData();
+    CHECK(data.pages_num == 2);
+    CHECK(data.items_num == 3);
+    struct page *first = get_page(list_first(&data.pages));
     CHECK(first->date == 2451545);
     CHECK(first->items_num == 1);
     struct item *item = get_item(list_first(&first->items));
     CHECK(item->time == 36000);
     CHECK(item->money == 1234);
     CHECK(strcmp(item->desc, "New Bee") == 0);
-    struct page *last = get_page(list_last(&data->pages));
+    struct page *last = get_page(list_last(&data.pages));
     CHECK(last->date == 2451546);
     CHECK(last->items_num == 2);
     item = get_item(list_first(&last->items));
@@ -44,8 +44,8 @@ TEST_CASE("read")
 TEST_CASE("write")
 {
     DataFile dataFile;
-    struct data *data = dataFile.getData();
-    struct page *page = add_page(data);
+    struct data &data = dataFile.getData();
+    struct page *page = add_page(&data);
     page->date = 2451545;
     struct item *item = add_item(page);
     item->time = 36000;
@@ -53,7 +53,7 @@ TEST_CASE("write")
     char *p = (char *)malloc(64);
     strcpy(p, "New Bee");
     item->desc = p;
-    page = add_page(data);
+    page = add_page(&data);
     page->date = 2451546;
     item = add_item(page);
     item->time = 36060;

@@ -3,8 +3,10 @@
 
 #include <istream>
 #include <ostream>
+#include <string>
+#include <vector>
 
-#include "../csv/ColumnType.h"
+#include "csv/ColumnType.h"
 #include "data.h"
 
 class CsvParser;
@@ -18,11 +20,30 @@ public:
     static const ColumnType COLUMN_TYPES[];
 
     virtual void read(std::istream &is);
+    virtual void read(const std::string &str);
     virtual void write(std::ostream &os);
 
-    struct data *getData()
+    int getNumberRows() const
     {
-        return &m_data;
+        return m_index.size();
+    }
+
+    int getNumberCols() const
+    {
+        return m_cols;
+    }
+
+    std::string getString(int row, int col);
+    void setString(int row, int col, const std::string &value);
+
+    struct data &getData()
+    {
+        return m_data;
+    }
+
+    const ColumnType *getTypes() const
+    {
+        return m_types;
     }
 
 protected:
@@ -37,6 +58,7 @@ private:
     struct data m_data;
     char m_buf[MAX_LINE_LENGTH];
     CsvParser *m_parser;
+    std::vector<struct item *> m_index;
 
     void readPage(struct page *page);
     void readItem(struct item *item);

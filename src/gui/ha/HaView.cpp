@@ -30,7 +30,15 @@ bool HaView::OnCreate([[maybe_unused]] wxDocument *doc, [[maybe_unused]] long fl
 void HaView::OnUpdate([[maybe_unused]] wxView *sender, [[maybe_unused]] wxObject *hint)
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
+    auto doc = static_cast<HaDocument *>(GetHaDocument());
+    if (doc != nullptr) {
+        doc->loadData("test");
+        auto table = new DataTable(&doc->getDataFile());
+        // `AssignTable` is not existing in earlier version of wxWidgets.
+        m_transactionsGrid->SetTable(table, true);
+    }
     // Row labels are not updated even by SetTable, so do this.
+    m_transactionsGrid->SetAttributes();
     m_transactionsGrid->ForceRefresh();
 }
 

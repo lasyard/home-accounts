@@ -1,8 +1,8 @@
 #ifndef _DATA_ITEM_H_
 #define _DATA_ITEM_H_
 
-#include "../csv/date_time.h"
-#include "../csv/money.h"
+#include "csv/date_time.h"
+#include "csv/money.h"
 #include "list.h"
 
 struct page;
@@ -23,6 +23,7 @@ extern "C" {
 
 void init_item(struct item *item);
 void release_item(struct item *item);
+void release_item_desc(struct item *item);
 
 #ifdef __cplusplus
 }

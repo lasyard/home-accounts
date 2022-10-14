@@ -1,7 +1,9 @@
+#include <sstream>
+
 #include "DataFile.h"
-#include "../csv/CsvExceptions.h"
-#include "../csv/CsvParser.h"
-#include "../csv/str.h"
+#include "csv/CsvExceptions.h"
+#include "csv/CsvParser.h"
+#include "csv/str.h"
 #include "item.h"
 #include "page.h"
 
@@ -11,7 +13,7 @@ const ColumnType DataFile::COLUMN_TYPES[] = {
     CSTR,
 };
 
-DataFile::DataFile() : m_cols(3), m_types(COLUMN_TYPES)
+DataFile::DataFile() : m_cols(sizeof(COLUMN_TYPES) / sizeof(ColumnType)), m_types(COLUMN_TYPES), m_index()
 {
     init_data(&m_data);
     m_parser = new CsvParser(m_cols, m_types);
@@ -25,6 +27,7 @@ DataFile::~DataFile()
 
 void DataFile::read(std::istream &is)
 {
+    release_data(&m_data);
     int lineNo = 0;
     struct page *page = NULL;
     while (is.getline(m_buf, MAX_LINE_LENGTH)) {
@@ -45,6 +48,19 @@ void DataFile::read(std::istream &is)
             throw e;
         }
     }
+    for (auto p = m_data.pages.first; p != NULL; p = p->next) {
+        struct page *page = get_page(p);
+        for (auto q = page->items.first; q != NULL; q = q->next) {
+            struct item *item = get_item(q);
+            m_index.push_back(item);
+        }
+    }
+}
+
+void DataFile::read(const std::string &str)
+{
+    std::istringstream is(str);
+    read(is);
 }
 
 void DataFile::write(std::ostream &os)
@@ -56,6 +72,37 @@ void DataFile::write(std::ostream &os)
             const struct item *item = get_item(q);
             writeItem(os, item);
         }
+    }
+}
+
+std::string DataFile::getString(int row, int col)
+{
+    const struct item *item = m_index[row];
+    switch (col) {
+    case 0:
+        return m_parser->toStringByType(m_types[col], &item->time);
+    case 1:
+        return m_parser->toStringByType(m_types[col], &item->money);
+    case 2:
+        return m_parser->toStringByType(m_types[col], item->desc);
+    }
+    return "";
+}
+
+void DataFile::setString(int row, int col, const std::string &value)
+{
+    struct item *item = m_index[row];
+    switch (col) {
+    case 0:
+        m_parser->parseStringByType(value, m_types[col], &item->time);
+        break;
+    case 1:
+        m_parser->parseStringByType(value, m_types[col], &item->money);
+        break;
+    case 2:
+        release_item_desc(item);
+        m_parser->parseStringByType(value, m_types[col], &item->desc);
+        break;
     }
 }
 

@@ -39,6 +39,18 @@ char *CsvParser::outputLine(char *buf, const void *datum[])
     return p;
 }
 
+std::string CsvParser::toStringByType(ColumnType type, const void *data)
+{
+    char buf[256];
+    const char *p = outputByType(buf, type, data);
+    return std::string(buf, p - buf);
+}
+
+void CsvParser::parseStringByType(const std::string &str, ColumnType type, void *data)
+{
+    parseByType(str.c_str(), type, data);
+}
+
 const char *CsvParser::parseByType(const char *buf, ColumnType type, void *data)
 {
     switch (type) {

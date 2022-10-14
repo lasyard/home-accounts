@@ -35,12 +35,6 @@ HaMainFrame::HaMainFrame(
     wxXmlResource::Get()->LoadObject(this, nullptr, "main", "wxFrame");
     // `hide` in XRC is not effective.
     XRCCTRL(*this, "book", wxNotebook)->Show(false);
-    DataGrid *grid = XRCCTRL(*this, "transactions", DataGrid);
-    ColumnType types[]{INT32, INT64, STR};
-    auto table = new DataTable(types, sizeof(types) / sizeof(ColumnType));
-    // `AssignTable` is not existing in earlier version of wxWidgets.
-    grid->SetTable(table, true);
-    grid->SetAttributes();
 }
 
 void HaMainFrame::OnClose([[maybe_unused]] wxCloseEvent &event)

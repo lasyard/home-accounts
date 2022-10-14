@@ -11,12 +11,16 @@ SectionFile::~SectionFile()
 
 const std::string &SectionFile::get(const std::string &name)
 {
-    auto &section = m_cache.at(name);
-    if (section.readDirty && m_store != nullptr) {
-        m_store->readSection(name, section.content);
+    try {
+        auto &section = m_cache.at(name);
+        if (section.readDirty && m_store != nullptr) {
+            m_store->readSection(name, section.content);
+        }
+        section.readDirty = false;
+        return section.content;
+    } catch (std::out_of_range &e) {
+        throw SectionNotFound(name);
     }
-    section.readDirty = false;
-    return section.content;
 }
 
 void SectionFile::put(const std::string &name, const std::string &content)

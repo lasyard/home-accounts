@@ -1,6 +1,8 @@
 #ifndef _CSV_CSV_PARSER_H_
 #define _CSV_CSV_PARSER_H_
 
+#include <string>
+
 #include "ColumnType.h"
 
 class CsvParser
@@ -29,6 +31,9 @@ public:
     void parseLine(const char *line, void *datum[]);
 
     char *outputLine(char *buf, const void *datum[]);
+
+    std::string toStringByType(ColumnType type, const void *data);
+    void parseStringByType(const std::string &str, ColumnType type, void *data);
 
 protected:
     int m_cols;                // The number of columns.

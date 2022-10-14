@@ -11,12 +11,10 @@ const ColumnType DataFile::COLUMN_TYPES[] = {
     CSTR,
 };
 
-const int DataFile::COLUMN_NUM = sizeof(COLUMN_TYPES) / sizeof(ColumnType);
-
-DataFile::DataFile()
+DataFile::DataFile() : m_cols(3), m_types(COLUMN_TYPES)
 {
     init_data(&m_data);
-    m_parser = new CsvParser(COLUMN_NUM, COLUMN_TYPES);
+    m_parser = new CsvParser(m_cols, m_types);
 }
 
 DataFile::~DataFile()
@@ -61,6 +59,20 @@ void DataFile::write(std::ostream &os)
     }
 }
 
+void DataFile::populateReadPtr(void *datum[], struct item *item)
+{
+    datum[0] = &item->time;
+    datum[1] = &item->money;
+    datum[2] = &item->desc;
+}
+
+void DataFile::populateWritePtr(const void *datum[], const struct item *item)
+{
+    datum[0] = &item->time;
+    datum[1] = &item->money;
+    datum[2] = item->desc;
+}
+
 void DataFile::readPage(struct page *page)
 {
     date_t date;
@@ -74,11 +86,8 @@ void DataFile::readPage(struct page *page)
 
 void DataFile::readItem(struct item *item)
 {
-    void *datum[COLUMN_NUM] = {
-        &item->time,
-        &item->money,
-        &item->desc,
-    };
+    void *datum[m_cols];
+    populateReadPtr(datum, item);
     m_parser->parseLine(m_buf, datum);
 }
 
@@ -91,11 +100,8 @@ void DataFile::writePage(std::ostream &os, const struct page *page)
 
 void DataFile::writeItem(std::ostream &os, const struct item *item)
 {
-    const void *datum[COLUMN_NUM] = {
-        &item->time,
-        &item->money,
-        item->desc,
-    };
+    const void *datum[m_cols];
+    populateWritePtr(datum, item);
     m_parser->outputLine(m_buf, datum);
     os << m_buf << std::endl;
 }

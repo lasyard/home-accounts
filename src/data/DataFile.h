@@ -15,6 +15,8 @@ public:
     DataFile();
     virtual ~DataFile();
 
+    static const ColumnType COLUMN_TYPES[];
+
     virtual void read(std::istream &is);
     virtual void write(std::ostream &os);
 
@@ -23,11 +25,15 @@ public:
         return &m_data;
     }
 
+protected:
+    virtual void populateReadPtr(void *datum[], struct item *item);
+    virtual void populateWritePtr(const void *datum[], const struct item *item);
+
 private:
     static const int MAX_LINE_LENGTH = 1024;
-    static const ColumnType COLUMN_TYPES[];
-    static const int COLUMN_NUM;
 
+    int m_cols;
+    const ColumnType *m_types;
     struct data m_data;
     char m_buf[MAX_LINE_LENGTH];
     CsvParser *m_parser;

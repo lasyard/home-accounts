@@ -5,7 +5,10 @@
 #include "data/item.h"
 #include "data/page.h"
 
-DataTable::DataTable(DataFile *dataFile) : m_dataFile(dataFile)
+DataTable::DataTable(DataFile *dataFile)
+    : m_dataFile(dataFile),
+      m_cache(dataFile->getNumberRows(), wxArrayString(dataFile->getNumberCols(), _(""))),
+      m_flag(dataFile->getNumberRows(), wxVector(dataFile->getNumberCols(), false))
 {
 }
 
@@ -15,7 +18,11 @@ DataTable::~DataTable()
 
 wxString DataTable::GetValue(int row, int col)
 {
-    return m_dataFile->getString(row, col);
+    if (!m_flag[row][col]) {
+        m_cache[row][col] = m_dataFile->getString(row, col);
+        m_flag[row][col] = true;
+    }
+    return m_cache[row][col];
 }
 
 wxString DataTable::GetRowLabelValue(int row)
@@ -31,6 +38,7 @@ wxString DataTable::GetColLabelValue(int col)
 void DataTable::SetValue(int row, int col, const wxString &value)
 {
     m_dataFile->setString(row, col, value.ToStdString());
+    m_flag[row][col] = false;
 }
 
 wxGridCellAttr *DataTable::GetAttr([[maybe_unused]] int row, int col, [[maybe_unused]] wxGridCellAttr::wxAttrKind kind)

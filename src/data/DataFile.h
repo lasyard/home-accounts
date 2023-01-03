@@ -34,7 +34,13 @@ public:
     }
 
     std::string getString(int row, int col);
+
     void setString(int row, int col, const std::string &value);
+
+    bool isPage(int row)
+    {
+        return m_index[row].m_type == PAGE;
+    }
 
     struct data &getData()
     {
@@ -51,6 +57,20 @@ protected:
     virtual void populateWritePtr(const void *datum[], const struct item *item);
 
 private:
+    enum IndexType {
+        PAGE,
+        ITEM,
+    };
+
+    struct IndexItem {
+    public:
+        IndexItem(void *ptr, enum IndexType type) : m_ptr(ptr), m_type(type)
+        {
+        }
+        void *m_ptr;
+        enum IndexType m_type;
+    };
+
     static const int MAX_LINE_LENGTH = 1024;
 
     int m_cols;
@@ -58,7 +78,7 @@ private:
     struct data m_data;
     char m_buf[MAX_LINE_LENGTH];
     CsvParser *m_parser;
-    std::vector<struct item *> m_index;
+    std::vector<struct IndexItem> m_index;
 
     void readPage(struct page *page);
     void readItem(struct item *item);

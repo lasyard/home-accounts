@@ -6,7 +6,9 @@
 #include "data/page.h"
 
 DataTable::DataTable(DataFile *dataFile)
-    : m_dataFile(dataFile),
+    : wxGridTableBase(),
+      m_dataFile(dataFile),
+      m_attrs(dataFile->getNumberCols()),
       m_cache(dataFile->getNumberRows(), wxArrayString(dataFile->getNumberCols(), _(""))),
       m_flag(dataFile->getNumberRows(), wxVector(dataFile->getNumberCols(), false))
 {
@@ -43,6 +45,10 @@ void DataTable::SetValue(int row, int col, const wxString &value)
 
 wxGridCellAttr *DataTable::GetAttr([[maybe_unused]] int row, int col, [[maybe_unused]] wxGridCellAttr::wxAttrKind kind)
 {
+    // Do not return colSpan > 1 for col > 0, or there will be index out of bond problem.
+    if (m_dataFile->isPage(row)) {
+        return col == 0 ? m_attrs.GetPage() : m_attrs.GetOverlapped();
+    }
     switch (m_dataFile->getTypes()[col]) {
     case MONEY:
         return m_attrs.GetMoney();

@@ -50,9 +50,10 @@ void DataFile::read(std::istream &is)
     }
     for (auto p = m_data.pages.first; p != NULL; p = p->next) {
         struct page *page = get_page(p);
+        m_index.push_back(IndexItem(page, PAGE));
         for (auto q = page->items.first; q != NULL; q = q->next) {
             struct item *item = get_item(q);
-            m_index.push_back(item);
+            m_index.push_back(IndexItem(item, ITEM));
         }
     }
 }
@@ -77,21 +78,29 @@ void DataFile::write(std::ostream &os)
 
 std::string DataFile::getString(int row, int col)
 {
-    const struct item *item = m_index[row];
-    switch (col) {
-    case 0:
-        return m_parser->toStringByType(m_types[col], &item->time);
-    case 1:
-        return m_parser->toStringByType(m_types[col], &item->money);
-    case 2:
-        return m_parser->toStringByType(m_types[col], item->desc);
+    if (m_index[row].m_type == ITEM) {
+        const struct item *item = (const struct item *)m_index[row].m_ptr;
+        switch (col) {
+        case 0:
+            return m_parser->toStringByType(m_types[col], &item->time);
+        case 1:
+            return m_parser->toStringByType(m_types[col], &item->money);
+        case 2:
+            return m_parser->toStringByType(m_types[col], item->desc);
+        }
+    } else if (m_index[row].m_type == PAGE && col == 0) {
+        const struct page *page = (const struct page *)m_index[row].m_ptr;
+        return m_parser->toStringByType(DATE, &page->date);
     }
     return "";
 }
 
 void DataFile::setString(int row, int col, const std::string &value)
 {
-    struct item *item = m_index[row];
+    if (m_index[row].m_type == PAGE) {
+        return;
+    }
+    struct item *item = (struct item *)m_index[row].m_ptr;
     switch (col) {
     case 0:
         m_parser->parseStringByType(value, m_types[col], &item->time);

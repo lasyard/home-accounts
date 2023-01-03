@@ -1,6 +1,6 @@
 #include "DataTableCellAttrs.h"
 
-DataTableCellAttrs::DataTableCellAttrs()
+DataTableCellAttrs::DataTableCellAttrs([[maybe_unused]] size_t cols)
 {
     m_defaultAttr = new wxGridCellAttr();
     m_defaultAttr->SetAlignment(wxALIGN_CENTER, wxALIGN_CENTER);
@@ -24,6 +24,13 @@ DataTableCellAttrs::DataTableCellAttrs()
     m_timeAttr = m_readOnlyAttr->Clone();
     m_timeAttr->SetFont(monoFont.Smaller());
     m_timeAttr->SetTextColour(*wxBLUE);
+    m_pageAttr = m_readOnlyAttr->Clone();
+    m_pageAttr->SetSize(1, cols);
+    m_pageAttr->SetFont(monoFont);
+    m_pageAttr->SetBackgroundColour(*wxLIGHT_GREY);
+    m_pageAttr->SetAlignment(wxALIGN_CENTER_VERTICAL, wxALIGN_LEFT);
+    m_overlapped = new wxGridCellAttr();
+    m_overlapped->SetReadOnly();
 }
 
 DataTableCellAttrs::~DataTableCellAttrs()
@@ -36,4 +43,6 @@ DataTableCellAttrs::~DataTableCellAttrs()
     m_boldReadOnlyMoneyAttr->DecRef();
     m_redReadOnlyMoneyAttr->DecRef();
     m_timeAttr->DecRef();
+    m_pageAttr->DecRef();
+    m_overlapped->DecRef();
 }

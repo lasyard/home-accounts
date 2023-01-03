@@ -6,7 +6,7 @@
 class DataTableCellAttrs
 {
 public:
-    DataTableCellAttrs();
+    DataTableCellAttrs(size_t cols);
     virtual ~DataTableCellAttrs();
 
     auto GetDefault()
@@ -27,6 +27,18 @@ public:
         return m_timeAttr;
     }
 
+    auto GetPage()
+    {
+        m_pageAttr->IncRef();
+        return m_pageAttr;
+    }
+
+    auto GetOverlapped()
+    {
+        m_overlapped->IncRef();
+        return m_overlapped;
+    }
+
 private:
     wxGridCellFloatEditor *m_floatEditor;
 
@@ -37,6 +49,8 @@ private:
     wxGridCellAttr *m_boldReadOnlyMoneyAttr;
     wxGridCellAttr *m_redReadOnlyMoneyAttr;
     wxGridCellAttr *m_timeAttr;
+    wxGridCellAttr *m_pageAttr;
+    wxGridCellAttr *m_overlapped;
 };
 
 #endif /* _HA_DATA_TABLE_CELL_ATTRS_H_ */

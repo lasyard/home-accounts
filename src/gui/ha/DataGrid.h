@@ -30,6 +30,7 @@ public:
         return *wxLIGHT_GREY_PEN;
     }
 
+    void onGridSelectCell(wxGridEvent &event);
     void SetAttributes();
 };
 

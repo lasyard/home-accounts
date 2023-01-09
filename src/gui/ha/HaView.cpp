@@ -13,6 +13,7 @@ IMPLEMENT_TM(HaView)
 
 BEGIN_EVENT_TABLE(HaView, HaViewBase)
 EVT_MENU(ID_CHANGE_PASS, HaViewBase::OnChangePass)
+EVT_MENU(ID_INSERT, HaView::OnInsert)
 END_EVENT_TABLE()
 
 bool HaView::OnCreate([[maybe_unused]] wxDocument *doc, [[maybe_unused]] long flags)
@@ -42,6 +43,16 @@ void HaView::OnUpdate([[maybe_unused]] wxView *sender, [[maybe_unused]] wxObject
     m_transactionsGrid->ForceRefresh();
 }
 
+void HaView::OnInsert(wxCommandEvent &event)
+{
+    m_transactionsGrid->OnInsert(event);
+}
+
+bool HaView::IsInsertionEnabled()
+{
+    return m_book->GetSelection() == 0;
+}
+
 void HaView::SaveContents()
 {
 }
@@ -49,6 +60,8 @@ void HaView::SaveContents()
 void HaView::ClearContents()
 {
     wxASSERT(m_book != nullptr);
+    // Important, or the grid will be drawn before data loaded, cause PANIC.
+    m_transactionsGrid->SetTable(nullptr);
     m_book->Show(false);
 }
 

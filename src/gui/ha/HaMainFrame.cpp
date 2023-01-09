@@ -17,6 +17,7 @@ IMPLEMENT_TM(HaMainFrame)
 BEGIN_EVENT_TABLE(HaMainFrame, wxDocParentFrame)
 EVT_CLOSE(HaMainFrame::OnClose)
 EVT_UPDATE_UI(ID_CHANGE_PASS, HaMainFrame::OnUpdateChangePass)
+EVT_UPDATE_UI(ID_INSERT, HaMainFrame::OnUpdateInsert)
 EVT_MENU(ID_ABOUT, HaMainFrame::OnAbout)
 END_EVENT_TABLE()
 
@@ -32,6 +33,7 @@ HaMainFrame::HaMainFrame(
 )
     : wxDocParentFrame(manager, parent, id, title, pos, size, type, name)
 {
+    wxLog::AddTraceMask(TM);
     wxXmlResource::Get()->LoadObject(this, nullptr, "main", "wxFrame");
     // `hide` in XRC is not effective.
     XRCCTRL(*this, "book", wxNotebook)->Show(false);
@@ -49,6 +51,13 @@ void HaMainFrame::OnUpdateChangePass(wxUpdateUIEvent &event)
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     HaView *view = GetCurrentView();
     event.Enable(view != nullptr);
+}
+
+void HaMainFrame::OnUpdateInsert(wxUpdateUIEvent &event)
+{
+    wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
+    HaView *view = GetCurrentView();
+    event.Enable(view != nullptr && view->IsInsertionEnabled());
 }
 
 void HaMainFrame::OnAbout([[maybe_unused]] wxCommandEvent &event)

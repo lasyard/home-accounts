@@ -24,6 +24,11 @@ public:
     bool OnCreate(wxDocument *doc, long flags) override;
 
     void OnUpdate(wxView *sender, wxObject *hint) override;
+
+    virtual void OnInsert(wxCommandEvent &event);
+
+    bool IsInsertionEnabled();
+
     void SaveContents() override;
     void ClearContents() override;
     void DiscardEdits() override;

@@ -5,5 +5,6 @@
 
 #define ID_ABOUT       XRCID("about")
 #define ID_CHANGE_PASS XRCID("changePass")
+#define ID_INSERT      XRCID("insert")
 
 #endif /* _HA_DEFS_H_ */

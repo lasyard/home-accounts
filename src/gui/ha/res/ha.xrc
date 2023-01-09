@@ -14,28 +14,35 @@
 			<object class="wxMenu" name="m_fileMenu">
 				<label>_File</label>
 				<object class="wxMenuItem" name="wxID_NEW">
-					<label>_New</label>
+					<label>_New\tCtrl+N</label>
 					<help></help>
 				</object>
 				<object class="wxMenuItem" name="wxID_OPEN">
-					<label>_Open</label>
+					<label>_Open\tCtrl+O</label>
 					<help></help>
 				</object>
 				<object class="wxMenuItem" name="wxID_SAVE">
-					<label>_Save</label>
+					<label>_Save\tCtrl+S</label>
 					<help></help>
 				</object>
 				<object class="wxMenuItem" name="wxID_SAVEAS">
-					<label>Save _As</label>
+					<label>Save _As\tCtrl+A</label>
 					<help></help>
 				</object>
 				<object class="wxMenuItem" name="wxID_CLOSE">
-					<label>_Close</label>
+					<label>_Close\tCtrl+C</label>
 					<help></help>
 				</object>
 				<object class="separator" />
 				<object class="wxMenuItem" name="changePass">
 					<label>Change Password</label>
+					<help></help>
+				</object>
+			</object>
+			<object class="wxMenu" name="m_editMenu">
+				<label>_Edit</label>
+				<object class="wxMenuItem" name="insert">
+					<label>_Insert\tEnter</label>
 					<help></help>
 				</object>
 			</object>

@@ -4,14 +4,19 @@
 #include <wx/grid.h>
 #include <wx/pen.h>
 
+#include "../Common.h"
+
 class DataGrid : public wxGrid
 {
     DECLARE_DYNAMIC_CLASS(DataGrid)
     DECLARE_EVENT_TABLE()
 
 public:
+    DECLARE_TM()
+
     DataGrid() : wxGrid()
     {
+        wxLog::AddTraceMask(TM);
     }
 
     virtual ~DataGrid()
@@ -30,7 +35,9 @@ public:
         return *wxLIGHT_GREY_PEN;
     }
 
-    void onGridSelectCell(wxGridEvent &event);
+    virtual void OnGridSelectCell(wxGridEvent &event);
+    virtual void OnInsert(wxCommandEvent &event);
+
     void SetAttributes();
 };
 

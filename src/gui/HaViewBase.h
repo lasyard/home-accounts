@@ -31,9 +31,6 @@ public:
     virtual void DiscardEdits() = 0;
 
     virtual void OnChangePass(wxCommandEvent &event);
-
-protected:
-    HaDocumentBase *GetHaDocument() const;
 };
 
 #endif /* _GUI_HA_VIEW_BASE_H_ */

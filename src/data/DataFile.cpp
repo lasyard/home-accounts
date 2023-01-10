@@ -39,13 +39,15 @@ void DataFile::read(std::istream &is)
             if (m_buf[0] == '#') {
                 page = add_page(&m_data);
                 readPage(page);
-            } else {
+            } else if (page != NULL) {
                 auto item = add_item(page);
                 readItem(item);
+            } else {
+                throw ParseError("No page error", m_buf);
             }
         } catch (ParseError &e) {
             e.setLineNo(lineNo);
-            throw e;
+            throw;
         }
     }
     for (auto p = m_data.pages.first; p != NULL; p = p->next) {
@@ -74,6 +76,12 @@ void DataFile::write(std::ostream &os)
             writeItem(os, item);
         }
     }
+}
+
+void DataFile::write(std::string &str)
+{
+    std::ostringstream os(str);
+    write(os);
 }
 
 std::string DataFile::getString(int row, int col)
@@ -136,7 +144,7 @@ void DataFile::readPage(struct page *page)
     if (p != NULL) {
         page->date = date;
     } else {
-        throw ParseError(0, DATE, m_buf + 1);
+        throw DataParseError(0, DATE, m_buf + 1);
     }
 }
 

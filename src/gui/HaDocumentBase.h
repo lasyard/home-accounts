@@ -33,9 +33,11 @@ public:
 
     void Modify(bool modified) override;
 
-    void GetSectionNames(wxVector<wxString> &names) const;
+    void GetSectionNames(wxArrayString &names) const;
     void GetSection(const wxString &name, wxString &content) const;
+    void GetSection(const wxString &name, std::string &content) const;
     void SaveSection(const wxString &name, const wxString &content);
+    void SaveSection(const wxString &name, const std::string &content);
     void DeleteSection(const wxString &name);
 
     virtual void OnChange(wxCommandEvent &event);
@@ -54,7 +56,8 @@ private:
     wxString m_pass;
 
     template <class VIEW>
-    requires std::derived_from<VIEW, wxView> VIEW *GetView() const
+        requires std::derived_from<VIEW, wxView>
+    VIEW *GetView() const
     {
         auto view = this->GetFirstView();
         return view != nullptr ? static_cast<VIEW *>(view) : nullptr;

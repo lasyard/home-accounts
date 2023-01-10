@@ -22,6 +22,7 @@ public:
     virtual void read(std::istream &is);
     virtual void read(const std::string &str);
     virtual void write(std::ostream &os);
+    virtual void write(std::string &str);
 
     int getNumberRows() const
     {

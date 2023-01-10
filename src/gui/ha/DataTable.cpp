@@ -9,9 +9,15 @@ DataTable::DataTable(DataFile *dataFile)
     : wxGridTableBase(),
       m_dataFile(dataFile),
       m_attrs(dataFile->getNumberCols()),
-      m_cache(dataFile->getNumberRows(), wxArrayString(dataFile->getNumberCols(), _(""))),
-      m_flag(dataFile->getNumberRows(), wxVector(dataFile->getNumberCols(), false))
+      m_cache(dataFile->getNumberRows(), wxArrayString())
 {
+    auto rows = dataFile->getNumberRows();
+    auto cols = dataFile->getNumberCols();
+    for (auto i = 0; i < rows; ++i) {
+        for (auto j = 0; j < cols; ++j) {
+            m_cache[i].Add(dataFile->getString(i, j));
+        }
+    }
 }
 
 DataTable::~DataTable()
@@ -20,10 +26,6 @@ DataTable::~DataTable()
 
 wxString DataTable::GetValue(int row, int col)
 {
-    if (!m_flag[row][col]) {
-        m_cache[row][col] = m_dataFile->getString(row, col);
-        m_flag[row][col] = true;
-    }
     return m_cache[row][col];
 }
 
@@ -40,7 +42,7 @@ wxString DataTable::GetColLabelValue(int col)
 void DataTable::SetValue(int row, int col, const wxString &value)
 {
     m_dataFile->setString(row, col, value.ToStdString());
-    m_flag[row][col] = false;
+    m_cache[row][col] = m_dataFile->getString(row, col);
 }
 
 wxGridCellAttr *DataTable::GetAttr([[maybe_unused]] int row, int col, [[maybe_unused]] wxGridCellAttr::wxAttrKind kind)

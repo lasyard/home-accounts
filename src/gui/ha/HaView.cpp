@@ -16,7 +16,7 @@ EVT_MENU(ID_CHANGE_PASS, HaViewBase::OnChangePass)
 EVT_MENU(ID_INSERT, HaView::OnInsert)
 END_EVENT_TABLE()
 
-bool HaView::OnCreate([[maybe_unused]] wxDocument *doc, [[maybe_unused]] long flags)
+bool HaView::OnCreate(wxDocument *doc, [[maybe_unused]] long flags)
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     auto frame = wxGetApp().GetTopWindow();
@@ -24,6 +24,7 @@ bool HaView::OnCreate([[maybe_unused]] wxDocument *doc, [[maybe_unused]] long fl
     m_book = XRCCTRL(*frame, "book", wxNotebook);
     m_transactionsGrid = XRCCTRL(*frame, "transactions", DataGrid);
     m_book->Show();
+    m_transactionsGrid->Bind(wxEVT_GRID_EDITOR_HIDDEN, &HaDocumentBase::OnChange, static_cast<HaDocument *>(doc));
     Activate(true);
     return true;
 }
@@ -31,13 +32,11 @@ bool HaView::OnCreate([[maybe_unused]] wxDocument *doc, [[maybe_unused]] long fl
 void HaView::OnUpdate([[maybe_unused]] wxView *sender, [[maybe_unused]] wxObject *hint)
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
-    auto doc = static_cast<HaDocument *>(GetHaDocument());
-    if (doc != nullptr) {
-        doc->loadData("test");
-        auto table = new DataTable(&doc->getDataFile());
-        // `AssignTable` is not existing in earlier version of wxWidgets.
-        m_transactionsGrid->SetTable(table, true);
-    }
+    auto doc = static_cast<HaDocument *>(GetDocument());
+    doc->LoadData("test");
+    auto table = new DataTable(&doc->GetDataFile());
+    // `AssignTable` is not existing in earlier version of wxWidgets.
+    m_transactionsGrid->SetTable(table, true);
     // Row labels are not updated even by SetTable, so do this.
     m_transactionsGrid->SetAttributes();
     m_transactionsGrid->ForceRefresh();
@@ -55,6 +54,8 @@ bool HaView::IsInsertionEnabled()
 
 void HaView::SaveContents()
 {
+    auto doc = static_cast<HaDocument *>(GetDocument());
+    doc->SaveData("test");
 }
 
 void HaView::ClearContents()

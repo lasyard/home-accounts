@@ -34,9 +34,9 @@ void RawView::OnUpdate([[maybe_unused]] wxView *sender, [[maybe_unused]] wxObjec
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     ClearContents();
-    auto doc = GetHaDocument();
+    auto doc = static_cast<HaDocumentBase *>(GetDocument());
     wxASSERT(doc != nullptr);
-    wxVector<wxString> names;
+    wxArrayString names;
     doc->GetSectionNames(names);
     for (auto const &name : names) {
         wxString content;
@@ -47,7 +47,7 @@ void RawView::OnUpdate([[maybe_unused]] wxView *sender, [[maybe_unused]] wxObjec
 
 void RawView::SaveContents()
 {
-    auto doc = GetHaDocument();
+    auto doc = static_cast<HaDocumentBase *>(GetDocument());
     for (size_t i = 0; i < m_listbook->GetPageCount(); ++i) {
         auto text = static_cast<wxTextCtrl *>(m_listbook->GetPage(i));
         if (text->IsModified()) {
@@ -87,7 +87,7 @@ void RawView::OnSectionDelete([[maybe_unused]] wxCommandEvent &event)
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     int sel = m_listbook->GetSelection();
     if (sel != wxNOT_FOUND) {
-        auto doc = GetHaDocument();
+        auto doc = static_cast<HaDocumentBase *>(GetDocument());
         doc->DeleteSection(m_listbook->GetPageText(sel));
         doc->Modify(true);
         m_listbook->DeletePage(sel);
@@ -98,7 +98,7 @@ void RawView::OnSectionDelete([[maybe_unused]] wxCommandEvent &event)
 void RawView::AddPage(const wxString &name, const wxString &content, bool dirty)
 {
     auto text = new wxTextCtrl(m_listbook, wxID_ANY, content, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
-    text->Bind(wxEVT_TEXT, &HaDocumentBase::OnChange, GetHaDocument());
+    text->Bind(wxEVT_TEXT, &HaDocumentBase::OnChange, static_cast<HaDocumentBase *>(GetDocument()));
     m_listbook->AddPage(text, name, true);
     if (dirty) {
         // To save the content even not modified.

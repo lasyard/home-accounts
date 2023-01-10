@@ -35,7 +35,8 @@
         "tuple": "cpp",
         "version": "cpp",
         "stdexcept": "cpp",
-        "sstream": "cpp"
+        "sstream": "cpp",
+        "exception": "cpp"
     },
     "C/C++ Include Guard.Insert Blank Line": true,
     "C/C++ Include Guard.Macro Type": "Filepath",

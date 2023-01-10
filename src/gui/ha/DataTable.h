@@ -42,7 +42,6 @@ private:
     DataFile *m_dataFile;
     DataTableCellAttrs m_attrs;
     wxVector<wxArrayString> m_cache;
-    wxVector<wxVector<bool>> m_flag; // If the cache of the cell is up to date
 };
 
 #endif /* _HA_DATA_TABLE_H_ */

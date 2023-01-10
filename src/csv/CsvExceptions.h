@@ -9,8 +9,7 @@
 class ParseError : public std::runtime_error
 {
 public:
-    explicit ParseError(int column, ColumnType type, const char *buf)
-        : std::runtime_error(""), m_lineNo(-1), m_column(column), m_type(type)
+    explicit ParseError(const char *msg, const char *buf) : std::runtime_error(msg), m_lineNo(-1)
     {
         strncpy(m_buf, buf, BUF_LEN - 1);
         m_buf[BUF_LEN - 1] = '\0';
@@ -18,7 +17,7 @@ public:
 
     const char *what() const noexcept override
     {
-        sprintf(m_what, "CSV parsing error at %d:%d of type %s: %s", m_lineNo, m_column, nameOf(m_type), m_buf);
+        sprintf(m_what, "%s at %d: %s", std::runtime_error::what(), m_lineNo, m_buf);
         return m_what;
     }
 
@@ -27,15 +26,40 @@ public:
         m_lineNo = lineNo;
     }
 
-private:
+protected:
     static const int BUF_LEN = 64;
 
     int m_lineNo;
-    int m_column;
-    ColumnType m_type;
     char m_buf[BUF_LEN];
 
     mutable char m_what[256];
+};
+
+class DataParseError : public ParseError
+{
+public:
+    explicit DataParseError(int column, ColumnType type, const char *buf)
+        : ParseError("CSV parsing error", buf), m_column(column), m_type(type)
+    {
+    }
+
+    const char *what() const noexcept override
+    {
+        sprintf(
+            m_what,
+            "%s at %d:%d of type %s: %s",
+            std::runtime_error::what(),
+            m_lineNo,
+            m_column,
+            nameOf(m_type),
+            m_buf
+        );
+        return m_what;
+    }
+
+private:
+    int m_column;
+    ColumnType m_type;
 };
 
 #endif /* _CSV_CSV_EXCEPTIONS_H_ */

@@ -30,15 +30,9 @@ void HaViewBase::OnClosingDocument()
 void HaViewBase::OnChangePass([[maybe_unused]] wxCommandEvent &event)
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
-    auto doc = GetHaDocument();
+    auto doc = static_cast<HaDocumentBase *>(GetDocument());
     ChangePassDialog dlg(nullptr, doc->GetPass());
     if (dlg.ShowModal() == wxID_OK) {
         doc->ChangePass(dlg.GetPass());
     }
-}
-
-HaDocumentBase *HaViewBase::GetHaDocument() const
-{
-    auto doc = GetDocument();
-    return static_cast<HaDocumentBase *>(doc);
 }

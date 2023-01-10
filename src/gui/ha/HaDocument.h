@@ -23,12 +23,13 @@ public:
     {
     }
 
-    DataFile &getDataFile()
+    DataFile &GetDataFile()
     {
         return m_dataFile;
     }
 
-    void loadData(const wxString &name);
+    void LoadData(const wxString &name);
+    void SaveData(const wxString &name);
 
 private:
     DataFile m_dataFile;

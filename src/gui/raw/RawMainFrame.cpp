@@ -31,6 +31,7 @@ RawMainFrame::RawMainFrame(
 )
     : wxDocParentFrame(manager, parent, id, title, pos, size, type, name)
 {
+    wxLog::AddTraceMask(TM);
     wxXmlResource::Get()->LoadObject(this, nullptr, "main", "wxFrame");
 }
 

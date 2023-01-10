@@ -87,7 +87,7 @@ void HaDocumentBase::Modify(bool modified)
     }
 }
 
-void HaDocumentBase::GetSectionNames(wxVector<wxString> &names) const
+void HaDocumentBase::GetSectionNames(wxArrayString &names) const
 {
     wxASSERT(m_doc != nullptr);
     std::vector<std::string> stdNames;
@@ -103,10 +103,21 @@ void HaDocumentBase::GetSection(const wxString &name, wxString &content) const
     content = m_doc->get(name.ToStdString());
 }
 
-void HaDocumentBase::SaveSection(const wxString &name, const wxString &content)
+void HaDocumentBase::GetSection(const wxString &name, std::string &content) const
 {
     wxASSERT(m_doc != nullptr);
-    m_doc->put(name.ToStdString(), content.ToStdString());
+    content = m_doc->get(name.ToStdString());
+}
+
+void HaDocumentBase::SaveSection(const wxString &name, const wxString &content)
+{
+    SaveSection(name, content.ToStdString());
+}
+
+void HaDocumentBase::SaveSection(const wxString &name, const std::string &content)
+{
+    wxASSERT(m_doc != nullptr);
+    m_doc->put(name.ToStdString(), content);
 }
 
 void HaDocumentBase::DeleteSection(const wxString &name)

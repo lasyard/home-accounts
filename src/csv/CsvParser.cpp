@@ -20,7 +20,7 @@ void CsvParser::parseLine(const char *line, void *datum[])
         const char *b = p;
         p = parseByType(b, type, data);
         if (p == NULL) {
-            throw ParseError(i, type, b);
+            throw DataParseError(i, type, b);
         }
         ++p; // Skip the sep
     }

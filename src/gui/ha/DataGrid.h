@@ -39,6 +39,10 @@ public:
     virtual void OnInsert(wxCommandEvent &event);
 
     void SetAttributes();
+    void AutoFit();
+
+private:
+    static const int ROW_HEIGHT = 25;
 };
 
 #endif /* _HA_DATA_GRID_H_ */

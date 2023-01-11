@@ -43,6 +43,8 @@ public:
     virtual void OnAbout(wxCommandEvent &event);
 
 private:
+    static const wxString CFG_FILE_HISTORY;
+
     HaDocument *GetCurrentDocument() const;
     HaView *GetCurrentView() const;
 };

@@ -67,6 +67,9 @@ const char *parse_cstring(const char *buf, char **data, char sep)
 {
     struct string str;
     const char *p = parse_string(buf, &str, sep);
+    if (*data != NULL) {
+        free(*data);
+    }
     char *s = malloc(str.len + 1);
     if (s != NULL) {
         strncpy(s, str.buf, str.len);
@@ -85,9 +88,12 @@ char *output_string(char *buf, const struct string *data)
 
 char *output_cstring(char *buf, const char *data)
 {
-    size_t len = strlen(data);
-    memcpy(buf, data, len);
-    return buf + len;
+    if (data != NULL) {
+        size_t len = strlen(data);
+        memcpy(buf, data, len);
+        return buf + len;
+    }
+    return buf;
 }
 
 struct string *string_ref(struct string *dst, const char *buf, size_t len)

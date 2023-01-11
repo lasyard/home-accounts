@@ -92,27 +92,24 @@ TEST_CASE("parse_string")
 
 TEST_CASE("parse_cstring")
 {
-    char *str;
+    char *str = nullptr;
     const char *s = "abc::def/gh";
     const char *p = parse_cstring(s, &str, ':');
     CHECK(strcmp(str, "abc") == 0);
-    free(str);
     CHECK(p - s == 3);
     s = p + 1;
     p = parse_cstring(s, &str, ':');
     CHECK(strcmp(str, "") == 0);
-    free(str);
     CHECK(p - s == 0);
     s = p + 1;
     p = parse_cstring(s, &str, '/');
     CHECK(strcmp(str, "def") == 0);
-    free(str);
     CHECK(p - s == 3);
     s = p + 1;
     p = parse_cstring(s, &str, '/');
     CHECK(strcmp(str, "gh") == 0);
-    free(str);
     CHECK(p - s == 2);
+    free(str);
 }
 
 TEST_CASE("output_string")

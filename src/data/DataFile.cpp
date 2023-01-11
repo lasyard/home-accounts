@@ -50,14 +50,7 @@ void DataFile::read(std::istream &is)
             throw;
         }
     }
-    for (auto p = m_data.pages.first; p != NULL; p = p->next) {
-        struct page *page = get_page(p);
-        m_index.push_back(IndexItem(page, PAGE));
-        for (auto q = page->items.first; q != NULL; q = q->next) {
-            struct item *item = get_item(q);
-            m_index.push_back(IndexItem(item, ITEM));
-        }
-    }
+    createIndex();
 }
 
 void DataFile::read(const std::string &str)
@@ -73,7 +66,9 @@ void DataFile::write(std::ostream &os)
         writePage(os, page);
         for (auto q = page->items.first; q != NULL; q = q->next) {
             const struct item *item = get_item(q);
-            writeItem(os, item);
+            if (!item_is_empty(item)) {
+                writeItem(os, item);
+            }
         }
     }
 }
@@ -84,57 +79,126 @@ void DataFile::write(std::string &str)
     write(os);
 }
 
-std::string DataFile::getString(int row, int col)
+std::string DataFile::getRowLabel(int row)
 {
-    if (m_index[row].m_type == ITEM) {
-        const struct item *item = (const struct item *)m_index[row].m_ptr;
-        switch (col) {
-        case 0:
-            return m_parser->toStringByType(m_types[col], &item->time);
-        case 1:
-            return m_parser->toStringByType(m_types[col], &item->money);
-        case 2:
-            return m_parser->toStringByType(m_types[col], item->desc);
-        }
-    } else if (m_index[row].m_type == PAGE && col == 0) {
+    auto seq = m_index[row].m_seq;
+    return (seq > 0) ? std::to_string(seq) : "";
+}
+
+std::string DataFile::getPageTitleString(int row)
+{
+    if (m_index[row].m_type == PAGE) {
         const struct page *page = (const struct page *)m_index[row].m_ptr;
         return m_parser->toStringByType(DATE, &page->date);
     }
     return "";
 }
 
-void DataFile::setString(int row, int col, const std::string &value)
+std::string DataFile::getTimeString(int row)
 {
-    if (m_index[row].m_type == PAGE) {
-        return;
+    if (m_index[row].m_type == ITEM) {
+        const struct item *item = (const struct item *)m_index[row].m_ptr;
+        return m_parser->toStringByType(m_types[TIME_INDEX], &item->time);
     }
-    struct item *item = (struct item *)m_index[row].m_ptr;
-    switch (col) {
-    case 0:
-        m_parser->parseStringByType(value, m_types[col], &item->time);
-        break;
-    case 1:
-        m_parser->parseStringByType(value, m_types[col], &item->money);
-        break;
-    case 2:
-        release_item_desc(item);
-        m_parser->parseStringByType(value, m_types[col], &item->desc);
-        break;
+    return "";
+}
+
+std::string DataFile::getIncomeString(int row)
+{
+    if (m_index[row].m_type == ITEM) {
+        const struct item *item = (const struct item *)m_index[row].m_ptr;
+        if (item->money < 0) {
+            money_t money = -item->money;
+            return m_parser->toStringByType(m_types[MONEY_INDEX], &money);
+        }
     }
+    return "";
+}
+
+std::string DataFile::getOutlayString(int row)
+{
+    if (m_index[row].m_type == ITEM) {
+        const struct item *item = (const struct item *)m_index[row].m_ptr;
+        if (item->money >= 0) {
+            return m_parser->toStringByType(m_types[MONEY_INDEX], &item->money);
+        }
+    }
+    return "";
+}
+
+std::string DataFile::getDescString(int row)
+{
+    if (m_index[row].m_type == ITEM) {
+        const struct item *item = (const struct item *)m_index[row].m_ptr;
+        return m_parser->toStringByType(m_types[DESC_INDEX], item->desc);
+    }
+    return "";
+}
+
+void DataFile::setMoney(int row, const std::string &value, bool negative)
+{
+    if (m_index[row].m_type == ITEM) {
+        struct item *item = (struct item *)m_index[row].m_ptr;
+        money_t money;
+        m_parser->parseStringByType(value, MONEY, &money);
+        item->money = negative ? -money : money;
+    }
+}
+
+void DataFile::setDesc(int row, const std::string &value)
+{
+    if (m_index[row].m_type == ITEM) {
+        struct item *item = (struct item *)m_index[row].m_ptr;
+        m_parser->parseStringByType(value, m_types[DESC_INDEX], &item->desc);
+    }
+}
+
+bool DataFile::insertItemAfter(size_t pos)
+{
+    auto index = m_index[pos];
+    struct item *item = nullptr;
+    if (index.m_type == ITEM) {
+        item = insert_item((struct item *)index.m_ptr);
+    } else if (index.m_type == PAGE) {
+        item = add_item_head((struct page *)index.m_ptr);
+    }
+    if (item != nullptr) {
+        int seq = index.m_seq + 1;
+        m_index.insert(std::next(m_index.begin(), pos + 1), IndexItem(item, ITEM, seq));
+        for (auto p = pos + 2; p < m_index.size() && m_index[p].m_type != PAGE; ++p) {
+            ++m_index[p].m_seq;
+        }
+        return true;
+    }
+    return false;
 }
 
 void DataFile::populateReadPtr(void *datum[], struct item *item)
 {
-    datum[0] = &item->time;
-    datum[1] = &item->money;
-    datum[2] = &item->desc;
+    datum[TIME_INDEX] = &item->time;
+    datum[MONEY_INDEX] = &item->money;
+    datum[DESC_INDEX] = &item->desc;
 }
 
 void DataFile::populateWritePtr(const void *datum[], const struct item *item)
 {
-    datum[0] = &item->time;
-    datum[1] = &item->money;
-    datum[2] = item->desc;
+    datum[TIME_INDEX] = &item->time;
+    datum[MONEY_INDEX] = &item->money;
+    datum[DESC_INDEX] = item->desc;
+}
+
+void DataFile::createIndex()
+{
+    m_index.clear();
+    for (auto p = m_data.pages.first; p != NULL; p = p->next) {
+        struct page *page = get_page(p);
+        int seq = 0;
+        m_index.push_back(IndexItem(page, PAGE, seq++));
+        for (auto q = page->items.first; q != NULL; q = q->next) {
+            struct item *item = get_item(q);
+            m_index.push_back(IndexItem(item, ITEM, seq++));
+        }
+    }
 }
 
 void DataFile::readPage(struct page *page)

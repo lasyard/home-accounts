@@ -26,6 +26,8 @@ void init_page(struct page *page);
 void release_page(struct page *page);
 
 struct item *add_item(struct page *page);
+struct item *add_item_head(struct page *page);
+struct item *insert_item(struct item *pos);
 
 #ifdef __cplusplus
 }

@@ -17,6 +17,11 @@ public:
     DataFile();
     virtual ~DataFile();
 
+    enum IndexType {
+        PAGE,
+        ITEM,
+    };
+
     static const ColumnType COLUMN_TYPES[];
 
     virtual void read(std::istream &is);
@@ -34,13 +39,21 @@ public:
         return m_cols;
     }
 
-    std::string getString(int row, int col);
+    std::string getRowLabel(int row);
+    std::string getPageTitleString(int row);
+    std::string getTimeString(int row);
+    std::string getIncomeString(int row);
+    std::string getOutlayString(int row);
+    std::string getDescString(int row);
 
-    void setString(int row, int col, const std::string &value);
+    void setMoney(int row, const std::string &value, bool negative);
+    void setDesc(int row, const std::string &value);
 
-    bool isPage(int row)
+    bool insertItemAfter(size_t pos);
+
+    IndexType getRowType(int row) const
     {
-        return m_index[row].m_type == PAGE;
+        return m_index[row].m_type;
     }
 
     struct data &getData()
@@ -58,18 +71,18 @@ protected:
     virtual void populateWritePtr(const void *datum[], const struct item *item);
 
 private:
-    enum IndexType {
-        PAGE,
-        ITEM,
-    };
+    static const int TIME_INDEX = 0;
+    static const int MONEY_INDEX = 1;
+    static const int DESC_INDEX = 2;
 
     struct IndexItem {
-    public:
-        IndexItem(void *ptr, enum IndexType type) : m_ptr(ptr), m_type(type)
+        IndexItem(void *ptr, enum IndexType type, int seq) : m_ptr(ptr), m_type(type), m_seq(seq)
         {
         }
+
         void *m_ptr;
         enum IndexType m_type;
+        int m_seq;
     };
 
     static const int MAX_LINE_LENGTH = 1024;
@@ -81,6 +94,7 @@ private:
     CsvParser *m_parser;
     std::vector<struct IndexItem> m_index;
 
+    void createIndex();
     void readPage(struct page *page);
     void readItem(struct item *item);
     void writePage(std::ostream &os, const struct page *page);

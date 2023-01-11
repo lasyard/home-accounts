@@ -23,7 +23,8 @@ extern "C" {
 
 void init_item(struct item *item);
 void release_item(struct item *item);
-void release_item_desc(struct item *item);
+
+bool item_is_empty(const struct item *item);
 
 #ifdef __cplusplus
 }

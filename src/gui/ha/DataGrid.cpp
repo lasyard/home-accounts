@@ -2,6 +2,7 @@
 #include <wx/dc.h>
 
 #include "DataGrid.h"
+#include "DataTable.h"
 #include "Defs.h"
 
 IMPLEMENT_DYNAMIC_CLASS(DataGrid, wxGrid);
@@ -32,17 +33,30 @@ void DataGrid::OnGridSelectCell(wxGridEvent &event)
 void DataGrid::OnInsert([[maybe_unused]] wxCommandEvent &event)
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
+    BeginBatch();
+    auto row = GetGridCursorRow();
+    InsertRows(row + 1);
+    // `AutoSizeRow` not work here.
+    AutoSizeRows(false);
+    SetGridCursor(row + 1, DataTable::OUTLAY_COL);
+    EndBatch();
 }
 
 void DataGrid::SetAttributes()
 {
     BeginBatch();
     SetColMinimalAcceptableWidth(80);
-    SetRowMinimalAcceptableHeight(18);
-    SetRowLabelSize(0);
-    SetColLabelSize(wxGRID_AUTOSIZE);
-    AutoSizeColumns(false);
-    AutoSizeRows(false);
+    SetRowMinimalAcceptableHeight(ROW_HEIGHT);
+    SetRowLabelSize(wxArtProvider::GetBitmap("logo").GetWidth() + 2);
+    SetColLabelSize(wxArtProvider::GetBitmap("logo").GetHeight() + 2);
     DisableDragColMove();
+    EndBatch();
+}
+
+void DataGrid::AutoFit()
+{
+    BeginBatch();
+    AutoSizeRows(false);
+    AutoSizeColumns(false);
     EndBatch();
 }

@@ -1,3 +1,4 @@
+#include <wx/config.h>
 #include <wx/msgdlg.h>
 #include <wx/notebook.h>
 #include <wx/wx.h>
@@ -21,6 +22,8 @@ EVT_UPDATE_UI(ID_INSERT, HaMainFrame::OnUpdateInsert)
 EVT_MENU(ID_ABOUT, HaMainFrame::OnAbout)
 END_EVENT_TABLE()
 
+const wxString HaMainFrame::CFG_FILE_HISTORY = "FileHistory";
+
 HaMainFrame::HaMainFrame(
     wxDocManager *manager,
     wxFrame *parent,
@@ -37,11 +40,20 @@ HaMainFrame::HaMainFrame(
     wxXmlResource::Get()->LoadObject(this, nullptr, "main", "wxFrame");
     // `hide` in XRC is not effective.
     XRCCTRL(*this, "book", wxNotebook)->Show(false);
+    XRCCTRL(*this, "transactions", DataGrid)->SetAttributes();
+    wxConfig config(_(APP_NAME));
+    config.SetPath(CFG_FILE_HISTORY);
+    m_docManager->FileHistoryLoad(config);
+    auto fileMenu = GetMenuBar()->GetMenu(GetMenuBar()->FindMenu("File"));
+    m_docManager->FileHistoryAddFilesToMenu(fileMenu);
 }
 
 void HaMainFrame::OnClose([[maybe_unused]] wxCloseEvent &event)
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
+    wxConfig config(_(APP_NAME));
+    config.SetPath(CFG_FILE_HISTORY);
+    m_docManager->FileHistorySave(config);
     Destroy();
     wxExit();
 }

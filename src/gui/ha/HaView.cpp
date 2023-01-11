@@ -37,14 +37,13 @@ void HaView::OnUpdate([[maybe_unused]] wxView *sender, [[maybe_unused]] wxObject
     auto table = new DataTable(&doc->GetDataFile());
     // `AssignTable` is not existing in earlier version of wxWidgets.
     m_transactionsGrid->SetTable(table, true);
-    // Row labels are not updated even by SetTable, so do this.
-    m_transactionsGrid->SetAttributes();
-    m_transactionsGrid->ForceRefresh();
+    m_transactionsGrid->AutoFit();
 }
 
 void HaView::OnInsert(wxCommandEvent &event)
 {
     m_transactionsGrid->OnInsert(event);
+    GetDocument()->Modify(true);
 }
 
 bool HaView::IsInsertionEnabled()

@@ -107,9 +107,9 @@ std::string DataFile::getIncomeString(int row)
 {
     if (m_index[row].m_type == ITEM) {
         const struct item *item = (const struct item *)m_index[row].m_ptr;
-        if (item->money < 0) {
-            money_t money = -item->money;
-            return m_parser->toStringByType(m_types[MONEY_INDEX], &money);
+        if (item->amount < 0) {
+            money_t amount = -item->amount;
+            return m_parser->toStringByType(m_types[MONEY_INDEX], &amount);
         }
     }
     return "";
@@ -119,8 +119,8 @@ std::string DataFile::getOutlayString(int row)
 {
     if (m_index[row].m_type == ITEM) {
         const struct item *item = (const struct item *)m_index[row].m_ptr;
-        if (item->money >= 0) {
-            return m_parser->toStringByType(m_types[MONEY_INDEX], &item->money);
+        if (item->amount >= 0) {
+            return m_parser->toStringByType(m_types[MONEY_INDEX], &item->amount);
         }
     }
     return "";
@@ -139,9 +139,9 @@ void DataFile::setMoney(int row, const std::string &value, bool negative)
 {
     if (m_index[row].m_type == ITEM) {
         struct item *item = (struct item *)m_index[row].m_ptr;
-        money_t money;
-        m_parser->parseStringByType(value, MONEY, &money);
-        item->money = negative ? -money : money;
+        money_t amount;
+        m_parser->parseStringByType(value, MONEY, &amount);
+        item->amount = negative ? -amount : amount;
     }
 }
 
@@ -176,14 +176,14 @@ bool DataFile::insertItemAfter(size_t pos)
 void DataFile::populateReadPtr(void *datum[], struct item *item)
 {
     datum[TIME_INDEX] = &item->time;
-    datum[MONEY_INDEX] = &item->money;
+    datum[MONEY_INDEX] = &item->amount;
     datum[DESC_INDEX] = &item->desc;
 }
 
 void DataFile::populateWritePtr(const void *datum[], const struct item *item)
 {
     datum[TIME_INDEX] = &item->time;
-    datum[MONEY_INDEX] = &item->money;
+    datum[MONEY_INDEX] = &item->amount;
     datum[DESC_INDEX] = item->desc;
 }
 

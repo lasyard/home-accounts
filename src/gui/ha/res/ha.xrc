@@ -45,6 +45,10 @@
 					<label>_Insert\tEnter</label>
 					<help></help>
 				</object>
+				<object class="wxMenuItem" name="delete">
+					<label>_Delete\tDelete</label>
+					<help></help>
+				</object>
 			</object>
 			<object class="wxMenu" name="m_helpMenu">
 				<label>_Help</label>

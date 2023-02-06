@@ -19,6 +19,7 @@ BEGIN_EVENT_TABLE(HaMainFrame, wxDocParentFrame)
 EVT_CLOSE(HaMainFrame::OnClose)
 EVT_UPDATE_UI(ID_CHANGE_PASS, HaMainFrame::OnUpdateChangePass)
 EVT_UPDATE_UI(ID_INSERT, HaMainFrame::OnUpdateInsert)
+EVT_UPDATE_UI(ID_DELETE, HaMainFrame::OnUpdateDelete)
 EVT_MENU(ID_ABOUT, HaMainFrame::OnAbout)
 END_EVENT_TABLE()
 
@@ -69,7 +70,14 @@ void HaMainFrame::OnUpdateInsert(wxUpdateUIEvent &event)
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     HaView *view = GetCurrentView();
-    event.Enable(view != nullptr && view->IsInsertionEnabled());
+    event.Enable(view != nullptr && view->IsInsertEnabled());
+}
+
+void HaMainFrame::OnUpdateDelete(wxUpdateUIEvent &event)
+{
+    wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
+    HaView *view = GetCurrentView();
+    event.Enable(view != nullptr && view->IsDeleteEnabled());
 }
 
 void HaMainFrame::OnAbout([[maybe_unused]] wxCommandEvent &event)

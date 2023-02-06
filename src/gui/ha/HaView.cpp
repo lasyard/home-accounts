@@ -14,6 +14,7 @@ IMPLEMENT_TM(HaView)
 BEGIN_EVENT_TABLE(HaView, HaViewBase)
 EVT_MENU(ID_CHANGE_PASS, HaViewBase::OnChangePass)
 EVT_MENU(ID_INSERT, HaView::OnInsert)
+EVT_MENU(ID_DELETE, HaView::OnDelete)
 END_EVENT_TABLE()
 
 bool HaView::OnCreate(wxDocument *doc, [[maybe_unused]] long flags)
@@ -38,6 +39,7 @@ void HaView::OnUpdate([[maybe_unused]] wxView *sender, [[maybe_unused]] wxObject
     // `AssignTable` is not existing in earlier version of wxWidgets.
     m_transactionsGrid->SetTable(table, true);
     m_transactionsGrid->AutoFit();
+    m_transactionsGrid->SetFocus();
 }
 
 void HaView::OnInsert(wxCommandEvent &event)
@@ -46,9 +48,20 @@ void HaView::OnInsert(wxCommandEvent &event)
     GetDocument()->Modify(true);
 }
 
-bool HaView::IsInsertionEnabled()
+void HaView::OnDelete(wxCommandEvent &event)
 {
-    return m_book->GetSelection() == 0;
+    m_transactionsGrid->OnDelete(event);
+    GetDocument()->Modify(true);
+}
+
+bool HaView::IsInsertEnabled()
+{
+    return m_book->GetSelection() == 0 && m_transactionsGrid->HasFocus();
+}
+
+bool HaView::IsDeleteEnabled()
+{
+    return m_book->GetSelection() == 0 && m_transactionsGrid->HasFocus() && m_transactionsGrid->IsDeleteEnabled();
 }
 
 void HaView::SaveContents()

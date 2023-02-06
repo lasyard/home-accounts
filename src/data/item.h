@@ -11,7 +11,7 @@ struct item {
     struct list_item list;
     struct page *page;
     dtime_t time;
-    money_t money;
+    money_t amount;
     char *desc;
 };
 

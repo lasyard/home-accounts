@@ -26,8 +26,10 @@ public:
     void OnUpdate(wxView *sender, wxObject *hint) override;
 
     virtual void OnInsert(wxCommandEvent &event);
+    virtual void OnDelete(wxCommandEvent &event);
 
-    bool IsInsertionEnabled();
+    bool IsInsertEnabled();
+    bool IsDeleteEnabled();
 
     void SaveContents() override;
     void ClearContents() override;

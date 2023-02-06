@@ -37,6 +37,9 @@ public:
 
     virtual void OnGridSelectCell(wxGridEvent &event);
     virtual void OnInsert(wxCommandEvent &event);
+    virtual void OnDelete(wxCommandEvent &event);
+
+    bool IsDeleteEnabled() const;
 
     void SetAttributes();
     void AutoFit();

@@ -42,6 +42,37 @@ void DataGrid::OnInsert([[maybe_unused]] wxCommandEvent &event)
     EndBatch();
 }
 
+void DataGrid::OnDelete([[maybe_unused]] wxCommandEvent &event)
+{
+    wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
+    BeginBatch();
+    const auto blocks = GetSelectedBlocks();
+    if (blocks.begin() != blocks.end()) { // Not empty
+        for (const auto block : GetSelectedBlocks()) {
+            auto topLeft = block.GetTopLeft();
+            auto bottomRight = block.GetBottomRight();
+            for (int i = topLeft.GetRow(); i <= bottomRight.GetRow(); ++i) {
+                for (int j = topLeft.GetCol(); j <= bottomRight.GetCol(); ++j) {
+                    SetCellValue(i, j, "");
+                }
+            }
+        }
+        ClearSelection();
+    } else {
+        SetCellValue(GetGridCursorCoords(), "");
+    }
+    EndBatch();
+}
+
+bool DataGrid::IsDeleteEnabled() const
+{
+    if (IsSelection()) {
+        return true;
+    }
+    auto coords = GetGridCursorCoords();
+    return coords != wxGridNoCellCoords && !GetCellAttr(coords)->IsReadOnly();
+}
+
 void DataGrid::SetAttributes()
 {
     BeginBatch();

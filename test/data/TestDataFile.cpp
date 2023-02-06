@@ -26,18 +26,18 @@ TEST_CASE("read")
     CHECK(first->items_num == 1);
     struct item *item = get_item(list_first(&first->items));
     CHECK(item->time == 36000);
-    CHECK(item->money == 1234);
+    CHECK(item->amount == 1234);
     CHECK(strcmp(item->desc, "New Bee") == 0);
     struct page *last = get_page(list_last(&data.pages));
     CHECK(last->date == 2451546);
     CHECK(last->items_num == 2);
     item = get_item(list_first(&last->items));
     CHECK(item->time == 36060);
-    CHECK(item->money == 560);
+    CHECK(item->amount == 560);
     CHECK(strcmp(item->desc, "Tree New Bee") == 0);
     item = get_item(list_last(&last->items));
     CHECK(item->time == 39661);
-    CHECK(item->money == 789);
+    CHECK(item->amount == 789);
     CHECK(strcmp(item->desc, "") == 0);
 }
 
@@ -49,7 +49,7 @@ TEST_CASE("write")
     page->date = 2451545;
     struct item *item = add_item(page);
     item->time = 36000;
-    item->money = 1234;
+    item->amount = 1234;
     char *p = (char *)malloc(64);
     strcpy(p, "New Bee");
     item->desc = p;
@@ -57,13 +57,13 @@ TEST_CASE("write")
     page->date = 2451546;
     item = add_item(page);
     item->time = 36060;
-    item->money = 560;
+    item->amount = 560;
     p = (char *)malloc(64);
     strcpy(p, "Tree New Bee");
     item->desc = p;
     item = add_item(page);
     item->time = 39661;
-    item->money = 789;
+    item->amount = 789;
     p = (char *)malloc(64);
     strcpy(p, "");
     item->desc = p;

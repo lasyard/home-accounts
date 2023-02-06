@@ -16,8 +16,8 @@ TEST_CASE("parseLine")
     struct string str2;
     int32_t i1;
     int64_t i2;
-    money_t money;
-    void *datum[]{&str1, &str2, &i1, &i2, &money};
+    money_t amount;
+    void *datum[]{&str1, &str2, &i1, &i2, &amount};
     SUBCASE("sep == ','")
     {
         parser.parseLine("   abc, def , 10, -100 , 123.45", datum);
@@ -25,7 +25,7 @@ TEST_CASE("parseLine")
         CHECK(string_cstrcmp(&str2, "def") == 0);
         CHECK(i1 == 10);
         CHECK(i2 == -100);
-        CHECK(money == 12345);
+        CHECK(amount == 12345);
     }
     SUBCASE("sep == '|'")
     {
@@ -35,7 +35,7 @@ TEST_CASE("parseLine")
         CHECK(string_cstrcmp(&str2, "4567") == 0);
         CHECK(i1 == -32768);
         CHECK(i2 == 343);
-        CHECK(money == 678910);
+        CHECK(amount == 678910);
     }
 }
 

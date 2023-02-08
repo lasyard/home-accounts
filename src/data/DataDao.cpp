@@ -1,31 +1,30 @@
 #include <sstream>
 
-#include "DataFile.h"
+#include "DataDao.h"
 #include "csv/CsvExceptions.h"
 #include "csv/CsvParser.h"
 #include "csv/str.h"
 #include "item.h"
 #include "page.h"
 
-const ColumnType DataFile::COLUMN_TYPES[] = {
+const ColumnType DataDao::COLUMN_TYPES[] = {
     TIME,
     MONEY,
     CSTR,
 };
 
-DataFile::DataFile() : m_cols(sizeof(COLUMN_TYPES) / sizeof(ColumnType)), m_types(COLUMN_TYPES), m_index()
+DataDao::DataDao()
+    : CsvDao(sizeof(COLUMN_TYPES) / sizeof(ColumnType), COLUMN_TYPES, itemReadPtr, itemWritePtr), m_index()
 {
     init_data(&m_data);
-    m_parser = new CsvParser(m_cols, m_types);
 }
 
-DataFile::~DataFile()
+DataDao::~DataDao()
 {
-    delete m_parser;
     release_data(&m_data);
 }
 
-void DataFile::read(std::istream &is)
+void DataDao::read(std::istream &is)
 {
     release_data(&m_data);
     int lineNo = 0;
@@ -53,13 +52,7 @@ void DataFile::read(std::istream &is)
     createIndex();
 }
 
-void DataFile::read(const std::string &str)
-{
-    std::istringstream is(str);
-    read(is);
-}
-
-void DataFile::write(std::ostream &os)
+void DataDao::write(std::ostream &os)
 {
     for (auto p = m_data.pages.first; p != NULL; p = p->next) {
         const struct page *page = get_page(p);
@@ -73,19 +66,13 @@ void DataFile::write(std::ostream &os)
     }
 }
 
-void DataFile::write(std::string &str)
-{
-    std::ostringstream os(str);
-    write(os);
-}
-
-std::string DataFile::getRowLabel(int row)
+std::string DataDao::getRowLabel(int row)
 {
     auto seq = m_index[row].m_seq;
     return (seq > 0) ? std::to_string(seq) : "";
 }
 
-std::string DataFile::getPageTitleString(int row)
+std::string DataDao::getPageTitleString(int row)
 {
     if (m_index[row].m_type == PAGE) {
         const struct page *page = (const struct page *)m_index[row].m_ptr;
@@ -94,48 +81,48 @@ std::string DataFile::getPageTitleString(int row)
     return "";
 }
 
-std::string DataFile::getTimeString(int row)
+std::string DataDao::getTimeString(int row)
 {
     if (m_index[row].m_type == ITEM) {
         const struct item *item = (const struct item *)m_index[row].m_ptr;
-        return m_parser->toStringByType(m_types[TIME_INDEX], &item->time);
+        return m_parser->toStringOfColumn(TIME_INDEX, &item->time);
     }
     return "";
 }
 
-std::string DataFile::getIncomeString(int row)
+std::string DataDao::getIncomeString(int row)
 {
     if (m_index[row].m_type == ITEM) {
         const struct item *item = (const struct item *)m_index[row].m_ptr;
         if (item->amount < 0) {
             money_t amount = -item->amount;
-            return m_parser->toStringByType(m_types[MONEY_INDEX], &amount);
+            return m_parser->toStringOfColumn(MONEY_INDEX, &amount);
         }
     }
     return "";
 }
 
-std::string DataFile::getOutlayString(int row)
+std::string DataDao::getOutlayString(int row)
 {
     if (m_index[row].m_type == ITEM) {
         const struct item *item = (const struct item *)m_index[row].m_ptr;
         if (item->amount >= 0) {
-            return m_parser->toStringByType(m_types[MONEY_INDEX], &item->amount);
+            return m_parser->toStringOfColumn(MONEY_INDEX, &item->amount);
         }
     }
     return "";
 }
 
-std::string DataFile::getDescString(int row)
+std::string DataDao::getDescString(int row)
 {
     if (m_index[row].m_type == ITEM) {
         const struct item *item = (const struct item *)m_index[row].m_ptr;
-        return m_parser->toStringByType(m_types[DESC_INDEX], item->desc);
+        return m_parser->toStringOfColumn(DESC_INDEX, item->desc);
     }
     return "";
 }
 
-void DataFile::setMoney(int row, const std::string &value, bool negative)
+void DataDao::setMoney(int row, const std::string &value, bool negative)
 {
     if (m_index[row].m_type == ITEM) {
         struct item *item = (struct item *)m_index[row].m_ptr;
@@ -145,15 +132,15 @@ void DataFile::setMoney(int row, const std::string &value, bool negative)
     }
 }
 
-void DataFile::setDesc(int row, const std::string &value)
+void DataDao::setDesc(int row, const std::string &value)
 {
     if (m_index[row].m_type == ITEM) {
         struct item *item = (struct item *)m_index[row].m_ptr;
-        m_parser->parseStringByType(value, m_types[DESC_INDEX], &item->desc);
+        m_parser->parseStringOfColumn(value, DESC_INDEX, &item->desc);
     }
 }
 
-bool DataFile::insertItemAfter(size_t pos)
+bool DataDao::insertItemAfter(size_t pos)
 {
     auto index = m_index[pos];
     struct item *item = nullptr;
@@ -173,21 +160,39 @@ bool DataFile::insertItemAfter(size_t pos)
     return false;
 }
 
-void DataFile::populateReadPtr(void *datum[], struct item *item)
+void *DataDao::itemReadPtr(void *data, int i)
 {
-    datum[TIME_INDEX] = &item->time;
-    datum[MONEY_INDEX] = &item->amount;
-    datum[DESC_INDEX] = &item->desc;
+    struct item *item = static_cast<struct item *>(data);
+    switch (i) {
+    case TIME_INDEX:
+        return &item->time;
+    case MONEY_INDEX:
+        return &item->amount;
+    case DESC_INDEX:
+        return &item->desc;
+    default:
+        break;
+    }
+    return nullptr;
 }
 
-void DataFile::populateWritePtr(const void *datum[], const struct item *item)
+const void *DataDao::itemWritePtr(const void *data, int i)
 {
-    datum[TIME_INDEX] = &item->time;
-    datum[MONEY_INDEX] = &item->amount;
-    datum[DESC_INDEX] = item->desc;
+    const struct item *item = static_cast<const struct item *>(data);
+    switch (i) {
+    case TIME_INDEX:
+        return &item->time;
+    case MONEY_INDEX:
+        return &item->amount;
+    case DESC_INDEX:
+        return item->desc;
+    default:
+        break;
+    }
+    return nullptr;
 }
 
-void DataFile::createIndex()
+void DataDao::createIndex()
 {
     m_index.clear();
     for (auto p = m_data.pages.first; p != NULL; p = p->next) {
@@ -201,7 +206,7 @@ void DataFile::createIndex()
     }
 }
 
-void DataFile::readPage(struct page *page)
+void DataDao::readPage(struct page *page)
 {
     date_t date;
     const char *p = parse_date(m_buf + 1, &date, ',', '-');
@@ -212,24 +217,20 @@ void DataFile::readPage(struct page *page)
     }
 }
 
-void DataFile::readItem(struct item *item)
+void DataDao::readItem(struct item *item)
 {
-    void *datum[m_cols];
-    populateReadPtr(datum, item);
-    m_parser->parseLine(m_buf, datum);
+    m_parser->parseLine(m_buf, item);
 }
 
-void DataFile::writePage(std::ostream &os, const struct page *page)
+void DataDao::writePage(std::ostream &os, const struct page *page)
 {
     char *p = output_date(m_buf, page->date);
     *p = '\0';
     os << '#' << m_buf << std::endl;
 }
 
-void DataFile::writeItem(std::ostream &os, const struct item *item)
+void DataDao::writeItem(std::ostream &os, const struct item *item)
 {
-    const void *datum[m_cols];
-    populateWritePtr(datum, item);
-    m_parser->outputLine(m_buf, datum);
+    m_parser->outputLine(m_buf, item);
     os << m_buf << std::endl;
 }

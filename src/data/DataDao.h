@@ -1,21 +1,19 @@
-#ifndef _DATA_DATA_FILE_H_
-#define _DATA_DATA_FILE_H_
+#ifndef _DATA_DATA_DAO_H_
+#define _DATA_DATA_DAO_H_
 
 #include <istream>
 #include <ostream>
 #include <string>
 #include <vector>
 
-#include "csv/ColumnType.h"
+#include "CsvDao.h"
 #include "data.h"
 
-class CsvParser;
-
-class DataFile
+class DataDao : public CsvDao<struct data>
 {
 public:
-    DataFile();
-    virtual ~DataFile();
+    DataDao();
+    virtual ~DataDao();
 
     enum IndexType {
         PAGE,
@@ -24,19 +22,12 @@ public:
 
     static const ColumnType COLUMN_TYPES[];
 
-    virtual void read(std::istream &is);
-    virtual void read(const std::string &str);
-    virtual void write(std::ostream &os);
-    virtual void write(std::string &str);
+    void read(std::istream &is) override;
+    void write(std::ostream &os) override;
 
     int getNumberRows() const
     {
         return m_index.size();
-    }
-
-    int getNumberCols() const
-    {
-        return m_cols;
     }
 
     std::string getRowLabel(int row);
@@ -56,20 +47,6 @@ public:
         return m_index[row].m_type;
     }
 
-    struct data &getData()
-    {
-        return m_data;
-    }
-
-    const ColumnType *getTypes() const
-    {
-        return m_types;
-    }
-
-protected:
-    virtual void populateReadPtr(void *datum[], struct item *item);
-    virtual void populateWritePtr(const void *datum[], const struct item *item);
-
 private:
     static const int TIME_INDEX = 0;
     static const int MONEY_INDEX = 1;
@@ -87,12 +64,11 @@ private:
 
     static const int MAX_LINE_LENGTH = 1024;
 
-    int m_cols;
-    const ColumnType *m_types;
-    struct data m_data;
     char m_buf[MAX_LINE_LENGTH];
-    CsvParser *m_parser;
     std::vector<struct IndexItem> m_index;
+
+    static void *itemReadPtr(void *data, int i);
+    static const void *itemWritePtr(const void *data, int i);
 
     void createIndex();
     void readPage(struct page *page);
@@ -101,4 +77,4 @@ private:
     void writeItem(std::ostream &os, const struct item *item);
 };
 
-#endif /* _DATA_DATA_FILE_H_ */
+#endif /* _DATA_DATA_DAO_H_ */

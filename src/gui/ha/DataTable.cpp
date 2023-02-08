@@ -1,7 +1,6 @@
 #include <vector>
 
 #include "DataTable.h"
-#include "data/DataFile.h"
 #include "data/item.h"
 #include "data/page.h"
 
@@ -12,8 +11,8 @@ const wxString DataTable::COL_LABELS[]{
     "Description",
 };
 
-DataTable::DataTable(DataFile *dataFile)
-    : wxGridTableBase(), m_dataFile(dataFile), m_attrs(COL_NUM), m_cache(GetNumberRows(), wxArrayString())
+DataTable::DataTable(DataDao *dataDao)
+    : wxGridTableBase(), m_dataDao(dataDao), m_attrs(COL_NUM), m_cache(GetNumberRows(), wxArrayString())
 {
     for (auto i = 0; i < GetNumberRows(); ++i) {
         CacheRow(i);
@@ -31,7 +30,7 @@ wxString DataTable::GetValue(int row, int col)
 
 wxString DataTable::GetRowLabelValue(int row)
 {
-    return m_dataFile->getRowLabel(row);
+    return m_dataDao->getRowLabel(row);
 }
 
 wxString DataTable::GetColLabelValue(int col)
@@ -53,7 +52,7 @@ bool DataTable::InsertRows(size_t pos, size_t numRows)
 {
     wxASSERT(pos > 0);
     for (size_t i = 0; i < numRows; ++i) {
-        if (!m_dataFile->insertItemAfter(pos - 1)) {
+        if (!m_dataDao->insertItemAfter(pos - 1)) {
             break;
         }
         m_cache.insert(std::next(m_cache.begin(), pos), wxArrayString());
@@ -69,8 +68,8 @@ bool DataTable::InsertRows(size_t pos, size_t numRows)
 
 wxGridCellAttr *DataTable::GetAttr(int row, int col, [[maybe_unused]] wxGridCellAttr::wxAttrKind kind)
 {
-    auto rowType = m_dataFile->getRowType(row);
-    if (rowType == DataFile::IndexType::ITEM) {
+    auto rowType = m_dataDao->getRowType(row);
+    if (rowType == DataDao::IndexType::ITEM) {
         switch (col) {
         case TIME_COL:
             return m_attrs.GetTime();
@@ -80,7 +79,7 @@ wxGridCellAttr *DataTable::GetAttr(int row, int col, [[maybe_unused]] wxGridCell
         default:
             break;
         }
-    } else if (rowType == DataFile::IndexType::PAGE) {
+    } else if (rowType == DataDao::IndexType::PAGE) {
         // Do not return colSpan > 1 for col > 0, or there will be index out of bond problem.
         return col == 0 ? m_attrs.GetPage() : m_attrs.GetOverlapped();
     }
@@ -90,13 +89,13 @@ wxGridCellAttr *DataTable::GetAttr(int row, int col, [[maybe_unused]] wxGridCell
 void DataTable::CacheRow(int row)
 {
     m_cache[row].Empty();
-    auto rowType = m_dataFile->getRowType(row);
-    if (rowType == DataFile::IndexType::ITEM) {
+    auto rowType = m_dataDao->getRowType(row);
+    if (rowType == DataDao::IndexType::ITEM) {
         for (auto col = 0; col < COL_NUM; ++col) {
             m_cache[row].Add(GetCellValue(row, col));
         }
-    } else if (rowType == DataFile::IndexType::PAGE) {
-        m_cache[row].Add(m_dataFile->getPageTitleString(row));
+    } else if (rowType == DataDao::IndexType::PAGE) {
+        m_cache[row].Add(m_dataDao->getPageTitleString(row));
         for (auto col = 1; col < COL_NUM; ++col) {
             m_cache[row].Add("");
         }
@@ -107,13 +106,13 @@ wxString DataTable::GetCellValue(int row, int col)
 {
     switch (col) {
     case TIME_COL:
-        return m_dataFile->getTimeString(row);
+        return m_dataDao->getTimeString(row);
     case INCOME_COL:
-        return m_dataFile->getIncomeString(row);
+        return m_dataDao->getIncomeString(row);
     case OUTLAY_COL:
-        return m_dataFile->getOutlayString(row);
+        return m_dataDao->getOutlayString(row);
     case DESC_COL:
-        return m_dataFile->getDescString(row);
+        return m_dataDao->getDescString(row);
     default:
         break;
     }
@@ -124,17 +123,17 @@ void DataTable::SetCellValue(int row, int col, const std::string &value)
 {
     switch (col) {
     case INCOME_COL:
-        m_dataFile->setMoney(row, value, true);
+        m_dataDao->setMoney(row, value, true);
         // Update outlay, too
-        m_cache[row][OUTLAY_COL] = m_dataFile->getOutlayString(row);
+        m_cache[row][OUTLAY_COL] = m_dataDao->getOutlayString(row);
         break;
     case OUTLAY_COL:
-        m_dataFile->setMoney(row, value, false);
+        m_dataDao->setMoney(row, value, false);
         // Update income, too
-        m_cache[row][INCOME_COL] = m_dataFile->getIncomeString(row);
+        m_cache[row][INCOME_COL] = m_dataDao->getIncomeString(row);
         break;
     case DESC_COL:
-        m_dataFile->setDesc(row, value);
+        m_dataDao->setDesc(row, value);
         break;
     default:
         break;

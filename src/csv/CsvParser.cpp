@@ -6,19 +6,29 @@
 #include "money.h"
 #include "str.h"
 
-CsvParser::CsvParser(int cols, const ColumnType *types)
-    : m_cols(cols), m_types(types), m_sep(','), m_moneyPrec(2), m_moneyMul(100)
+CsvParser::CsvParser(
+    int cols,
+    const ColumnType *types,
+    void *(*readPtr)(void *data, int i),
+    const void *(*writePtr)(const void *data, int i)
+)
+    : m_cols(cols),
+      m_types(types),
+      m_sep(','),
+      m_moneyPrec(2),
+      m_moneyMul(100),
+      m_readPtr(readPtr),
+      m_writePtr(writePtr)
 {
 }
 
-void CsvParser::parseLine(const char *line, void *datum[])
+void CsvParser::parseLine(const char *line, void *data)
 {
     const char *p = line;
     for (int i = 0; i < m_cols; ++i) {
         auto type = m_types[i];
-        auto data = datum[i];
         const char *b = p;
-        p = parseByType(b, type, data);
+        p = parseByType(b, type, m_readPtr(data, i));
         if (p == NULL) {
             throw DataParseError(i, type, b);
         }
@@ -26,11 +36,11 @@ void CsvParser::parseLine(const char *line, void *datum[])
     }
 }
 
-char *CsvParser::outputLine(char *buf, const void *datum[])
+char *CsvParser::outputLine(char *buf, const void *data)
 {
     char *p = buf;
     for (int i = 0; i < m_cols; ++i) {
-        p = outputByType(p, m_types[i], datum[i]);
+        p = outputByType(p, m_types[i], m_writePtr(data, i));
         if (i < m_cols - 1) {
             *(p++) = m_sep;
         }

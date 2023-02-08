@@ -6,7 +6,7 @@
 
 #include "DataTableCellAttrs.h"
 #include "csv/ColumnType.h"
-#include "data/DataFile.h"
+#include "data/DataDao.h"
 
 class DataTable : public wxGridTableBase
 {
@@ -18,13 +18,13 @@ public:
     static const int COL_NUM = 4;
     static const wxString COL_LABELS[];
 
-    DataTable(DataFile *dataFile);
+    DataTable(DataDao *dataDao);
 
     virtual ~DataTable();
 
     int GetNumberRows() override
     {
-        return m_dataFile->getNumberRows();
+        return m_dataDao->getNumberRows();
     }
 
     int GetNumberCols() override
@@ -48,7 +48,7 @@ public:
     wxGridCellAttr *GetAttr(int row, int col, wxGridCellAttr::wxAttrKind kind) override;
 
 private:
-    DataFile *m_dataFile;
+    DataDao *m_dataDao;
     DataTableCellAttrs m_attrs;
     wxVector<wxArrayString> m_cache;
 

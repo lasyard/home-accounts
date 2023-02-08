@@ -13,7 +13,7 @@ void HaDocument::LoadData(const wxString &name)
     std::string content;
     try {
         GetSection(name, content);
-        m_dataFile.read(content);
+        m_dataDao.readString(content);
     } catch (std::exception &e) {
         wxLogError(e.what());
     }
@@ -22,6 +22,6 @@ void HaDocument::LoadData(const wxString &name)
 void HaDocument::SaveData(const wxString &name)
 {
     std::ostringstream os;
-    m_dataFile.write(os);
+    m_dataDao.write(os);
     SaveSection(name, os.str());
 }

@@ -2,7 +2,7 @@
 #define _HA_HA_DOCUMENT_H_
 
 #include "../HaDocumentBase.h"
-#include "data/DataFile.h"
+#include "data/DataDao.h"
 
 class SectionFile;
 
@@ -14,7 +14,7 @@ class HaDocument : public HaDocumentBase
 public:
     DECLARE_TM()
 
-    HaDocument() : HaDocumentBase(), m_dataFile()
+    HaDocument() : HaDocumentBase(), m_dataDao()
     {
         wxLog::AddTraceMask(TM);
     }
@@ -23,16 +23,16 @@ public:
     {
     }
 
-    DataFile &GetDataFile()
+    DataDao &GetDataFile()
     {
-        return m_dataFile;
+        return m_dataDao;
     }
 
     void LoadData(const wxString &name);
     void SaveData(const wxString &name);
 
 private:
-    DataFile m_dataFile;
+    DataDao m_dataDao;
 };
 
 #endif /* _HA_HA_DOCUMENT_H_ */

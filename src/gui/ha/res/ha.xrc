@@ -115,6 +115,24 @@
 							</object>
 						</object>
 					</object>
+					<object class="notebookpage">
+						<label>Configs</label>
+						<selected>0</selected>
+						<object class="wxPanel" name="panelConfigs">
+							<style>wxTAB_TRAVERSAL</style>
+							<object class="wxBoxSizer">
+								<orient>wxHORIZONTAL</orient>
+								<object class="sizeritem">
+									<option>1</option>
+									<flag>wxEXPAND | wxALL</flag>
+									<border>5</border>
+									<object class="wxListbook" name="bookConfigs">
+										<style>wxLB_LEFT</style>
+									</object>
+								</object>
+							</object>
+						</object>
+					</object>
 				</object>
 			</object>
 			<object class="spacer">

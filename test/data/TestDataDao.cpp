@@ -3,7 +3,7 @@
 #include <cstring>
 #include <sstream>
 
-#include "DataFile.h"
+#include "DataDao.h"
 #include "data/item.h"
 #include "data/page.h"
 
@@ -16,9 +16,9 @@ TEST_CASE("read")
                       "11:01:01, 7.89, \n";
     std::stringstream text;
     text << str;
-    DataFile dataFile;
-    dataFile.read(text);
-    struct data &data = dataFile.getData();
+    DataDao dataDao;
+    dataDao.read(text);
+    struct data &data = dataDao.getData();
     CHECK(data.pages_num == 2);
     CHECK(data.items_num == 3);
     struct page *first = get_page(list_first(&data.pages));
@@ -43,8 +43,8 @@ TEST_CASE("read")
 
 TEST_CASE("write")
 {
-    DataFile dataFile;
-    struct data &data = dataFile.getData();
+    DataDao dataDao;
+    struct data &data = dataDao.getData();
     struct page *page = add_page(&data);
     page->date = 2451545;
     struct item *item = add_item(page);
@@ -68,7 +68,7 @@ TEST_CASE("write")
     strcpy(p, "");
     item->desc = p;
     std::ostringstream out;
-    dataFile.write(out);
+    dataDao.write(out);
     CHECK(
         out.str() == "#2000-01-01\n"
                      "10:00:00,12.34,New Bee\n"

@@ -31,6 +31,7 @@ add_exe(${APP_NAME}
     HaMainFrame.cpp
     HaDocument.cpp
     HaView.cpp
+    CachedTable.cpp
     DataGrid.cpp
     DataTable.cpp
     DataTableCellAttrs.cpp

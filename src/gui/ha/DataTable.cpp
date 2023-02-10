@@ -1,69 +1,29 @@
 #include <vector>
 
 #include "DataTable.h"
-#include "data/item.h"
-#include "data/page.h"
+#include "data/DataDao.h"
 
-const wxString DataTable::COL_LABELS[]{
-    "Time",
-    "Income",
-    "Outlay",
-    "Description",
+const wxString DataTable::COL_LABELS[] = {
+    _("Time"),
+    _("Income"),
+    _("Outlay"),
+    _("Description"),
 };
 
 DataTable::DataTable(DataDao *dataDao)
-    : wxGridTableBase(), m_dataDao(dataDao), m_attrs(COL_NUM), m_cache(GetNumberRows(), wxArrayString())
+    : CachedTable(wxArrayString(COL_NUM, COL_LABELS)), m_dataDao(dataDao), m_attrs(COL_NUM)
 {
-    for (auto i = 0; i < GetNumberRows(); ++i) {
-        CacheRow(i);
-    }
+    // Do not call `this->GetNumberRows()`, cache is not inited.
+    InitCache(dataDao->getNumberRows());
 }
 
 DataTable::~DataTable()
 {
 }
 
-wxString DataTable::GetValue(int row, int col)
-{
-    return m_cache[row][col];
-}
-
 wxString DataTable::GetRowLabelValue(int row)
 {
     return m_dataDao->getRowLabel(row);
-}
-
-wxString DataTable::GetColLabelValue(int col)
-{
-    return _(COL_LABELS[col]);
-}
-
-void DataTable::SetValue(int row, int col, const wxString &value)
-{
-    SetCellValue(row, col, value.ToStdString());
-    m_cache[row][col] = GetCellValue(row, col);
-    auto grid = GetView();
-    if (grid != nullptr) {
-        grid->AutoSizeColumn(col);
-    }
-}
-
-bool DataTable::InsertRows(size_t pos, size_t numRows)
-{
-    wxASSERT(pos > 0);
-    for (size_t i = 0; i < numRows; ++i) {
-        if (!m_dataDao->insertItemAfter(pos - 1)) {
-            break;
-        }
-        m_cache.insert(std::next(m_cache.begin(), pos), wxArrayString());
-        CacheRow(pos);
-    }
-    auto grid = GetView();
-    if (grid != nullptr) {
-        wxGridTableMessage msg(this, wxGRIDTABLE_NOTIFY_ROWS_INSERTED, pos, numRows);
-        grid->ProcessTableMessage(msg);
-    }
-    return true;
 }
 
 wxGridCellAttr *DataTable::GetAttr(int row, int col, [[maybe_unused]] wxGridCellAttr::wxAttrKind kind)
@@ -86,35 +46,24 @@ wxGridCellAttr *DataTable::GetAttr(int row, int col, [[maybe_unused]] wxGridCell
     return m_attrs.GetDefault();
 }
 
-void DataTable::CacheRow(int row)
-{
-    m_cache[row].Empty();
-    auto rowType = m_dataDao->getRowType(row);
-    if (rowType == DataDao::IndexType::ITEM) {
-        for (auto col = 0; col < COL_NUM; ++col) {
-            m_cache[row].Add(GetCellValue(row, col));
-        }
-    } else if (rowType == DataDao::IndexType::PAGE) {
-        m_cache[row].Add(m_dataDao->getPageTitleString(row));
-        for (auto col = 1; col < COL_NUM; ++col) {
-            m_cache[row].Add("");
-        }
-    }
-}
-
 wxString DataTable::GetCellValue(int row, int col)
 {
-    switch (col) {
-    case TIME_COL:
-        return m_dataDao->getTimeString(row);
-    case INCOME_COL:
-        return m_dataDao->getIncomeString(row);
-    case OUTLAY_COL:
-        return m_dataDao->getOutlayString(row);
-    case DESC_COL:
-        return m_dataDao->getDescString(row);
-    default:
-        break;
+    auto rowType = m_dataDao->getRowType(row);
+    if (rowType == DataDao::IndexType::ITEM) {
+        switch (col) {
+        case TIME_COL:
+            return m_dataDao->getTimeString(row);
+        case INCOME_COL:
+            return m_dataDao->getIncomeString(row);
+        case OUTLAY_COL:
+            return m_dataDao->getOutlayString(row);
+        case DESC_COL:
+            return m_dataDao->getDescString(row);
+        default:
+            break;
+        }
+    } else if (rowType == DataDao::IndexType::PAGE && col == 0) {
+        return m_dataDao->getPageTitleString(row);
     }
     return "";
 }
@@ -125,12 +74,12 @@ void DataTable::SetCellValue(int row, int col, const std::string &value)
     case INCOME_COL:
         m_dataDao->setMoney(row, value, true);
         // Update outlay, too
-        m_cache[row][OUTLAY_COL] = m_dataDao->getOutlayString(row);
+        CacheCell(row, OUTLAY_COL);
         break;
     case OUTLAY_COL:
         m_dataDao->setMoney(row, value, false);
         // Update income, too
-        m_cache[row][INCOME_COL] = m_dataDao->getIncomeString(row);
+        CacheCell(row, INCOME_COL);
         break;
     case DESC_COL:
         m_dataDao->setDesc(row, value);
@@ -138,4 +87,9 @@ void DataTable::SetCellValue(int row, int col, const std::string &value)
     default:
         break;
     }
+}
+
+bool DataTable::InsertRow(int pos)
+{
+    return m_dataDao->insertItemAfter(pos - 1);
 }

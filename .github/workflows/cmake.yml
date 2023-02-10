@@ -28,6 +28,9 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Add wxWidgets repository key
+        run: sudo apt-key adv --recv-key --keyserver keyserver.ubuntu.com 6856E1DB1AC82609
+
       - name: Add wxWidgets repository
         run: sudo apt-add-repository 'deb http://repos.codelite.org/wx3.2.1/ubuntu/ jammy universe'
 

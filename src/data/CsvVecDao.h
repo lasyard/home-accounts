@@ -7,18 +7,18 @@
 #include "csv/CsvExceptions.h"
 #include "csv/str.h"
 
-template <typename I> class RowDao : public CsvDao<I, std::vector<I>>
+template <typename I> class CsvVecDao : public CsvDao<I, std::vector<I>>
 {
     typedef CsvRowTraits<I> Traits;
     typedef std::vector<I> T;
     typedef CsvDao<I, T> Csv;
 
 public:
-    RowDao() : Csv()
+    CsvVecDao() : Csv()
     {
     }
 
-    virtual ~RowDao()
+    virtual ~CsvVecDao()
     {
         for (auto &item : Dao<T>::m_data) {
             for (int i = 0; i < Traits::cols; ++i) {

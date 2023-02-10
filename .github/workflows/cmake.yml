@@ -21,15 +21,18 @@ jobs:
     # well on Windows or Mac.  You can convert this to a matrix build if you need
     # cross-platform coverage.
     # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - uses: actions/checkout@main
         with:
           submodules: recursive
 
+      - name: Add wxWidgets repository
+        run: sudo apt-add-repository 'deb http://repos.codelite.org/wx3.0.2/ubuntu/ impish universe'
+
       - name: Install Crypto++ and wxWidgets
-        run: sudo apt satisfy libcrypto++-dev libwxgtk3.0-gtk3-dev
+        run: sudo apt satisfy libcrypto++-dev libwxgtk3.1unofficial-dev
 
       - name: Configure CMake
         working-directory: ${{github.workspace}}

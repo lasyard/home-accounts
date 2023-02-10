@@ -3,9 +3,8 @@
 #include <cstring>
 #include <iostream>
 
+#include "CsvVecDao.h"
 #include "csv/money.h"
-
-#include "RowDao.h"
 
 struct item {
     int id;
@@ -58,7 +57,7 @@ public:
 
 TEST_CASE("read_write")
 {
-    RowDao<struct item> dao;
+    CsvVecDao<struct item> dao;
     dao.readString("1,abc,10.2\n"
                    "2,def,0.88");
     std::vector<struct item> &items = dao.getData();

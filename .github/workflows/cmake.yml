@@ -29,10 +29,10 @@ jobs:
           submodules: recursive
 
       - name: Add wxWidgets repository
-        run: sudo apt-add-repository 'deb http://repos.codelite.org/wx3.0.2/ubuntu/ impish universe'
+        run: sudo apt-add-repository 'deb http://repos.codelite.org/wx3.2.1/ubuntu/ jammy universe'
 
       - name: Install Crypto++ and wxWidgets
-        run: sudo apt satisfy libcrypto++-dev libwxgtk3.1unofficial-dev
+        run: sudo apt satisfy libcrypto++-dev libwxgtk3.2unofficial-dev
 
       - name: Configure CMake
         working-directory: ${{github.workspace}}

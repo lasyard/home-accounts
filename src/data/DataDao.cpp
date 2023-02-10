@@ -7,14 +7,56 @@
 #include "item.h"
 #include "page.h"
 
-const ColumnType DataDao::COLUMN_TYPES[] = {
-    TIME,
-    MONEY,
-    CSTR,
+template <> class CsvRowTraits<struct item>
+{
+public:
+    static const int TIME_INDEX = 0;
+    static const int MONEY_INDEX = 1;
+    static const int DESC_INDEX = 2;
+
+    static const int cols = 3;
+    static const ColumnType constexpr types[] = {
+        TIME,
+        MONEY,
+        CSTR,
+    };
+
+    static void *readPtr(void *data, int i)
+    {
+        struct item *item = static_cast<struct item *>(data);
+        switch (i) {
+        case TIME_INDEX:
+            return &item->time;
+        case MONEY_INDEX:
+            return &item->amount;
+        case DESC_INDEX:
+            return &item->desc;
+        default:
+            break;
+        }
+        return nullptr;
+    }
+
+    static const void *writePtr(const void *data, int i)
+    {
+        const struct item *item = static_cast<const struct item *>(data);
+        switch (i) {
+        case TIME_INDEX:
+            return &item->time;
+        case MONEY_INDEX:
+            return &item->amount;
+        case DESC_INDEX:
+            return item->desc;
+        default:
+            break;
+        }
+        return nullptr;
+    }
 };
 
-DataDao::DataDao()
-    : CsvDao(sizeof(COLUMN_TYPES) / sizeof(ColumnType), COLUMN_TYPES, itemReadPtr, itemWritePtr), m_index()
+typedef CsvRowTraits<struct item> ItemTraits;
+
+DataDao::DataDao() : CsvDao<struct item, struct data>(), m_index()
 {
     init_data(&m_data);
 }
@@ -85,7 +127,7 @@ std::string DataDao::getTimeString(int row)
 {
     if (m_index[row].m_type == ITEM) {
         const struct item *item = (const struct item *)m_index[row].m_ptr;
-        return m_parser->toStringOfColumn(TIME_INDEX, &item->time);
+        return m_parser->toStringOfColumn(ItemTraits::TIME_INDEX, &item->time);
     }
     return "";
 }
@@ -96,7 +138,7 @@ std::string DataDao::getIncomeString(int row)
         const struct item *item = (const struct item *)m_index[row].m_ptr;
         if (item->amount < 0) {
             money_t amount = -item->amount;
-            return m_parser->toStringOfColumn(MONEY_INDEX, &amount);
+            return m_parser->toStringOfColumn(ItemTraits::MONEY_INDEX, &amount);
         }
     }
     return "";
@@ -107,7 +149,7 @@ std::string DataDao::getOutlayString(int row)
     if (m_index[row].m_type == ITEM) {
         const struct item *item = (const struct item *)m_index[row].m_ptr;
         if (item->amount >= 0) {
-            return m_parser->toStringOfColumn(MONEY_INDEX, &item->amount);
+            return m_parser->toStringOfColumn(ItemTraits::MONEY_INDEX, &item->amount);
         }
     }
     return "";
@@ -117,7 +159,7 @@ std::string DataDao::getDescString(int row)
 {
     if (m_index[row].m_type == ITEM) {
         const struct item *item = (const struct item *)m_index[row].m_ptr;
-        return m_parser->toStringOfColumn(DESC_INDEX, item->desc);
+        return m_parser->toStringOfColumn(ItemTraits::DESC_INDEX, item->desc);
     }
     return "";
 }
@@ -136,7 +178,7 @@ void DataDao::setDesc(int row, const std::string &value)
 {
     if (m_index[row].m_type == ITEM) {
         struct item *item = (struct item *)m_index[row].m_ptr;
-        m_parser->parseStringOfColumn(value, DESC_INDEX, &item->desc);
+        m_parser->parseStringOfColumn(value, ItemTraits::DESC_INDEX, &item->desc);
     }
 }
 
@@ -158,38 +200,6 @@ bool DataDao::insertItemAfter(size_t pos)
         return true;
     }
     return false;
-}
-
-void *DataDao::itemReadPtr(void *data, int i)
-{
-    struct item *item = static_cast<struct item *>(data);
-    switch (i) {
-    case TIME_INDEX:
-        return &item->time;
-    case MONEY_INDEX:
-        return &item->amount;
-    case DESC_INDEX:
-        return &item->desc;
-    default:
-        break;
-    }
-    return nullptr;
-}
-
-const void *DataDao::itemWritePtr(const void *data, int i)
-{
-    const struct item *item = static_cast<const struct item *>(data);
-    switch (i) {
-    case TIME_INDEX:
-        return &item->time;
-    case MONEY_INDEX:
-        return &item->amount;
-    case DESC_INDEX:
-        return item->desc;
-    default:
-        break;
-    }
-    return nullptr;
 }
 
 void DataDao::createIndex()

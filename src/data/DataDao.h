@@ -9,7 +9,7 @@
 #include "CsvDao.h"
 #include "data.h"
 
-class DataDao : public CsvDao<struct data>
+class DataDao : public CsvDao<struct item, struct data>
 {
 public:
     DataDao();
@@ -19,8 +19,6 @@ public:
         PAGE,
         ITEM,
     };
-
-    static const ColumnType COLUMN_TYPES[];
 
     void read(std::istream &is) override;
     void write(std::ostream &os) override;
@@ -48,10 +46,6 @@ public:
     }
 
 private:
-    static const int TIME_INDEX = 0;
-    static const int MONEY_INDEX = 1;
-    static const int DESC_INDEX = 2;
-
     struct IndexItem {
         IndexItem(void *ptr, enum IndexType type, int seq) : m_ptr(ptr), m_type(type), m_seq(seq)
         {
@@ -62,13 +56,7 @@ private:
         int m_seq;
     };
 
-    static const int MAX_LINE_LENGTH = 1024;
-
-    char m_buf[MAX_LINE_LENGTH];
     std::vector<struct IndexItem> m_index;
-
-    static void *itemReadPtr(void *data, int i);
-    static const void *itemWritePtr(const void *data, int i);
 
     void createIndex();
     void readPage(struct page *page);

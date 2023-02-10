@@ -3,22 +3,18 @@
 
 #include <vector>
 
+#include "CsvRowTraits.h"
 #include "Dao.h"
-#include "csv/ColumnType.h"
 #include "csv/CsvParser.h"
 
-template <typename T> class CsvDao : public Dao<T>
+template <typename I, typename T> class CsvDao : public Dao<T>
 {
+    typedef CsvRowTraits<I> Traits;
+
 public:
-    CsvDao(
-        int cols,
-        const ColumnType types[],
-        void *(*readPtr)(void *data, int i),
-        const void *(*writePtr)(const void *data, int i)
-    )
-        : Dao<T>()
+    CsvDao() : Dao<T>()
     {
-        m_parser = new CsvParser(cols, types, readPtr, writePtr);
+        m_parser = new CsvParser(Traits::cols, Traits::types, Traits::readPtr, Traits::writePtr);
     }
 
     virtual ~CsvDao()
@@ -31,8 +27,14 @@ public:
         return m_parser->getCols();
     }
 
+    void read(std::istream &is) override = 0;
+    void write(std::ostream &os) override = 0;
+
 protected:
+    static const int MAX_LINE_LENGTH = 1024;
+
     CsvParser *m_parser;
+    char m_buf[MAX_LINE_LENGTH];
 };
 
 #endif /* _DATA_CSV_DAO_H_ */

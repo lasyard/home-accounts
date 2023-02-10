@@ -21,7 +21,9 @@ function(add_test target)
     target_link_libraries(${target} PRIVATE doctest)
 
     # Here `ADD_LABELS` must be provided.
-    doctest_discover_tests(${target} ADD_LABELS 1)
+    set(prefix ${target})
+    string(APPEND prefix " - test:")
+    doctest_discover_tests(${target} TEST_PREFIX ${prefix} ADD_LABELS 1)
 endfunction()
 
 function(add_exe target)

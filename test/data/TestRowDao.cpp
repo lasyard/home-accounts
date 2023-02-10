@@ -1,0 +1,79 @@
+#include "doctest/doctest.h"
+
+#include <cstring>
+#include <iostream>
+
+#include "csv/money.h"
+
+#include "RowDao.h"
+
+struct item {
+    int id;
+    char *name;
+    money_t amount;
+};
+
+template <> class CsvRowTraits<struct item>
+{
+public:
+    static const int cols = 3;
+    static const ColumnType constexpr types[] = {
+        INT32,
+        CSTR,
+        MONEY,
+    };
+
+    static void *readPtr(void *data, int i)
+    {
+        struct item *item = static_cast<struct item *>(data);
+        switch (i) {
+        case 0:
+            return &item->id;
+        case 1:
+            return &item->name;
+        case 2:
+            return &item->amount;
+        default:
+            break;
+        }
+        return nullptr;
+    }
+
+    static const void *writePtr(const void *data, int i)
+    {
+        const struct item *item = static_cast<const struct item *>(data);
+        switch (i) {
+        case 0:
+            return &item->id;
+        case 1:
+            return item->name;
+        case 2:
+            return &item->amount;
+        default:
+            break;
+        }
+        return nullptr;
+    }
+};
+
+TEST_CASE("read_write")
+{
+    RowDao<struct item> dao;
+    dao.readString("1,abc,10.2\n"
+                   "2,def,0.88");
+    std::vector<struct item> &items = dao.getData();
+    CHECK(items[0].id == 1);
+    CHECK(strcmp(items[0].name, "abc") == 0);
+    CHECK(items[0].amount == 1020L);
+    CHECK(items[1].id == 2);
+    CHECK(strcmp(items[1].name, "def") == 0);
+    CHECK(items[1].amount == 88L);
+    items[0].amount = 10L;
+    items[1].amount = 11L;
+    std::string out;
+    dao.writeString(out);
+    CHECK(
+        out == "1,abc,0.10\n"
+               "2,def,0.11\n"
+    );
+}

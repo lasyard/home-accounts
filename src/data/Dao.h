@@ -12,6 +12,7 @@ public:
     Dao()
     {
     }
+
     virtual ~Dao()
     {
     }
@@ -24,6 +25,11 @@ public:
         return m_data;
     }
 
+    const T &getData() const
+    {
+        return m_data;
+    }
+
     virtual void readString(const std::string &str)
     {
         std::istringstream is(str);
@@ -32,8 +38,9 @@ public:
 
     virtual void writeString(std::string &str)
     {
-        std::ostringstream os(str);
+        std::ostringstream os;
         write(os);
+        str = os.str();
     }
 
 protected:

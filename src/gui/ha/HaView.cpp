@@ -1,5 +1,8 @@
+#include <wx/listbook.h>
 #include <wx/notebook.h>
 
+#include "ColLabels.h"
+#include "CsvTable.h"
 #include "DataGrid.h"
 #include "DataTable.h"
 #include "Defs.h"
@@ -24,6 +27,7 @@ bool HaView::OnCreate(wxDocument *doc, [[maybe_unused]] long flags)
     SetFrame(frame);
     m_book = XRCCTRL(*frame, "book", wxNotebook);
     m_transactionsGrid = XRCCTRL(*frame, "transactions", DataGrid);
+    m_bookConfigs = XRCCTRL(*frame, "bookConfigs", wxListbook);
     m_book->Show();
     m_transactionsGrid->Bind(wxEVT_GRID_EDITOR_HIDDEN, &HaDocumentBase::OnChange, static_cast<HaDocument *>(doc));
     Activate(true);
@@ -34,12 +38,14 @@ void HaView::OnUpdate([[maybe_unused]] wxView *sender, [[maybe_unused]] wxObject
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     auto doc = static_cast<HaDocument *>(GetDocument());
+    doc->LoadConfigs();
     doc->LoadData("test");
-    auto table = new DataTable(&doc->GetDataFile());
+    auto table = new DataTable(&doc->GetDataDao());
     // `AssignTable` is not existing in earlier version of wxWidgets.
     m_transactionsGrid->SetTable(table, true);
     m_transactionsGrid->AutoFit();
     m_transactionsGrid->SetFocus();
+    AddConfigPage(_("Accounts"), new CsvTable(wxArrayString(2, ColLabels::ACCOUNTS), &doc->GetAccountsDao()));
 }
 
 void HaView::OnInsert(wxCommandEvent &event)
@@ -80,4 +86,11 @@ void HaView::ClearContents()
 
 void HaView::DiscardEdits()
 {
+}
+
+void HaView::AddConfigPage(const wxString &name, CachedTable *table)
+{
+    auto grid = new wxGrid(m_bookConfigs, wxID_ANY);
+    grid->SetTable(table);
+    m_bookConfigs->AddPage(grid, name, true);
 }

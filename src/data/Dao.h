@@ -19,6 +19,7 @@ public:
 
     virtual void read(std::istream &is) = 0;
     virtual void write(std::ostream &os) = 0;
+    virtual int getNumberRows() const = 0;
 
     T &getData()
     {

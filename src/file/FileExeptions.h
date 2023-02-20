@@ -38,9 +38,18 @@ public:
 class SectionNotFound : public std::runtime_error
 {
 public:
-    explicit SectionNotFound(const std::string &name) : std::runtime_error("Section \"" + name + "\" is not found.")
+    explicit SectionNotFound(const std::string &name)
+        : std::runtime_error("Section \"" + name + "\" is not found."), m_name(name)
     {
     }
+
+    const std::string &getName() const
+    {
+        return m_name;
+    }
+
+private:
+    std::string m_name;
 };
 
 class NoFileSpecified : public std::runtime_error

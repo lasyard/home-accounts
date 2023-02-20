@@ -1,6 +1,7 @@
 #ifndef _DATA_ROW_DAO_H_
 #define _DATA_ROW_DAO_H_
 
+#include <string>
 #include <vector>
 
 #include "CsvDao.h"
@@ -64,6 +65,23 @@ public:
             Csv::m_parser->outputLine(buf, &item);
             os << buf << std::endl;
         }
+    }
+
+    int getNumberRows() const override
+    {
+        return Dao<T>::m_data.size();
+    }
+
+    std::string getString(int row, int col)
+    {
+        auto &data = Dao<T>::m_data;
+        return Csv::m_parser->toStringOfColumn(col, Traits::writePtr(&data[row], col));
+    }
+
+    void setString(int row, int col, const std::string &value)
+    {
+        auto &data = Dao<T>::m_data;
+        Csv::m_parser->parseStringOfColumn(value, col, Traits::readPtr(&data[row], col));
     }
 
 private:

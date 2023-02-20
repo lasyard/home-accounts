@@ -15,8 +15,6 @@ public:
     static const int DESC_COL = 3;
     static const int COL_NUM = 4;
 
-    static const wxString COL_LABELS[];
-
     DataTable(DataDao *dataDao);
 
     virtual ~DataTable();

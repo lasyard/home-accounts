@@ -14,6 +14,11 @@ class TestDao : public Dao<int>
     void write([[maybe_unused]] std::ostream &os) override
     {
     }
+
+    int getNumberRows() const override
+    {
+        return 0;
+    }
 };
 
 TEST_CASE("value access")

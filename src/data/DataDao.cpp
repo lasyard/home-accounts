@@ -11,7 +11,7 @@ template <> class CsvRowTraits<struct item>
 {
 public:
     static const int TIME_INDEX = 0;
-    static const int MONEY_INDEX = 1;
+    static const int AMOUNT_INDEX = 1;
     static const int DESC_INDEX = 2;
 
     static const int cols = 3;
@@ -27,7 +27,7 @@ public:
         switch (i) {
         case TIME_INDEX:
             return &item->time;
-        case MONEY_INDEX:
+        case AMOUNT_INDEX:
             return &item->amount;
         case DESC_INDEX:
             return &item->desc;
@@ -43,7 +43,7 @@ public:
         switch (i) {
         case TIME_INDEX:
             return &item->time;
-        case MONEY_INDEX:
+        case AMOUNT_INDEX:
             return &item->amount;
         case DESC_INDEX:
             return item->desc;
@@ -138,7 +138,7 @@ std::string DataDao::getIncomeString(int row)
         const struct item *item = (const struct item *)m_index[row].m_ptr;
         if (item->amount < 0) {
             money_t amount = -item->amount;
-            return m_parser->toStringOfColumn(ItemTraits::MONEY_INDEX, &amount);
+            return m_parser->toStringOfColumn(ItemTraits::AMOUNT_INDEX, &amount);
         }
     }
     return "";
@@ -149,7 +149,7 @@ std::string DataDao::getOutlayString(int row)
     if (m_index[row].m_type == ITEM) {
         const struct item *item = (const struct item *)m_index[row].m_ptr;
         if (item->amount >= 0) {
-            return m_parser->toStringOfColumn(ItemTraits::MONEY_INDEX, &item->amount);
+            return m_parser->toStringOfColumn(ItemTraits::AMOUNT_INDEX, &item->amount);
         }
     }
     return "";

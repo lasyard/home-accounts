@@ -4,8 +4,10 @@
 #include "../HaViewBase.h"
 
 class wxNotebook;
+class wxListbook;
 
 class DataGrid;
+class CachedTable;
 class HaMainFrame;
 
 class HaView : public HaViewBase
@@ -38,6 +40,9 @@ public:
 private:
     wxNotebook *m_book;
     DataGrid *m_transactionsGrid;
+    wxListbook *m_bookConfigs;
+
+    void AddConfigPage(const wxString &name, CachedTable *table);
 };
 
 #endif /* _HA_HA_VIEW_H_ */

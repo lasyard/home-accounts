@@ -23,7 +23,7 @@ public:
     void read(std::istream &is) override;
     void write(std::ostream &os) override;
 
-    int getNumberRows() const
+    int getNumberRows() const override
     {
         return m_index.size();
     }

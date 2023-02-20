@@ -1,17 +1,11 @@
 #include <vector>
 
+#include "ColLabels.h"
 #include "DataTable.h"
 #include "data/DataDao.h"
 
-const wxString DataTable::COL_LABELS[] = {
-    _("Time"),
-    _("Income"),
-    _("Outlay"),
-    _("Description"),
-};
-
 DataTable::DataTable(DataDao *dataDao)
-    : CachedTable(wxArrayString(COL_NUM, COL_LABELS)), m_dataDao(dataDao), m_attrs(COL_NUM)
+    : CachedTable(wxArrayString(COL_NUM, ColLabels::DATA)), m_dataDao(dataDao), m_attrs(COL_NUM)
 {
     // Do not call `this->GetNumberRows()`, cache is not inited.
     InitCache(dataDao->getNumberRows());

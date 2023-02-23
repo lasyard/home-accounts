@@ -69,6 +69,7 @@ DataDao::~DataDao()
 void DataDao::read(std::istream &is)
 {
     release_data(&m_data);
+    init_data(&m_data);
     int lineNo = 0;
     struct page *page = NULL;
     while (is.getline(m_buf, MAX_LINE_LENGTH)) {

@@ -1,14 +1,14 @@
 #ifndef _GUI_CHANGE_PASS_DIALOG_H_
 #define _GUI_CHANGE_PASS_DIALOG_H_
 
-#include "ChangePassDialogBase.h"
+#include <wx/dialog.h>
 
-class ChangePassDialog : public ChangePassDialogBase
+class ChangePassDialog : public wxDialog
 {
 public:
     ChangePassDialog(wxWindow *parent, const wxString &currentPass);
 
-    wxString GetPass() const
+    const wxString &GetPass() const
     {
         return m_newPass;
     }

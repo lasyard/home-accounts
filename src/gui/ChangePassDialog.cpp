@@ -1,22 +1,28 @@
 #include <wx/msgdlg.h>
+#include <wx/textctrl.h>
+#include <wx/xrc/xmlres.h>
 
 #include "ChangePassDialog.h"
 
 ChangePassDialog::ChangePassDialog(wxWindow *parent, const wxString &currentPass)
-    : ChangePassDialogBase(parent), m_currentPass(currentPass), m_newPass()
+    : wxDialog(), m_currentPass(currentPass), m_newPass()
 {
+    wxXmlResource::Get()->LoadDialog(this, parent, "dlgChangePass");
 }
 
 bool ChangePassDialog::TransferDataFromWindow()
 {
-    if (m_passCurrent->GetValue() != m_currentPass) {
-        wxMessageBox("Wrong password!");
+    auto passCurrent = XRCCTRL(*this, "passCurrent", wxTextCtrl);
+    if (passCurrent->GetValue() != m_currentPass) {
+        wxMessageBox(_("Wrong password!"));
         return false;
     }
-    if (m_passNew->GetValue() != m_passNew2->GetValue()) {
-        wxMessageBox("Confirm new password failed!");
+    auto passNew = XRCCTRL(*this, "passNew", wxTextCtrl);
+    auto passNew2 = XRCCTRL(*this, "passNew2", wxTextCtrl);
+    if (passNew2->GetValue() != passNew->GetValue()) {
+        wxMessageBox(_("Confirm new password failed!"));
         return false;
     }
-    m_newPass = m_passNew->GetValue();
+    m_newPass = passNew->GetValue();
     return true;
 }

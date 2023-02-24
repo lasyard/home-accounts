@@ -52,7 +52,6 @@ public:
 
 private:
     wxNotebook *m_book;
-    DataPanel *m_dataPanel;
 
     HaPanel *GetCurrentPanel() const
     {

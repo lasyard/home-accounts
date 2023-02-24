@@ -2,12 +2,15 @@
 #define _GUI_CSV_TABLE_H_
 
 #include "CachedTable.h"
+#include "CellAttrs.h"
 #include "data/CsvVecDao.h"
 
 template <typename I> class CsvTable : public CachedTable
 {
+    typedef CsvRowTraits<I> Traits;
+
 public:
-    CsvTable(int cols, const wxString colLabels[], CsvVecDao<I> *dao) : CachedTable(cols, colLabels), m_dao(dao)
+    CsvTable(size_t cols, const wxString *const colLabels, CsvVecDao<I> *dao) : CachedTable(cols, colLabels), m_dao(dao)
     {
         InitCache(dao->getNumberRows());
     }
@@ -18,7 +21,25 @@ public:
 
     wxString GetRowLabelValue(int row) override
     {
-        return wxString::Format("%3d", row);
+        return m_dao->getRowLabel(row);
+    }
+
+    wxGridCellAttr *
+    GetAttr([[maybe_unused]] int row, int col, [[maybe_unused]] wxGridCellAttr::wxAttrKind kind) override
+    {
+        auto type = Traits::types[col];
+        switch (type) {
+        case INT32:
+        case INT64:
+        case MONEY:
+            return CellAttrs::ins().GetNumber();
+        case DATE:
+        case TIME:
+            return CellAttrs::ins().GetTime();
+        default:
+            break;
+        }
+        return CellAttrs::ins().GetDefault();
     }
 
 private:
@@ -36,7 +57,12 @@ private:
 
     bool InsertRow([[maybe_unused]] int pos) override
     {
-        return false;
+        return m_dao->insert(pos);
+    }
+
+    bool AppendRow() override
+    {
+        return m_dao->append();
     }
 };
 

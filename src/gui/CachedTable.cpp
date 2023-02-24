@@ -2,7 +2,7 @@
 
 #include "CachedTable.h"
 
-CachedTable::CachedTable(int cols, const wxString colLabels[])
+CachedTable::CachedTable(size_t cols, const wxString colLabels[])
     : wxGridTableBase(), m_colLabels(cols, colLabels), m_cache(nullptr)
 {
 }
@@ -54,7 +54,8 @@ void CachedTable::SetValue(int row, int col, const wxString &value)
 
 bool CachedTable::InsertRows(size_t pos, size_t numRows)
 {
-    for (size_t i = 0; i < numRows; ++i) {
+    size_t i;
+    for (i = 0; i < numRows; ++i) {
         if (!InsertRow(pos)) {
             break;
         }
@@ -63,7 +64,25 @@ bool CachedTable::InsertRows(size_t pos, size_t numRows)
     }
     auto grid = GetView();
     if (grid != nullptr) {
-        wxGridTableMessage msg(this, wxGRIDTABLE_NOTIFY_ROWS_INSERTED, pos, numRows);
+        wxGridTableMessage msg(this, wxGRIDTABLE_NOTIFY_ROWS_INSERTED, pos, i);
+        grid->ProcessTableMessage(msg);
+    }
+    return true;
+}
+
+bool CachedTable::AppendRows(size_t numRows)
+{
+    size_t i;
+    for (i = 0; i < numRows; ++i) {
+        if (!AppendRow()) {
+            break;
+        }
+        m_cache->push_back(wxArrayString());
+        CacheRow(m_cache->size() - 1);
+    }
+    auto grid = GetView();
+    if (grid != nullptr) {
+        wxGridTableMessage msg(this, wxGRIDTABLE_NOTIFY_ROWS_APPENDED, i, 0);
         grid->ProcessTableMessage(msg);
     }
     return true;

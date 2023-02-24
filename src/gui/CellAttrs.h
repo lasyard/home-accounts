@@ -5,14 +5,47 @@
 
 class CellAttrs
 {
-public:
-    CellAttrs(size_t cols);
+private:
+    CellAttrs();
     virtual ~CellAttrs();
+
+    CellAttrs(const CellAttrs &)
+    {
+    }
+
+    CellAttrs &operator=(const CellAttrs &)
+    {
+        return *this;
+    }
+
+public:
+    static CellAttrs &ins()
+    {
+        static CellAttrs instance;
+        return instance;
+    }
+
+    const wxFont &GetMonoFont()
+    {
+        return m_monoFont;
+    }
 
     auto GetDefault()
     {
         m_defaultAttr->IncRef();
         return m_defaultAttr;
+    }
+
+    auto GetReadOnly()
+    {
+        m_readOnlyAttr->IncRef();
+        return m_readOnlyAttr;
+    }
+
+    auto GetNumber()
+    {
+        m_numberAttr->IncRef();
+        return m_numberAttr;
     }
 
     auto GetMoney()
@@ -27,30 +60,23 @@ public:
         return m_timeAttr;
     }
 
-    auto GetPage()
-    {
-        m_pageAttr->IncRef();
-        return m_pageAttr;
-    }
-
     auto GetOverlapped()
     {
-        m_overlapped->IncRef();
-        return m_overlapped;
+        m_overlappedAttr->IncRef();
+        return m_overlappedAttr;
     }
 
 private:
+    wxFont m_monoFont;
+
     wxGridCellFloatEditor *m_floatEditor;
 
     wxGridCellAttr *m_defaultAttr;
     wxGridCellAttr *m_readOnlyAttr;
+    wxGridCellAttr *m_numberAttr;
     wxGridCellAttr *m_moneyAttr;
-    wxGridCellAttr *m_readOnlyMoneyAttr;
-    wxGridCellAttr *m_boldReadOnlyMoneyAttr;
-    wxGridCellAttr *m_redReadOnlyMoneyAttr;
     wxGridCellAttr *m_timeAttr;
-    wxGridCellAttr *m_pageAttr;
-    wxGridCellAttr *m_overlapped;
+    wxGridCellAttr *m_overlappedAttr;
 };
 
 #endif /* _GUI_CELL_ATTRS_H_ */

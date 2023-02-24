@@ -2,35 +2,20 @@
 
 #include "DataGrid.h"
 
-IMPLEMENT_DYNAMIC_CLASS(DataGrid, wxGrid);
+IMPLEMENT_DYNAMIC_CLASS(DataGrid, HaGrid);
 IMPLEMENT_TM(DataGrid);
 
 BEGIN_EVENT_TABLE(DataGrid, wxGrid)
 EVT_GRID_SELECT_CELL(DataGrid::OnGridSelectCell)
 END_EVENT_TABLE()
 
-DataGrid::DataGrid() : wxGrid()
+DataGrid::DataGrid() : HaGrid()
 {
     wxLog::AddTraceMask(TM);
 }
 
 DataGrid::~DataGrid()
 {
-}
-
-wxPen DataGrid::GetRowGridLinePen([[maybe_unused]] int row)
-{
-    return *wxTRANSPARENT_PEN;
-}
-
-wxPen DataGrid::GetColGridLinePen([[maybe_unused]] int col)
-{
-    return *wxLIGHT_GREY_PEN;
-}
-
-void DataGrid::DrawCornerLabel(wxDC &dc)
-{
-    dc.DrawBitmap(wxArtProvider::GetBitmap("logo"), 1, 1);
 }
 
 void DataGrid::OnGridSelectCell(wxGridEvent &event)
@@ -92,16 +77,4 @@ bool DataGrid::IsDeleteEnabled() const
     }
     auto coords = GetGridCursorCoords();
     return coords != wxGridNoCellCoords && !GetCellAttr(coords)->IsReadOnly();
-}
-
-void DataGrid::SetAttributes()
-{
-    BeginBatch();
-    SetColMinimalAcceptableWidth(80);
-    SetRowMinimalAcceptableHeight(ROW_HEIGHT);
-    auto logo = wxArtProvider::GetBitmap("logo");
-    SetRowLabelSize(logo.GetWidth() + 2);
-    SetColLabelSize(logo.GetHeight() + 2);
-    DisableDragColMove();
-    EndBatch();
 }

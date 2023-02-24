@@ -26,11 +26,11 @@
 					<help></help>
 				</object>
 				<object class="wxMenuItem" name="wxID_SAVEAS">
-					<label>Save _As\tCtrl+A</label>
+					<label>Save _As\tCtrl+Shift+S</label>
 					<help></help>
 				</object>
 				<object class="wxMenuItem" name="wxID_CLOSE">
-					<label>_Close\tCtrl+C</label>
+					<label>_Close\tCtrl+W</label>
 					<help></help>
 				</object>
 				<object class="separator" />

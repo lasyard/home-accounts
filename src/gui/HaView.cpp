@@ -2,13 +2,12 @@
 #include <wx/notebook.h>
 
 #include "ChangePassDialog.h"
-#include "ColLabels.h"
-#include "CsvTable.h"
 #include "Defs.h"
 #include "HaApp.h"
 #include "HaDocument.h"
 #include "HaMainFrame.h"
 #include "HaView.h"
+#include "configs/ConfigsPanel.h"
 #include "data/DataPanel.h"
 
 IMPLEMENT_DYNAMIC_CLASS(HaView, wxView)
@@ -22,7 +21,7 @@ EVT_MENU(ID_RAW_MODE, HaView::OnRawMode)
 EVT_NOTEBOOK_PAGE_CHANGED(ID_BOOK, HaView::OnPageChanged)
 END_EVENT_TABLE()
 
-HaView::HaView() : wxView(), m_book(nullptr), m_dataPanel(nullptr)
+HaView::HaView() : wxView(), m_book(nullptr)
 {
     wxLog::AddTraceMask(TM);
 }
@@ -38,8 +37,8 @@ bool HaView::OnCreate(wxDocument *doc, [[maybe_unused]] long flags)
     SetFrame(frame);
     m_book = XRCCTRL(*frame, "book", wxNotebook);
     auto haDoc = static_cast<HaDocument *>(doc);
-    m_dataPanel = new DataPanel(m_book, haDoc);
-    m_book->AddPage(m_dataPanel, DataPanel::LABEL, true);
+    HaPanel::AddToBook<DataPanel>(m_book, haDoc);
+    HaPanel::AddToBook<ConfigsPanel>(m_book, haDoc);
     m_book->Show();
     Activate(true);
     return true;
@@ -94,8 +93,9 @@ void HaView::OnDelete(wxCommandEvent &event)
 void HaView::OnRawMode(wxCommandEvent &event)
 {
     if (event.IsChecked()) {
-        auto panel = new RawPanel(m_book, static_cast<HaDocument *>(GetDocument()));
-        m_book->AddPage(panel, RawPanel::LABEL, true);
+        HaPanel::AddToBook<RawPanel>(m_book, static_cast<HaDocument *>(GetDocument()));
+        // It is the last one.
+        m_book->SetSelection(m_book->GetPageCount() - 1);
     } else {
         m_book->SetSelection(0);
     }

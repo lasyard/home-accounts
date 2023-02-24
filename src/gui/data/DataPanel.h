@@ -12,7 +12,6 @@ class DataPanel : public HaPanel
     DECLARE_DYNAMIC_CLASS(DataPanel)
 
 public:
-    static const wxString NAME;
     static const wxString LABEL;
 
     DataPanel(wxWindow *parent = nullptr, HaDocument *doc = nullptr);
@@ -30,7 +29,7 @@ public:
     void ShowData(const wxString &name);
 
 private:
-    DataGrid *m_dataGrid;
+    DataGrid *m_grid;
 };
 
 #endif /* _DATA_DATA_PANEL_H_ */

@@ -2,7 +2,6 @@
 #define _DATA_DATA_TABLE_H_
 
 #include "../CachedTable.h"
-#include "../CellAttrs.h"
 
 class DataDao;
 
@@ -15,7 +14,8 @@ public:
     static const int INCOME_COL = 1;
     static const int OUTLAY_COL = 2;
     static const int DESC_COL = 3;
-    static const int COL_NUM = 4;
+
+    static const size_t COL_NUM = 4;
 
     DataTable(DataDao *dataDao);
     virtual ~DataTable();
@@ -26,13 +26,16 @@ public:
 
 private:
     DataDao *m_dataDao;
-    CellAttrs m_attrs;
+    wxGridCellAttr *m_pageTitleAttr;
 
     wxString GetCellValue(int row, int col) override;
 
     void SetCellValue(int row, int col, const std::string &value) override;
 
     bool InsertRow(int pos) override;
+    bool AppendRow() override;
+
+    wxGridCellAttr *GetPageTitleAttr();
 };
 
 #endif /* _DATA_DATA_TABLE_H_ */

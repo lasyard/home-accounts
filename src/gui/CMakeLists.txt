@@ -31,8 +31,7 @@ endif()
 
 add_exe(${APP_NAME}
     ${RESOURCE_FILES}
-
-    # configs/PanelConfigs.cpp
+    configs/ConfigsPanel.cpp
     data/DataGrid.cpp
     data/DataPanel.cpp
     data/DataTable.cpp
@@ -40,10 +39,10 @@ add_exe(${APP_NAME}
     CachedTable.cpp
     CellAttrs.cpp
     ChangePassDialog.cpp
-    ColLabels.cpp
     HaApp.cpp
     HaArtProvider.cpp
     HaDocument.cpp
+    HaGrid.cpp
     HaMainFrame.cpp
     HaPanel.cpp
     HaView.cpp

@@ -4,7 +4,6 @@
 #include <wx/textdlg.h>
 
 #include "HaDocument.h"
-#include "file/FileExeptions.h"
 #include "file/SectionFile.h"
 #include "file/sqlite3/Sqlite3File.h"
 
@@ -130,24 +129,4 @@ void HaDocument::ChangePass(const wxString &pass)
         store->changePass(pass.ToStdString());
     }
     m_pass = pass;
-}
-
-void HaDocument::LoadData(const wxString &name)
-{
-    try {
-        std::string content;
-        GetSection(name, content);
-        m_dataDao.readString(content);
-    } catch (SectionNotFound &e) {
-        wxLogStatus(e.what());
-    } catch (std::exception &e) {
-        wxLogError(e.what());
-    }
-}
-
-void HaDocument::SaveData(const wxString &name)
-{
-    std::ostringstream os;
-    m_dataDao.write(os);
-    SaveSection(name, os.str());
 }

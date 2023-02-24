@@ -14,7 +14,6 @@ class RawPanel : public HaPanel
 public:
     DECLARE_TM()
 
-    static const wxString NAME;
     static const wxString LABEL;
 
     RawPanel(wxWindow *parent = nullptr, HaDocument *doc = nullptr);
@@ -35,15 +34,7 @@ private:
 
     void AddPage(const wxString &name, const wxString &content, bool dirty = false);
     void DeleteAllPages();
-    // clang-format off
-    void InsertPage(
-        int parent,
-        wxWindow *page,
-        const wxString &text,
-        bool bSelect = false,
-        int imageId = wxNOT_FOUND
-    );
-    // clang-format on
+    void InsertPage(int parent, wxWindow *page, const wxString &text, bool bSelect = false, int imageId = wxNOT_FOUND);
     wxString GetSectionName(int sel) const;
     void Unbind(int sel);
     bool IsLeaf(int sel) const;

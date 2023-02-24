@@ -8,6 +8,7 @@
 #include "data/ConfigPodsTraits.h"
 #include "data/CsvVecDao.h"
 #include "data/DataDao.h"
+#include "file/FileExeptions.h"
 
 class SectionFile;
 
@@ -56,8 +57,25 @@ public:
         return m_accountsDao;
     }
 
-    void LoadData(const wxString &name);
-    void SaveData(const wxString &name);
+    template <typename T> void TryLoad(const wxString &name, Dao<T> &dao)
+    {
+        try {
+            std::string content;
+            GetSection(name, content);
+            dao.readString(content);
+        } catch (SectionNotFound &e) {
+            wxLogStatus(e.what());
+        } catch (std::exception &e) {
+            wxLogError(e.what());
+        }
+    }
+
+    template <typename T> void DoSave(const wxString &name, Dao<T> &dao)
+    {
+        std::ostringstream os;
+        dao.write(os);
+        SaveSection(name, os.str());
+    }
 
 private:
     static const char *const IV;

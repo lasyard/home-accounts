@@ -1,6 +1,7 @@
 #ifndef _GUI_HA_PANEL_H_
 #define _GUI_HA_PANEL_H_
 
+#include <wx/bookctrl.h>
 #include <wx/panel.h>
 #include <wx/xrc/xmlres.h>
 
@@ -11,6 +12,13 @@ class HaPanel : public wxPanel
 public:
     HaPanel(HaDocument *doc);
     virtual ~HaPanel();
+
+    template <typename Panel>
+        requires std::derived_from<Panel, HaPanel>
+    static void AddToBook(wxBookCtrlBase *book, HaDocument *doc)
+    {
+        book->AddPage(new Panel(book, doc), Panel::LABEL, false);
+    }
 
     virtual void OnEnter();
 

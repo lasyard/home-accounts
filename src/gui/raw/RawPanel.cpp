@@ -7,6 +7,7 @@
 #include <wx/treebook.h>
 #include <wx/treectrl.h>
 
+#include "../CellAttrs.h"
 #include "../HaApp.h"
 #include "../HaDocument.h"
 #include "RawPanel.h"
@@ -14,13 +15,12 @@
 IMPLEMENT_DYNAMIC_CLASS(RawPanel, HaPanel)
 IMPLEMENT_TM(RawPanel)
 
-const wxString RawPanel::NAME = "panelRaw";
 const wxString RawPanel::LABEL = _("Raw");
 
 RawPanel::RawPanel(wxWindow *parent, HaDocument *doc) : HaPanel(doc)
 {
     wxLog::AddTraceMask(TM);
-    wxXmlResource::Get()->LoadPanel(this, parent, NAME);
+    wxXmlResource::Get()->LoadPanel(this, parent, "panelRaw");
     m_book = new wxTreebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBK_LEFT);
     m_book->GetTreeCtrl()->SetMinSize(wxSize(160, -1));
     wxXmlResource::Get()->AttachUnknownControl("bookRaw", m_book);
@@ -136,8 +136,7 @@ void RawPanel::AddPage(const wxString &name, const wxString &content, bool dirty
         tk = tks.GetNextToken();
     }
     auto text = new wxTextCtrl(m_book, wxID_ANY, content, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
-    wxFont monoFont(16, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
-    text->SetFont(monoFont);
+    text->SetFont(CellAttrs::ins().GetMonoFont());
     text->Bind(wxEVT_TEXT, &HaDocument::OnChange, m_doc);
     InsertPage(parent, text, tk);
     // Important to call this

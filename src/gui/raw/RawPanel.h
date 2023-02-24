@@ -44,8 +44,10 @@ private:
         int imageId = wxNOT_FOUND
     );
     // clang-format on
-    wxString GetSectionName(int sel);
+    wxString GetSectionName(int sel) const;
     void Unbind(int sel);
+    bool IsLeaf(int sel) const;
+    void ReLayout();
 };
 
 #endif /* _RAW_RAW_PANEL_H_ */

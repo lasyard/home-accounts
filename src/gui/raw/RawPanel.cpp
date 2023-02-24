@@ -22,6 +22,7 @@ RawPanel::RawPanel(wxWindow *parent, HaDocument *doc) : HaPanel(doc)
     wxLog::AddTraceMask(TM);
     wxXmlResource::Get()->LoadPanel(this, parent, NAME);
     m_book = new wxTreebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBK_LEFT);
+    m_book->GetTreeCtrl()->SetMinSize(wxSize(160, -1));
     wxXmlResource::Get()->AttachUnknownControl("bookRaw", m_book);
 }
 
@@ -49,6 +50,7 @@ void RawPanel::OnInsert([[maybe_unused]] wxCommandEvent &event)
         if (!name.IsEmpty()) {
             AddPage(name, wxEmptyString, true);
             m_doc->Modify(true);
+            ReLayout();
         }
     }
 }
@@ -61,6 +63,7 @@ void RawPanel::OnDelete([[maybe_unused]] wxCommandEvent &event)
         Unbind(sel);
         m_book->DeletePage(sel);
         m_doc->Modify(true);
+        ReLayout();
     }
 }
 
@@ -69,7 +72,7 @@ void RawPanel::OnUpdate()
     wxArrayString names;
     m_doc->GetSectionNames(names);
     if (names.IsEmpty()) {
-        wxMessageBox(_("File is empty."));
+        wxLogStatus(_("File is empty."));
         return;
     }
     names.Sort();
@@ -81,9 +84,7 @@ void RawPanel::OnUpdate()
     for (size_t i = 0; i < m_book->GetPageCount(); ++i) {
         m_book->ExpandNode(i);
     }
-    // Important to correct the layout.
-    m_book->Fit();
-    Layout();
+    ReLayout();
 }
 
 void RawPanel::SaveContents()
@@ -116,8 +117,8 @@ void RawPanel::AddPage(const wxString &name, const wxString &content, bool dirty
         int currentParent = m_book->GetPageParent(current);
         if (currentParent == parent) {
             if (tk == m_book->GetPageText(current)) {
-                if (!tks.HasMoreTokens()) {
-                    wxLogError("Duplicate setion names.");
+                if (!tks.HasMoreTokens() || IsLeaf(current)) {
+                    wxLogError("Section \"%s\" already exists.", tk);
                     return;
                 }
                 parent = current;
@@ -163,7 +164,7 @@ void RawPanel::InsertPage(int parent, wxWindow *page, const wxString &text, bool
     }
 }
 
-wxString RawPanel::GetSectionName(int sel)
+wxString RawPanel::GetSectionName(int sel) const
 {
     wxString name = m_book->GetPageText(sel);
     while ((sel = m_book->GetPageParent(sel)) != wxNOT_FOUND) {
@@ -178,4 +179,16 @@ void RawPanel::Unbind(int sel)
     if (text != nullptr) {
         text->Unbind(wxEVT_TEXT, &HaDocument::OnChange, m_doc);
     }
+}
+
+bool RawPanel::IsLeaf(int sel) const
+{
+    return sel != wxNOT_FOUND && m_book->GetPage(sel)->IsKindOf(CLASSINFO(wxTextCtrl));
+}
+
+void RawPanel::ReLayout()
+{
+    // Important to correct the layout.
+    m_book->Fit();
+    Layout();
 }

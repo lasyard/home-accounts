@@ -2,6 +2,7 @@
 #define _GUI_HA_GRID_H_
 
 #include <wx/grid.h>
+#include <wx/pen.h>
 
 class HaGrid : public wxGrid
 {

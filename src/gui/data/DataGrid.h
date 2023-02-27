@@ -1,8 +1,6 @@
 #ifndef _DATA_DATA_GRID_H_
 #define _DATA_DATA_GRID_H_
 
-#include <wx/pen.h>
-
 #include "../Common.h"
 #include "../HaGrid.h"
 #include "DataTable.h"

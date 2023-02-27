@@ -1,5 +1,3 @@
-#include <wx/dc.h>
-
 #include "DataGrid.h"
 
 IMPLEMENT_DYNAMIC_CLASS(DataGrid, HaGrid);

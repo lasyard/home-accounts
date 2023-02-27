@@ -1,4 +1,5 @@
 #include <wx/artprov.h>
+#include <wx/dc.h>
 
 #include "HaGrid.h"
 

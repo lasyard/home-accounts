@@ -52,7 +52,7 @@ public:
         return m_dataDao;
     }
 
-    CsvVecDao<struct account> &GetAccountsDao()
+    CsvVecDao<struct account, 0> &GetAccountsDao()
     {
         return m_accountsDao;
     }
@@ -84,7 +84,7 @@ private:
     wxString m_pass;
 
     DataDao m_dataDao;
-    CsvVecDao<struct account> m_accountsDao;
+    CsvVecDao<struct account, 0> m_accountsDao;
 
     HaView *GetView() const
     {

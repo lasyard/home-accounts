@@ -55,9 +55,9 @@ public:
     }
 };
 
-TEST_CASE("read_write")
+TEST_CASE("read")
 {
-    CsvVecDao<struct item> dao;
+    CsvVecDao<struct item, 0> dao;
     dao.readString("1,abc,10.2\n"
                    "2,def,0.88");
     std::vector<struct item> &items = dao.getData();
@@ -67,12 +67,20 @@ TEST_CASE("read_write")
     CHECK(items[1].id == 2);
     CHECK(strcmp(items[1].name, "def") == 0);
     CHECK(items[1].amount == 88L);
+}
+
+TEST_CASE("write")
+{
+    CsvVecDao<struct item, 0> dao;
+    dao.append();
+    dao.insert(0);
+    std::vector<struct item> &items = dao.getData();
     items[0].amount = 10L;
     items[1].amount = 11L;
     std::string out;
     dao.writeString(out);
     CHECK(
-        out == "1,abc,0.10\n"
-               "2,def,0.11\n"
+        out == "2,,0.10\n"
+               "1,,0.11\n"
     );
 }

@@ -10,10 +10,10 @@
 TEST_CASE("read")
 {
     const char *str = "#2000-1-1\n"
-                      "10:00:00, 12.34, New Bee\n"
+                      "10:00:00, 12.34, 1,2,New Bee,1,0\n"
                       "#2000-01-02\n"
-                      "10:01:00, 5.6, Tree New Bee\n"
-                      "11:01:01, 7.89, \n";
+                      "10:01:00, 5.6, 2,3,Tree New Bee,0,1\n"
+                      "11:01:01, 7.89, 1,3,,1,1\n";
     std::stringstream text;
     text << str;
     DataDao dataDao;
@@ -27,18 +27,30 @@ TEST_CASE("read")
     struct item *item = get_item(list_first(&first->items));
     CHECK(item->time == 36000);
     CHECK(item->amount == 1234);
+    CHECK(item->account == 1);
+    CHECK(item->channel == 2);
     CHECK(strcmp(item->desc, "New Bee") == 0);
+    CHECK(item->valid);
+    CHECK(item->batch == 0);
     struct page *last = get_page(list_last(&data.pages));
     CHECK(last->date == 2451546);
     CHECK(last->items_num == 2);
     item = get_item(list_first(&last->items));
     CHECK(item->time == 36060);
     CHECK(item->amount == 560);
+    CHECK(item->account == 2);
+    CHECK(item->channel == 3);
     CHECK(strcmp(item->desc, "Tree New Bee") == 0);
+    CHECK(!item->valid);
+    CHECK(item->batch == 1);
     item = get_item(list_last(&last->items));
     CHECK(item->time == 39661);
     CHECK(item->amount == 789);
+    CHECK(item->account == 1);
+    CHECK(item->channel == 3);
     CHECK(strcmp(item->desc, "") == 0);
+    CHECK(item->valid);
+    CHECK(item->batch == 1);
 }
 
 TEST_CASE("write")
@@ -71,9 +83,9 @@ TEST_CASE("write")
     dataDao.write(out);
     CHECK(
         out.str() == "#2000-01-01\n"
-                     "10:00:00,12.34,New Bee\n"
+                     "10:00:00,12.34,0,0,New Bee,1,0\n"
                      "#2000-01-02\n"
-                     "10:01:00,5.60,Tree New Bee\n"
-                     "11:01:01,7.89,\n"
+                     "10:01:00,5.60,0,0,Tree New Bee,1,0\n"
+                     "11:01:01,7.89,0,0,,1,0\n"
     );
 }

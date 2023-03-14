@@ -12,7 +12,11 @@ struct item {
     struct page *page;
     dtime_t time;
     money_t amount;
+    int account;
+    int channel;
     char *desc;
+    bool valid;
+    int batch;
 };
 
 #define get_item(ptr) list_entry(ptr, struct item, list)

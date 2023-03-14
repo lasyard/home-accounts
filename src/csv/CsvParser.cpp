@@ -72,6 +72,8 @@ const char *CsvParser::parseByType(const char *buf, ColumnType type, void *data)
         return parse_int32(buf, (int32_t *)data, m_sep);
     case INT64:
         return parse_int64(buf, (int64_t *)data, m_sep);
+        case BOOL:
+        return parse_bool(buf, (bool *)data, m_sep);
     case MONEY:
         return parse_money(buf, (money_t *)data, m_sep, m_moneyMul);
     case DATE:
@@ -93,6 +95,8 @@ char *CsvParser::outputByType(char *buf, ColumnType type, const void *data)
         return output_int32(buf, *(int32_t *)data);
     case INT64:
         return output_int64(buf, *(int64_t *)data);
+        case BOOL:
+        return output_bool(buf, *(bool *)data);
     case MONEY:
         return output_money(buf, *(money_t *)data, m_moneyPrec, m_moneyMul);
     case DATE:

@@ -6,6 +6,7 @@ enum ColumnType {
     CSTR,
     INT32,
     INT64,
+    BOOL,
     MONEY,
     DATE,
     TIME,

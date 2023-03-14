@@ -11,6 +11,8 @@ const char *nameOf(enum ColumnType type)
         return "INT32";
     case INT64:
         return "INT64";
+    case BOOL:
+        return "BOOL";
     case MONEY:
         return "MONEY";
     case DATE:

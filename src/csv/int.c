@@ -54,6 +54,14 @@ const char *parse_int64(const char *buf, int64_t *data, char sep)
     return p;
 }
 
+const char *parse_bool(const char *buf, bool *data, char sep)
+{
+    int32_t num = 0;
+    const char *p = parse_int32(buf, &num, sep);
+    *data = ((num == 0) ? false : true);
+    return p;
+}
+
 char *output_int32(char *buf, int32_t data)
 {
     return output_int64(buf, data);
@@ -79,4 +87,10 @@ char *output_int64_len(char *buf, int64_t data, size_t len)
         data /= 10;
     }
     return buf + len;
+}
+
+char *output_bool(char *buf, bool data)
+{
+    *buf = data ? '1' : '0';
+    return buf + 1;
 }

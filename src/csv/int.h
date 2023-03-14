@@ -12,9 +12,11 @@ extern "C" {
 const char *parse_sign(const char *buf, bool *pos);
 const char *parse_int32(const char *buf, int32_t *data, char sep);
 const char *parse_int64(const char *buf, int64_t *data, char sep);
+const char *parse_bool(const char *buf, bool *data, char sep);
 
 char *output_int32(char *buf, int32_t data);
 char *output_int64(char *buf, int64_t data);
+char *output_bool(char *buf, bool data);
 
 /**
  * @brief Output a `int64_t` without sign.

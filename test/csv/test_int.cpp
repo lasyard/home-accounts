@@ -23,63 +23,94 @@ TEST_CASE("parse_sign")
 
 TEST_CASE("parse_int32")
 {
-    const char *s = " 123,45 ,6 789";
-    int32_t num;
-    const char *p = parse_int32(s, &num, ',');
-    CHECK(p - s == 4);
-    CHECK(num == 123);
-    s = p + 1;
-    p = parse_int32(s, &num, ',');
-    CHECK(p - s == 3);
-    CHECK(num == 45);
-    s = p + 1;
-    p = parse_int32(s, &num, ',');
-    CHECK(p - s == 5);
-    CHECK(num == 6789);
-}
-
-TEST_CASE("parse_int32_neg")
-{
-    const char *s = "- 123, -45 , - 6 789";
-    int32_t num;
-    const char *p = parse_int32(s, &num, ',');
-    CHECK(p - s == 5);
-    CHECK(num == -123);
-    s = p + 1;
-    p = parse_int32(s, &num, ',');
-    CHECK(p - s == 5);
-    CHECK(num == -45);
-    s = p + 1;
-    p = parse_int32(s, &num, ',');
-    CHECK(p - s == 8);
-    CHECK(num == -6789);
-}
-
-TEST_CASE("parse_int32_overflow")
-{
-    const char *s = "21 4748 3648";
-    int32_t num;
-    const char *p = parse_int32(s, &num, ',');
-    CHECK(p - s == 12);
-    CHECK(num == -2147483648);
+    SUBCASE("pos")
+    {
+        const char *s = " 123,45 ,6 789";
+        int32_t num;
+        const char *p = parse_int32(s, &num, ',');
+        CHECK(p - s == 4);
+        CHECK(num == 123);
+        s = p + 1;
+        p = parse_int32(s, &num, ',');
+        CHECK(p - s == 3);
+        CHECK(num == 45);
+        s = p + 1;
+        p = parse_int32(s, &num, ',');
+        CHECK(p - s == 5);
+        CHECK(num == 6789);
+    }
+    SUBCASE("neg")
+    {
+        const char *s = "- 123, -45 , - 6 789";
+        int32_t num;
+        const char *p = parse_int32(s, &num, ',');
+        CHECK(p - s == 5);
+        CHECK(num == -123);
+        s = p + 1;
+        p = parse_int32(s, &num, ',');
+        CHECK(p - s == 5);
+        CHECK(num == -45);
+        s = p + 1;
+        p = parse_int32(s, &num, ',');
+        CHECK(p - s == 8);
+        CHECK(num == -6789);
+    }
+    SUBCASE("overflow")
+    {
+        const char *s = "21 4748 3648";
+        int32_t num;
+        const char *p = parse_int32(s, &num, ',');
+        CHECK(p - s == 12);
+        CHECK(num == -2147483648);
+    }
 }
 
 TEST_CASE("parse_int64")
 {
-    const char *s = "21 4748 3648";
-    int64_t num;
-    const char *p = parse_int64(s, &num, ',');
-    CHECK(p - s == 12);
-    CHECK(num == 2147483648);
+    SUBCASE("pos")
+    {
+        const char *s = "21 4748 3648";
+        int64_t num;
+        const char *p = parse_int64(s, &num, ',');
+        CHECK(p - s == 12);
+        CHECK(num == 2147483648);
+    }
+    SUBCASE("neg")
+    {
+        const char *s = "-21 4748 3648";
+        int64_t num;
+        const char *p = parse_int64(s, &num, ',');
+        CHECK(p - s == 13);
+        CHECK(num == -2147483648);
+    }
 }
 
-TEST_CASE("parse_int64_neg")
+TEST_CASE("parse_bool")
 {
-    const char *s = "-21 4748 3648";
-    int64_t num;
-    const char *p = parse_int64(s, &num, ',');
-    CHECK(p - s == 13);
-    CHECK(num == -2147483648);
+    SUBCASE("non-zero")
+    {
+        const char *s = "123";
+        bool b;
+        const char *p = parse_bool(s, &b, ',');
+        CHECK(p - s == 3);
+        CHECK(b);
+    }
+    SUBCASE("zero")
+    {
+        const char *s = "0";
+        bool b;
+        const char *p = parse_bool(s, &b, ',');
+        CHECK(p - s == 1);
+        CHECK(!b);
+    }
+    SUBCASE("empty")
+    {
+        const char *s = "";
+        bool b;
+        const char *p = parse_bool(s, &b, ',');
+        CHECK(p - s == 0);
+        CHECK(!b);
+    }
 }
 
 TEST_CASE("output_int32")
@@ -129,4 +160,26 @@ TEST_CASE("output_int64_len")
     CAPTURE(buf);
     CHECK(p - buf == 5);
     CHECK(strcmp(buf, "00123") == 0);
+}
+
+TEST_CASE("output_bool")
+{
+    SUBCASE("true")
+    {
+        char buf[2];
+        char *p = output_bool(buf, true);
+        *p = '\0';
+        CAPTURE(buf);
+        CHECK(p - buf == 1);
+        CHECK(strcmp(buf, "1") == 0);
+    }
+    SUBCASE("false")
+    {
+        char buf[2];
+        char *p = output_bool(buf, false);
+        *p = '\0';
+        CAPTURE(buf);
+        CHECK(p - buf == 1);
+        CHECK(strcmp(buf, "0") == 0);
+    }
 }

@@ -88,6 +88,23 @@ bool CachedTable::AppendRows(size_t numRows)
     return true;
 }
 
+bool CachedTable::DeleteRows(size_t pos, size_t numRows)
+{
+    size_t i;
+    for (i = 0; i < numRows; ++i) {
+        if (!DeleteRow(pos)) {
+            break;
+        }
+    }
+    m_cache->erase(std::next(m_cache->begin(), pos), std::next(m_cache->begin(), pos + i));
+    auto grid = GetView();
+    if (grid != nullptr) {
+        wxGridTableMessage msg(this, wxGRIDTABLE_NOTIFY_ROWS_DELETED, pos, i);
+        grid->ProcessTableMessage(msg);
+    }
+    return true;
+}
+
 bool CachedTable::CanHaveAttributes()
 {
     return true;

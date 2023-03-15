@@ -17,8 +17,9 @@ public:
     virtual ~DataGrid();
 
     void OnGridSelectCell(wxGridEvent &event);
-    void OnInsert(wxCommandEvent &event);
-    void OnDelete(wxCommandEvent &event);
+
+    void OnInsert(wxCommandEvent &event) override;
+    void OnDelete(wxCommandEvent &event) override;
 
     bool IsInsertEnabled() const;
     bool IsDeleteEnabled() const;

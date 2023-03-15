@@ -29,3 +29,43 @@ void HaGrid::SetAttributes()
     DisableDragColMove();
     EndBatch();
 }
+
+void HaGrid::OnInsert([[maybe_unused]] wxCommandEvent &event)
+{
+    BeginBatch();
+    int row = GetGridCursorRow();
+    if (row < 0 || row == GetNumberRows() - 1) {
+        AppendRows();
+    } else {
+        InsertRows(row + 1);
+    }
+    AutoFit();
+    EndBatch();
+}
+
+int reverseInt(int a, int b)
+{
+    if (a > b) {
+        return -1;
+    } else if (a < b) {
+        return 1;
+    }
+    return 0;
+}
+
+void HaGrid::OnDelete([[maybe_unused]] wxCommandEvent &event)
+{
+    BeginBatch();
+    auto rows = GetSelectedRows();
+    if (!rows.IsEmpty()) { // Not empty
+        rows.Sort(reverseInt);
+        for (const auto row : rows) {
+            DeleteRows(row);
+        }
+    } else {
+        int row = GetGridCursorRow();
+        DeleteRows(row);
+    }
+    AutoFit();
+    EndBatch();
+}

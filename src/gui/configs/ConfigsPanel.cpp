@@ -33,20 +33,17 @@ ConfigsPanel::~ConfigsPanel()
     }
 }
 
-void ConfigsPanel::OnInsert([[maybe_unused]] wxCommandEvent &event)
+void ConfigsPanel::OnInsert(wxCommandEvent &event)
 {
     auto grid = GetCurrentGrid();
-    int row = grid->GetGridCursorRow();
-    if (row < 0 || row == grid->GetNumberRows() - 1) {
-        grid->AppendRows();
-    } else {
-        grid->InsertRows(row + 1);
-    }
+    grid->OnInsert(event);
     m_doc->Modify(true);
 }
 
-void ConfigsPanel::OnDelete([[maybe_unused]] wxCommandEvent &event)
+void ConfigsPanel::OnDelete(wxCommandEvent &event)
 {
+    auto grid = GetCurrentGrid();
+    grid->OnDelete(event);
     m_doc->Modify(true);
 }
 

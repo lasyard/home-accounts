@@ -45,6 +45,9 @@ public:
      */
     void SetAttributes();
 
+    virtual void OnInsert(wxCommandEvent &event);
+    virtual void OnDelete(wxCommandEvent &event);
+
 private:
     static const int ROW_HEIGHT = 25;
 };

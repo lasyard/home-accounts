@@ -114,6 +114,13 @@ public:
         return true;
     }
 
+    bool remove(size_t pos)
+    {
+        auto &data = Dao<T>::m_data;
+        data.erase(std::next(data.begin(), pos));
+        return true;
+    }
+
     bool isAutoIncrement(int i) const
     {
         return i == AUTO;

@@ -32,8 +32,14 @@ private:
 
     void SetCellValue(int row, int col, const std::string &value) override;
 
-    bool InsertRow(int pos) override;
+    bool InsertRow(size_t pos) override;
     bool AppendRow() override;
+
+    bool DeleteRow([[maybe_unused]] size_t pos) override
+    {
+        // Do nothing, deletion is done in `DataGrid`.
+        return true;
+    }
 
     wxGridCellAttr *GetPageTitleAttr();
 };

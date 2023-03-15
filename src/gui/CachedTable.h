@@ -22,6 +22,7 @@ public:
 
     bool InsertRows(size_t pos, size_t numRows) override;
     bool AppendRows(size_t numRows) override;
+    bool DeleteRows(size_t pos, size_t numRows) override;
 
     bool CanHaveAttributes() override;
 
@@ -36,8 +37,9 @@ protected:
 
     virtual void SetCellValue(int row, int col, const std::string &value) = 0;
 
-    virtual bool InsertRow(int pos) = 0;
+    virtual bool InsertRow(size_t pos) = 0;
     virtual bool AppendRow() = 0;
+    virtual bool DeleteRow(size_t pos) = 0;
 };
 
 #endif /* _GUI_CACHED_TABLE_H_ */

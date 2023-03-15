@@ -65,7 +65,7 @@ private:
         m_dao->setString(row, col, value);
     }
 
-    bool InsertRow([[maybe_unused]] int pos) override
+    bool InsertRow(size_t pos) override
     {
         return m_dao->insert(pos);
     }
@@ -73,6 +73,11 @@ private:
     bool AppendRow() override
     {
         return m_dao->append();
+    }
+
+    bool DeleteRow(size_t pos) override
+    {
+        return m_dao->remove(pos);
     }
 };
 

@@ -95,7 +95,7 @@ void DataTable::SetCellValue(int row, int col, const std::string &value)
     }
 }
 
-bool DataTable::InsertRow(int pos)
+bool DataTable::InsertRow(size_t pos)
 {
     return m_dataDao->insertItemAfter(pos - 1);
 }

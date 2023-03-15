@@ -84,3 +84,14 @@ TEST_CASE("write")
                "1,,0.11\n"
     );
 }
+
+TEST_CASE("delete")
+{
+    CsvVecDao<struct item, 0> dao;
+    dao.readString("1,abc,10.2\n"
+                   "2,def,0.88");
+    dao.remove(1);
+    std::string out;
+    dao.writeString(out);
+    CHECK(out == "1,abc,10.20\n");
+}

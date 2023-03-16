@@ -6,7 +6,7 @@
 #include "Common.h"
 #include "HaView.h"
 #include "data/ConfigPodsTraits.h"
-#include "data/CsvVecDao.h"
+#include "data/CsvIdVecDao.h"
 #include "data/DataDao.h"
 #include "file/FileExeptions.h"
 
@@ -18,6 +18,9 @@ class HaDocument : public wxDocument
     DECLARE_EVENT_TABLE()
 
 public:
+    static const char *const ACCOUNTS_SECTION_NAME;
+    static const char *const CHANNELS_SECTION_NAME;
+
     DECLARE_TM()
 
     HaDocument();
@@ -52,9 +55,14 @@ public:
         return m_dataDao;
     }
 
-    CsvVecDao<struct account, 0> &GetAccountsDao()
+    CsvIdVecDao<struct account, int> &GetAccountsDao()
     {
         return m_accountsDao;
+    }
+
+    CsvIdVecDao<struct channel, int> &GetChannelsDao()
+    {
+        return m_channelsDao;
     }
 
     template <typename T> void TryLoad(const wxString &name, Dao<T> &dao)
@@ -77,6 +85,21 @@ public:
         SaveSection(name, os.str());
     }
 
+    void DoSaveData(const wxString &name)
+    {
+        DoSave(name, m_dataDao);
+    }
+
+    void DoSaveAccounts()
+    {
+        DoSave(ACCOUNTS_SECTION_NAME, m_accountsDao);
+    }
+
+    void DoSaveChannels()
+    {
+        DoSave(CHANNELS_SECTION_NAME, m_channelsDao);
+    }
+
 private:
     static const char *const IV;
 
@@ -84,7 +107,8 @@ private:
     wxString m_pass;
 
     DataDao m_dataDao;
-    CsvVecDao<struct account, 0> m_accountsDao;
+    CsvIdVecDao<struct account, int> m_accountsDao;
+    CsvIdVecDao<struct channel, int> m_channelsDao;
 
     HaView *GetView() const
     {

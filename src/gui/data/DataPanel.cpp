@@ -39,7 +39,7 @@ void DataPanel::OnUpdate()
 
 void DataPanel::SaveContents()
 {
-    m_doc->DoSave("test", m_doc->GetDataDao());
+    m_doc->DoSaveData("test");
 }
 
 void DataPanel::ShowData(const wxString &name)

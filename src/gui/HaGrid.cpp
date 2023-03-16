@@ -39,6 +39,7 @@ void HaGrid::OnInsert([[maybe_unused]] wxCommandEvent &event)
     } else {
         InsertRows(row + 1);
     }
+    SetGridCursor(row + 1, GetGridCursorCol());
     AutoFit();
     EndBatch();
 }

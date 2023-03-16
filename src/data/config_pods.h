@@ -6,4 +6,9 @@ struct account {
     char *name;
 };
 
+struct channel {
+    int id;
+    char *name;
+};
+
 #endif /* _DATA_CONFIG_PODS_H_ */

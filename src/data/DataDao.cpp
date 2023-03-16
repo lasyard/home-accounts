@@ -1,87 +1,13 @@
 #include <sstream>
 
 #include "DataDao.h"
+#include "ItemTraits.h"
 #include "csv/CsvExceptions.h"
 #include "csv/CsvParser.h"
 #include "csv/str.h"
-#include "item.h"
 #include "page.h"
 
-template <> class CsvRowTraits<struct item>
-{
-public:
-    static const int TIME_INDEX = 0;
-    static const int AMOUNT_INDEX = 1;
-    static const int ACCOUNT_INDEX = 2;
-    static const int CHANNEL_INDEX = 3;
-    static const int DESC_INDEX = 4;
-    static const int VALID_INDEX = 5;
-    static const int BATCH_INDEX = 6;
-
-    static const int cols = 7;
-
-    static const ColumnType constexpr types[] = {
-        TIME,
-        MONEY,
-        INT32,
-        INT32,
-        CSTR,
-        BOOL,
-        INT32,
-    };
-
-    static void *readPtr(void *data, int i)
-    {
-        struct item *item = static_cast<struct item *>(data);
-        switch (i) {
-        case TIME_INDEX:
-            return &item->time;
-        case AMOUNT_INDEX:
-            return &item->amount;
-        case ACCOUNT_INDEX:
-            return &item->account;
-        case CHANNEL_INDEX:
-            return &item->channel;
-        case DESC_INDEX:
-            return &item->desc;
-        case VALID_INDEX:
-            return &item->valid;
-        case BATCH_INDEX:
-            return &item->batch;
-        default:
-            break;
-        }
-        return nullptr;
-    }
-
-    static const void *writePtr(const void *data, int i)
-    {
-        const struct item *item = static_cast<const struct item *>(data);
-        switch (i) {
-        case TIME_INDEX:
-            return &item->time;
-        case AMOUNT_INDEX:
-            return &item->amount;
-        case ACCOUNT_INDEX:
-            return &item->account;
-        case CHANNEL_INDEX:
-            return &item->channel;
-        case DESC_INDEX:
-            return item->desc;
-        case VALID_INDEX:
-            return &item->valid;
-        case BATCH_INDEX:
-            return &item->batch;
-        default:
-            break;
-        }
-        return nullptr;
-    }
-};
-
-typedef CsvRowTraits<struct item> ItemTraits;
-
-DataDao::DataDao() : CsvDao<struct item, struct data>(), m_index()
+DataDao::DataDao() : CsvDao<struct item, struct data>(), m_index(), m_accountLookup(nullptr), m_channelLookup(nullptr)
 {
     init_data(&m_data);
 }
@@ -151,8 +77,8 @@ std::string DataDao::getPageTitleString(int row)
 
 std::string DataDao::getTimeString(int row)
 {
-    if (m_index[row].m_type == ITEM) {
-        const struct item *item = (const struct item *)m_index[row].m_ptr;
+    const struct item *item = safeGetItem(row);
+    if (item != nullptr) {
         return m_parser->toStringOfColumn(ItemTraits::TIME_INDEX, &item->time);
     }
     return "";
@@ -160,8 +86,8 @@ std::string DataDao::getTimeString(int row)
 
 std::string DataDao::getIncomeString(int row)
 {
-    if (m_index[row].m_type == ITEM) {
-        const struct item *item = (const struct item *)m_index[row].m_ptr;
+    const struct item *item = safeGetItem(row);
+    if (item != nullptr) {
         if (item->amount < 0) {
             money_t amount = -item->amount;
             return m_parser->toStringOfColumn(ItemTraits::AMOUNT_INDEX, &amount);
@@ -172,11 +98,29 @@ std::string DataDao::getIncomeString(int row)
 
 std::string DataDao::getOutlayString(int row)
 {
-    if (m_index[row].m_type == ITEM) {
-        const struct item *item = (const struct item *)m_index[row].m_ptr;
+    const struct item *item = safeGetItem(row);
+    if (item != nullptr) {
         if (item->amount >= 0) {
             return m_parser->toStringOfColumn(ItemTraits::AMOUNT_INDEX, &item->amount);
         }
+    }
+    return "";
+}
+
+std::string DataDao::getAccountString(int row)
+{
+    const struct item *item = safeGetItem(row);
+    if (item != nullptr) {
+        return lookupId(m_accountLookup, item->account);
+    }
+    return "";
+}
+
+std::string DataDao::getChannelString(int row)
+{
+    const struct item *item = safeGetItem(row);
+    if (item != nullptr) {
+        return lookupId(m_channelLookup, item->channel);
     }
     return "";
 }

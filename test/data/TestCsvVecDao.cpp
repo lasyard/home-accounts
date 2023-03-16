@@ -57,7 +57,7 @@ public:
 
 TEST_CASE("read")
 {
-    CsvVecDao<struct item, 0> dao;
+    CsvVecDao<struct item> dao;
     dao.readString("1,abc,10.2\n"
                    "2,def,0.88");
     std::vector<struct item> &items = dao.getData();
@@ -71,7 +71,7 @@ TEST_CASE("read")
 
 TEST_CASE("write")
 {
-    CsvVecDao<struct item, 0> dao;
+    CsvVecDao<struct item> dao;
     dao.append();
     dao.insert(0);
     std::vector<struct item> &items = dao.getData();
@@ -87,7 +87,7 @@ TEST_CASE("write")
 
 TEST_CASE("delete")
 {
-    CsvVecDao<struct item, 0> dao;
+    CsvVecDao<struct item> dao;
     dao.readString("1,abc,10.2\n"
                    "2,def,0.88");
     dao.remove(1);

@@ -13,9 +13,8 @@
  * @brief Dao to read csv into a vector.
  *
  * @tparam I the element type of row
- * @tparam AUTO the column which is incremented automatically
  */
-template <typename I, int AUTO> class CsvVecDao : public CsvDao<I, std::vector<I>>
+template <typename I> class CsvVecDao : public CsvDao<I, std::vector<I>>
 {
     typedef CsvRowTraits<I> Traits;
     typedef std::vector<I> T;
@@ -121,46 +120,34 @@ public:
         return true;
     }
 
-    bool isAutoIncrement(int i) const
+protected:
+    virtual void initItemField(I *item, int i) const
     {
-        return i == AUTO;
+        switch (Traits::types[i]) {
+        case INT32:
+            *(int32_t *)Traits::readPtr(item, i) = 0;
+            break;
+        case INT64:
+            *(int64_t *)Traits::readPtr(item, i) = 0;
+            break;
+        case MONEY:
+            *(money_t *)Traits::readPtr(item, i) = 0;
+            break;
+        case CSTR:
+            // Important, or it will be freed.
+            *(char **)Traits::readPtr(item, i) = nullptr;
+            break;
+        default:
+            break;
+        }
     }
 
 private:
-    void initItem(I *item)
+    void initItem(I *item) const
     {
         for (int i = 0; i < Traits::cols; ++i) {
-            switch (Traits::types[i]) {
-            case INT32:
-                *(int32_t *)Traits::readPtr(item, i) = isAutoIncrement(i) ? nextValue<int32_t>(i) : 0;
-                break;
-            case INT64:
-                *(int64_t *)Traits::readPtr(item, i) = isAutoIncrement(i) ? nextValue<int64_t>(i) : 0;
-                break;
-            case MONEY:
-                *(money_t *)Traits::readPtr(item, i) = 0;
-                break;
-            case CSTR:
-                // Important, or it will be freed.
-                *(char **)Traits::readPtr(item, i) = nullptr;
-                break;
-            default:
-                break;
-            }
+            initItemField(item, i);
         }
-    }
-
-    template <typename D> D nextValue(int i)
-    {
-        auto &data = Dao<T>::m_data;
-        D m = (D)0;
-        for (auto d : data) {
-            D v = *(D *)Traits::writePtr(&d, i);
-            if (v > m) {
-                m = v;
-            }
-        }
-        return m + 1;
     }
 };
 

@@ -30,9 +30,10 @@ public:
 
 private:
     static const int CONFIG_NUM = 1;
-    static const char *const ACCOUNTS_SECTION_NAME;
     static const wxString ACCOUNTS_LABEL;
     static const wxString ACCOUNTS_COLUMN_LABELS[];
+    static const wxString CHANNELS_LABEL;
+    static const wxString CHANNELS_COLUMN_LABELS[];
 
     wxListbook *m_book;
     std::map<const char *, HaGrid *> m_grids;

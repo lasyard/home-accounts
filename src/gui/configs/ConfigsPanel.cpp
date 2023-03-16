@@ -12,9 +12,13 @@ IMPLEMENT_DYNAMIC_CLASS(ConfigsPanel, HaPanel)
 
 const wxString ConfigsPanel::LABEL = _("Configs");
 
-const char *const ConfigsPanel::ACCOUNTS_SECTION_NAME = "configs/accounts";
 const wxString ConfigsPanel::ACCOUNTS_LABEL = _("Accounts");
 const wxString ConfigsPanel::ACCOUNTS_COLUMN_LABELS[] = {
+    _("ID"),
+    _("Name"),
+};
+const wxString ConfigsPanel::CHANNELS_LABEL = _("Channels");
+const wxString ConfigsPanel::CHANNELS_COLUMN_LABELS[] = {
     _("ID"),
     _("Name"),
 };
@@ -28,7 +32,7 @@ ConfigsPanel::ConfigsPanel(wxWindow *parent, HaDocument *doc) : HaPanel(doc), m_
 
 ConfigsPanel::~ConfigsPanel()
 {
-    for (const auto [k, v] : m_grids) {
+    for (const auto &[k, v] : m_grids) {
         v->Unbind(wxEVT_GRID_EDITOR_HIDDEN, &HaDocument::OnChange, m_doc);
     }
 }
@@ -49,18 +53,22 @@ void ConfigsPanel::OnDelete(wxCommandEvent &event)
 
 void ConfigsPanel::OnUpdate()
 {
-    m_doc->TryLoad(ACCOUNTS_SECTION_NAME, m_doc->GetAccountsDao());
     UpdateConfig(
-        ACCOUNTS_SECTION_NAME,
+        HaDocument::ACCOUNTS_SECTION_NAME,
         ACCOUNTS_LABEL,
         new CsvTable(CONFIG_COLUMN_PARA(ACCOUNTS), &m_doc->GetAccountsDao())
     );
-    GetCurrentGrid()->AutoFit();
+    UpdateConfig(
+        HaDocument::CHANNELS_SECTION_NAME,
+        CHANNELS_LABEL,
+        new CsvTable(CONFIG_COLUMN_PARA(CHANNELS), &m_doc->GetChannelsDao())
+    );
 }
 
 void ConfigsPanel::SaveContents()
 {
-    m_doc->DoSave(ACCOUNTS_SECTION_NAME, m_doc->GetAccountsDao());
+    m_doc->DoSaveAccounts();
+    m_doc->DoSaveChannels();
 }
 
 bool ConfigsPanel::IsInsertEnabled() const
@@ -85,6 +93,7 @@ void ConfigsPanel::UpdateConfig(const char *sectionName, const wxString &label, 
         m_book->AddPage(grid, label);
     }
     m_grids[sectionName]->SetTable(table);
+    m_grids[sectionName]->AutoFit();
 }
 
 HaGrid *ConfigsPanel::GetCurrentGrid() const

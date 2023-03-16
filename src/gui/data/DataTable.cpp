@@ -8,6 +8,8 @@ const wxString DataTable::COL_LABELS[] = {
     _("Time"),
     _("Income"),
     _("Outlay"),
+    _("Account"),
+    _("Channel"),
     _("Description"),
 };
 
@@ -63,6 +65,10 @@ wxString DataTable::GetCellValue(int row, int col)
             return m_dataDao->getIncomeString(row);
         case OUTLAY_COL:
             return m_dataDao->getOutlayString(row);
+        case ACCOUNT_COL:
+            return m_dataDao->getAccountString(row);
+        case CHANNEL_COL:
+            return m_dataDao->getChannelString(row);
         case DESC_COL:
             return m_dataDao->getDescString(row);
         default:

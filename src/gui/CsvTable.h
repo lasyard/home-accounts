@@ -3,21 +3,19 @@
 
 #include "CachedTable.h"
 #include "CellAttrs.h"
-#include "data/CsvVecDao.h"
+#include "data/CsvIdVecDao.h"
 
 /**
  * @brief Table to reader csv.
  *
  * @tparam I the element type of row
- * @tparam AUTO the column which is incremented automatically
  */
-template <typename I, int AUTO> class CsvTable : public CachedTable
+template <typename I> class CsvTable : public CachedTable
 {
     typedef CsvRowTraits<I> Traits;
 
 public:
-    CsvTable(size_t cols, const wxString *const colLabels, CsvVecDao<I, AUTO> *dao)
-        : CachedTable(cols, colLabels), m_dao(dao)
+    CsvTable(size_t cols, const wxString *const colLabels, CsvVecDao<I> *dao) : CachedTable(cols, colLabels), m_dao(dao)
     {
         InitCache(dao->getNumberRows());
     }
@@ -35,9 +33,6 @@ public:
     GetAttr([[maybe_unused]] int row, int col, [[maybe_unused]] wxGridCellAttr::wxAttrKind kind) override
     {
         auto type = Traits::types[col];
-        if (m_dao->isAutoIncrement(col)) {
-            return CellAttrs::ins().GetReadOnly();
-        }
         switch (type) {
         case INT32:
         case INT64:
@@ -53,7 +48,7 @@ public:
     }
 
 private:
-    CsvVecDao<I, AUTO> *m_dao;
+    CsvVecDao<I> *m_dao;
 
     wxString GetCellValue(int row, int col) override
     {

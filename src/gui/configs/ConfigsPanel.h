@@ -36,9 +36,9 @@ private:
     static const wxString CHANNELS_COLUMN_LABELS[];
 
     wxListbook *m_book;
-    std::map<const char *, HaGrid *> m_grids;
+    std::map<std::string, HaGrid *> m_grids;
 
-    void UpdateConfig(const char *sectionName, const wxString &label, CachedTable *table);
+    void UpdateConfig(const std::string &sectionName, const wxString &label, CachedTable *table);
 
     HaGrid *GetCurrentGrid() const;
 };

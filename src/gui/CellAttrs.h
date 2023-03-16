@@ -36,10 +36,20 @@ public:
         return m_defaultAttr;
     }
 
+    auto CloneDefault()
+    {
+        return m_defaultAttr->Clone();
+    }
+
     auto GetReadOnly()
     {
         m_readOnlyAttr->IncRef();
         return m_readOnlyAttr;
+    }
+
+    auto CloneReadOnly()
+    {
+        return m_readOnlyAttr->Clone();
     }
 
     auto GetNumber()
@@ -52,6 +62,12 @@ public:
     {
         m_moneyAttr->IncRef();
         return m_moneyAttr;
+    }
+
+    auto GetBool()
+    {
+        m_boolAttr->IncRef();
+        return m_boolAttr;
     }
 
     auto GetTime()
@@ -69,14 +85,15 @@ public:
 private:
     wxFont m_monoFont;
 
-    wxGridCellFloatEditor *m_floatEditor;
-
     wxGridCellAttr *m_defaultAttr;
     wxGridCellAttr *m_readOnlyAttr;
     wxGridCellAttr *m_numberAttr;
     wxGridCellAttr *m_moneyAttr;
+    wxGridCellAttr *m_boolAttr;
     wxGridCellAttr *m_timeAttr;
     wxGridCellAttr *m_overlappedAttr;
+
+    void Release();
 };
 
 #endif /* _GUI_CELL_ATTRS_H_ */

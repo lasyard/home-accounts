@@ -65,6 +65,22 @@ public:
         return m_channelsDao;
     }
 
+    void GetAccountNames(wxArrayString &names) const
+    {
+        names.Clear();
+        for (const auto &i : m_accountsDao.getData()) {
+            names.push_back(i.name);
+        }
+    }
+
+    void GetChannelNames(wxArrayString &names) const
+    {
+        names.Clear();
+        for (const auto &i : m_channelsDao.getData()) {
+            names.push_back(i.name);
+        }
+    }
+
     template <typename T> void TryLoad(const wxString &name, Dao<T> &dao)
     {
         try {

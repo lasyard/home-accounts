@@ -1,5 +1,5 @@
-#ifndef _DATA_ROW_DAO_H_
-#define _DATA_ROW_DAO_H_
+#ifndef _DATA_CSV_VEC_DAO_H_
+#define _DATA_CSV_VEC_DAO_H_
 
 #include <string>
 #include <vector>
@@ -151,4 +151,4 @@ private:
     }
 };
 
-#endif /* _DATA_ROW_DAO_H_ */
+#endif /* _DATA_CSV_VEC_DAO_H_ */

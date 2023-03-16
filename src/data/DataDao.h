@@ -21,6 +21,7 @@ public:
     };
 
     typedef std::function<const char *(int)> LookupCallback;
+    typedef std::function<int(const char *)> RevLookupCallback;
 
     void read(std::istream &is) override;
     void write(std::ostream &os) override;
@@ -38,9 +39,13 @@ public:
     std::string getAccountString(int row);
     std::string getChannelString(int row);
     std::string getDescString(int row);
+    std::string getValidString(int row);
 
     void setMoney(int row, const std::string &value, bool negative);
+    void setAccount(int row, const std::string &value);
+    void setChannel(int row, const std::string &value);
     void setDesc(int row, const std::string &value);
+    void setValid(int row, const std::string &value);
 
     bool insertItemAfter(size_t pos);
 
@@ -49,14 +54,16 @@ public:
         return m_index[row].m_type;
     }
 
-    void setAccountLookup(LookupCallback f)
+    void setAccountLookup(LookupCallback f1, RevLookupCallback f2)
     {
-        m_accountLookup = f;
+        m_accountLookup = f1;
+        m_accountRevLookup = f2;
     }
 
-    void setChannelLookup(LookupCallback f)
+    void setChannelLookup(LookupCallback f1, RevLookupCallback f2)
     {
-        m_channelLookup = f;
+        m_channelLookup = f1;
+        m_channelRevLookup = f2;
     }
 
 private:
@@ -73,6 +80,8 @@ private:
     std::vector<struct IndexItem> m_index;
     LookupCallback m_accountLookup;
     LookupCallback m_channelLookup;
+    RevLookupCallback m_accountRevLookup;
+    RevLookupCallback m_channelRevLookup;
 
     static std::string lookupId(LookupCallback f, int id)
     {
@@ -85,10 +94,18 @@ private:
         return "N/A (" + std::to_string(id) + ")";
     }
 
-    const struct item *safeGetItem(int row)
+    static int lookupName(RevLookupCallback f, const std::string &name)
+    {
+        if (f != nullptr) {
+            return f(name.c_str());
+        }
+        return 0;
+    }
+
+    struct item *safeGetItem(int row)
     {
         if (m_index[row].m_type == ITEM) {
-            return static_cast<const struct item *>(m_index[row].m_ptr);
+            return static_cast<struct item *>(m_index[row].m_ptr);
         }
         return nullptr;
     }

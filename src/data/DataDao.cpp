@@ -7,7 +7,13 @@
 #include "csv/str.h"
 #include "page.h"
 
-DataDao::DataDao() : CsvDao<struct item, struct data>(), m_index(), m_accountLookup(nullptr), m_channelLookup(nullptr)
+DataDao::DataDao()
+    : CsvDao<struct item, struct data>(),
+      m_index(),
+      m_accountLookup(nullptr),
+      m_channelLookup(nullptr),
+      m_accountRevLookup(nullptr),
+      m_channelRevLookup(nullptr)
 {
     init_data(&m_data);
 }
@@ -127,28 +133,61 @@ std::string DataDao::getChannelString(int row)
 
 std::string DataDao::getDescString(int row)
 {
-    if (m_index[row].m_type == ITEM) {
-        const struct item *item = (const struct item *)m_index[row].m_ptr;
+    const struct item *item = safeGetItem(row);
+    if (item != nullptr) {
         return m_parser->toStringOfColumn(ItemTraits::DESC_INDEX, item->desc);
+    }
+    return "";
+}
+
+std::string DataDao::getValidString(int row)
+{
+    const struct item *item = safeGetItem(row);
+    if (item != nullptr && item->valid) {
+        return "1";
     }
     return "";
 }
 
 void DataDao::setMoney(int row, const std::string &value, bool negative)
 {
-    if (m_index[row].m_type == ITEM) {
-        struct item *item = (struct item *)m_index[row].m_ptr;
+    struct item *item = safeGetItem(row);
+    if (item != nullptr) {
         money_t amount;
         m_parser->parseStringByType(value, MONEY, &amount);
         item->amount = negative ? -amount : amount;
     }
 }
 
+void DataDao::setAccount(int row, const std::string &value)
+{
+    struct item *item = safeGetItem(row);
+    if (item != nullptr) {
+        item->account = lookupName(m_accountRevLookup, value);
+    }
+}
+
+void DataDao::setChannel(int row, const std::string &value)
+{
+    struct item *item = safeGetItem(row);
+    if (item != nullptr) {
+        item->channel = lookupName(m_channelRevLookup, value);
+    }
+}
+
 void DataDao::setDesc(int row, const std::string &value)
 {
-    if (m_index[row].m_type == ITEM) {
-        struct item *item = (struct item *)m_index[row].m_ptr;
+    struct item *item = safeGetItem(row);
+    if (item != nullptr) {
         m_parser->parseStringOfColumn(value, ItemTraits::DESC_INDEX, &item->desc);
+    }
+}
+
+void DataDao::setValid(int row, const std::string &value)
+{
+    struct item *item = safeGetItem(row);
+    if (item != nullptr) {
+        item->valid = ((value == "1") ? true : false);
     }
 }
 

@@ -67,6 +67,9 @@ void ConfigsPanel::OnUpdate()
 
 void ConfigsPanel::SaveContents()
 {
+    for (const auto &[k, v] : m_grids) {
+        v->SaveEditControlValue();
+    }
     m_doc->DoSaveAccounts();
     m_doc->DoSaveChannels();
 }
@@ -83,7 +86,7 @@ bool ConfigsPanel::IsDeleteEnabled() const
     return grid->HasFocus();
 }
 
-void ConfigsPanel::UpdateConfig(const char *sectionName, const wxString &label, CachedTable *table)
+void ConfigsPanel::UpdateConfig(const std::string &sectionName, const wxString &label, CachedTable *table)
 {
     if (!m_grids.contains(sectionName)) {
         auto grid = new HaGrid(m_book);

@@ -39,6 +39,7 @@ void DataPanel::OnUpdate()
 
 void DataPanel::SaveContents()
 {
+    m_grid->SaveEditControlValue();
     m_doc->DoSaveData("test");
 }
 
@@ -47,6 +48,11 @@ void DataPanel::ShowData(const wxString &name)
     auto &dao = m_doc->GetDataDao();
     m_doc->TryLoad(name, dao);
     auto table = new DataTable(&dao);
+    wxArrayString choices;
+    m_doc->GetAccountNames(choices);
+    table->SetAccountChoices(choices);
+    m_doc->GetChannelNames(choices);
+    table->SetChannelChoices(choices);
     // `AssignTable` is not existing in earlier version of wxWidgets.
     m_grid->SetTable(table, true);
     m_grid->AutoFit();

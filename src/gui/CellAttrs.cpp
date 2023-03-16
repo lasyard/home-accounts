@@ -8,32 +8,38 @@ CellAttrs::CellAttrs() : m_monoFont(16, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL,
     m_readOnlyAttr = m_defaultAttr->Clone();
     m_readOnlyAttr->SetReadOnly();
 
-    m_numberAttr = new wxGridCellAttr();
+    m_numberAttr = m_defaultAttr->Clone();
     m_numberAttr->SetFont(m_monoFont);
     m_numberAttr->SetAlignment(wxALIGN_RIGHT, wxALIGN_CENTER);
 
     m_moneyAttr = m_numberAttr->Clone();
-    m_moneyAttr->SetFont(m_monoFont);
-    m_floatEditor = new wxGridCellFloatEditor(7, 2);
     // SetEditor will take the editor ownership, so inc the ref to keep it.
-    m_floatEditor->IncRef();
-    m_moneyAttr->SetEditor(m_floatEditor);
+    m_moneyAttr->SetEditor(new wxGridCellFloatEditor(7, 2));
+
+    m_boolAttr = m_defaultAttr->Clone();
+    m_boolAttr->SetRenderer(new wxGridCellBoolRenderer());
+    m_boolAttr->SetEditor(new wxGridCellBoolEditor());
 
     m_timeAttr = m_readOnlyAttr->Clone();
     m_timeAttr->SetFont(m_monoFont.Smaller());
     m_timeAttr->SetTextColour(*wxBLUE);
 
-    m_overlappedAttr = new wxGridCellAttr();
+    m_overlappedAttr = m_defaultAttr->Clone();
     m_overlappedAttr->SetReadOnly();
 }
 
 CellAttrs::~CellAttrs()
 {
-    m_floatEditor->DecRef();
+    Release();
+}
+
+void CellAttrs::Release()
+{
     m_defaultAttr->DecRef();
     m_readOnlyAttr->DecRef();
     m_numberAttr->DecRef();
     m_moneyAttr->DecRef();
+    m_boolAttr->DecRef();
     m_timeAttr->DecRef();
     m_overlappedAttr->DecRef();
 }

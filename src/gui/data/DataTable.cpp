@@ -1,6 +1,5 @@
 #include <vector>
 
-#include "../CellAttrs.h"
 #include "DataTable.h"
 #include "data/DataDao.h"
 
@@ -11,15 +10,18 @@ const wxString DataTable::COL_LABELS[] = {
     _("Account"),
     _("Channel"),
     _("Description"),
+    _("Valid"),
 };
 
 DataTable::DataTable(DataDao *dataDao) : CachedTable(COL_NUM, COL_LABELS), m_dataDao(dataDao)
 {
-    m_pageTitleAttr = CellAttrs::ins().GetReadOnly()->Clone();
+    m_pageTitleAttr = CellAttrs::ins().CloneReadOnly();
     m_pageTitleAttr->SetSize(1, COL_NUM);
     m_pageTitleAttr->SetFont(CellAttrs::ins().GetMonoFont());
     m_pageTitleAttr->SetBackgroundColour(*wxLIGHT_GREY);
     m_pageTitleAttr->SetAlignment(wxALIGN_CENTER_VERTICAL, wxALIGN_LEFT);
+    m_accountAttr = CellAttrs::ins().CloneReadOnly();
+    m_channelAttr = CellAttrs::ins().CloneReadOnly();
     // Do not call `this->GetNumberRows()`, cache is not inited.
     InitCache(dataDao->getNumberRows());
 }
@@ -27,6 +29,8 @@ DataTable::DataTable(DataDao *dataDao) : CachedTable(COL_NUM, COL_LABELS), m_dat
 DataTable::~DataTable()
 {
     m_pageTitleAttr->DecRef();
+    m_accountAttr->DecRef();
+    m_channelAttr->DecRef();
 }
 
 wxString DataTable::GetRowLabelValue(int row)
@@ -44,6 +48,12 @@ wxGridCellAttr *DataTable::GetAttr(int row, int col, [[maybe_unused]] wxGridCell
         case INCOME_COL:
         case OUTLAY_COL:
             return CellAttrs::ins().GetMoney();
+        case ACCOUNT_COL:
+            return GetAccountAttr();
+        case CHANNEL_COL:
+            return GetChannelAttr();
+        case VALID_COL:
+            return CellAttrs::ins().GetBool();
         default:
             break;
         }
@@ -52,6 +62,16 @@ wxGridCellAttr *DataTable::GetAttr(int row, int col, [[maybe_unused]] wxGridCell
         return col == 0 ? GetPageTitleAttr() : CellAttrs::ins().GetOverlapped();
     }
     return CellAttrs::ins().GetDefault();
+}
+
+void DataTable::SetAccountChoices(wxArrayString &choices)
+{
+    SetChoicesOf(m_accountAttr, choices);
+}
+
+void DataTable::SetChannelChoices(wxArrayString &choices)
+{
+    SetChoicesOf(m_channelAttr, choices);
 }
 
 wxString DataTable::GetCellValue(int row, int col)
@@ -71,6 +91,8 @@ wxString DataTable::GetCellValue(int row, int col)
             return m_dataDao->getChannelString(row);
         case DESC_COL:
             return m_dataDao->getDescString(row);
+        case VALID_COL:
+            return m_dataDao->getValidString(row);
         default:
             break;
         }
@@ -93,8 +115,17 @@ void DataTable::SetCellValue(int row, int col, const std::string &value)
         // Update income, too
         CacheCell(row, INCOME_COL);
         break;
+    case ACCOUNT_COL:
+        m_dataDao->setAccount(row, value);
+        break;
+    case CHANNEL_COL:
+        m_dataDao->setChannel(row, value);
+        break;
     case DESC_COL:
         m_dataDao->setDesc(row, value);
+        break;
+    case VALID_COL:
+        m_dataDao->setValid(row, value);
         break;
     default:
         break;
@@ -110,10 +141,4 @@ bool DataTable::AppendRow()
 {
     // Never append.
     return false;
-}
-
-wxGridCellAttr *DataTable::GetPageTitleAttr()
-{
-    m_pageTitleAttr->IncRef();
-    return m_pageTitleAttr;
 }

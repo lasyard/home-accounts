@@ -60,14 +60,14 @@ bool HaDocument::DoOpenDocument(const wxString &fileName)
             m_doc->attach(store);
             TryLoad(ACCOUNTS_SECTION_NAME, m_accountsDao);
             TryLoad(CHANNELS_SECTION_NAME, m_channelsDao);
-            m_dataDao.setAccountLookup([this](int id) -> auto{
-                const struct account *s = this->m_accountsDao.getById(id);
-                return (s != nullptr) ? s->name : nullptr;
-            });
-            m_dataDao.setChannelLookup([this](int id) -> auto{
-                const struct channel *s = this->m_channelsDao.getById(id);
-                return (s != nullptr) ? s->name : nullptr;
-            });
+            m_dataDao.setAccountLookup(
+                [this](int id) -> auto{ return this->m_accountsDao.getNameById<1>(id); },
+                [this](const char *n) -> auto{ return this->m_accountsDao.getIdByName<1>(n); }
+            );
+            m_dataDao.setChannelLookup(
+                [this](int id) -> auto{ return this->m_channelsDao.getNameById<1>(id); },
+                [this](const char *n) -> auto{ return this->m_channelsDao.getIdByName<1>(n); }
+            );
             return true;
         } catch (std::runtime_error &e) {
             wxLogError("Failed to open \"%s\": %s", (const char *)fileName, e.what());

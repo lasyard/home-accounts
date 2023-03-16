@@ -35,6 +35,32 @@ public:
         return nullptr;
     }
 
+    /**
+     * @brief Get the name by id. The `name` column must exits and have type `CSTR`.
+     *
+     * @param id the id
+     * @return the name
+     */
+    template <int NAME_COL> const char *getNameById(ID_TYPE id)
+    {
+        auto item = getById(id);
+        return (item != nullptr) ? (const char *)Traits::writePtr(item, NAME_COL) : nullptr;
+    }
+
+    template <int NAME_COL> ID_TYPE getIdByName(const char *name)
+    {
+        if (name != nullptr) {
+            const auto &data = Dao<T>::m_data;
+            for (const auto &item : data) {
+                auto n = (const char *)Traits::writePtr(&item, NAME_COL);
+                if (n != nullptr && strcmp(n, name) == 0) {
+                    return *(ID_TYPE *)Traits::writePtr(&item, ID_COL);
+                }
+            }
+        }
+        return (ID_TYPE)0;
+    }
+
 protected:
     void initItemField(I *item, int i) const override
     {

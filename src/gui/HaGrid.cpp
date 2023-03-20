@@ -57,15 +57,13 @@ int reverseInt(int a, int b)
 void HaGrid::OnDelete([[maybe_unused]] wxCommandEvent &event)
 {
     BeginBatch();
-    auto rows = GetSelectedRows();
-    if (!rows.IsEmpty()) { // Not empty
-        rows.Sort(reverseInt);
-        for (const auto row : rows) {
-            DeleteRows(row);
+    if (GetSelectionMode() == wxGrid::wxGridSelectionModes::wxGridSelectRows) {
+        const auto &blocks = GetSelectedRowBlocks();
+        for (auto i = blocks.rbegin(); i != blocks.rend(); ++i) {
+            for (auto j = i->GetBottomRow(); j >= i->GetTopRow(); --j) {
+                DeleteRows(j);
+            }
         }
-    } else {
-        int row = GetGridCursorRow();
-        DeleteRows(row);
     }
     AutoFit();
     EndBatch();

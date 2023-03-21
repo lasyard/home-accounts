@@ -58,7 +58,9 @@ std::string CsvParser::toStringByType(ColumnType type, const void *data)
 
 void CsvParser::parseStringByType(const std::string &str, ColumnType type, void *data)
 {
-    parseByType(str.c_str(), type, data);
+    if (parseByType(str.c_str(), type, data) == NULL) {
+        throw TypeParseError(type);
+    }
 }
 
 const char *CsvParser::parseByType(const char *buf, ColumnType type, void *data)

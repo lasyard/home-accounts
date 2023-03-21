@@ -17,3 +17,6 @@ build*/
 
 # GitHub files
 !.github/
+
+# Files generated accidently by wxFormBuilder
+noname.*

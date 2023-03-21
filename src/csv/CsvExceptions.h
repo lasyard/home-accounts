@@ -62,4 +62,22 @@ private:
     ColumnType m_type;
 };
 
+class TypeParseError : public std::runtime_error
+{
+public:
+    explicit TypeParseError(ColumnType type) : std::runtime_error("Parse error"), m_type(type)
+    {
+    }
+
+    const char *what() const noexcept override
+    {
+        sprintf(m_what, "%s for type %s", std::runtime_error::what(), nameOf(m_type));
+        return m_what;
+    }
+
+private:
+    ColumnType m_type;
+    mutable char m_what[256];
+};
+
 #endif /* _CSV_CSV_EXCEPTIONS_H_ */

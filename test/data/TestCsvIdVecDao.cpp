@@ -3,7 +3,7 @@
 #include <cstring>
 #include <iostream>
 
-#include "CsvVecDao.h"
+#include "CsvIdVecDao.h"
 #include "csv/money.h"
 
 struct item {
@@ -57,7 +57,7 @@ public:
 
 TEST_CASE("read")
 {
-    CsvVecDao<struct item> dao;
+    CsvIdVecDao<struct item, int, 0> dao;
     dao.readString("1,abc,10.2\n"
                    "2,def,0.88");
     std::vector<struct item> &items = dao.getData();
@@ -71,7 +71,7 @@ TEST_CASE("read")
 
 TEST_CASE("write")
 {
-    CsvVecDao<struct item> dao;
+    CsvIdVecDao<struct item, int, 0> dao;
     dao.append();
     dao.insert(0);
     std::vector<struct item> &items = dao.getData();
@@ -80,14 +80,14 @@ TEST_CASE("write")
     std::string out;
     dao.writeString(out);
     CHECK(
-        out == "0,,0.10\n"
-               "0,,0.11\n"
+        out == "2,,0.10\n"
+               "1,,0.11\n"
     );
 }
 
 TEST_CASE("delete")
 {
-    CsvVecDao<struct item> dao;
+    CsvIdVecDao<struct item, int, 0> dao;
     dao.readString("1,abc,10.2\n"
                    "2,def,0.88");
     dao.remove(1);

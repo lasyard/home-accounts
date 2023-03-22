@@ -59,7 +59,11 @@ void DataPanel::ShowData(const wxString &name)
     m_doc->GetChannelNames(choices);
     table->SetChannelChoices(choices);
     // Vital, for the original grid cursor may be out of range.
-    m_grid->SetGridCursor(0, 0);
+    int cursorRow = m_grid->GetGridCursorRow();
+    int maxRow = table->GetRowsCount() - 1;
+    if (cursorRow > maxRow) {
+        m_grid->SetGridCursor(maxRow, m_grid->GetGridCursorCol());
+    }
     // `AssignTable` is not existing in earlier version of wxWidgets.
     m_grid->SetTable(table, true);
     m_grid->SetFocus();

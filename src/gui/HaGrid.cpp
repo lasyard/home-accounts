@@ -26,7 +26,7 @@ HaGrid::HaGrid(
 HaGrid::~HaGrid()
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
-    CleanEventHandler();
+    CheckEventHandler();
 }
 
 wxPen HaGrid::GetRowGridLinePen([[maybe_unused]] int row)
@@ -95,14 +95,13 @@ void HaGrid::OnDelete([[maybe_unused]] wxCommandEvent &event)
     EndBatch();
 }
 
-void HaGrid::CleanEventHandler()
+void HaGrid::CheckEventHandler()
 {
     auto win = GetGridWindow();
     auto &children = win->GetChildren();
     for (auto &child : children) {
         auto *handler = child->GetEventHandler();
         if (handler != child) {
-            // child->PopEventHandler();
             wxLogTrace(
                 TM,
                 "Pushed event handler foud. win = \"%s\", class of handler = \"%s\"",

@@ -9,6 +9,7 @@ HaPanel::HaPanel(HaDocument *doc) : wxPanel(), m_doc(doc)
 
 HaPanel::~HaPanel()
 {
+    wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
 }
 
 void HaPanel::OnEnter()

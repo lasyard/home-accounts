@@ -47,12 +47,12 @@ private:
     static const int ROW_HEIGHT = 25;
 
     /**
-     * @brief Clean the pushed event handler of a `wxWindow`.
+     * @brief Check the pushed event handler of a `wxWindow`.
      *
-     * This is used for destruction. When the cell editors were destructed, any pushed event handlers should be asserted
-     * have been removed. Unfortunatedly, they were not.
+     * When the cell editors were destructed, any pushed event handlers should be asserted having been removed.
+     * Unfortunatedly, they may not due to some bugs.
      */
-    void CleanEventHandler();
+    void CheckEventHandler();
 };
 
 #endif /* _GUI_HA_GRID_H_ */

@@ -74,5 +74,6 @@ bool DataGrid::IsDeleteEnabled() const
         return true;
     }
     auto coords = GetGridCursorCoords();
-    return coords != wxGridNoCellCoords && !GetCellAttr(coords)->IsReadOnly();
+    // Vital, use `GetCellAttrPtr` instead of `GetCellAttr`.
+    return coords != wxGridNoCellCoords && !GetCellAttrPtr(coords)->IsReadOnly();
 }

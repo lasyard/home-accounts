@@ -23,6 +23,7 @@ DataGridCellAttrProvider::DataGridCellAttrProvider(const DataTable *table) : HaG
 
 DataGridCellAttrProvider::~DataGridCellAttrProvider()
 {
+    wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     m_pageTitleAttr->DecRef();
     m_timeAttr->DecRef();
     m_moneyAttr->DecRef();
@@ -47,11 +48,11 @@ wxGridCellAttr *DataGridCellAttrProvider::GetAttr(int row, int col, wxGridCellAt
                 return m_moneyAttr;
             case DataTable::ACCOUNT_COL:
                 m_accountAttr->IncRef();
-                wxLogTrace(TM, "RefCount of accountAttr is %d", m_accountAttr->GetRefCount());
+                // wxLogTrace(TM, "RefCount of accountAttr is %d", m_accountAttr->GetRefCount());
                 return m_accountAttr;
             case DataTable::CHANNEL_COL:
                 m_channelAttr->IncRef();
-                wxLogTrace(TM, "RefCount of channelAttr is %d", m_channelAttr->GetRefCount());
+                // wxLogTrace(TM, "RefCount of channelAttr is %d", m_channelAttr->GetRefCount());
                 return m_channelAttr;
             case DataTable::VALID_COL:
                 m_boolAttr->IncRef();

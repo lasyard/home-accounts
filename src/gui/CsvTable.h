@@ -2,20 +2,34 @@
 #define _GUI_CSV_TABLE_H_
 
 #include "CachedTable.h"
-#include "CellAttrs.h"
-#include "data/CsvIdVecDao.h"
+#include "data/CsvVecDao.h"
+
+class CsvTableBase : public CachedTable
+{
+public:
+    CsvTableBase(size_t cols, const wxString *const colLabels) : CachedTable(cols, colLabels)
+    {
+    }
+
+    virtual ~CsvTableBase()
+    {
+    }
+
+    virtual ColumnType GetColumnType(int col) const = 0;
+};
 
 /**
  * @brief Table to reader csv.
  *
  * @tparam I the element type of row
  */
-template <typename I> class CsvTable : public CachedTable
+template <typename I> class CsvTable : public CsvTableBase
 {
     typedef CsvRowTraits<I> Traits;
 
 public:
-    CsvTable(size_t cols, const wxString *const colLabels, CsvVecDao<I> *dao) : CachedTable(cols, colLabels), m_dao(dao)
+    CsvTable(size_t cols, const wxString *const colLabels, CsvVecDao<I> *dao)
+        : CsvTableBase(cols, colLabels), m_dao(dao)
     {
         InitCache(dao->getNumberRows());
     }
@@ -29,22 +43,9 @@ public:
         return m_dao->getRowLabel(row);
     }
 
-    wxGridCellAttr *
-    GetAttr([[maybe_unused]] int row, int col, [[maybe_unused]] wxGridCellAttr::wxAttrKind kind) override
+    ColumnType GetColumnType(int col) const override
     {
-        auto type = Traits::types[col];
-        switch (type) {
-        case INT32:
-        case INT64:
-        case MONEY:
-            return CellAttrs::ins().GetNumber();
-        case DATE:
-        case TIME:
-            return CellAttrs::ins().GetTime();
-        default:
-            break;
-        }
-        return CellAttrs::ins().GetDefault();
+        return Traits::types[col];
     }
 
 private:

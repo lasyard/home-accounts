@@ -4,13 +4,14 @@
 #include <wx/grid.h>
 #include <wx/pen.h>
 
+#include "Common.h"
+
 class HaGrid : public wxGrid
 {
 public:
-    HaGrid() : wxGrid()
-    {
-    }
+    DECLARE_TM()
 
+    HaGrid();
     HaGrid(
         wxWindow *parent,
         wxWindowID id = wxID_ANY,
@@ -18,14 +19,8 @@ public:
         const wxSize &size = wxDefaultSize,
         long style = wxWANTS_CHARS,
         const wxString &name = wxGridNameStr
-    )
-        : wxGrid(parent, id, pos, size, style, name)
-    {
-    }
-
-    virtual ~HaGrid()
-    {
-    }
+    );
+    virtual ~HaGrid();
 
     void AutoFit()
     {
@@ -50,6 +45,14 @@ public:
 
 private:
     static const int ROW_HEIGHT = 25;
+
+    /**
+     * @brief Clean the pushed event handler of a `wxWindow`.
+     *
+     * This is used for destruction. When the cell editors were destructed, any pushed event handlers should be asserted
+     * have been removed. Unfortunatedly, they were not.
+     */
+    void CleanEventHandler();
 };
 
 #endif /* _GUI_HA_GRID_H_ */

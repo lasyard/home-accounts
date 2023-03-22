@@ -18,10 +18,10 @@ class HaDocument : public wxDocument
     DECLARE_EVENT_TABLE()
 
 public:
+    DECLARE_TM()
+
     static const char *const ACCOUNTS_SECTION_NAME;
     static const char *const CHANNELS_SECTION_NAME;
-
-    DECLARE_TM()
 
     HaDocument();
     virtual ~HaDocument();

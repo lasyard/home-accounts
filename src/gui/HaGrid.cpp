@@ -3,6 +3,32 @@
 
 #include "HaGrid.h"
 
+IMPLEMENT_TM(HaGrid)
+
+HaGrid::HaGrid() : wxGrid()
+{
+    wxLog::AddTraceMask(TM);
+}
+
+HaGrid::HaGrid(
+    wxWindow *parent,
+    wxWindowID id,
+    const wxPoint &pos,
+    const wxSize &size,
+    long style,
+    const wxString &name
+)
+    : wxGrid(parent, id, pos, size, style, name)
+{
+    wxLog::AddTraceMask(TM);
+}
+
+HaGrid::~HaGrid()
+{
+    wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
+    CleanEventHandler();
+}
+
 wxPen HaGrid::GetRowGridLinePen([[maybe_unused]] int row)
 {
     return *wxTRANSPARENT_PEN;
@@ -67,4 +93,22 @@ void HaGrid::OnDelete([[maybe_unused]] wxCommandEvent &event)
     }
     AutoFit();
     EndBatch();
+}
+
+void HaGrid::CleanEventHandler()
+{
+    auto win = GetGridWindow();
+    auto &children = win->GetChildren();
+    for (auto &child : children) {
+        auto *handler = child->GetEventHandler();
+        if (handler != child) {
+            // child->PopEventHandler();
+            wxLogTrace(
+                TM,
+                "Pushed event handler foud. win = \"%s\", class of handler = \"%s\"",
+                child->GetName(),
+                handler->GetClassInfo()->GetClassName()
+            );
+        }
+    }
 }

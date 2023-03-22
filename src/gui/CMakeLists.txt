@@ -31,22 +31,22 @@ endif()
 
 add_exe(${APP_NAME}
     ${RESOURCE_FILES}
-    configs/ConfigsPanel.cpp
-    data/DataGrid.cpp
-    data/DataPanel.cpp
-    data/DataTable.cpp
-    raw/RawPanel.cpp
     CachedTable.cpp
-    CellAttrs.cpp
     ChangePassDialog.cpp
     HaApp.cpp
     HaArtProvider.cpp
     HaDocument.cpp
     HaGrid.cpp
+    HaGridCellAttrProvider.cpp
     HaMainFrame.cpp
     HaPanel.cpp
     HaView.cpp
 )
+add_subdirectory(configs)
+add_subdirectory(data)
+add_subdirectory(raw)
+add_subdirectory(res)
+
 target_link_libraries(${APP_NAME} PRIVATE ${wxWidgets_LIBRARIES})
 target_link_libraries(${APP_NAME} PRIVATE ${LIB_FILE_NAME})
 target_link_libraries(${APP_NAME} PRIVATE ${LIB_DATA_NAME})
@@ -57,5 +57,3 @@ set_target_properties(${APP_NAME} PROPERTIES
     MACOSX_FRAMEWORK_IDENTIFIER io.github.lasyard.${APP_NAME}
     RESOURCE "${RESOURCE_FILES}"
 )
-
-add_subdirectory(res)

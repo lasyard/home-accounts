@@ -1,5 +1,5 @@
-#include "int.h"
 #include "money.h"
+#include "int.h"
 #include "str.h"
 
 const char *parse_money(const char *buf, money_t *data, char sep, int mul)

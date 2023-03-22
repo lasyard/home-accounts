@@ -12,6 +12,8 @@ class DataPanel : public HaPanel
     DECLARE_DYNAMIC_CLASS(DataPanel)
 
 public:
+    DECLARE_TM()
+
     static const wxString LABEL;
 
     DataPanel(wxWindow *parent = nullptr, HaDocument *doc = nullptr);

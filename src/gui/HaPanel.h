@@ -5,11 +5,15 @@
 #include <wx/panel.h>
 #include <wx/xrc/xmlres.h>
 
+#include "Common.h"
+
 class HaDocument;
 
 class HaPanel : public wxPanel
 {
 public:
+    DECLARE_TM()
+
     HaPanel(HaDocument *doc);
     virtual ~HaPanel();
 

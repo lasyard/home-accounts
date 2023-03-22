@@ -1,7 +1,10 @@
 #include "HaPanel.h"
 
+IMPLEMENT_TM(HaPanel)
+
 HaPanel::HaPanel(HaDocument *doc) : wxPanel(), m_doc(doc)
 {
+    wxLog::AddTraceMask(TM);
 }
 
 HaPanel::~HaPanel()

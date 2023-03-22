@@ -6,7 +6,8 @@
 #include "../HaPanel.h"
 
 class wxListbook;
-class CachedTable;
+
+class CsvTableBase;
 class HaGrid;
 
 class ConfigsPanel : public HaPanel
@@ -38,7 +39,7 @@ private:
     wxListbook *m_book;
     std::map<std::string, HaGrid *> m_grids;
 
-    void UpdateConfig(const std::string &sectionName, const wxString &label, CachedTable *table);
+    void UpdateConfig(const std::string &sectionName, const wxString &label, CsvTableBase *table);
 
     HaGrid *GetCurrentGrid() const;
 };

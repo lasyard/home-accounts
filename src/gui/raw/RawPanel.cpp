@@ -7,7 +7,6 @@
 #include <wx/treebook.h>
 #include <wx/treectrl.h>
 
-#include "../CellAttrs.h"
 #include "../HaApp.h"
 #include "../HaDocument.h"
 #include "RawPanel.h"
@@ -136,7 +135,8 @@ void RawPanel::AddPage(const wxString &name, const wxString &content, bool dirty
         tk = tks.GetNextToken();
     }
     auto text = new wxTextCtrl(m_book, wxID_ANY, content, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
-    text->SetFont(CellAttrs::ins().GetMonoFont());
+    wxFont monoFont(16, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
+    text->SetFont(monoFont);
     text->Bind(wxEVT_TEXT, &HaDocument::OnChange, m_doc);
     InsertPage(parent, text, tk);
     // Important to call this

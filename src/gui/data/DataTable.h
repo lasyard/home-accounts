@@ -2,9 +2,7 @@
 #define _DATA_DATA_TABLE_H_
 
 #include "../CachedTable.h"
-#include "../CellAttrs.h"
-
-class DataDao;
+#include "data/DataDao.h"
 
 class DataTable : public CachedTable
 {
@@ -26,16 +24,16 @@ public:
 
     wxString GetRowLabelValue(int row) override;
 
-    wxGridCellAttr *GetAttr(int row, int col, wxGridCellAttr::wxAttrKind kind) override;
+    auto GetRowType(int row) const
+    {
+        return m_dataDao->getRowType(row);
+    }
 
     void SetAccountChoices(wxArrayString &choices);
     void SetChannelChoices(wxArrayString &choices);
 
 private:
     DataDao *m_dataDao;
-    wxGridCellAttr *m_pageTitleAttr;
-    wxGridCellAttr *m_accountAttr;
-    wxGridCellAttr *m_channelAttr;
 
     wxString GetCellValue(int row, int col) override;
 
@@ -48,33 +46,6 @@ private:
     {
         // Do nothing, deletion is done in `DataGrid`.
         return true;
-    }
-
-    wxGridCellAttr *GetPageTitleAttr()
-    {
-        m_pageTitleAttr->IncRef();
-        return m_pageTitleAttr;
-    }
-
-    wxGridCellAttr *GetAccountAttr()
-    {
-        m_accountAttr->IncRef();
-        return m_accountAttr;
-    }
-
-    wxGridCellAttr *GetChannelAttr()
-    {
-        m_channelAttr->IncRef();
-        return m_channelAttr;
-    }
-
-    void SetChoicesOf(wxGridCellAttr *&attr, const wxArrayString &choices)
-    {
-        if (attr->IsReadOnly()) {
-            attr->DecRef();
-            attr = CellAttrs::ins().CloneDefault();
-        }
-        attr->SetEditor(new wxGridCellChoiceEditor(choices));
     }
 };
 

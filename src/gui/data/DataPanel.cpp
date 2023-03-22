@@ -4,20 +4,23 @@
 #include "DataPanel.h"
 
 IMPLEMENT_DYNAMIC_CLASS(DataPanel, HaPanel)
+IMPLEMENT_TM(DataPanel)
 
 const wxString DataPanel::LABEL = _("Transactions");
 
 DataPanel::DataPanel(wxWindow *parent, HaDocument *doc) : HaPanel(doc)
 {
+    wxLog::AddTraceMask(TM);
     wxXmlResource::Get()->LoadPanel(this, parent, "panelData");
     m_grid = XRCCTRL(*this, "gridData", DataGrid);
-    m_grid->Bind(wxEVT_GRID_EDITOR_HIDDEN, &HaDocument::OnChange, doc);
+    m_grid->Bind(wxEVT_GRID_CELL_CHANGED, &HaDocument::OnChange, doc);
     m_grid->SetAttributes();
 }
 
 DataPanel::~DataPanel()
 {
-    m_grid->Unbind(wxEVT_GRID_EDITOR_HIDDEN, &HaDocument::OnChange, m_doc);
+    // This may be not necessary.
+    m_grid->Unbind(wxEVT_GRID_CELL_CHANGED, &HaDocument::OnChange, m_doc);
 }
 
 void DataPanel::OnInsert(wxCommandEvent &event)
@@ -34,11 +37,13 @@ void DataPanel::OnDelete(wxCommandEvent &event)
 
 void DataPanel::OnUpdate()
 {
+    wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     ShowData("test");
 }
 
 void DataPanel::SaveContents()
 {
+    wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     m_grid->SaveEditControlValue();
     m_doc->DoSaveData("test");
 }
@@ -53,10 +58,12 @@ void DataPanel::ShowData(const wxString &name)
     table->SetAccountChoices(choices);
     m_doc->GetChannelNames(choices);
     table->SetChannelChoices(choices);
+    // Vital, for the original grid cursor may be out of range.
+    m_grid->SetGridCursor(0, 0);
     // `AssignTable` is not existing in earlier version of wxWidgets.
     m_grid->SetTable(table, true);
-    m_grid->AutoFit();
     m_grid->SetFocus();
+    m_grid->AutoFit();
 }
 
 bool DataPanel::IsInsertEnabled() const

@@ -4,6 +4,7 @@
 #include "../CsvTable.h"
 #include "../HaDocument.h"
 #include "../HaGrid.h"
+#include "ConfigsGridCellAttrProvider.h"
 #include "ConfigsPanel.h"
 
 #define CONFIG_COLUMN_PARA(x) sizeof(x##_COLUMN_LABELS) / sizeof(wxString), x##_COLUMN_LABELS
@@ -32,8 +33,9 @@ ConfigsPanel::ConfigsPanel(wxWindow *parent, HaDocument *doc) : HaPanel(doc), m_
 
 ConfigsPanel::~ConfigsPanel()
 {
+    // This may be not necessary.
     for (const auto &[k, v] : m_grids) {
-        v->Unbind(wxEVT_GRID_EDITOR_HIDDEN, &HaDocument::OnChange, m_doc);
+        v->Unbind(wxEVT_GRID_CELL_CHANGED, &HaDocument::OnChange, m_doc);
     }
 }
 
@@ -86,17 +88,23 @@ bool ConfigsPanel::IsDeleteEnabled() const
     return grid->HasFocus();
 }
 
-void ConfigsPanel::UpdateConfig(const std::string &sectionName, const wxString &label, CachedTable *table)
+void ConfigsPanel::UpdateConfig(const std::string &sectionName, const wxString &label, CsvTableBase *table)
 {
+    HaGrid *grid;
     if (!m_grids.contains(sectionName)) {
-        auto grid = new HaGrid(m_book);
-        grid->Bind(wxEVT_GRID_EDITOR_HIDDEN, &HaDocument::OnChange, m_doc);
+        grid = new HaGrid(m_book);
+        grid->Bind(wxEVT_GRID_CELL_CHANGED, &HaDocument::OnChange, m_doc);
         grid->SetAttributes();
         m_grids[sectionName] = grid;
         m_book->AddPage(grid, label);
+    } else {
+        grid = m_grids[sectionName];
     }
-    m_grids[sectionName]->SetTable(table);
-    m_grids[sectionName]->AutoFit();
+    table->SetAttrProvider(new ConfigsGridCellAttrProvider(table));
+    grid->SetTable(table);
+    // Call this after `CreateGrid` or `SetTable`.
+    grid->SetSelectionMode(wxGrid::wxGridSelectionModes::wxGridSelectRows);
+    grid->AutoFit();
 }
 
 HaGrid *ConfigsPanel::GetCurrentGrid() const

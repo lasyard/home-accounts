@@ -1,5 +1,6 @@
 #include <vector>
 
+#include "DataGridCellAttrProvider.h"
 #include "DataTable.h"
 #include "data/DataDao.h"
 
@@ -15,22 +16,13 @@ const wxString DataTable::COL_LABELS[] = {
 
 DataTable::DataTable(DataDao *dataDao) : CachedTable(COL_NUM, COL_LABELS), m_dataDao(dataDao)
 {
-    m_pageTitleAttr = CellAttrs::ins().CloneReadOnly();
-    m_pageTitleAttr->SetSize(1, COL_NUM);
-    m_pageTitleAttr->SetFont(CellAttrs::ins().GetMonoFont());
-    m_pageTitleAttr->SetBackgroundColour(*wxLIGHT_GREY);
-    m_pageTitleAttr->SetAlignment(wxALIGN_CENTER_VERTICAL, wxALIGN_LEFT);
-    m_accountAttr = CellAttrs::ins().CloneReadOnly();
-    m_channelAttr = CellAttrs::ins().CloneReadOnly();
     // Do not call `this->GetNumberRows()`, cache is not inited.
     InitCache(dataDao->getNumberRows());
+    SetAttrProvider(new DataGridCellAttrProvider(this));
 }
 
 DataTable::~DataTable()
 {
-    m_pageTitleAttr->DecRef();
-    m_accountAttr->DecRef();
-    m_channelAttr->DecRef();
 }
 
 wxString DataTable::GetRowLabelValue(int row)
@@ -38,40 +30,14 @@ wxString DataTable::GetRowLabelValue(int row)
     return m_dataDao->getRowLabel(row);
 }
 
-wxGridCellAttr *DataTable::GetAttr(int row, int col, [[maybe_unused]] wxGridCellAttr::wxAttrKind kind)
-{
-    auto rowType = m_dataDao->getRowType(row);
-    if (rowType == DataDao::IndexType::ITEM) {
-        switch (col) {
-        case TIME_COL:
-            return CellAttrs::ins().GetTime();
-        case INCOME_COL:
-        case OUTLAY_COL:
-            return CellAttrs::ins().GetMoney();
-        case ACCOUNT_COL:
-            return GetAccountAttr();
-        case CHANNEL_COL:
-            return GetChannelAttr();
-        case VALID_COL:
-            return CellAttrs::ins().GetBool();
-        default:
-            break;
-        }
-    } else if (rowType == DataDao::IndexType::PAGE) {
-        // Do not return colSpan > 1 for col > 0, or there will be index out of bond problem.
-        return col == 0 ? GetPageTitleAttr() : CellAttrs::ins().GetOverlapped();
-    }
-    return CellAttrs::ins().GetDefault();
-}
-
 void DataTable::SetAccountChoices(wxArrayString &choices)
 {
-    SetChoicesOf(m_accountAttr, choices);
+    static_cast<DataGridCellAttrProvider *>(GetAttrProvider())->SetAccountChoices(choices);
 }
 
 void DataTable::SetChannelChoices(wxArrayString &choices)
 {
-    SetChoicesOf(m_channelAttr, choices);
+    static_cast<DataGridCellAttrProvider *>(GetAttrProvider())->SetChannelChoices(choices);
 }
 
 wxString DataTable::GetCellValue(int row, int col)

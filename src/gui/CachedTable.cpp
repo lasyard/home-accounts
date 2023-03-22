@@ -1,5 +1,7 @@
 #include <vector>
 
+#include <wx/log.h>
+
 #include "CachedTable.h"
 
 CachedTable::CachedTable(size_t cols, const wxString colLabels[])
@@ -44,7 +46,11 @@ wxString CachedTable::GetColLabelValue(int col)
 
 void CachedTable::SetValue(int row, int col, const wxString &value)
 {
-    SetCellValue(row, col, value.ToStdString());
+    try {
+        SetCellValue(row, col, value.ToStdString());
+    } catch (std::runtime_error &e) {
+        wxLogError(e.what());
+    }
     CacheCell(row, col);
     auto grid = GetView();
     if (grid != nullptr) {

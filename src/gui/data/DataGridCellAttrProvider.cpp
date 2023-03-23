@@ -44,7 +44,7 @@ wxGridCellAttr *DataGridCellAttrProvider::GetAttr(int row, int col, wxGridCellAt
             case DataTable::INCOME_COL:
             case DataTable::OUTLAY_COL:
                 m_moneyAttr->IncRef();
-                wxLogTrace(TM, "RefCount of moneyAttr is %d", m_moneyAttr->GetRefCount());
+                // wxLogTrace(TM, "RefCount of moneyAttr is %d", m_moneyAttr->GetRefCount());
                 return m_moneyAttr;
             case DataTable::ACCOUNT_COL:
                 m_accountAttr->IncRef();

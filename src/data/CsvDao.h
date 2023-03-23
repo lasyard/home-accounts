@@ -14,7 +14,7 @@ template <typename I, typename T> class CsvDao : public Dao<T>
 public:
     CsvDao() : Dao<T>()
     {
-        m_parser = new CsvParser(Traits::cols, Traits::types, Traits::readPtr, Traits::writePtr);
+        m_parser = new CsvParser(Traits::cols, Traits::types, Traits::getPtr);
     }
 
     virtual ~CsvDao()

@@ -8,12 +8,7 @@
 class CsvParser
 {
 public:
-    CsvParser(
-        int cols,
-        const ColumnType *types,
-        void *(*readPtr)(void *data, int i),
-        const void *(*writePtr)(const void *data, int i)
-    );
+    CsvParser(int cols, const ColumnType *types, void *(*getPtr)(void *data, int i));
 
     virtual ~CsvParser()
     {
@@ -61,13 +56,12 @@ public:
     }
 
 protected:
-    int m_cols;                                         // The number of columns.
-    const ColumnType *m_types;                          // The types of each column.
-    char m_sep;                                         // The separator of fields.
-    int m_moneyPrec;                                    // The precision of money.
-    int m_moneyMul;                                     // The scale factor of money.
-    void *(*m_readPtr)(void *data, int i);              // Function to get pointers of I for reading.
-    const void *(*m_writePtr)(const void *data, int i); // Function to get pointers of I for writing.
+    int m_cols;                           // The number of columns.
+    const ColumnType *m_types;            // The types of each column.
+    char m_sep;                           // The separator of fields.
+    int m_moneyPrec;                      // The precision of money.
+    int m_moneyMul;                       // The scale factor of money.
+    void *(*m_getPtr)(void *data, int i); // Function to get member ptr of data.
 
 private:
     const char *parseByType(const char *buf, ColumnType type, void *data);

@@ -135,7 +135,7 @@ std::string DataDao::getDescString(int row)
 {
     const struct item *item = safeGetItem(row);
     if (item != nullptr) {
-        return m_parser->toStringOfColumn(ItemTraits::DESC_INDEX, item->desc);
+        return m_parser->toStringOfColumn(ItemTraits::DESC_INDEX, &item->desc);
     }
     return "";
 }

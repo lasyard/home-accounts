@@ -6,19 +6,8 @@
 #include "money.h"
 #include "str.h"
 
-CsvParser::CsvParser(
-    int cols,
-    const ColumnType *types,
-    void *(*readPtr)(void *data, int i),
-    const void *(*writePtr)(const void *data, int i)
-)
-    : m_cols(cols),
-      m_types(types),
-      m_sep(','),
-      m_moneyPrec(2),
-      m_moneyMul(100),
-      m_readPtr(readPtr),
-      m_writePtr(writePtr)
+CsvParser::CsvParser(int cols, const ColumnType *types, void *(*getPtr)(void *data, int i))
+    : m_cols(cols), m_types(types), m_sep(','), m_moneyPrec(2), m_moneyMul(100), m_getPtr(getPtr)
 {
 }
 
@@ -28,7 +17,7 @@ void CsvParser::parseLine(const char *line, void *data)
     for (int i = 0; i < m_cols; ++i) {
         auto type = m_types[i];
         const char *b = p;
-        p = parseByType(b, type, m_readPtr(data, i));
+        p = parseByType(b, type, m_getPtr(data, i));
         if (p == NULL) {
             throw DataParseError(i, type, b);
         }
@@ -40,7 +29,7 @@ char *CsvParser::outputLine(char *buf, const void *data)
 {
     char *p = buf;
     for (int i = 0; i < m_cols; ++i) {
-        p = outputByType(p, m_types[i], m_writePtr(data, i));
+        p = outputByType(p, m_types[i], const_cast<const void *>(m_getPtr(const_cast<void *>(data), i)));
         if (i < m_cols - 1) {
             *(p++) = m_sep;
         }
@@ -90,21 +79,21 @@ char *CsvParser::outputByType(char *buf, ColumnType type, const void *data)
 {
     switch (type) {
     case STR:
-        return output_string(buf, (struct string *)data);
+        return output_string(buf, (const struct string *)data);
     case CSTR:
-        return output_cstring(buf, (const char *)data);
+        return output_cstring(buf, *(const char *const *)data);
     case INT32:
-        return output_int32(buf, *(int32_t *)data);
+        return output_int32(buf, *(const int32_t *)data);
     case INT64:
-        return output_int64(buf, *(int64_t *)data);
+        return output_int64(buf, *(const int64_t *)data);
     case BOOL:
-        return output_bool(buf, *(bool *)data);
+        return output_bool(buf, *(const bool *)data);
     case MONEY:
-        return output_money(buf, *(money_t *)data, m_moneyPrec, m_moneyMul);
+        return output_money(buf, *(const money_t *)data, m_moneyPrec, m_moneyMul);
     case DATE:
-        return output_date(buf, *(date_t *)data);
+        return output_date(buf, *(const date_t *)data);
     case TIME:
-        return output_time(buf, *(dtime_t *)data);
+        return output_time(buf, *(const dtime_t *)data);
     }
     return buf;
 }

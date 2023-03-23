@@ -61,12 +61,12 @@ bool HaDocument::DoOpenDocument(const wxString &fileName)
             TryLoad(ACCOUNTS_SECTION_NAME, m_accountsDao);
             TryLoad(CHANNELS_SECTION_NAME, m_channelsDao);
             m_dataDao.setAccountLookup(
-                [this](int id) -> auto{ return this->m_accountsDao.getNameById<1>(id); },
-                [this](const char *n) -> auto{ return this->m_accountsDao.getIdByName<1>(n); }
+                [this](int id) -> auto{ return this->m_accountsDao.getValueById<1>(id); },
+                [this](const char *n) -> auto{ return this->m_accountsDao.getIdByValue<1>(n); }
             );
             m_dataDao.setChannelLookup(
-                [this](int id) -> auto{ return this->m_channelsDao.getNameById<1>(id); },
-                [this](const char *n) -> auto{ return this->m_channelsDao.getIdByName<1>(n); }
+                [this](int id) -> auto{ return this->m_channelsDao.getValueById<1>(id); },
+                [this](const char *n) -> auto{ return this->m_channelsDao.getIdByValue<1>(n); }
             );
             return true;
         } catch (std::runtime_error &e) {

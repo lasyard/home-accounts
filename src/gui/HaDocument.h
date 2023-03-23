@@ -55,12 +55,12 @@ public:
         return m_dataDao;
     }
 
-    CsvIdVecDao<struct account, int> &GetAccountsDao()
+    CsvIdVecDao<struct account> &GetAccountsDao()
     {
         return m_accountsDao;
     }
 
-    CsvIdVecDao<struct channel, int> &GetChannelsDao()
+    CsvIdVecDao<struct channel> &GetChannelsDao()
     {
         return m_channelsDao;
     }
@@ -123,8 +123,8 @@ private:
     wxString m_pass;
 
     DataDao m_dataDao;
-    CsvIdVecDao<struct account, int> m_accountsDao;
-    CsvIdVecDao<struct channel, int> m_channelsDao;
+    CsvIdVecDao<struct account> m_accountsDao;
+    CsvIdVecDao<struct channel> m_channelsDao;
 
     HaView *GetView() const
     {

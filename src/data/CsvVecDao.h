@@ -31,7 +31,7 @@ public:
             for (int i = 0; i < Traits::cols; ++i) {
                 if (Traits::types[i] == CSTR) {
                     // Important
-                    char *p = (char *)Traits::writePtr(&item, i);
+                    char *p = *(char **)Traits::getPtr(&item, i);
                     if (p != nullptr) {
                         free(p);
                     }
@@ -86,13 +86,13 @@ public:
     std::string getString(int row, int col)
     {
         auto &data = Dao<T>::m_data;
-        return Csv::m_parser->toStringOfColumn(col, Traits::writePtr(&data[row], col));
+        return Csv::m_parser->toStringOfColumn(col, Traits::getPtr(&data[row], col));
     }
 
     void setString(int row, int col, const std::string &value)
     {
         auto &data = Dao<T>::m_data;
-        Csv::m_parser->parseStringOfColumn(value, col, Traits::readPtr(&data[row], col));
+        Csv::m_parser->parseStringOfColumn(value, col, Traits::getPtr(&data[row], col));
     }
 
     bool insert(size_t pos)
@@ -125,17 +125,17 @@ protected:
     {
         switch (Traits::types[i]) {
         case INT32:
-            *(int32_t *)Traits::readPtr(item, i) = 0;
+            *(int32_t *)Traits::getPtr(item, i) = 0;
             break;
         case INT64:
-            *(int64_t *)Traits::readPtr(item, i) = 0;
+            *(int64_t *)Traits::getPtr(item, i) = 0;
             break;
         case MONEY:
-            *(money_t *)Traits::readPtr(item, i) = 0;
+            *(money_t *)Traits::getPtr(item, i) = 0;
             break;
         case CSTR:
             // Important, or it will be freed.
-            *(char **)Traits::readPtr(item, i) = nullptr;
+            *(const char **)Traits::getPtr(item, i) = nullptr;
             break;
         default:
             break;

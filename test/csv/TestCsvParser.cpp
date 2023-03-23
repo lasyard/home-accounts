@@ -19,46 +19,24 @@ struct record {
 TEST_CASE("parseLine")
 {
     ColumnType types[]{STR, STR, INT32, INT64, MONEY};
-    CsvParser parser(
-        sizeof(types) / sizeof(ColumnType),
-        types,
-        [](void *data, int i) -> void * {
-            struct record *r = static_cast<struct record *>(data);
-            switch (i) {
-            case 0:
-                return &r->str1;
-            case 1:
-                return &r->str2;
-            case 2:
-                return &r->i1;
-            case 3:
-                return &r->i2;
-            case 4:
-                return &r->amount;
-            default:
-                break;
-            }
-            return nullptr;
-        },
-        [](const void *data, int i) -> const void * {
-            const struct record *r = static_cast<const struct record *>(data);
-            switch (i) {
-            case 0:
-                return &r->str1;
-            case 1:
-                return &r->str2;
-            case 2:
-                return &r->i1;
-            case 3:
-                return &r->i2;
-            case 4:
-                return &r->amount;
-            default:
-                break;
-            }
-            return nullptr;
+    CsvParser parser(sizeof(types) / sizeof(ColumnType), types, [](void *data, int i) -> void * {
+        struct record *r = static_cast<struct record *>(data);
+        switch (i) {
+        case 0:
+            return &r->str1;
+        case 1:
+            return &r->str2;
+        case 2:
+            return &r->i1;
+        case 3:
+            return &r->i2;
+        case 4:
+            return &r->amount;
+        default:
+            break;
         }
-    );
+        return nullptr;
+    });
     struct record r;
     SUBCASE("sep == ','")
     {
@@ -89,34 +67,18 @@ struct record1 {
 TEST_CASE("outputLine")
 {
     ColumnType types[]{INT32, INT64};
-    CsvParser parser(
-        sizeof(types) / sizeof(ColumnType),
-        types,
-        [](void *data, int i) -> void * {
-            struct record1 *r = static_cast<struct record1 *>(data);
-            switch (i) {
-            case 0:
-                return &r->i1;
-            case 1:
-                return &r->i2;
-            default:
-                break;
-            }
-            return nullptr;
-        },
-        [](const void *data, int i) -> const void * {
-            const struct record1 *r = static_cast<const struct record1 *>(data);
-            switch (i) {
-            case 0:
-                return &r->i1;
-            case 1:
-                return &r->i2;
-            default:
-                break;
-            }
-            return nullptr;
+    CsvParser parser(sizeof(types) / sizeof(ColumnType), types, [](void *data, int i) -> void * {
+        struct record1 *r = static_cast<struct record1 *>(data);
+        switch (i) {
+        case 0:
+            return &r->i1;
+        case 1:
+            return &r->i2;
+        default:
+            break;
         }
-    );
+        return nullptr;
+    });
     struct record1 r;
     char buf[256];
     SUBCASE("sep == ','")

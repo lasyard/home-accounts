@@ -22,7 +22,7 @@ public:
         MONEY,
     };
 
-    static void *readPtr(void *data, int i)
+    static void *getPtr(void *data, int i)
     {
         struct item *item = static_cast<struct item *>(data);
         switch (i) {
@@ -37,27 +37,11 @@ public:
         }
         return nullptr;
     }
-
-    static const void *writePtr(const void *data, int i)
-    {
-        const struct item *item = static_cast<const struct item *>(data);
-        switch (i) {
-        case 0:
-            return &item->id;
-        case 1:
-            return item->name;
-        case 2:
-            return &item->amount;
-        default:
-            break;
-        }
-        return nullptr;
-    }
 };
 
 TEST_CASE("read")
 {
-    CsvIdVecDao<struct item, int, 0> dao;
+    CsvIdVecDao<struct item, 0> dao;
     dao.readString("1,abc,10.2\n"
                    "2,def,0.88");
     std::vector<struct item> &items = dao.getData();
@@ -71,7 +55,7 @@ TEST_CASE("read")
 
 TEST_CASE("write")
 {
-    CsvIdVecDao<struct item, int, 0> dao;
+    CsvIdVecDao<struct item, 0> dao;
     dao.append();
     dao.insert(0);
     std::vector<struct item> &items = dao.getData();
@@ -87,7 +71,7 @@ TEST_CASE("write")
 
 TEST_CASE("delete")
 {
-    CsvIdVecDao<struct item, int, 0> dao;
+    CsvIdVecDao<struct item, 0> dao;
     dao.readString("1,abc,10.2\n"
                    "2,def,0.88");
     dao.remove(1);

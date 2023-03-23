@@ -13,7 +13,7 @@ public:
         CSTR,
     };
 
-    static void *readPtr(void *data, int i)
+    static void *getPtr(void *data, int i)
     {
         struct account *item = static_cast<struct account *>(data);
         switch (i) {
@@ -21,20 +21,6 @@ public:
             return &item->id;
         case 1:
             return &item->name;
-        default:
-            break;
-        }
-        return nullptr;
-    }
-
-    static const void *writePtr(const void *data, int i)
-    {
-        const struct account *item = static_cast<const struct account *>(data);
-        switch (i) {
-        case 0:
-            return &item->id;
-        case 1:
-            return item->name;
         default:
             break;
         }
@@ -51,7 +37,7 @@ public:
         CSTR,
     };
 
-    static void *readPtr(void *data, int i)
+    static void *getPtr(void *data, int i)
     {
         struct channel *item = static_cast<struct channel *>(data);
         switch (i) {
@@ -59,20 +45,6 @@ public:
             return &item->id;
         case 1:
             return &item->name;
-        default:
-            break;
-        }
-        return nullptr;
-    }
-
-    static const void *writePtr(const void *data, int i)
-    {
-        const struct channel *item = static_cast<const struct channel *>(data);
-        switch (i) {
-        case 0:
-            return &item->id;
-        case 1:
-            return item->name;
         default:
             break;
         }

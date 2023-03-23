@@ -22,7 +22,7 @@ public:
         MONEY,
     };
 
-    static void *readPtr(void *data, int i)
+    static void *getPtr(void *data, int i)
     {
         struct item *item = static_cast<struct item *>(data);
         switch (i) {
@@ -30,22 +30,6 @@ public:
             return &item->id;
         case 1:
             return &item->name;
-        case 2:
-            return &item->amount;
-        default:
-            break;
-        }
-        return nullptr;
-    }
-
-    static const void *writePtr(const void *data, int i)
-    {
-        const struct item *item = static_cast<const struct item *>(data);
-        switch (i) {
-        case 0:
-            return &item->id;
-        case 1:
-            return item->name;
         case 2:
             return &item->amount;
         default:

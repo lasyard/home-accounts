@@ -27,7 +27,7 @@ public:
         INT32,
     };
 
-    static void *readPtr(void *data, int i)
+    static void *getPtr(void *data, int i)
     {
         struct item *item = static_cast<struct item *>(data);
         switch (i) {
@@ -41,30 +41,6 @@ public:
             return &item->channel;
         case DESC_INDEX:
             return &item->desc;
-        case VALID_INDEX:
-            return &item->valid;
-        case BATCH_INDEX:
-            return &item->batch;
-        default:
-            break;
-        }
-        return nullptr;
-    }
-
-    static const void *writePtr(const void *data, int i)
-    {
-        const struct item *item = static_cast<const struct item *>(data);
-        switch (i) {
-        case TIME_INDEX:
-            return &item->time;
-        case AMOUNT_INDEX:
-            return &item->amount;
-        case ACCOUNT_INDEX:
-            return &item->account;
-        case CHANNEL_INDEX:
-            return &item->channel;
-        case DESC_INDEX:
-            return item->desc;
         case VALID_INDEX:
             return &item->valid;
         case BATCH_INDEX:

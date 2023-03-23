@@ -2,18 +2,23 @@
 #define _DATA_CSV_ID_VEC_DAO_H_
 
 #include "CsvVecDao.h"
+#include "TypeGetter.h"
 
 /**
  * @brief Dao to read csv into a vector, with an unique ID column.
  *
  * @tparam I the element type of row
- * @tparam ID_TYPE the type of ID column
  * @tparam ID_COL the column which is incremented automatically
  */
-template <typename I, typename ID_TYPE, int ID_COL = 0> class CsvIdVecDao : public CsvVecDao<I>
+template <typename I, int ID_COL = 0> class CsvIdVecDao : public CsvVecDao<I>
 {
     typedef CsvRowTraits<I> Traits;
+
+    template <int COL> using TG = TypeGetter<Traits::types[COL]>;
+    template <int COL> using TGV = typename TG<COL>::ValueType;
+
     typedef std::vector<I> T;
+    typedef TGV<ID_COL> ID_TYPE;
 
 public:
     CsvIdVecDao() : CsvVecDao<I>()
@@ -24,11 +29,11 @@ public:
     {
     }
 
-    const I *getById(ID_TYPE id)
+    I *getById(ID_TYPE id)
     {
-        const auto &data = Dao<T>::m_data;
-        for (const auto &item : data) {
-            if (*(ID_TYPE *)Traits::writePtr(&item, ID_COL) == id) {
+        auto &data = Dao<T>::m_data;
+        for (auto &item : data) {
+            if (*(ID_TYPE *)Traits::getPtr(&item, ID_COL) == id) {
                 return &item;
             }
         }
@@ -36,36 +41,36 @@ public:
     }
 
     /**
-     * @brief Get the name by id. The `name` column must exits and have type `CSTR`.
+     * @brief Get value of another field by id.
      *
      * @param id the id
-     * @return the name
+     * @return the value
      */
-    template <int NAME_COL> const char *getNameById(ID_TYPE id)
+    template <int V_COL> TGV<V_COL> getValueById(ID_TYPE id)
     {
         auto item = getById(id);
-        return (item != nullptr) ? (const char *)Traits::writePtr(item, NAME_COL) : nullptr;
+        return (item != nullptr) ? *(TGV<V_COL> *)Traits::getPtr(item, V_COL) : TG<V_COL>::zero();
     }
 
-    template <int NAME_COL> ID_TYPE getIdByName(const char *name)
+    template <int V_COL> ID_TYPE getIdByValue(TGV<V_COL> value)
     {
-        if (name != nullptr) {
-            const auto &data = Dao<T>::m_data;
-            for (const auto &item : data) {
-                auto n = (const char *)Traits::writePtr(&item, NAME_COL);
-                if (n != nullptr && strcmp(n, name) == 0) {
-                    return *(ID_TYPE *)Traits::writePtr(&item, ID_COL);
+        if (value != TG<V_COL>::zero()) {
+            auto &data = Dao<T>::m_data;
+            for (auto &item : data) {
+                auto v = *(TGV<V_COL> *)Traits::getPtr(&item, V_COL);
+                if (v != TG<V_COL>::zero() && TG<V_COL>::compare(v, value) == 0) {
+                    return *(ID_TYPE *)Traits::getPtr(&item, ID_COL);
                 }
             }
         }
-        return (ID_TYPE)0;
+        return TG<ID_COL>::zero();
     }
 
 protected:
     void initItemField(I *item, int i) const override
     {
         if (i == ID_COL) {
-            *(ID_TYPE *)Traits::readPtr(item, i) = nextValue();
+            *(ID_TYPE *)Traits::getPtr(item, i) = nextValue();
         } else {
             CsvVecDao<I>::initItemField(item, i);
         }
@@ -77,7 +82,7 @@ private:
         auto &data = Dao<T>::m_data;
         ID_TYPE m = (ID_TYPE)0;
         for (auto d : data) {
-            ID_TYPE v = *(ID_TYPE *)Traits::writePtr(&d, ID_COL);
+            ID_TYPE v = *(ID_TYPE *)Traits::getPtr(&d, ID_COL);
             if (v > m) {
                 m = v;
             }

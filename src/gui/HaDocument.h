@@ -20,6 +20,7 @@ class HaDocument : public wxDocument
 public:
     DECLARE_TM()
 
+    static const char *const OWNERS_SECTION_NAME;
     static const char *const ACCOUNTS_SECTION_NAME;
     static const char *const CHANNELS_SECTION_NAME;
 
@@ -53,6 +54,11 @@ public:
     DataDao &GetDataDao()
     {
         return m_dataDao;
+    }
+
+    CsvIdVecDao<struct owner> &GetOwnersDao()
+    {
+        return m_ownersDao;
     }
 
     CsvIdVecDao<struct account> &GetAccountsDao()
@@ -106,6 +112,11 @@ public:
         DoSave(name, m_dataDao);
     }
 
+    void DoSaveOwners()
+    {
+        DoSave(OWNERS_SECTION_NAME, m_ownersDao);
+    }
+
     void DoSaveAccounts()
     {
         DoSave(ACCOUNTS_SECTION_NAME, m_accountsDao);
@@ -123,6 +134,7 @@ private:
     wxString m_pass;
 
     DataDao m_dataDao;
+    CsvIdVecDao<struct owner> m_ownersDao;
     CsvIdVecDao<struct account> m_accountsDao;
     CsvIdVecDao<struct channel> m_channelsDao;
 

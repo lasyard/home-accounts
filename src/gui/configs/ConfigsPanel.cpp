@@ -13,6 +13,11 @@ IMPLEMENT_DYNAMIC_CLASS(ConfigsPanel, HaPanel)
 
 const wxString ConfigsPanel::LABEL = _("Configs");
 
+const wxString ConfigsPanel::OWNERS_LABEL = _("Owners");
+const wxString ConfigsPanel::OWNERS_COLUMN_LABELS[] = {
+    _("ID"),
+    _("Name"),
+};
 const wxString ConfigsPanel::ACCOUNTS_LABEL = _("Accounts");
 const wxString ConfigsPanel::ACCOUNTS_COLUMN_LABELS[] = {
     _("ID"),
@@ -28,7 +33,8 @@ ConfigsPanel::ConfigsPanel(wxWindow *parent, HaDocument *doc) : HaPanel(doc), m_
 {
     wxXmlResource::Get()->LoadPanel(this, parent, "panelConfigs");
     m_book = XRCCTRL(*this, "bookConfigs", wxListbook);
-    m_book->GetListView()->SetMinSize(wxSize(160, -1));
+    // auto list = m_book->GetListView();
+    // list->SetMinSize(wxSize(160, -1));
 }
 
 ConfigsPanel::~ConfigsPanel()
@@ -56,6 +62,11 @@ void ConfigsPanel::OnDelete(wxCommandEvent &event)
 void ConfigsPanel::OnUpdate()
 {
     UpdateConfig(
+        HaDocument::OWNERS_SECTION_NAME,
+        OWNERS_LABEL,
+        new CsvTable(CONFIG_COLUMN_PARA(OWNERS), &m_doc->GetOwnersDao())
+    );
+    UpdateConfig(
         HaDocument::ACCOUNTS_SECTION_NAME,
         ACCOUNTS_LABEL,
         new CsvTable(CONFIG_COLUMN_PARA(ACCOUNTS), &m_doc->GetAccountsDao())
@@ -72,6 +83,7 @@ void ConfigsPanel::SaveContents()
     for (const auto &[k, v] : m_grids) {
         v->SaveEditControlValue();
     }
+    m_doc->DoSaveOwners();
     m_doc->DoSaveAccounts();
     m_doc->DoSaveChannels();
 }

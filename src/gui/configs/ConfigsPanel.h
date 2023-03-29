@@ -30,7 +30,8 @@ public:
     bool IsDeleteEnabled() const override;
 
 private:
-    static const int CONFIG_NUM = 1;
+    static const wxString OWNERS_LABEL;
+    static const wxString OWNERS_COLUMN_LABELS[];
     static const wxString ACCOUNTS_LABEL;
     static const wxString ACCOUNTS_COLUMN_LABELS[];
     static const wxString CHANNELS_LABEL;

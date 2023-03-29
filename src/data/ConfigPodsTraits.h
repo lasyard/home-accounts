@@ -4,6 +4,20 @@
 #include "CsvRowTraits.h"
 #include "config_pods.h"
 
+// owner
+
+template <> class CsvRowTraits<struct owner>
+{
+public:
+    static const int cols = 2;
+    static const ColumnType constexpr types[] = {
+        INT32,
+        CSTR,
+    };
+
+    static void *getPtr(void *data, int i);
+};
+
 // account
 
 template <> class CsvRowTraits<struct account>

@@ -1,5 +1,21 @@
 #include "ConfigPodsTraits.h"
 
+// owner
+
+void *CsvRowTraits<struct owner>::getPtr(void *data, int i)
+{
+    struct owner *item = static_cast<struct owner *>(data);
+    switch (i) {
+    case 0:
+        return &item->id;
+    case 1:
+        return &item->name;
+    default:
+        break;
+    }
+    return nullptr;
+}
+
 // account
 
 void *CsvRowTraits<struct account>::getPtr(void *data, int i)

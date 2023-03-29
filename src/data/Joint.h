@@ -1,6 +1,8 @@
 #ifndef _DATA_JOINT_H_
 #define _DATA_JOINT_H_
 
+#include <functional>
+
 #include "TypeTraits.h"
 
 template <typename DT, typename ST> class Joint

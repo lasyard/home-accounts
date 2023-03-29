@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "CsvDao.h"
+#include "Joint.h"
 #include "data.h"
 
 class DataDao : public CsvDao<struct item, struct data>
@@ -20,9 +21,6 @@ public:
         PAGE,
         ITEM,
     };
-
-    typedef std::function<const char *(int)> LookupCallback;
-    typedef std::function<int(const char *)> RevLookupCallback;
 
     void read(std::istream &is) override;
     void write(std::ostream &os) override;
@@ -55,16 +53,14 @@ public:
         return m_index[row].m_type;
     }
 
-    void setAccountLookup(LookupCallback f1, RevLookupCallback f2)
+    void setAccountJoint(Joint<const char *, int32_t> joint)
     {
-        m_accountLookup = f1;
-        m_accountRevLookup = f2;
+        m_accountJoint = joint;
     }
 
-    void setChannelLookup(LookupCallback f1, RevLookupCallback f2)
+    void setChannelJoint(Joint<const char *, int32_t> joint)
     {
-        m_channelLookup = f1;
-        m_channelRevLookup = f2;
+        m_channelJoint = joint;
     }
 
 private:
@@ -79,29 +75,8 @@ private:
     };
 
     std::vector<struct IndexItem> m_index;
-    LookupCallback m_accountLookup;
-    LookupCallback m_channelLookup;
-    RevLookupCallback m_accountRevLookup;
-    RevLookupCallback m_channelRevLookup;
-
-    static std::string lookupId(LookupCallback f, int id)
-    {
-        if (f != nullptr) {
-            const char *s = f(id);
-            if (s != nullptr) {
-                return s;
-            }
-        }
-        return "N/A (" + std::to_string(id) + ")";
-    }
-
-    static int lookupName(RevLookupCallback f, const std::string &name)
-    {
-        if (f != nullptr) {
-            return f(name.c_str());
-        }
-        return 0;
-    }
+    Joint<const char *, int32_t> m_accountJoint;
+    Joint<const char *, int32_t> m_channelJoint;
 
     struct item *safeGetItem(int row)
     {

@@ -4,6 +4,8 @@
 #include "CsvRowTraits.h"
 #include "config_pods.h"
 
+// account
+
 template <> class CsvRowTraits<struct account>
 {
 public:
@@ -13,20 +15,10 @@ public:
         CSTR,
     };
 
-    static void *getPtr(void *data, int i)
-    {
-        struct account *item = static_cast<struct account *>(data);
-        switch (i) {
-        case 0:
-            return &item->id;
-        case 1:
-            return &item->name;
-        default:
-            break;
-        }
-        return nullptr;
-    }
+    static void *getPtr(void *data, int i);
 };
+
+// channel
 
 template <> class CsvRowTraits<struct channel>
 {
@@ -37,19 +29,7 @@ public:
         CSTR,
     };
 
-    static void *getPtr(void *data, int i)
-    {
-        struct channel *item = static_cast<struct channel *>(data);
-        switch (i) {
-        case 0:
-            return &item->id;
-        case 1:
-            return &item->name;
-        default:
-            break;
-        }
-        return nullptr;
-    }
+    static void *getPtr(void *data, int i);
 };
 
 #endif /* _DATA_CONFIG_PODS_TRAITS_H_ */

@@ -2,7 +2,6 @@
 #define _DATA_CSV_ID_VEC_DAO_H_
 
 #include "CsvVecDao.h"
-#include "TypeGetter.h"
 
 /**
  * @brief Dao to read csv into a vector, with an unique ID column.
@@ -13,12 +12,12 @@
 template <typename I, int ID_COL = 0> class CsvIdVecDao : public CsvVecDao<I>
 {
     typedef CsvRowTraits<I> Traits;
-
-    template <int COL> using TG = TypeGetter<Traits::types[COL]>;
-    template <int COL> using TGV = typename TG<COL>::ValueType;
-
     typedef std::vector<I> T;
-    typedef TGV<ID_COL> ID_TYPE;
+    typedef CsvDao<I, T> Csv;
+
+    template <int COL> using ColType = typename TypeGetter<Traits::types[COL]>::Type;
+
+    typedef ColType<ID_COL> ID_TYPE;
 
 public:
     CsvIdVecDao() : CsvVecDao<I>()
@@ -27,43 +26,6 @@ public:
 
     virtual ~CsvIdVecDao()
     {
-    }
-
-    I *getById(ID_TYPE id)
-    {
-        auto &data = Dao<T>::m_data;
-        for (auto &item : data) {
-            if (*(ID_TYPE *)Traits::getPtr(&item, ID_COL) == id) {
-                return &item;
-            }
-        }
-        return nullptr;
-    }
-
-    /**
-     * @brief Get value of another field by id.
-     *
-     * @param id the id
-     * @return the value
-     */
-    template <int V_COL> TGV<V_COL> getValueById(ID_TYPE id)
-    {
-        auto item = getById(id);
-        return (item != nullptr) ? *(TGV<V_COL> *)Traits::getPtr(item, V_COL) : TG<V_COL>::zero();
-    }
-
-    template <int V_COL> ID_TYPE getIdByValue(TGV<V_COL> value)
-    {
-        if (value != TG<V_COL>::zero()) {
-            auto &data = Dao<T>::m_data;
-            for (auto &item : data) {
-                auto v = *(TGV<V_COL> *)Traits::getPtr(&item, V_COL);
-                if (v != TG<V_COL>::zero() && TG<V_COL>::compare(v, value) == 0) {
-                    return *(ID_TYPE *)Traits::getPtr(&item, ID_COL);
-                }
-            }
-        }
-        return TG<ID_COL>::zero();
     }
 
 protected:

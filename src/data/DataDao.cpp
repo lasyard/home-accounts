@@ -7,13 +7,7 @@
 #include "csv/str.h"
 #include "page.h"
 
-DataDao::DataDao()
-    : CsvDao<struct item, struct data>(),
-      m_index(),
-      m_accountLookup(nullptr),
-      m_channelLookup(nullptr),
-      m_accountRevLookup(nullptr),
-      m_channelRevLookup(nullptr)
+DataDao::DataDao() : CsvDao<struct item, struct data>(), m_index(), m_accountJoint(), m_channelJoint()
 {
     init_data(&m_data);
 }
@@ -117,7 +111,7 @@ std::string DataDao::getAccountString(int row)
 {
     const struct item *item = safeGetItem(row);
     if (item != nullptr) {
-        return lookupId(m_accountLookup, item->account);
+        return m_accountJoint.lookup(item->account);
     }
     return "";
 }
@@ -126,7 +120,7 @@ std::string DataDao::getChannelString(int row)
 {
     const struct item *item = safeGetItem(row);
     if (item != nullptr) {
-        return lookupId(m_channelLookup, item->channel);
+        return m_channelJoint.lookup(item->channel);
     }
     return "";
 }
@@ -163,7 +157,7 @@ void DataDao::setAccount(int row, const std::string &value)
 {
     struct item *item = safeGetItem(row);
     if (item != nullptr) {
-        item->account = lookupName(m_accountRevLookup, value);
+        item->account = m_accountJoint.revLookup(value.c_str());
     }
 }
 
@@ -171,7 +165,7 @@ void DataDao::setChannel(int row, const std::string &value)
 {
     struct item *item = safeGetItem(row);
     if (item != nullptr) {
-        item->channel = lookupName(m_channelRevLookup, value);
+        item->channel = m_channelJoint.revLookup(value.c_str());
     }
 }
 

@@ -13,9 +13,6 @@ DataGridCellAttrProvider::DataGridCellAttrProvider(const DataTable *table) : HaG
     m_timeAttr->SetFont(m_monoFont.Smaller());
     m_timeAttr->SetTextColour(*wxBLUE);
 
-    m_moneyAttr = m_monoAttr->Clone();
-    m_moneyAttr->SetEditor(new wxGridCellFloatEditor(7, 2));
-
     m_accountAttr = m_readOnlyAttr->Clone();
 
     m_channelAttr = m_readOnlyAttr->Clone();
@@ -26,7 +23,6 @@ DataGridCellAttrProvider::~DataGridCellAttrProvider()
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     m_pageTitleAttr->DecRef();
     m_timeAttr->DecRef();
-    m_moneyAttr->DecRef();
     m_accountAttr->DecRef();
     m_channelAttr->DecRef();
 }
@@ -73,13 +69,4 @@ wxGridCellAttr *DataGridCellAttrProvider::GetAttr(int row, int col, wxGridCellAt
     }
     m_defaultAttr->IncRef();
     return m_defaultAttr;
-}
-
-void DataGridCellAttrProvider::SetChoices(wxGridCellAttr *&attr, const wxArrayString &choices)
-{
-    if (attr->IsReadOnly()) {
-        attr->DecRef();
-        attr = m_defaultAttr->Clone();
-    }
-    attr->SetEditor(new wxGridCellChoiceEditor(choices));
 }

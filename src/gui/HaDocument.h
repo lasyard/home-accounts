@@ -5,6 +5,7 @@
 
 #include "Common.h"
 #include "HaView.h"
+#include "data/AccountsDao.h"
 #include "data/ConfigPodsTraits.h"
 #include "data/CsvIdVecDao.h"
 #include "data/DataDao.h"
@@ -20,12 +21,16 @@ class HaDocument : public wxDocument
 public:
     DECLARE_TM()
 
-    static const char *const OWNERS_SECTION_NAME;
-    static const char *const ACCOUNTS_SECTION_NAME;
-    static const char *const CHANNELS_SECTION_NAME;
-
     HaDocument();
     virtual ~HaDocument();
+
+    template <typename I, int COL> static void GetStringsByCol(const CsvVecDao<I> &dao, wxArrayString &strs)
+    {
+        strs.Clear();
+        for (const auto &i : dao.getData()) {
+            strs.push_back(*(const char *const *)CsvRowTraits<I>::getPtr(const_cast<I *>(&i), COL));
+        }
+    }
 
     bool OnNewDocument() override;
     bool OnCloseDocument() override;
@@ -61,7 +66,7 @@ public:
         return m_ownersDao;
     }
 
-    CsvIdVecDao<struct account> &GetAccountsDao()
+    AccountsDao &GetAccountsDao()
     {
         return m_accountsDao;
     }
@@ -71,23 +76,7 @@ public:
         return m_channelsDao;
     }
 
-    void GetAccountNames(wxArrayString &names) const
-    {
-        names.Clear();
-        for (const auto &i : m_accountsDao.getData()) {
-            names.push_back(i.name);
-        }
-    }
-
-    void GetChannelNames(wxArrayString &names) const
-    {
-        names.Clear();
-        for (const auto &i : m_channelsDao.getData()) {
-            names.push_back(i.name);
-        }
-    }
-
-    template <typename T> void TryLoad(const wxString &name, Dao<T> &dao)
+    void TryLoad(const wxString &name, DaoBase &dao)
     {
         try {
             std::string content;
@@ -100,7 +89,7 @@ public:
         }
     }
 
-    template <typename T> void DoSave(const wxString &name, Dao<T> &dao)
+    void DoSave(const wxString &name, DaoBase &dao)
     {
         std::ostringstream os;
         dao.write(os);
@@ -112,21 +101,6 @@ public:
         DoSave(name, m_dataDao);
     }
 
-    void DoSaveOwners()
-    {
-        DoSave(OWNERS_SECTION_NAME, m_ownersDao);
-    }
-
-    void DoSaveAccounts()
-    {
-        DoSave(ACCOUNTS_SECTION_NAME, m_accountsDao);
-    }
-
-    void DoSaveChannels()
-    {
-        DoSave(CHANNELS_SECTION_NAME, m_channelsDao);
-    }
-
 private:
     static const char *const IV;
 
@@ -135,7 +109,7 @@ private:
 
     DataDao m_dataDao;
     CsvIdVecDao<struct owner> m_ownersDao;
-    CsvIdVecDao<struct account> m_accountsDao;
+    AccountsDao m_accountsDao;
     CsvIdVecDao<struct channel> m_channelsDao;
 
     HaView *GetView() const

@@ -72,7 +72,7 @@ std::string DataDao::getPageTitleString(int row)
         const struct page *page = (const struct page *)m_index[row].m_ptr;
         return m_parser->toStringByType(DATE, &page->date);
     }
-    return "";
+    return std::string();
 }
 
 std::string DataDao::getTimeString(int row)
@@ -81,7 +81,7 @@ std::string DataDao::getTimeString(int row)
     if (item != nullptr) {
         return m_parser->toStringOfColumn(ItemTraits::TIME_INDEX, &item->time);
     }
-    return "";
+    return std::string();
 }
 
 std::string DataDao::getIncomeString(int row)
@@ -93,7 +93,7 @@ std::string DataDao::getIncomeString(int row)
             return m_parser->toStringOfColumn(ItemTraits::AMOUNT_INDEX, &amount);
         }
     }
-    return "";
+    return std::string();
 }
 
 std::string DataDao::getOutlayString(int row)
@@ -104,16 +104,16 @@ std::string DataDao::getOutlayString(int row)
             return m_parser->toStringOfColumn(ItemTraits::AMOUNT_INDEX, &item->amount);
         }
     }
-    return "";
+    return std::string();
 }
 
 std::string DataDao::getAccountString(int row)
 {
     const struct item *item = safeGetItem(row);
     if (item != nullptr) {
-        return m_accountJoint.lookup(item->account);
+        return wrapString(m_accountJoint.lookup(item->account));
     }
-    return "";
+    return std::string();
 }
 
 std::string DataDao::getChannelString(int row)
@@ -122,7 +122,7 @@ std::string DataDao::getChannelString(int row)
     if (item != nullptr) {
         return m_channelJoint.lookup(item->channel);
     }
-    return "";
+    return std::string();
 }
 
 std::string DataDao::getDescString(int row)
@@ -131,7 +131,7 @@ std::string DataDao::getDescString(int row)
     if (item != nullptr) {
         return m_parser->toStringOfColumn(ItemTraits::DESC_INDEX, &item->desc);
     }
-    return "";
+    return std::string();
 }
 
 std::string DataDao::getValidString(int row)
@@ -140,7 +140,7 @@ std::string DataDao::getValidString(int row)
     if (item != nullptr && item->valid) {
         return "1";
     }
-    return "";
+    return std::string();
 }
 
 void DataDao::setMoney(int row, const std::string &value, bool negative)

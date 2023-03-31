@@ -13,7 +13,7 @@ public:
 
     wxGridCellAttr *GetAttr(int row, int col, wxGridCellAttr::wxAttrKind kind) const override;
 
-private:
+protected:
     const CsvTableBase *m_table;
 };
 

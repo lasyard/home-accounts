@@ -29,6 +29,11 @@ public:
         return m_dataDao->getRowType(row);
     }
 
+    DataDao *GetDao()
+    {
+        return m_dataDao;
+    }
+
     void SetAccountChoices(wxArrayString &choices);
     void SetChannelChoices(wxArrayString &choices);
 
@@ -37,7 +42,7 @@ private:
 
     wxString GetCellValue(int row, int col) override;
 
-    void SetCellValue(int row, int col, const std::string &value) override;
+    void SetCellValue(int row, int col, const wxString &value) override;
 
     bool InsertRow(size_t pos) override;
     bool AppendRow() override;

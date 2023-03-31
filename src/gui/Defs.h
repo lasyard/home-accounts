@@ -11,6 +11,7 @@
 #define ID_ABOUT       XRCID("about")
 
 // Controls
-#define ID_BOOK XRCID("book")
+#define ID_BOOK         XRCID("book")
+#define ID_BOOK_CONFIGS XRCID("bookConfigs")
 
 #endif /* _GUI_DEFS_H_ */

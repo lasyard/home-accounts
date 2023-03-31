@@ -54,9 +54,9 @@ void DataPanel::ShowData(const wxString &name)
     m_doc->TryLoad(name, dao);
     auto table = new DataTable(&dao);
     wxArrayString choices;
-    m_doc->GetAccountNames(choices);
+    m_doc->GetStringsByCol<struct account, 1>(m_doc->GetAccountsDao(), choices);
     table->SetAccountChoices(choices);
-    m_doc->GetChannelNames(choices);
+    m_doc->GetStringsByCol<struct channel, 1>(m_doc->GetChannelsDao(), choices);
     table->SetChannelChoices(choices);
     // Vital, for the original grid cursor may be out of range.
     int cursorRow = m_grid->GetGridCursorRow();

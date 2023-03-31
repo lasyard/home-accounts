@@ -35,7 +35,7 @@ protected:
 
     virtual wxString GetCellValue(int row, int col) = 0;
 
-    virtual void SetCellValue(int row, int col, const std::string &value) = 0;
+    virtual void SetCellValue(int row, int col, const wxString &value) = 0;
 
     virtual bool InsertRow(size_t pos) = 0;
     virtual bool AppendRow() = 0;

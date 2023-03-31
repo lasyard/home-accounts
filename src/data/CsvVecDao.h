@@ -89,13 +89,13 @@ public:
         return std::to_string(row);
     }
 
-    std::string getString(int row, int col)
+    virtual std::string getString(int row, int col)
     {
         auto &data = Dao<T>::m_data;
         return Csv::m_parser->toStringOfColumn(col, Traits::getPtr(&data[row], col));
     }
 
-    void setString(int row, int col, const std::string &value)
+    virtual void setString(int row, int col, const std::string &value)
     {
         auto &data = Dao<T>::m_data;
         Csv::m_parser->parseStringOfColumn(value, col, Traits::getPtr(&data[row], col));

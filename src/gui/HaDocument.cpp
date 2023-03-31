@@ -3,6 +3,7 @@
 #include <wx/msgdlg.h>
 #include <wx/textdlg.h>
 
+#include "Configs.h"
 #include "HaDocument.h"
 #include "file/SectionFile.h"
 #include "file/sqlite3/Sqlite3File.h"
@@ -14,10 +15,6 @@ BEGIN_EVENT_TABLE(HaDocument, wxDocument)
 END_EVENT_TABLE()
 
 const char *const HaDocument::IV = "HomeAccounts";
-
-const char *const HaDocument::OWNERS_SECTION_NAME = "configs/owners";
-const char *const HaDocument::ACCOUNTS_SECTION_NAME = "configs/accounts";
-const char *const HaDocument::CHANNELS_SECTION_NAME = "configs/channels";
 
 HaDocument::HaDocument()
     : wxDocument(), m_doc(new SectionFile()), m_pass(), m_dataDao(), m_ownersDao(), m_accountsDao(), m_channelsDao()
@@ -60,9 +57,10 @@ bool HaDocument::DoOpenDocument(const wxString &fileName)
         try {
             auto store = new Sqlite3File(fileName.ToStdString(), m_pass.ToStdString(), IV);
             m_doc->attach(store);
-            TryLoad(OWNERS_SECTION_NAME, m_ownersDao);
-            TryLoad(ACCOUNTS_SECTION_NAME, m_accountsDao);
-            TryLoad(CHANNELS_SECTION_NAME, m_channelsDao);
+            TryLoad(Configs::OWNERS_SECTION_NAME, m_ownersDao);
+            TryLoad(Configs::ACCOUNTS_SECTION_NAME, m_accountsDao);
+            m_accountsDao.setOwerJoint(m_ownersDao.getJoint<1, 0>());
+            TryLoad(Configs::CHANNELS_SECTION_NAME, m_channelsDao);
             m_dataDao.setAccountJoint(m_accountsDao.getJoint<1, 0>());
             m_dataDao.setChannelJoint(m_channelsDao.getJoint<1, 0>());
             return true;

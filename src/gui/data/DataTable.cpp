@@ -68,30 +68,31 @@ wxString DataTable::GetCellValue(int row, int col)
     return "";
 }
 
-void DataTable::SetCellValue(int row, int col, const std::string &value)
+void DataTable::SetCellValue(int row, int col, const wxString &value)
 {
+    auto const &v = value.ToStdString();
     switch (col) {
     case INCOME_COL:
-        m_dataDao->setMoney(row, value, true);
+        m_dataDao->setMoney(row, v, true);
         // Update outlay, too
         CacheCell(row, OUTLAY_COL);
         break;
     case OUTLAY_COL:
-        m_dataDao->setMoney(row, value, false);
+        m_dataDao->setMoney(row, v, false);
         // Update income, too
         CacheCell(row, INCOME_COL);
         break;
     case ACCOUNT_COL:
-        m_dataDao->setAccount(row, value);
+        m_dataDao->setAccount(row, v);
         break;
     case CHANNEL_COL:
-        m_dataDao->setChannel(row, value);
+        m_dataDao->setChannel(row, v);
         break;
     case DESC_COL:
-        m_dataDao->setDesc(row, value);
+        m_dataDao->setDesc(row, v);
         break;
     case VALID_COL:
-        m_dataDao->setValid(row, value);
+        m_dataDao->setValid(row, v);
         break;
     default:
         break;

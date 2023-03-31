@@ -19,11 +19,13 @@ ConfigsGridCellAttrProvider::GetAttr([[maybe_unused]] int row, int col, wxGridCe
         switch (type) {
         case INT32:
         case INT64:
-        case MONEY:
         case DATE:
         case TIME:
             m_monoAttr->IncRef();
             return m_monoAttr;
+        case MONEY:
+            m_moneyAttr->IncRef();
+            return m_moneyAttr;
         default:
             break;
         }

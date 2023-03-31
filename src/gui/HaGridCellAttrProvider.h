@@ -20,6 +20,15 @@ protected:
     mutable wxGridCellAttr *m_readOnlyAttr;
     mutable wxGridCellAttr *m_monoAttr;
     mutable wxGridCellAttr *m_boolAttr;
+    mutable wxGridCellAttr *m_moneyAttr;
+
+    /**
+     * @brief Set the choices of a `wxGridCellAttr` with choice editor. The attr can be set to readonly initially.
+     *
+     * @param attr the `wxGridCellAttr`
+     * @param choices the choices
+     */
+    void SetChoices(wxGridCellAttr *&attr, const wxArrayString &choices);
 };
 
 #endif /* _GUI_HA_GRID_CELL_ATTR_PROVIDER_H_ */

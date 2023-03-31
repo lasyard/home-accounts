@@ -26,6 +26,10 @@ void *CsvRowTraits<struct account>::getPtr(void *data, int i)
         return &item->id;
     case 1:
         return &item->name;
+    case OWNER_INDEX:
+        return &item->owner;
+    case 3:
+        return &item->balance;
     default:
         break;
     }

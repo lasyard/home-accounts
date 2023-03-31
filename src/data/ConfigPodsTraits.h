@@ -23,10 +23,14 @@ public:
 template <> class CsvRowTraits<struct account>
 {
 public:
-    static const int cols = 2;
+    static const int OWNER_INDEX = 2;
+
+    static const int cols = 4;
     static const ColumnType constexpr types[] = {
         INT32,
         CSTR,
+        INT32,
+        MONEY,
     };
 
     static void *getPtr(void *data, int i);

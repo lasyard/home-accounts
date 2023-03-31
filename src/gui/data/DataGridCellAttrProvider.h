@@ -28,11 +28,8 @@ private:
 
     mutable wxGridCellAttr *m_pageTitleAttr;
     mutable wxGridCellAttr *m_timeAttr;
-    mutable wxGridCellAttr *m_moneyAttr;
     mutable wxGridCellAttr *m_accountAttr;
     mutable wxGridCellAttr *m_channelAttr;
-
-    void SetChoices(wxGridCellAttr *&attr, const wxArrayString &choices);
 };
 
 #endif /* _DATA_DATA_GRID_CELL_ATTR_PROVIDER_H_ */

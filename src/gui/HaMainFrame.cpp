@@ -47,7 +47,8 @@ HaMainFrame::HaMainFrame(
     config.SetPath(CFG_FILE_HISTORY);
     m_docManager->FileHistoryLoad(config);
     auto fileMenu = GetMenuBar()->GetMenu(GetMenuBar()->FindMenu("File"));
-    m_docManager->FileHistoryAddFilesToMenu(fileMenu);
+    m_docManager->FileHistoryUseMenu(fileMenu);
+    m_docManager->FileHistoryAddFilesToMenu();
 }
 
 HaMainFrame::~HaMainFrame()

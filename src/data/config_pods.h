@@ -8,10 +8,17 @@ struct owner {
     char *name;
 };
 
+struct account_type {
+    int id;
+    char *name;
+};
+
 struct account {
     int id;
     char *name;
     int owner;
+    int type;
+    char *desc;
     money_t balance;
 };
 

@@ -66,6 +66,11 @@ public:
         return m_ownersDao;
     }
 
+    CsvIdVecDao<struct account_type> &GetAccountTypesDao()
+    {
+        return m_accountTypesDao;
+    }
+
     AccountsDao &GetAccountsDao()
     {
         return m_accountsDao;
@@ -109,6 +114,7 @@ private:
 
     DataDao m_dataDao;
     CsvIdVecDao<struct owner> m_ownersDao;
+    CsvIdVecDao<struct account_type> m_accountTypesDao;
     AccountsDao m_accountsDao;
     CsvIdVecDao<struct channel> m_channelsDao;
 

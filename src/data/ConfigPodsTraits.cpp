@@ -4,7 +4,23 @@
 
 void *CsvRowTraits<struct owner>::getPtr(void *data, int i)
 {
-    struct owner *item = static_cast<struct owner *>(data);
+    auto item = static_cast<struct owner *>(data);
+    switch (i) {
+    case 0:
+        return &item->id;
+    case 1:
+        return &item->name;
+    default:
+        break;
+    }
+    return nullptr;
+}
+
+// accout_type
+
+void *CsvRowTraits<struct account_type>::getPtr(void *data, int i)
+{
+    auto item = static_cast<struct account_type *>(data);
     switch (i) {
     case 0:
         return &item->id;
@@ -20,7 +36,7 @@ void *CsvRowTraits<struct owner>::getPtr(void *data, int i)
 
 void *CsvRowTraits<struct account>::getPtr(void *data, int i)
 {
-    struct account *item = static_cast<struct account *>(data);
+    auto item = static_cast<struct account *>(data);
     switch (i) {
     case 0:
         return &item->id;
@@ -28,7 +44,11 @@ void *CsvRowTraits<struct account>::getPtr(void *data, int i)
         return &item->name;
     case OWNER_INDEX:
         return &item->owner;
-    case 3:
+    case TYPE_INDEX:
+        return &item->type;
+    case 4:
+        return &item->desc;
+    case 5:
         return &item->balance;
     default:
         break;
@@ -40,7 +60,7 @@ void *CsvRowTraits<struct account>::getPtr(void *data, int i)
 
 void *CsvRowTraits<struct channel>::getPtr(void *data, int i)
 {
-    struct channel *item = static_cast<struct channel *>(data);
+    auto item = static_cast<struct channel *>(data);
     switch (i) {
     case 0:
         return &item->id;

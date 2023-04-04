@@ -13,12 +13,12 @@ public:
 
     wxGridCellAttr *GetAttr(int row, int col, wxGridCellAttr::wxAttrKind kind) const override;
 
-    void SetAccountChoices(const wxArrayString &choices)
+    void SetAccountChoices(const wxArrayString &choices) const
     {
         SetChoices(m_accountAttr, choices);
     }
 
-    void SetChannelChoices(const wxArrayString &choices)
+    void SetChannelChoices(const wxArrayString &choices) const
     {
         SetChoices(m_channelAttr, choices);
     }

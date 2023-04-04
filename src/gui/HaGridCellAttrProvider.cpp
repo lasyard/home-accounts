@@ -35,7 +35,7 @@ HaGridCellAttrProvider::~HaGridCellAttrProvider()
     m_moneyAttr->DecRef();
 }
 
-void HaGridCellAttrProvider::SetChoices(wxGridCellAttr *&attr, const wxArrayString &choices)
+void HaGridCellAttrProvider::SetChoices(wxGridCellAttr *&attr, const wxArrayString &choices) const
 {
     if (attr->IsReadOnly()) {
         attr->DecRef();

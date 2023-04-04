@@ -16,11 +16,17 @@ public:
         m_ownerJoint = owerJoint;
     }
 
+    void setTypeJoint(Joint<const char *, int32_t> typeJoint)
+    {
+        m_typeJoint = typeJoint;
+    }
+
     std::string getString(int row, int col) override;
     void setString(int row, int col, const std::string &value) override;
 
 private:
     Joint<const char *, int32_t> m_ownerJoint;
+    Joint<const char *, int32_t> m_typeJoint;
 };
 
 #endif /* _DATA_ACCOUNTS_DAO_H_ */

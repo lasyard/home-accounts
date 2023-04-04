@@ -17,7 +17,14 @@ END_EVENT_TABLE()
 const char *const HaDocument::IV = "HomeAccounts";
 
 HaDocument::HaDocument()
-    : wxDocument(), m_doc(new SectionFile()), m_pass(), m_dataDao(), m_ownersDao(), m_accountsDao(), m_channelsDao()
+    : wxDocument(),
+      m_doc(new SectionFile()),
+      m_pass(),
+      m_dataDao(),
+      m_ownersDao(),
+      m_accountTypesDao(),
+      m_accountsDao(),
+      m_channelsDao()
 {
     wxLog::AddTraceMask(TM);
 }
@@ -58,8 +65,10 @@ bool HaDocument::DoOpenDocument(const wxString &fileName)
             auto store = new Sqlite3File(fileName.ToStdString(), m_pass.ToStdString(), IV);
             m_doc->attach(store);
             TryLoad(Configs::OWNERS_SECTION_NAME, m_ownersDao);
+            TryLoad(Configs::ACCOUNT_TYPES_SECTION_NAME, m_accountTypesDao);
             TryLoad(Configs::ACCOUNTS_SECTION_NAME, m_accountsDao);
             m_accountsDao.setOwerJoint(m_ownersDao.getJoint<1, 0>());
+            m_accountsDao.setTypeJoint(m_accountTypesDao.getJoint<1, 0>());
             TryLoad(Configs::CHANNELS_SECTION_NAME, m_channelsDao);
             m_dataDao.setAccountJoint(m_accountsDao.getJoint<1, 0>());
             m_dataDao.setChannelJoint(m_channelsDao.getJoint<1, 0>());

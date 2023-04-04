@@ -7,6 +7,7 @@ namespace Configs
 {
 
 const wxString OWNERS_SECTION_NAME = "configs/owners";
+const wxString ACCOUNT_TYPES_SECTION_NAME = "configs/account_types";
 const wxString ACCOUNTS_SECTION_NAME = "configs/accounts";
 const wxString CHANNELS_SECTION_NAME = "configs/channels";
 

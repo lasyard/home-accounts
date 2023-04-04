@@ -28,7 +28,7 @@ protected:
      * @param attr the `wxGridCellAttr`
      * @param choices the choices
      */
-    void SetChoices(wxGridCellAttr *&attr, const wxArrayString &choices);
+    void SetChoices(wxGridCellAttr *&attr, const wxArrayString &choices) const;
 };
 
 #endif /* _GUI_HA_GRID_CELL_ATTR_PROVIDER_H_ */

@@ -5,6 +5,7 @@
 #include "../Defs.h"
 #include "../HaDocument.h"
 #include "../HaGrid.h"
+#include "AccountTypesTable.h"
 #include "AccountsGridCellAttrProvider.h"
 #include "AccountsTable.h"
 #include "ChannelsTable.h"
@@ -55,6 +56,7 @@ void ConfigsPanel::OnUpdate()
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     UpdateConfig(OwnersTable::LABEL, Configs::OWNERS_SECTION_NAME);
+    UpdateConfig(AccountTypesTable::LABEL, Configs::ACCOUNT_TYPES_SECTION_NAME);
     UpdateConfig(AccountsTable::LABEL, Configs::ACCOUNTS_SECTION_NAME);
     UpdateConfig(ChannelsTable::LABEL, Configs::CHANNELS_SECTION_NAME);
 }
@@ -122,24 +124,27 @@ void ConfigsPanel::SetGridTable(HaGrid *grid, const wxString &name)
     HaGridCellAttrProvider *attrProvider = nullptr;
     if (name == Configs::OWNERS_SECTION_NAME) {
         table = new OwnersTable(&m_doc->GetOwnersDao());
+    } else if (name == Configs::ACCOUNT_TYPES_SECTION_NAME) {
+        table = new AccountTypesTable(&m_doc->GetAccountTypesDao());
     } else if (name == Configs::ACCOUNTS_SECTION_NAME) {
         table = new AccountsTable(&m_doc->GetAccountsDao());
         wxArrayString choices;
-        m_doc->GetStringsByCol<struct owner, 1>(m_doc->GetOwnersDao(), choices);
         auto provider = new AccountsGridCellAttrProvider(table);
+        m_doc->GetStringsByCol<struct owner, 1>(m_doc->GetOwnersDao(), choices);
         provider->SetOwnerChoices(choices);
+        m_doc->GetStringsByCol<struct account_type, 1>(m_doc->GetAccountTypesDao(), choices);
+        provider->SetTypeChoices(choices);
         attrProvider = provider;
     } else if (name == Configs::CHANNELS_SECTION_NAME) {
         table = new ChannelsTable(&m_doc->GetChannelsDao());
     }
-    if (table != nullptr) {
-        if (attrProvider == nullptr) {
-            attrProvider = new ConfigsGridCellAttrProvider(table);
-        }
-        table->SetAttrProvider(attrProvider);
-        grid->SetTable(table, true, wxGrid::wxGridSelectionModes::wxGridSelectRows);
-        grid->AutoFit();
+    wxASSERT_MSG(table != nullptr, "Table not defined.");
+    if (attrProvider == nullptr) {
+        attrProvider = new ConfigsGridCellAttrProvider(table);
     }
+    table->SetAttrProvider(attrProvider);
+    grid->SetTable(table, true, wxGrid::wxGridSelectionModes::wxGridSelectRows);
+    grid->AutoFit();
 }
 
 void ConfigsPanel::SaveGridTable(HaGrid *grid)

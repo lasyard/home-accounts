@@ -7,6 +7,8 @@ const wxString AccountsTable::COL_LABELS[] = {
     _("ID"),
     _("Name"),
     _("Owner"),
+    _("Type"),
+    _("Description"),
     _("Balance"),
 };
 

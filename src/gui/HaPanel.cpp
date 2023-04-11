@@ -1,6 +1,15 @@
 #include "HaPanel.h"
 
+IMPLEMENT_DYNAMIC_CLASS(HaPanel, wxPanel)
 IMPLEMENT_TM(HaPanel)
+
+BEGIN_EVENT_TABLE(HaPanel, wxPanel)
+END_EVENT_TABLE()
+
+HaPanel::HaPanel() : wxPanel(), m_doc(nullptr)
+{
+    wxLog::AddTraceMask(TM);
+}
 
 HaPanel::HaPanel(HaDocument *doc) : wxPanel(), m_doc(doc)
 {
@@ -23,20 +32,10 @@ bool HaPanel::OnLeave()
     return false;
 }
 
-void HaPanel::OnInsert([[maybe_unused]] wxCommandEvent &event)
+void HaPanel::OnUpdate()
 {
 }
 
-void HaPanel::OnDelete([[maybe_unused]] wxCommandEvent &event)
+void HaPanel::SaveContents()
 {
-}
-
-bool HaPanel::IsInsertEnabled() const
-{
-    return false;
-}
-
-bool HaPanel::IsDeleteEnabled() const
-{
-    return false;
 }

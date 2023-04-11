@@ -8,6 +8,9 @@
 
 class HaGrid : public wxGrid
 {
+    DECLARE_DYNAMIC_CLASS(HaGrid)
+    DECLARE_EVENT_TABLE()
+
 public:
     DECLARE_TM()
 
@@ -40,8 +43,10 @@ public:
      */
     void SetAttributes();
 
-    virtual void OnInsert(wxCommandEvent &event);
-    virtual void OnDelete(wxCommandEvent &event);
+    void OnUpdateInsert(wxUpdateUIEvent &event);
+    void OnInsert(wxCommandEvent &event);
+    void OnUpdateDelete(wxUpdateUIEvent &event);
+    void OnDelete(wxCommandEvent &event);
 
 private:
     static const int ROW_HEIGHT = 25;

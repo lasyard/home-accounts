@@ -33,6 +33,7 @@ add_exe(${APP_NAME}
     ${RESOURCE_FILES}
     CachedTable.cpp
     ChangePassDialog.cpp
+    Common.cpp
     HaApp.cpp
     HaArtProvider.cpp
     HaDocument.cpp

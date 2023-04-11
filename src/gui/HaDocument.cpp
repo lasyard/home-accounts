@@ -3,7 +3,9 @@
 #include <wx/msgdlg.h>
 #include <wx/textdlg.h>
 
+#include "ChangePassDialog.h"
 #include "Configs.h"
+#include "Defs.h"
 #include "HaDocument.h"
 #include "file/SectionFile.h"
 #include "file/sqlite3/Sqlite3File.h"
@@ -12,6 +14,8 @@ IMPLEMENT_DYNAMIC_CLASS(HaDocument, wxDocument)
 IMPLEMENT_TM(HaDocument)
 
 BEGIN_EVENT_TABLE(HaDocument, wxDocument)
+EVT_UPDATE_UI(ID_CHANGE_PASS, HaDocument::OnUpdateChangePass)
+EVT_MENU(ID_CHANGE_PASS, HaDocument::OnChangePass)
 END_EVENT_TABLE()
 
 const char *const HaDocument::IV = "HomeAccounts";
@@ -139,11 +143,21 @@ void HaDocument::OnChange(wxCommandEvent &event)
     event.Skip();
 }
 
-void HaDocument::ChangePass(const wxString &pass)
+void HaDocument::OnUpdateChangePass(wxUpdateUIEvent &event)
 {
-    CryptedSectionStore *store = dynamic_cast<CryptedSectionStore *>(m_doc->getStore());
-    if (store != nullptr) {
-        store->changePass(pass.ToStdString());
+    event.Enable(true);
+}
+
+void HaDocument::OnChangePass([[maybe_unused]] wxCommandEvent &event)
+{
+    wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
+    ChangePassDialog dlg(nullptr, m_pass);
+    if (dlg.ShowModal() == wxID_OK) {
+        auto pass = dlg.GetPass();
+        CryptedSectionStore *store = dynamic_cast<CryptedSectionStore *>(m_doc->getStore());
+        if (store != nullptr) {
+            store->changePass(pass.ToStdString());
+        }
+        m_pass = pass;
     }
-    m_pass = pass;
 }

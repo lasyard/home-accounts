@@ -10,6 +10,7 @@ class wxTreebook;
 class RawPanel : public HaPanel
 {
     DECLARE_DYNAMIC_CLASS(RawPanel)
+    DECLARE_EVENT_TABLE()
 
 public:
     DECLARE_TM()
@@ -20,14 +21,14 @@ public:
     virtual ~RawPanel();
 
     bool OnLeave() override;
-    void OnInsert(wxCommandEvent &event) override;
-    void OnDelete(wxCommandEvent &event) override;
 
     void OnUpdate() override;
     void SaveContents() override;
 
-    bool IsInsertEnabled() const override;
-    bool IsDeleteEnabled() const override;
+    void OnUpdateInsert(wxUpdateUIEvent &event);
+    void OnInsert(wxCommandEvent &event);
+    void OnUpdateDelete(wxUpdateUIEvent &event);
+    void OnDelete(wxCommandEvent &event);
 
 private:
     wxTreebook *m_book;

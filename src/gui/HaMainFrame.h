@@ -29,19 +29,12 @@ public:
 
     void OnClose(wxCloseEvent &event);
     void OnAbout(wxCommandEvent &event);
-    void OnUpdateChangePass(wxUpdateUIEvent &event);
-    void OnUpdateInsert(wxUpdateUIEvent &event);
-    void OnUpdateDelete(wxUpdateUIEvent &event);
-    void OnUpdateRawMode(wxUpdateUIEvent &event);
+
+    void OnUpdateMenu(wxUpdateUIEvent &event);
+    void OnUpdateCheckMenu(wxUpdateUIEvent &event);
 
 private:
     static const wxString CFG_FILE_HISTORY;
-
-    HaView *GetCurrentView() const
-    {
-        auto view = GetDocumentManager()->GetCurrentView();
-        return view == nullptr ? nullptr : static_cast<HaView *>(view);
-    }
 };
 
 #endif /* _GUI_HA_MAIN_FRAME_H_ */

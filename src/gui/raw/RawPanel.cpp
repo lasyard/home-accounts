@@ -7,12 +7,20 @@
 #include <wx/treebook.h>
 #include <wx/treectrl.h>
 
+#include "../Defs.h"
 #include "../HaApp.h"
 #include "../HaDocument.h"
 #include "RawPanel.h"
 
 IMPLEMENT_DYNAMIC_CLASS(RawPanel, HaPanel)
 IMPLEMENT_TM(RawPanel)
+
+BEGIN_EVENT_TABLE(RawPanel, HaPanel)
+EVT_UPDATE_UI(ID_INSERT, RawPanel::OnUpdateInsert)
+EVT_MENU(ID_INSERT, RawPanel::OnInsert)
+EVT_UPDATE_UI(ID_DELETE, RawPanel::OnUpdateDelete)
+EVT_MENU(ID_DELETE, RawPanel::OnDelete)
+END_EVENT_TABLE()
 
 const wxString RawPanel::LABEL = _("Raw");
 
@@ -34,36 +42,6 @@ bool RawPanel::OnLeave()
 {
     HaPanel::OnLeave();
     return true;
-}
-
-void RawPanel::OnInsert([[maybe_unused]] wxCommandEvent &event)
-{
-    wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
-    wxTextEntryDialog dlgName(nullptr, _("Input the name of new section."));
-    auto sel = m_book->GetSelection();
-    if (sel != wxNOT_FOUND) {
-        dlgName.SetValue(GetSectionName(sel));
-    }
-    if (dlgName.ShowModal() == wxID_OK) {
-        wxString name = dlgName.GetValue();
-        if (!name.IsEmpty()) {
-            AddPage(name, wxEmptyString, true);
-            m_doc->Modify(true);
-            ReLayout();
-        }
-    }
-}
-
-void RawPanel::OnDelete([[maybe_unused]] wxCommandEvent &event)
-{
-    wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
-    int sel = m_book->GetSelection();
-    if (sel != wxNOT_FOUND) {
-        Unbind(sel);
-        m_book->DeletePage(sel);
-        m_doc->Modify(true);
-        ReLayout();
-    }
 }
 
 void RawPanel::OnUpdate()
@@ -96,14 +74,44 @@ void RawPanel::SaveContents()
     }
 }
 
-bool RawPanel::IsInsertEnabled() const
+void RawPanel::OnUpdateInsert(wxUpdateUIEvent &event)
 {
-    return m_book->GetTreeCtrl()->HasFocus();
+    event.Enable(m_book->GetTreeCtrl()->HasFocus());
 }
 
-bool RawPanel::IsDeleteEnabled() const
+void RawPanel::OnInsert([[maybe_unused]] wxCommandEvent &event)
 {
-    return m_book->GetTreeCtrl()->HasFocus() && m_book->GetSelection() != wxNOT_FOUND;
+    wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
+    wxTextEntryDialog dlgName(nullptr, _("Input the name of new section."));
+    auto sel = m_book->GetSelection();
+    if (sel != wxNOT_FOUND) {
+        dlgName.SetValue(GetSectionName(sel));
+    }
+    if (dlgName.ShowModal() == wxID_OK) {
+        wxString name = dlgName.GetValue();
+        if (!name.IsEmpty()) {
+            AddPage(name, wxEmptyString, true);
+            m_doc->Modify(true);
+            ReLayout();
+        }
+    }
+}
+
+void RawPanel::OnUpdateDelete(wxUpdateUIEvent &event)
+{
+    event.Enable(m_book->GetTreeCtrl()->HasFocus() && m_book->GetSelection() != wxNOT_FOUND);
+}
+
+void RawPanel::OnDelete([[maybe_unused]] wxCommandEvent &event)
+{
+    wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
+    int sel = m_book->GetSelection();
+    if (sel != wxNOT_FOUND) {
+        Unbind(sel);
+        m_book->DeletePage(sel);
+        m_doc->Modify(true);
+        ReLayout();
+    }
 }
 
 void RawPanel::AddPage(const wxString &name, const wxString &content, bool dirty)

@@ -4,10 +4,9 @@
 #include <wx/bookctrl.h>
 #include <wx/docview.h>
 
-#include "raw/RawPanel.h"
+#include "HaPanel.h"
 
 class wxNotebook;
-class DataPanel;
 
 class HaView : public wxView
 {
@@ -27,28 +26,14 @@ public:
     void OnDraw(wxDC *dc) override;
     void OnClosingDocument() override;
 
-    void OnChangePass(wxCommandEvent &event);
-    void OnInsert(wxCommandEvent &event);
-    void OnDelete(wxCommandEvent &event);
-    void OnRawMode(wxCommandEvent &event);
     void OnPageChanged(wxBookCtrlEvent &event);
 
+    void OnUpdateMenu(wxUpdateUIEvent &event);
+    void OnMenu(wxCommandEvent &event);
+    void OnUpdateRawMode(wxUpdateUIEvent &event);
+    void OnRawMode(wxCommandEvent &event);
+
     void SaveContents();
-
-    bool IsInsertEnabled() const
-    {
-        return GetCurrentPanel()->IsInsertEnabled();
-    }
-
-    bool IsDeleteEnabled() const
-    {
-        return GetCurrentPanel()->IsDeleteEnabled();
-    }
-
-    bool IsRawMode() const
-    {
-        return GetCurrentPanel()->IsKindOf(CLASSINFO(RawPanel));
-    }
 
 private:
     wxNotebook *m_book;

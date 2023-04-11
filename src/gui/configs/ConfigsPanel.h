@@ -4,12 +4,12 @@
 #include <map>
 
 #include "../Common.h"
+#include "../HaGrid.h"
 #include "../HaPanel.h"
 
 class wxListbook;
 
 class CsvTableBase;
-class HaGrid;
 
 class ConfigsPanel : public HaPanel
 {
@@ -24,16 +24,13 @@ public:
     ConfigsPanel(wxWindow *parent = nullptr, HaDocument *doc = nullptr);
     virtual ~ConfigsPanel();
 
-    void OnInsert(wxCommandEvent &event) override;
-    void OnDelete(wxCommandEvent &event) override;
-
     void OnUpdate() override;
     void SaveContents() override;
 
-    bool IsInsertEnabled() const override;
-    bool IsDeleteEnabled() const override;
-
     void OnPageChanged(wxBookCtrlEvent &event);
+
+    void OnUpdateEditMenu(wxUpdateUIEvent &event);
+    void OnEditMenu(wxCommandEvent &event);
 
 private:
     static const wxString ACCOUNTS_LABEL;
@@ -49,7 +46,10 @@ private:
     void SetGridTable(HaGrid *grid, const wxString &name);
     void SaveGridTable(HaGrid *grid);
 
-    HaGrid *GetCurrentGrid() const;
+    HaGrid *GetCurrentGrid() const
+    {
+        return static_cast<HaGrid *>(m_book->GetCurrentPage());
+    }
 };
 
 #endif /* _CONFIGS_CONFIGS_PANEL_H_ */

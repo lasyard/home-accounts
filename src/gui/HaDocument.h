@@ -47,14 +47,10 @@ public:
     void SaveSection(const wxString &name, const std::string &content);
     void DeleteSection(const wxString &name);
 
-    virtual void OnChange(wxCommandEvent &event);
+    void OnChange(wxCommandEvent &event);
 
-    wxString GetPass() const
-    {
-        return m_pass;
-    }
-
-    void ChangePass(const wxString &pass);
+    void OnUpdateChangePass(wxUpdateUIEvent &event);
+    void OnChangePass(wxCommandEvent &event);
 
     DataDao &GetDataDao()
     {

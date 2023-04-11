@@ -11,13 +11,16 @@
 IMPLEMENT_DYNAMIC_CLASS(HaMainFrame, wxDocParentFrame)
 IMPLEMENT_TM(HaMainFrame)
 
+// Event propagating order: doc -> view -> frame.
 BEGIN_EVENT_TABLE(HaMainFrame, wxDocParentFrame)
 EVT_CLOSE(HaMainFrame::OnClose)
 EVT_MENU(ID_ABOUT, HaMainFrame::OnAbout)
-EVT_UPDATE_UI(ID_CHANGE_PASS, HaMainFrame::OnUpdateChangePass)
-EVT_UPDATE_UI(ID_INSERT, HaMainFrame::OnUpdateInsert)
-EVT_UPDATE_UI(ID_DELETE, HaMainFrame::OnUpdateDelete)
-EVT_UPDATE_UI(ID_RAW_MODE, HaMainFrame::OnUpdateRawMode)
+EVT_UPDATE_UI(ID_IMPORT, HaMainFrame::OnUpdateMenu)
+EVT_UPDATE_UI(ID_EXPORT, HaMainFrame::OnUpdateMenu)
+EVT_UPDATE_UI(ID_CHANGE_PASS, HaMainFrame::OnUpdateMenu)
+EVT_UPDATE_UI(ID_INSERT, HaMainFrame::OnUpdateMenu)
+EVT_UPDATE_UI(ID_DELETE, HaMainFrame::OnUpdateMenu)
+EVT_UPDATE_UI(ID_RAW_MODE, HaMainFrame::OnUpdateCheckMenu)
 END_EVENT_TABLE()
 
 const wxString HaMainFrame::CFG_FILE_HISTORY = "FileHistory";
@@ -71,27 +74,14 @@ void HaMainFrame::OnAbout([[maybe_unused]] wxCommandEvent &event)
     wxMessageBox(appName + "\n(c) 2022, Lasy", wxString(_("About ")) + appName);
 }
 
-void HaMainFrame::OnUpdateChangePass(wxUpdateUIEvent &event)
+void HaMainFrame::OnUpdateMenu(wxUpdateUIEvent &event)
 {
-    HaView *view = GetCurrentView();
-    event.Enable(view != nullptr);
+    // There is no doc/view if the event propagated here.
+    event.Enable(false);
 }
 
-void HaMainFrame::OnUpdateInsert(wxUpdateUIEvent &event)
+void HaMainFrame::OnUpdateCheckMenu(wxUpdateUIEvent &event)
 {
-    HaView *view = GetCurrentView();
-    event.Enable(view != nullptr && view->IsInsertEnabled());
-}
-
-void HaMainFrame::OnUpdateDelete(wxUpdateUIEvent &event)
-{
-    HaView *view = GetCurrentView();
-    event.Enable(view != nullptr && view->IsDeleteEnabled());
-}
-
-void HaMainFrame::OnUpdateRawMode(wxUpdateUIEvent &event)
-{
-    HaView *view = GetCurrentView();
-    event.Enable(view != nullptr);
-    event.Check(view != nullptr && view->IsRawMode());
+    event.Enable(false);
+    event.Check(false);
 }

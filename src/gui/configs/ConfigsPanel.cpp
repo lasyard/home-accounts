@@ -17,6 +17,10 @@ IMPLEMENT_TM(ConfigsPanel)
 
 BEGIN_EVENT_TABLE(ConfigsPanel, HaPanel)
 EVT_LISTBOOK_PAGE_CHANGED(ID_BOOK_CONFIGS, ConfigsPanel::OnPageChanged)
+EVT_UPDATE_UI(ID_INSERT, ConfigsPanel::OnUpdateEditMenu)
+EVT_MENU(ID_INSERT, ConfigsPanel::OnEditMenu)
+EVT_UPDATE_UI(ID_DELETE, ConfigsPanel::OnUpdateEditMenu)
+EVT_MENU(ID_DELETE, ConfigsPanel::OnEditMenu)
 END_EVENT_TABLE()
 
 const wxString ConfigsPanel::LABEL = _("Configs");
@@ -38,20 +42,6 @@ ConfigsPanel::~ConfigsPanel()
     }
 }
 
-void ConfigsPanel::OnInsert(wxCommandEvent &event)
-{
-    auto grid = GetCurrentGrid();
-    grid->OnInsert(event);
-    m_doc->Modify(true);
-}
-
-void ConfigsPanel::OnDelete(wxCommandEvent &event)
-{
-    auto grid = GetCurrentGrid();
-    grid->OnDelete(event);
-    m_doc->Modify(true);
-}
-
 void ConfigsPanel::OnUpdate()
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
@@ -69,19 +59,6 @@ void ConfigsPanel::SaveContents()
     }
 }
 
-bool ConfigsPanel::IsInsertEnabled() const
-{
-    auto grid = GetCurrentGrid();
-    // Cannot get focus if the grid is empty.
-    return grid != nullptr;
-}
-
-bool ConfigsPanel::IsDeleteEnabled() const
-{
-    auto grid = GetCurrentGrid();
-    return grid->HasFocus();
-}
-
 void ConfigsPanel::OnPageChanged(wxBookCtrlEvent &event)
 {
     int oldSel = event.GetOldSelection();
@@ -93,6 +70,18 @@ void ConfigsPanel::OnPageChanged(wxBookCtrlEvent &event)
     }
     auto grid = static_cast<HaGrid *>(m_book->GetPage(newSel));
     UpdateGrid(grid);
+}
+
+void ConfigsPanel::OnUpdateEditMenu(wxUpdateUIEvent &event)
+{
+    Common::DelegateEvent(GetCurrentGrid(), event);
+}
+
+void ConfigsPanel::OnEditMenu(wxCommandEvent &event)
+{
+    if (Common::DelegateEvent(GetCurrentGrid(), event)) {
+        m_doc->Modify(true);
+    }
 }
 
 void ConfigsPanel::UpdateConfig(const wxString &label, const wxString &name)
@@ -154,9 +143,4 @@ void ConfigsPanel::SaveGridTable(HaGrid *grid)
     if (table != nullptr) {
         m_doc->DoSave(table->GetName(), *table->GetDao());
     }
-}
-
-HaGrid *ConfigsPanel::GetCurrentGrid() const
-{
-    return static_cast<HaGrid *>(m_book->GetCurrentPage());
 }

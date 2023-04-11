@@ -11,9 +11,13 @@ class HaDocument;
 
 class HaPanel : public wxPanel
 {
+    DECLARE_DYNAMIC_CLASS(HaPanel)
+    DECLARE_EVENT_TABLE()
+
 public:
     DECLARE_TM()
 
+HaPanel();
     HaPanel(HaDocument *doc);
     virtual ~HaPanel();
 
@@ -33,14 +37,9 @@ public:
      * @return false means the page should not be deleted
      */
     virtual bool OnLeave();
-    virtual void OnInsert(wxCommandEvent &event);
-    virtual void OnDelete(wxCommandEvent &event);
 
-    virtual void OnUpdate() = 0;
-    virtual void SaveContents() = 0;
-
-    virtual bool IsInsertEnabled() const;
-    virtual bool IsDeleteEnabled() const;
+    virtual void OnUpdate();
+    virtual void SaveContents();
 
 protected:
     HaDocument *m_doc;

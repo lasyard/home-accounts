@@ -4,6 +4,8 @@
 #include <wx/xrc/xmlres.h>
 
 // Menus
+#define ID_IMPORT      XRCID("import")
+#define ID_EXPORT      XRCID("export")
 #define ID_CHANGE_PASS XRCID("changePass")
 #define ID_INSERT      XRCID("insert")
 #define ID_DELETE      XRCID("delete")

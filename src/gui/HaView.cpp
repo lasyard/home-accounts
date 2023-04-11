@@ -1,7 +1,6 @@
 #include <wx/listbook.h>
 #include <wx/notebook.h>
 
-#include "ChangePassDialog.h"
 #include "Defs.h"
 #include "HaApp.h"
 #include "HaDocument.h"
@@ -9,16 +8,19 @@
 #include "HaView.h"
 #include "configs/ConfigsPanel.h"
 #include "data/DataPanel.h"
+#include "raw/RawPanel.h"
 
 IMPLEMENT_DYNAMIC_CLASS(HaView, wxView)
 IMPLEMENT_TM(HaView)
 
 BEGIN_EVENT_TABLE(HaView, wxView)
-EVT_MENU(ID_CHANGE_PASS, HaView::OnChangePass)
-EVT_MENU(ID_INSERT, HaView::OnInsert)
-EVT_MENU(ID_DELETE, HaView::OnDelete)
-EVT_MENU(ID_RAW_MODE, HaView::OnRawMode)
 EVT_NOTEBOOK_PAGE_CHANGED(ID_BOOK, HaView::OnPageChanged)
+EVT_UPDATE_UI(ID_INSERT, HaView::OnUpdateMenu)
+EVT_MENU(ID_INSERT, HaView::OnMenu)
+EVT_UPDATE_UI(ID_DELETE, HaView::OnUpdateMenu)
+EVT_MENU(ID_DELETE, HaView::OnMenu)
+EVT_UPDATE_UI(ID_RAW_MODE, HaView::OnUpdateRawMode)
+EVT_MENU(ID_RAW_MODE, HaView::OnRawMode)
 END_EVENT_TABLE()
 
 HaView::HaView() : wxView(), m_book(nullptr)
@@ -70,37 +72,6 @@ void HaView::OnClosingDocument()
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
 }
 
-void HaView::OnChangePass([[maybe_unused]] wxCommandEvent &event)
-{
-    wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
-    auto doc = static_cast<HaDocument *>(GetDocument());
-    ChangePassDialog dlg(nullptr, doc->GetPass());
-    if (dlg.ShowModal() == wxID_OK) {
-        doc->ChangePass(dlg.GetPass());
-    }
-}
-
-void HaView::OnInsert(wxCommandEvent &event)
-{
-    GetCurrentPanel()->OnInsert(event);
-}
-
-void HaView::OnDelete(wxCommandEvent &event)
-{
-    GetCurrentPanel()->OnDelete(event);
-}
-
-void HaView::OnRawMode(wxCommandEvent &event)
-{
-    if (event.IsChecked()) {
-        HaPanel::AddToBook<RawPanel>(m_book, static_cast<HaDocument *>(GetDocument()));
-        // It is the last one.
-        m_book->SetSelection(m_book->GetPageCount() - 1);
-    } else {
-        m_book->SetSelection(0);
-    }
-}
-
 void HaView::OnPageChanged(wxBookCtrlEvent &event)
 {
     int oldSel = event.GetOldSelection();
@@ -112,6 +83,36 @@ void HaView::OnPageChanged(wxBookCtrlEvent &event)
         }
     }
     GetPanel(newSel)->OnEnter();
+}
+
+void HaView::OnUpdateMenu(wxUpdateUIEvent &event)
+{
+    auto panel = GetCurrentPanel();
+    Common::DelegateEvent(panel, event);
+}
+
+void HaView::OnMenu(wxCommandEvent &event)
+{
+    auto panel = GetCurrentPanel();
+    Common::DelegateEvent(panel, event);
+}
+
+void HaView::OnUpdateRawMode(wxUpdateUIEvent &event)
+{
+    event.Enable(true);
+    auto enable = GetCurrentPanel()->IsKindOf(CLASSINFO(RawPanel));
+    event.Check(enable);
+}
+
+void HaView::OnRawMode(wxCommandEvent &event)
+{
+    if (event.IsChecked()) {
+        HaPanel::AddToBook<RawPanel>(m_book, static_cast<HaDocument *>(GetDocument()));
+        // It is the last one.
+        m_book->SetSelection(m_book->GetPageCount() - 1);
+    } else {
+        m_book->SetSelection(0);
+    }
 }
 
 void HaView::SaveContents()

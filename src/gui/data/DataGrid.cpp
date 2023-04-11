@@ -1,10 +1,15 @@
 #include "DataGrid.h"
+#include "../Defs.h"
 
 IMPLEMENT_DYNAMIC_CLASS(DataGrid, HaGrid);
 IMPLEMENT_TM(DataGrid);
 
 BEGIN_EVENT_TABLE(DataGrid, wxGrid)
 EVT_GRID_SELECT_CELL(DataGrid::OnGridSelectCell)
+EVT_UPDATE_UI(ID_INSERT, DataGrid::OnUpdateInsert)
+EVT_MENU(ID_INSERT, DataGrid::OnInsert)
+EVT_UPDATE_UI(ID_DELETE, DataGrid::OnUpdateDelete)
+EVT_MENU(ID_DELETE, DataGrid::OnDelete)
 END_EVENT_TABLE()
 
 DataGrid::DataGrid() : HaGrid()
@@ -29,6 +34,11 @@ void DataGrid::OnGridSelectCell(wxGridEvent &event)
     }
 }
 
+void DataGrid::OnUpdateInsert(wxUpdateUIEvent &event)
+{
+    event.Enable(HasFocus() && GetGridCursorRow() >= 0);
+}
+
 void DataGrid::OnInsert([[maybe_unused]] wxCommandEvent &event)
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
@@ -39,6 +49,21 @@ void DataGrid::OnInsert([[maybe_unused]] wxCommandEvent &event)
     AutoSizeRows(false);
     SetGridCursor(row + 1, DataTable::OUTLAY_COL);
     EndBatch();
+}
+
+void DataGrid::OnUpdateDelete(wxUpdateUIEvent &event)
+{
+    if (HasFocus()) {
+        if (IsSelection()) {
+            event.Enable(true);
+        } else {
+            auto coords = GetGridCursorCoords();
+            // Vital, use `GetCellAttrPtr` instead of `GetCellAttr`.
+            event.Enable(coords != wxGridNoCellCoords && !GetCellAttrPtr(coords)->IsReadOnly());
+        }
+    } else {
+        event.Enable(false);
+    }
 }
 
 void DataGrid::OnDelete([[maybe_unused]] wxCommandEvent &event)
@@ -61,19 +86,4 @@ void DataGrid::OnDelete([[maybe_unused]] wxCommandEvent &event)
         SetCellValue(GetGridCursorCoords(), "");
     }
     EndBatch();
-}
-
-bool DataGrid::IsInsertEnabled() const
-{
-    return GetGridCursorRow() >= 0;
-}
-
-bool DataGrid::IsDeleteEnabled() const
-{
-    if (IsSelection()) {
-        return true;
-    }
-    auto coords = GetGridCursorCoords();
-    // Vital, use `GetCellAttrPtr` instead of `GetCellAttr`.
-    return coords != wxGridNoCellCoords && !GetCellAttrPtr(coords)->IsReadOnly();
 }

@@ -1,9 +1,18 @@
 #include <wx/artprov.h>
 #include <wx/dc.h>
 
+#include "Defs.h"
 #include "HaGrid.h"
 
+IMPLEMENT_DYNAMIC_CLASS(HaGrid, wxGrid)
 IMPLEMENT_TM(HaGrid)
+
+BEGIN_EVENT_TABLE(HaGrid, wxGrid)
+EVT_UPDATE_UI(ID_INSERT, HaGrid::OnUpdateInsert)
+EVT_MENU(ID_INSERT, HaGrid::OnInsert)
+EVT_UPDATE_UI(ID_DELETE, HaGrid::OnUpdateDelete)
+EVT_MENU(ID_DELETE, HaGrid::OnDelete)
+END_EVENT_TABLE()
 
 HaGrid::HaGrid() : wxGrid()
 {
@@ -56,6 +65,12 @@ void HaGrid::SetAttributes()
     EndBatch();
 }
 
+void HaGrid::OnUpdateInsert(wxUpdateUIEvent &event)
+{
+    // Cannot get focus if the grid is empty.
+    event.Enable(true);
+}
+
 void HaGrid::OnInsert([[maybe_unused]] wxCommandEvent &event)
 {
     BeginBatch();
@@ -70,14 +85,9 @@ void HaGrid::OnInsert([[maybe_unused]] wxCommandEvent &event)
     EndBatch();
 }
 
-int reverseInt(int a, int b)
+void HaGrid::OnUpdateDelete(wxUpdateUIEvent &event)
 {
-    if (a > b) {
-        return -1;
-    } else if (a < b) {
-        return 1;
-    }
-    return 0;
+    event.Enable(HasFocus());
 }
 
 void HaGrid::OnDelete([[maybe_unused]] wxCommandEvent &event)

@@ -10,6 +10,7 @@
 class DataPanel : public HaPanel
 {
     DECLARE_DYNAMIC_CLASS(DataPanel)
+    DECLARE_EVENT_TABLE()
 
 public:
     DECLARE_TM()
@@ -19,14 +20,11 @@ public:
     DataPanel(wxWindow *parent = nullptr, HaDocument *doc = nullptr);
     virtual ~DataPanel();
 
-    void OnInsert(wxCommandEvent &event) override;
-    void OnDelete(wxCommandEvent &event) override;
-
     void OnUpdate() override;
     void SaveContents() override;
 
-    bool IsInsertEnabled() const override;
-    bool IsDeleteEnabled() const override;
+    void OnUpdateEditMenu(wxUpdateUIEvent &event);
+    void OnEditMenu(wxCommandEvent &event);
 
     void ShowData(const wxString &name);
 

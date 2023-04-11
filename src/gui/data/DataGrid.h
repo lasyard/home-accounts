@@ -18,11 +18,10 @@ public:
 
     void OnGridSelectCell(wxGridEvent &event);
 
-    void OnInsert(wxCommandEvent &event) override;
-    void OnDelete(wxCommandEvent &event) override;
-
-    bool IsInsertEnabled() const;
-    bool IsDeleteEnabled() const;
+    void OnUpdateInsert(wxUpdateUIEvent &event);
+    void OnInsert(wxCommandEvent &event);
+    void OnUpdateDelete(wxUpdateUIEvent &event);
+    void OnDelete(wxCommandEvent &event);
 };
 
 #endif /* _DATA_DATA_GRID_H_ */

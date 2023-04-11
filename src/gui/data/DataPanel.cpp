@@ -1,10 +1,18 @@
 #include <wx/translation.h>
 
+#include "../Defs.h"
 #include "../HaDocument.h"
 #include "DataPanel.h"
 
 IMPLEMENT_DYNAMIC_CLASS(DataPanel, HaPanel)
 IMPLEMENT_TM(DataPanel)
+
+BEGIN_EVENT_TABLE(DataPanel, HaPanel)
+EVT_UPDATE_UI(ID_INSERT, DataPanel::OnUpdateEditMenu)
+EVT_MENU(ID_INSERT, DataPanel::OnEditMenu)
+EVT_UPDATE_UI(ID_DELETE, DataPanel::OnUpdateEditMenu)
+EVT_MENU(ID_DELETE, DataPanel::OnEditMenu)
+END_EVENT_TABLE()
 
 const wxString DataPanel::LABEL = _("Transactions");
 
@@ -23,18 +31,6 @@ DataPanel::~DataPanel()
     m_grid->Unbind(wxEVT_GRID_CELL_CHANGED, &HaDocument::OnChange, m_doc);
 }
 
-void DataPanel::OnInsert(wxCommandEvent &event)
-{
-    m_grid->OnInsert(event);
-    m_doc->Modify(true);
-}
-
-void DataPanel::OnDelete(wxCommandEvent &event)
-{
-    m_grid->OnDelete(event);
-    m_doc->Modify(true);
-}
-
 void DataPanel::OnUpdate()
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
@@ -46,6 +42,18 @@ void DataPanel::SaveContents()
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     m_grid->SaveEditControlValue();
     m_doc->DoSaveData("test");
+}
+
+void DataPanel::OnUpdateEditMenu(wxUpdateUIEvent &event)
+{
+    Common::DelegateEvent(m_grid, event);
+}
+
+void DataPanel::OnEditMenu(wxCommandEvent &event)
+{
+    if (Common::DelegateEvent(m_grid, event)) {
+        m_doc->Modify(true);
+    }
 }
 
 void DataPanel::ShowData(const wxString &name)
@@ -68,14 +76,4 @@ void DataPanel::ShowData(const wxString &name)
     m_grid->SetTable(table, true);
     m_grid->SetFocus();
     m_grid->AutoFit();
-}
-
-bool DataPanel::IsInsertEnabled() const
-{
-    return m_grid->HasFocus() && m_grid->IsInsertEnabled();
-}
-
-bool DataPanel::IsDeleteEnabled() const
-{
-    return m_grid->HasFocus() && m_grid->IsDeleteEnabled();
 }

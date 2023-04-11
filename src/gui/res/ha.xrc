@@ -34,6 +34,15 @@
 					<help></help>
 				</object>
 				<object class="separator" />
+				<object class="wxMenuItem" name="import">
+					<label>_Import\tCTRL+I</label>
+					<help></help>
+				</object>
+				<object class="wxMenuItem" name="export">
+					<label>_Export\tCTRL+E</label>
+					<help></help>
+				</object>
+				<object class="separator" />
 				<object class="wxMenuItem" name="changePass">
 					<label>Change Password</label>
 					<help></help>
@@ -162,7 +171,7 @@
 					<cols>2</cols>
 					<vgap>0</vgap>
 					<hgap>0</hgap>
-					<growablecols></growablecols>
+					<growablecols>1</growablecols>
 					<growablerows></growablerows>
 					<object class="sizeritem">
 						<option>0</option>
@@ -174,8 +183,8 @@
 						</object>
 					</object>
 					<object class="sizeritem">
-						<option>0</option>
-						<flag>wxALL</flag>
+						<option>1</option>
+						<flag>wxALL|wxEXPAND</flag>
 						<border>5</border>
 						<object class="wxTextCtrl" name="passCurrent">
 							<style>wxTE_PASSWORD</style>
@@ -192,8 +201,8 @@
 						</object>
 					</object>
 					<object class="sizeritem">
-						<option>0</option>
-						<flag>wxALL</flag>
+						<option>1</option>
+						<flag>wxALL|wxEXPAND</flag>
 						<border>5</border>
 						<object class="wxTextCtrl" name="passNew">
 							<style>wxTE_PASSWORD</style>
@@ -210,8 +219,8 @@
 						</object>
 					</object>
 					<object class="sizeritem">
-						<option>0</option>
-						<flag>wxALL</flag>
+						<option>1</option>
+						<flag>wxALL|wxEXPAND</flag>
 						<border>5</border>
 						<object class="wxTextCtrl" name="passNew2">
 							<style>wxTE_PASSWORD</style>

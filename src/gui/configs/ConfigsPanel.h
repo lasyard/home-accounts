@@ -4,12 +4,10 @@
 #include <map>
 
 #include "../Common.h"
-#include "../HaGrid.h"
 #include "../HaPanel.h"
+#include "ConfigsGrid.h"
 
 class wxListbook;
-
-class CsvTableBase;
 
 class ConfigsPanel : public HaPanel
 {
@@ -39,16 +37,16 @@ private:
     static const wxString CHANNELS_COLUMN_LABELS[];
 
     wxListbook *m_book;
-    std::map<wxString, HaGrid *> m_grids;
+    std::map<wxString, ConfigsGrid *> m_grids;
 
     void UpdateConfig(const wxString &label, const wxString &name);
-    void UpdateGrid(HaGrid *grid);
-    void SetGridTable(HaGrid *grid, const wxString &name);
-    void SaveGridTable(HaGrid *grid);
+    void UpdateGrid(ConfigsGrid *grid);
+    void SetGridTable(ConfigsGrid *grid, const wxString &name);
+    void SaveGridTable(ConfigsGrid *grid);
 
-    HaGrid *GetCurrentGrid() const
+    ConfigsGrid *GetCurrentGrid() const
     {
-        return static_cast<HaGrid *>(m_book->GetCurrentPage());
+        return static_cast<ConfigsGrid *>(m_book->GetCurrentPage());
     }
 };
 

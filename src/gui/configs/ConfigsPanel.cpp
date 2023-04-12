@@ -4,7 +4,6 @@
 #include "../Configs.h"
 #include "../Defs.h"
 #include "../HaDocument.h"
-#include "../HaGrid.h"
 #include "AccountTypesTable.h"
 #include "AccountsGridCellAttrProvider.h"
 #include "AccountsTable.h"
@@ -65,10 +64,10 @@ void ConfigsPanel::OnPageChanged(wxBookCtrlEvent &event)
     int newSel = event.GetSelection();
     wxLogTrace(TM, "\"%s\" called, from %d to %d.", __WXFUNCTION__, oldSel, newSel);
     if (oldSel >= 0) {
-        auto grid = static_cast<HaGrid *>(m_book->GetPage(oldSel));
+        auto grid = static_cast<ConfigsGrid *>(m_book->GetPage(oldSel));
         SaveGridTable(grid);
     }
-    auto grid = static_cast<HaGrid *>(m_book->GetPage(newSel));
+    auto grid = static_cast<ConfigsGrid *>(m_book->GetPage(newSel));
     UpdateGrid(grid);
 }
 
@@ -86,9 +85,9 @@ void ConfigsPanel::OnMenu(wxCommandEvent &event)
 
 void ConfigsPanel::UpdateConfig(const wxString &label, const wxString &name)
 {
-    HaGrid *grid;
+    ConfigsGrid *grid;
     if (!m_grids.contains(name)) {
-        grid = new HaGrid(m_book);
+        grid = new ConfigsGrid(m_book);
         grid->Bind(wxEVT_GRID_CELL_CHANGED, &HaDocument::OnChange, m_doc);
         grid->SetAttributes();
         m_grids[name] = grid;
@@ -99,7 +98,7 @@ void ConfigsPanel::UpdateConfig(const wxString &label, const wxString &name)
     SetGridTable(grid, name);
 }
 
-void ConfigsPanel::UpdateGrid(HaGrid *grid)
+void ConfigsPanel::UpdateGrid(ConfigsGrid *grid)
 {
     auto table = dynamic_cast<CsvTableBase *>(grid->GetTable());
     if (table != nullptr) {
@@ -107,10 +106,10 @@ void ConfigsPanel::UpdateGrid(HaGrid *grid)
     }
 }
 
-void ConfigsPanel::SetGridTable(HaGrid *grid, const wxString &name)
+void ConfigsPanel::SetGridTable(ConfigsGrid *grid, const wxString &name)
 {
     CsvTableBase *table = nullptr;
-    HaGridCellAttrProvider *attrProvider = nullptr;
+    ConfigsGridCellAttrProvider *attrProvider = nullptr;
     if (name == Configs::OWNERS_SECTION_NAME) {
         table = new OwnersTable(&m_doc->GetOwnersDao());
     } else if (name == Configs::ACCOUNT_TYPES_SECTION_NAME) {
@@ -136,7 +135,7 @@ void ConfigsPanel::SetGridTable(HaGrid *grid, const wxString &name)
     grid->AutoFit();
 }
 
-void ConfigsPanel::SaveGridTable(HaGrid *grid)
+void ConfigsPanel::SaveGridTable(ConfigsGrid *grid)
 {
     grid->SaveEditControlValue();
     auto table = dynamic_cast<CsvTableBase *>(grid->GetTable());

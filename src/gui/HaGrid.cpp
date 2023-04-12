@@ -8,10 +8,6 @@ IMPLEMENT_DYNAMIC_CLASS(HaGrid, wxGrid)
 IMPLEMENT_TM(HaGrid)
 
 BEGIN_EVENT_TABLE(HaGrid, wxGrid)
-EVT_UPDATE_UI(ID_INSERT, HaGrid::OnUpdateInsert)
-EVT_MENU(ID_INSERT, HaGrid::OnInsert)
-EVT_UPDATE_UI(ID_DELETE, HaGrid::OnUpdateDelete)
-EVT_MENU(ID_DELETE, HaGrid::OnDelete)
 END_EVENT_TABLE()
 
 HaGrid::HaGrid() : wxGrid()
@@ -62,46 +58,6 @@ void HaGrid::SetAttributes()
     SetRowLabelSize(logo.GetWidth() + 2);
     SetColLabelSize(logo.GetHeight() + 2);
     DisableDragColMove();
-    EndBatch();
-}
-
-void HaGrid::OnUpdateInsert(wxUpdateUIEvent &event)
-{
-    // Cannot get focus if the grid is empty.
-    event.Enable(true);
-}
-
-void HaGrid::OnInsert([[maybe_unused]] wxCommandEvent &event)
-{
-    BeginBatch();
-    int row = GetGridCursorRow();
-    if (row < 0 || row == GetNumberRows() - 1) {
-        AppendRows();
-    } else {
-        InsertRows(row + 1);
-    }
-    SetGridCursor(row + 1, GetGridCursorCol());
-    AutoFit();
-    EndBatch();
-}
-
-void HaGrid::OnUpdateDelete(wxUpdateUIEvent &event)
-{
-    event.Enable(HasFocus());
-}
-
-void HaGrid::OnDelete([[maybe_unused]] wxCommandEvent &event)
-{
-    BeginBatch();
-    if (GetSelectionMode() == wxGrid::wxGridSelectionModes::wxGridSelectRows) {
-        const auto &blocks = GetSelectedRowBlocks();
-        for (auto i = blocks.rbegin(); i != blocks.rend(); ++i) {
-            for (auto j = i->GetBottomRow(); j >= i->GetTopRow(); --j) {
-                DeleteRows(j);
-            }
-        }
-    }
-    AutoFit();
     EndBatch();
 }
 

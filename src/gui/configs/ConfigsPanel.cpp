@@ -17,10 +17,10 @@ IMPLEMENT_TM(ConfigsPanel)
 
 BEGIN_EVENT_TABLE(ConfigsPanel, HaPanel)
 EVT_LISTBOOK_PAGE_CHANGED(ID_BOOK_CONFIGS, ConfigsPanel::OnPageChanged)
-EVT_UPDATE_UI(ID_INSERT, ConfigsPanel::OnUpdateEditMenu)
-EVT_MENU(ID_INSERT, ConfigsPanel::OnEditMenu)
-EVT_UPDATE_UI(ID_DELETE, ConfigsPanel::OnUpdateEditMenu)
-EVT_MENU(ID_DELETE, ConfigsPanel::OnEditMenu)
+EVT_UPDATE_UI(ID_INSERT, ConfigsPanel::OnUpdateMenu)
+EVT_MENU(ID_INSERT, ConfigsPanel::OnMenu)
+EVT_UPDATE_UI(ID_DELETE, ConfigsPanel::OnUpdateMenu)
+EVT_MENU(ID_DELETE, ConfigsPanel::OnMenu)
 END_EVENT_TABLE()
 
 const wxString ConfigsPanel::LABEL = _("Configs");
@@ -72,12 +72,12 @@ void ConfigsPanel::OnPageChanged(wxBookCtrlEvent &event)
     UpdateGrid(grid);
 }
 
-void ConfigsPanel::OnUpdateEditMenu(wxUpdateUIEvent &event)
+void ConfigsPanel::OnUpdateMenu(wxUpdateUIEvent &event)
 {
     Common::DelegateEvent(GetCurrentGrid(), event);
 }
 
-void ConfigsPanel::OnEditMenu(wxCommandEvent &event)
+void ConfigsPanel::OnMenu(wxCommandEvent &event)
 {
     if (Common::DelegateEvent(GetCurrentGrid(), event)) {
         m_doc->Modify(true);

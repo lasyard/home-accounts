@@ -23,8 +23,8 @@ public:
     void OnUpdate() override;
     void SaveContents() override;
 
-    void OnUpdateEditMenu(wxUpdateUIEvent &event);
-    void OnEditMenu(wxCommandEvent &event);
+    void OnUpdateMenu(wxUpdateUIEvent &event);
+    void OnMenu(wxCommandEvent &event);
 
     void ShowData(const wxString &name);
 

@@ -8,10 +8,10 @@ IMPLEMENT_DYNAMIC_CLASS(DataPanel, HaPanel)
 IMPLEMENT_TM(DataPanel)
 
 BEGIN_EVENT_TABLE(DataPanel, HaPanel)
-EVT_UPDATE_UI(ID_INSERT, DataPanel::OnUpdateEditMenu)
-EVT_MENU(ID_INSERT, DataPanel::OnEditMenu)
-EVT_UPDATE_UI(ID_DELETE, DataPanel::OnUpdateEditMenu)
-EVT_MENU(ID_DELETE, DataPanel::OnEditMenu)
+EVT_UPDATE_UI(ID_INSERT, DataPanel::OnUpdateMenu)
+EVT_MENU(ID_INSERT, DataPanel::OnMenu)
+EVT_UPDATE_UI(ID_DELETE, DataPanel::OnUpdateMenu)
+EVT_MENU(ID_DELETE, DataPanel::OnMenu)
 END_EVENT_TABLE()
 
 const wxString DataPanel::LABEL = _("Transactions");
@@ -44,12 +44,12 @@ void DataPanel::SaveContents()
     m_doc->DoSaveData("test");
 }
 
-void DataPanel::OnUpdateEditMenu(wxUpdateUIEvent &event)
+void DataPanel::OnUpdateMenu(wxUpdateUIEvent &event)
 {
     Common::DelegateEvent(m_grid, event);
 }
 
-void DataPanel::OnEditMenu(wxCommandEvent &event)
+void DataPanel::OnMenu(wxCommandEvent &event)
 {
     if (Common::DelegateEvent(m_grid, event)) {
         m_doc->Modify(true);

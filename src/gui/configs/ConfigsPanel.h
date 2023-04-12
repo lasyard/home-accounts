@@ -29,8 +29,8 @@ public:
 
     void OnPageChanged(wxBookCtrlEvent &event);
 
-    void OnUpdateEditMenu(wxUpdateUIEvent &event);
-    void OnEditMenu(wxCommandEvent &event);
+    void OnUpdateMenu(wxUpdateUIEvent &event);
+    void OnMenu(wxCommandEvent &event);
 
 private:
     static const wxString ACCOUNTS_LABEL;

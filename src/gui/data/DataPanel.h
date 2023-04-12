@@ -25,6 +25,7 @@ public:
 
     void OnUpdateMenu(wxUpdateUIEvent &event);
     void OnMenu(wxCommandEvent &event);
+    void OnMenuModify(wxCommandEvent &event);
 
     void ShowData(const wxString &name);
 

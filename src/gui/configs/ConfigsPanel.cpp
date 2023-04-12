@@ -16,10 +16,14 @@ IMPLEMENT_TM(ConfigsPanel)
 
 BEGIN_EVENT_TABLE(ConfigsPanel, HaPanel)
 EVT_LISTBOOK_PAGE_CHANGED(ID_BOOK_CONFIGS, ConfigsPanel::OnPageChanged)
+EVT_UPDATE_UI(ID_IMPORT, ConfigsPanel::OnUpdateMenu)
+EVT_MENU(ID_IMPORT, ConfigsPanel::OnMenuModify)
+EVT_UPDATE_UI(ID_EXPORT, ConfigsPanel::OnUpdateMenu)
+EVT_MENU(ID_EXPORT, ConfigsPanel::OnMenu)
 EVT_UPDATE_UI(ID_INSERT, ConfigsPanel::OnUpdateMenu)
-EVT_MENU(ID_INSERT, ConfigsPanel::OnMenu)
+EVT_MENU(ID_INSERT, ConfigsPanel::OnMenuModify)
 EVT_UPDATE_UI(ID_DELETE, ConfigsPanel::OnUpdateMenu)
-EVT_MENU(ID_DELETE, ConfigsPanel::OnMenu)
+EVT_MENU(ID_DELETE, ConfigsPanel::OnMenuModify)
 END_EVENT_TABLE()
 
 const wxString ConfigsPanel::LABEL = _("Configs");
@@ -77,6 +81,11 @@ void ConfigsPanel::OnUpdateMenu(wxUpdateUIEvent &event)
 }
 
 void ConfigsPanel::OnMenu(wxCommandEvent &event)
+{
+    Common::DelegateEvent(GetCurrentGrid(), event);
+}
+
+void ConfigsPanel::OnMenuModify(wxCommandEvent &event)
 {
     if (Common::DelegateEvent(GetCurrentGrid(), event)) {
         m_doc->Modify(true);

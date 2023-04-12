@@ -17,7 +17,7 @@ class HaPanel : public wxPanel
 public:
     DECLARE_TM()
 
-HaPanel();
+    HaPanel();
     HaPanel(HaDocument *doc);
     virtual ~HaPanel();
 

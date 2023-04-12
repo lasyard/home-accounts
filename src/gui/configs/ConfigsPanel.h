@@ -29,6 +29,7 @@ public:
 
     void OnUpdateMenu(wxUpdateUIEvent &event);
     void OnMenu(wxCommandEvent &event);
+    void OnMenuModify(wxCommandEvent &event);
 
 private:
     static const wxString ACCOUNTS_LABEL;

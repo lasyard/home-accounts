@@ -110,19 +110,13 @@ std::string DataDao::getOutlayString(int row)
 std::string DataDao::getAccountString(int row)
 {
     const struct item *item = safeGetItem(row);
-    if (item != nullptr) {
-        return wrapString(m_accountJoint.lookup(item->account));
-    }
-    return std::string();
+    return wrapString((item != nullptr) ? m_accountJoint.lookup(item->account) : nullptr);
 }
 
 std::string DataDao::getChannelString(int row)
 {
     const struct item *item = safeGetItem(row);
-    if (item != nullptr) {
-        return m_channelJoint.lookup(item->channel);
-    }
-    return std::string();
+    return wrapString((item != nullptr) ? m_channelJoint.lookup(item->channel) : nullptr);
 }
 
 std::string DataDao::getDescString(int row)

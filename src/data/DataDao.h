@@ -22,7 +22,7 @@ public:
     };
 
     void read(std::istream &is) override;
-    void write(std::ostream &os) override;
+    void write(std::ostream &os) const override;
 
     int getNumberRows() const override
     {
@@ -88,8 +88,8 @@ private:
     void createIndex();
     void readPage(struct page *page);
     void readItem(struct item *item);
-    void writePage(std::ostream &os, const struct page *page);
-    void writeItem(std::ostream &os, const struct item *item);
+    void writePage(std::ostream &os, const struct page *page) const;
+    void writeItem(std::ostream &os, const struct item *item) const;
 };
 
 #endif /* _DATA_DATA_DAO_H_ */

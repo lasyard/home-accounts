@@ -90,7 +90,7 @@ public:
         }
     }
 
-    void DoSave(const wxString &name, DaoBase &dao)
+    void DoSave(const wxString &name, const DaoBase &dao)
     {
         std::ostringstream os;
         dao.write(os);

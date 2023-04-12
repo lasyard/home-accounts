@@ -30,12 +30,11 @@ public:
     void OnUpdateMenu(wxUpdateUIEvent &event);
     void OnMenu(wxCommandEvent &event);
     void OnMenuModify(wxCommandEvent &event);
+    void OnUpdateExport(wxUpdateUIEvent &event);
+    void OnExport(wxCommandEvent &event);
 
 private:
-    static const wxString ACCOUNTS_LABEL;
-    static const wxString ACCOUNTS_COLUMN_LABELS[];
-    static const wxString CHANNELS_LABEL;
-    static const wxString CHANNELS_COLUMN_LABELS[];
+    static const wxString EXPORT_EXT;
 
     wxListbook *m_book;
     std::map<wxString, ConfigsGrid *> m_grids;
@@ -48,6 +47,11 @@ private:
     ConfigsGrid *GetCurrentGrid() const
     {
         return static_cast<ConfigsGrid *>(m_book->GetCurrentPage());
+    }
+
+    ConfigsGrid *GetGrid(int sel) const
+    {
+        return static_cast<ConfigsGrid *>(m_book->GetPage(sel));
     }
 };
 

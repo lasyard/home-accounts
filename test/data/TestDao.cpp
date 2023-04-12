@@ -11,7 +11,7 @@ class TestDao : public Dao<int>
     {
     }
 
-    void write([[maybe_unused]] std::ostream &os) override
+    void write([[maybe_unused]] std::ostream &os) const override
     {
     }
 

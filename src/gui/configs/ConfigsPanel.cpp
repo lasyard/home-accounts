@@ -1,3 +1,6 @@
+#include <fstream>
+
+#include <wx/filedlg.h>
 #include <wx/listbook.h>
 #include <wx/listctrl.h>
 
@@ -18,8 +21,8 @@ BEGIN_EVENT_TABLE(ConfigsPanel, HaPanel)
 EVT_LISTBOOK_PAGE_CHANGED(ID_BOOK_CONFIGS, ConfigsPanel::OnPageChanged)
 EVT_UPDATE_UI(ID_IMPORT, ConfigsPanel::OnUpdateMenu)
 EVT_MENU(ID_IMPORT, ConfigsPanel::OnMenuModify)
-EVT_UPDATE_UI(ID_EXPORT, ConfigsPanel::OnUpdateMenu)
-EVT_MENU(ID_EXPORT, ConfigsPanel::OnMenu)
+EVT_UPDATE_UI(ID_EXPORT, ConfigsPanel::OnUpdateExport)
+EVT_MENU(ID_EXPORT, ConfigsPanel::OnExport)
 EVT_UPDATE_UI(ID_INSERT, ConfigsPanel::OnUpdateMenu)
 EVT_MENU(ID_INSERT, ConfigsPanel::OnMenuModify)
 EVT_UPDATE_UI(ID_DELETE, ConfigsPanel::OnUpdateMenu)
@@ -27,6 +30,7 @@ EVT_MENU(ID_DELETE, ConfigsPanel::OnMenuModify)
 END_EVENT_TABLE()
 
 const wxString ConfigsPanel::LABEL = _("Configs");
+const wxString ConfigsPanel::EXPORT_EXT = "csv";
 
 ConfigsPanel::ConfigsPanel(wxWindow *parent, HaDocument *doc) : HaPanel(doc), m_grids()
 {
@@ -92,6 +96,30 @@ void ConfigsPanel::OnMenuModify(wxCommandEvent &event)
     }
 }
 
+void ConfigsPanel::OnUpdateExport(wxUpdateUIEvent &event)
+{
+    event.Enable(GetCurrentGrid() != nullptr);
+}
+
+void ConfigsPanel::OnExport([[maybe_unused]] wxCommandEvent &event)
+{
+    auto sel = m_book->GetSelection();
+    if (sel != wxNOT_FOUND) {
+        auto grid = GetGrid(sel);
+        auto label = m_book->GetPageText(sel);
+        SaveGridTable(grid);
+        grid->DumpTable([label](const wxString &name, const DaoBase *dao) -> void {
+            auto nameHint = name;
+            nameHint.Replace('/', '_');
+            wxString realName = wxSaveFileSelector(label + _(" Config"), EXPORT_EXT, nameHint + "." + EXPORT_EXT);
+            if (!realName.IsEmpty()) {
+                std::ofstream os(realName.ToStdString());
+                dao->write(os);
+            }
+        });
+    }
+}
+
 void ConfigsPanel::UpdateConfig(const wxString &label, const wxString &name)
 {
     ConfigsGrid *grid;
@@ -146,9 +174,5 @@ void ConfigsPanel::SetGridTable(ConfigsGrid *grid, const wxString &name)
 
 void ConfigsPanel::SaveGridTable(ConfigsGrid *grid)
 {
-    grid->SaveEditControlValue();
-    auto table = dynamic_cast<CsvTableBase *>(grid->GetTable());
-    if (table != nullptr) {
-        m_doc->DoSave(table->GetName(), *table->GetDao());
-    }
+    grid->DumpTable([this](const wxString &name, const DaoBase *dao) -> void { m_doc->DoSave(name, *dao); });
 }

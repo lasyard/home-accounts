@@ -46,7 +46,7 @@ void DataDao::read(std::istream &is)
     createIndex();
 }
 
-void DataDao::write(std::ostream &os)
+void DataDao::write(std::ostream &os) const
 {
     for (auto p = m_data.pages.first; p != NULL; p = p->next) {
         const struct page *page = get_page(p);
@@ -229,14 +229,14 @@ void DataDao::readItem(struct item *item)
     m_parser->parseLine(m_buf, item);
 }
 
-void DataDao::writePage(std::ostream &os, const struct page *page)
+void DataDao::writePage(std::ostream &os, const struct page *page) const
 {
     char *p = output_date(m_buf, page->date);
     *p = '\0';
     os << '#' << m_buf << std::endl;
 }
 
-void DataDao::writeItem(std::ostream &os, const struct item *item)
+void DataDao::writeItem(std::ostream &os, const struct item *item) const
 {
     m_parser->outputLine(m_buf, item);
     os << m_buf << std::endl;

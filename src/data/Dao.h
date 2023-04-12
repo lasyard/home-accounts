@@ -24,7 +24,7 @@ public:
     }
 
     virtual void read(std::istream &is) = 0;
-    virtual void write(std::ostream &os) = 0;
+    virtual void write(std::ostream &os) const = 0;
     virtual int getNumberRows() const = 0;
 
     virtual void readString(const std::string &str)
@@ -33,7 +33,7 @@ public:
         read(is);
     }
 
-    virtual void writeString(std::string &str)
+    virtual void writeString(std::string &str) const
     {
         std::ostringstream os;
         write(os);

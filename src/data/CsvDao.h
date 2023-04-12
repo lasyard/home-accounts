@@ -28,13 +28,13 @@ public:
     }
 
     void read(std::istream &is) override = 0;
-    void write(std::ostream &os) override = 0;
+    void write(std::ostream &os) const override = 0;
 
 protected:
     static const int MAX_LINE_LENGTH = 1024;
 
     CsvParser *m_parser;
-    char m_buf[MAX_LINE_LENGTH];
+    mutable char m_buf[MAX_LINE_LENGTH];
 };
 
 #endif /* _DATA_CSV_DAO_H_ */

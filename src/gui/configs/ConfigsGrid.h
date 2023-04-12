@@ -1,7 +1,11 @@
 #ifndef _CONFIGS_CONFIGS_GRID_H_
 #define _CONFIGS_CONFIGS_GRID_H_
 
+#include <functional>
+
 #include "../HaGrid.h"
+
+class DaoBase;
 
 class ConfigsGrid : public HaGrid
 {
@@ -22,8 +26,8 @@ public:
     );
     virtual ~ConfigsGrid();
 
-    void OnUpdateExport(wxUpdateUIEvent &event);
-    void OnExport(wxCommandEvent &event);
+    void DumpTable(std::function<void(const wxString &, const DaoBase *)> fun);
+
     void OnUpdateInsert(wxUpdateUIEvent &event);
     void OnInsert(wxCommandEvent &event);
     void OnUpdateDelete(wxUpdateUIEvent &event);

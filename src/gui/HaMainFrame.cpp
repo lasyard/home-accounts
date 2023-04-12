@@ -46,6 +46,7 @@ HaMainFrame::HaMainFrame(
     wxXmlResource::Get()->LoadFrame(this, nullptr, "main");
     // `hide` in XRC is not effective.
     XRCCTRL(*this, "book", wxNotebook)->Show(false);
+    // The config file is in `~/Library/Preferences` on macOS.
     wxConfig config(_(APP_NAME));
     config.SetPath(CFG_FILE_HISTORY);
     m_docManager->FileHistoryLoad(config);

@@ -1,15 +1,11 @@
-#include <wx/filedlg.h>
-
+#include "ConfigsGrid.h"
 #include "../CsvTable.h"
 #include "../Defs.h"
-#include "ConfigsGrid.h"
 
 IMPLEMENT_DYNAMIC_CLASS(ConfigsGrid, HaGrid)
 IMPLEMENT_TM(ConfigsGrid)
 
 BEGIN_EVENT_TABLE(ConfigsGrid, HaGrid)
-EVT_UPDATE_UI(ID_EXPORT, ConfigsGrid::OnUpdateExport)
-EVT_MENU(ID_EXPORT, ConfigsGrid::OnExport)
 EVT_UPDATE_UI(ID_INSERT, ConfigsGrid::OnUpdateInsert)
 EVT_MENU(ID_INSERT, ConfigsGrid::OnInsert)
 EVT_UPDATE_UI(ID_DELETE, ConfigsGrid::OnUpdateDelete)
@@ -38,13 +34,14 @@ ConfigsGrid::~ConfigsGrid()
 {
 }
 
-void ConfigsGrid::OnUpdateExport(wxUpdateUIEvent &event)
+void ConfigsGrid::DumpTable(std::function<void(const wxString &, const DaoBase *)> fun)
 {
-    event.Enable(true);
-}
-
-void ConfigsGrid::OnExport([[maybe_unused]] wxCommandEvent &event)
-{
+    SaveEditControlValue();
+    auto table = GetTable();
+    auto csvTable = dynamic_cast<CsvTableBase *>(table);
+    if (csvTable != nullptr) {
+        csvTable->Dump(fun);
+    }
 }
 
 void ConfigsGrid::OnUpdateInsert(wxUpdateUIEvent &event)

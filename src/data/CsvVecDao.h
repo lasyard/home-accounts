@@ -69,7 +69,7 @@ public:
         }
     }
 
-    void write(std::ostream &os) override
+    void write(std::ostream &os) const override
     {
         auto &data = Dao<T>::m_data;
         auto &buf = Csv::m_buf;

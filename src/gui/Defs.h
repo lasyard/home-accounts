@@ -3,6 +3,8 @@
 
 #include <wx/xrc/xmlres.h>
 
+#define APP_VERSION "1"
+
 // Menus
 #define ID_IMPORT      XRCID("import")
 #define ID_EXPORT      XRCID("export")
@@ -11,6 +13,8 @@
 #define ID_DELETE      XRCID("delete")
 #define ID_RAW_MODE    XRCID("rawMode")
 #define ID_ABOUT       XRCID("about")
+#define ID_LICENSE     XRCID("license")
+#define ID_WX_INFO     XRCID("wxInfo")
 
 // Controls
 #define ID_BOOK         XRCID("book")

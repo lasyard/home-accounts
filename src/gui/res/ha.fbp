@@ -170,11 +170,11 @@
                         <property name="shortcut">Ctrl+W</property>
                         <property name="unchecked_bitmap"></property>
                     </object>
-                    <object class="separator" expanded="1">
+                    <object class="separator" expanded="0">
                         <property name="name">m_separator</property>
                         <property name="permission">none</property>
                     </object>
-                    <object class="wxMenuItem" expanded="1">
+                    <object class="wxMenuItem" expanded="0">
                         <property name="bitmap"></property>
                         <property name="checked">0</property>
                         <property name="enabled">1</property>
@@ -187,7 +187,7 @@
                         <property name="shortcut">CTRL+I</property>
                         <property name="unchecked_bitmap"></property>
                     </object>
-                    <object class="wxMenuItem" expanded="1">
+                    <object class="wxMenuItem" expanded="0">
                         <property name="bitmap"></property>
                         <property name="checked">0</property>
                         <property name="enabled">1</property>
@@ -266,7 +266,7 @@
                         <property name="unchecked_bitmap"></property>
                     </object>
                 </object>
-                <object class="wxMenu" expanded="0">
+                <object class="wxMenu" expanded="1">
                     <property name="label">&amp;Help</property>
                     <property name="name">helpMenu</property>
                     <property name="permission">protected</property>
@@ -277,8 +277,34 @@
                         <property name="help"></property>
                         <property name="id">ID_ABOUT</property>
                         <property name="kind">wxITEM_NORMAL</property>
-                        <property name="label">&amp;About</property>
+                        <property name="label">About</property>
                         <property name="name">about</property>
+                        <property name="permission">none</property>
+                        <property name="shortcut"></property>
+                        <property name="unchecked_bitmap"></property>
+                    </object>
+                    <object class="wxMenuItem" expanded="0">
+                        <property name="bitmap"></property>
+                        <property name="checked">0</property>
+                        <property name="enabled">1</property>
+                        <property name="help"></property>
+                        <property name="id">ID_LICENSE</property>
+                        <property name="kind">wxITEM_NORMAL</property>
+                        <property name="label">License</property>
+                        <property name="name">license</property>
+                        <property name="permission">none</property>
+                        <property name="shortcut"></property>
+                        <property name="unchecked_bitmap"></property>
+                    </object>
+                    <object class="wxMenuItem" expanded="0">
+                        <property name="bitmap"></property>
+                        <property name="checked">0</property>
+                        <property name="enabled">1</property>
+                        <property name="help"></property>
+                        <property name="id">ID_WX_INFO</property>
+                        <property name="kind">wxITEM_NORMAL</property>
+                        <property name="label">wxWidgets Information</property>
+                        <property name="name">wxInfo</property>
                         <property name="permission">none</property>
                         <property name="shortcut"></property>
                         <property name="unchecked_bitmap"></property>

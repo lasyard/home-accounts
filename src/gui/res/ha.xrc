@@ -68,7 +68,15 @@
 			<object class="wxMenu" name="helpMenu">
 				<label>_Help</label>
 				<object class="wxMenuItem" name="about">
-					<label>_About</label>
+					<label>About</label>
+					<help></help>
+				</object>
+				<object class="wxMenuItem" name="license">
+					<label>License</label>
+					<help></help>
+				</object>
+				<object class="wxMenuItem" name="wxInfo">
+					<label>wxWidgets Information</label>
 					<help></help>
 				</object>
 			</object>

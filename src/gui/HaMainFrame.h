@@ -29,12 +29,15 @@ public:
 
     void OnClose(wxCloseEvent &event);
     void OnAbout(wxCommandEvent &event);
+    void OnLicense(wxCommandEvent &event);
+    void OnWxInfo(wxCommandEvent &event);
 
     void OnUpdateMenu(wxUpdateUIEvent &event);
     void OnUpdateCheckMenu(wxUpdateUIEvent &event);
 
 private:
     static const wxString CFG_FILE_HISTORY;
+    static const wxString LICENSE_FILE_NAME;
 };
 
 #endif /* _GUI_HA_MAIN_FRAME_H_ */

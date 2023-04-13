@@ -20,6 +20,10 @@ namespace Common
  */
 bool DelegateEvent(wxWindow *win, wxEvent &event);
 
+void ReadAllText(wxString &text, const wxString &fileName);
+
+void ShowTextBox(const wxString &title, const wxString &text);
+
 }; // namespace Common
 
 #endif /* _GUI_COMMON_H_ */

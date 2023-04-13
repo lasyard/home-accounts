@@ -14,6 +14,7 @@ add_custom_command(
     DEPENDS ${XRC_SRC_FILES}
 )
 set(RESOURCE_FILES
+    res/LICENSE
     res/images/logo.png
     res/${XRS_FILE}
 )

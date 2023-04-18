@@ -16,6 +16,9 @@ DataGridCellAttrProvider::DataGridCellAttrProvider(const DataTable *table) : HaG
     m_accountAttr = m_readOnlyAttr->Clone();
 
     m_channelAttr = m_readOnlyAttr->Clone();
+
+    m_readOnlyMoneyAttr = m_moneyAttr->Clone();
+    m_readOnlyMoneyAttr->SetReadOnly();
 }
 
 DataGridCellAttrProvider::~DataGridCellAttrProvider()
@@ -25,6 +28,7 @@ DataGridCellAttrProvider::~DataGridCellAttrProvider()
     m_timeAttr->DecRef();
     m_accountAttr->DecRef();
     m_channelAttr->DecRef();
+    m_readOnlyMoneyAttr->DecRef();
 }
 
 wxGridCellAttr *DataGridCellAttrProvider::GetAttr(int row, int col, wxGridCellAttr::wxAttrKind kind) const
@@ -50,11 +54,22 @@ wxGridCellAttr *DataGridCellAttrProvider::GetAttr(int row, int col, wxGridCellAt
                 m_channelAttr->IncRef();
                 // wxLogTrace(TM, "RefCount of channelAttr is %d", m_channelAttr->GetRefCount());
                 return m_channelAttr;
+            case DataTable::BALANCE_COL:
+                m_readOnlyMoneyAttr->IncRef();
+                return m_readOnlyMoneyAttr;
             case DataTable::VALID_COL:
                 m_boolAttr->IncRef();
                 return m_boolAttr;
             default:
                 break;
+            }
+        } else if (rowType == DataDao::IndexType::INITIAL) {
+            if (col == DataTable::BALANCE_COL) {
+                m_readOnlyMoneyAttr->IncRef();
+                return m_readOnlyMoneyAttr;
+            } else {
+                m_readOnlyAttr->IncRef();
+                return m_readOnlyAttr;
             }
         } else if (rowType == DataDao::IndexType::PAGE) {
             // Do not return colSpan > 1 for col > 0, or there will be index out of bond problem.

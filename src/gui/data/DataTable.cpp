@@ -11,6 +11,7 @@ const wxString DataTable::COL_LABELS[] = {
     _("Account"),
     _("Channel"),
     _("Description"),
+    _("Balance"),
     _("Valid"),
 };
 
@@ -57,15 +58,19 @@ wxString DataTable::GetCellValue(int row, int col)
             return m_dataDao->getChannelString(row);
         case DESC_COL:
             return m_dataDao->getDescString(row);
+        case BALANCE_COL:
+            return m_dataDao->getBalanceString(row);
         case VALID_COL:
             return m_dataDao->getValidString(row);
         default:
             break;
         }
+    } else if (rowType == DataDao::IndexType::INITIAL && col == BALANCE_COL) {
+        return m_dataDao->getBalanceString(row);
     } else if (rowType == DataDao::IndexType::PAGE && col == 0) {
         return m_dataDao->getPageTitleString(row);
     }
-    return "";
+    return wxEmptyString;
 }
 
 void DataTable::SetCellValue(int row, int col, const wxString &value)
@@ -76,11 +81,15 @@ void DataTable::SetCellValue(int row, int col, const wxString &value)
         m_dataDao->setMoney(row, v, true);
         // Update outlay, too
         CacheCell(row, OUTLAY_COL);
+        // Balances after this row are changed.
+        ReCacheBalances(row);
         break;
     case OUTLAY_COL:
         m_dataDao->setMoney(row, v, false);
         // Update income, too
         CacheCell(row, INCOME_COL);
+        // Balances after this row are changed.
+        ReCacheBalances(row);
         break;
     case ACCOUNT_COL:
         m_dataDao->setAccount(row, v);
@@ -108,4 +117,11 @@ bool DataTable::AppendRow()
 {
     // Never append.
     return false;
+}
+
+void DataTable::ReCacheBalances(int row)
+{
+    for (int i = row; i < GetNumberRows(); ++i) {
+        CacheCell(i, BALANCE_COL);
+    }
 }

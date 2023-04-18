@@ -30,6 +30,7 @@ private:
     mutable wxGridCellAttr *m_timeAttr;
     mutable wxGridCellAttr *m_accountAttr;
     mutable wxGridCellAttr *m_channelAttr;
+    mutable wxGridCellAttr *m_readOnlyMoneyAttr;
 };
 
 #endif /* _DATA_DATA_GRID_CELL_ATTR_PROVIDER_H_ */

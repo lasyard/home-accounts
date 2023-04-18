@@ -15,9 +15,10 @@ public:
     static const int ACCOUNT_COL = 3;
     static const int CHANNEL_COL = 4;
     static const int DESC_COL = 5;
-    static const int VALID_COL = 6;
+    static const int BALANCE_COL = 6;
+    static const int VALID_COL = 7;
 
-    static const size_t COL_NUM = 7;
+    static const size_t COL_NUM = 8;
 
     DataTable(DataDao *dataDao);
     virtual ~DataTable();
@@ -52,6 +53,8 @@ private:
         // Do nothing, deletion is done in `DataGrid`.
         return true;
     }
+
+    void ReCacheBalances(int row);
 };
 
 #endif /* _DATA_DATA_TABLE_H_ */

@@ -10,6 +10,7 @@
 DataDao::DataDao() : CsvDao<struct item, struct data>(), m_index(), m_accountJoint(), m_channelJoint()
 {
     init_data(&m_data);
+    m_index.push_back(IndexItem(static_cast<money_t>(0)));
 }
 
 DataDao::~DataDao()
@@ -128,6 +129,15 @@ std::string DataDao::getDescString(int row)
     return std::string();
 }
 
+std::string DataDao::getBalanceString(int row)
+{
+    auto &index = m_index[row];
+    if (index.m_type == ITEM || index.m_type == INITIAL) {
+        return m_parser->toStringByType(MONEY, &index.m_balance);
+    }
+    return std::string();
+}
+
 std::string DataDao::getValidString(int row)
 {
     const struct item *item = safeGetItem(row);
@@ -139,11 +149,14 @@ std::string DataDao::getValidString(int row)
 
 void DataDao::setMoney(int row, const std::string &value, bool negative)
 {
-    struct item *item = safeGetItem(row);
-    if (item != nullptr) {
+    auto &index = m_index[row];
+    if (index.m_type == ITEM) {
+        struct item *item = static_cast<struct item *>(index.m_ptr);
+        money_t balance = index.m_balance + item->amount;
         money_t amount;
         m_parser->parseStringByType(value, MONEY, &amount);
         item->amount = negative ? -amount : amount;
+        updateBalance(row, balance);
     }
 }
 
@@ -181,7 +194,7 @@ void DataDao::setValid(int row, const std::string &value)
 
 bool DataDao::insertItemAfter(size_t pos)
 {
-    auto index = m_index[pos];
+    auto &index = m_index[pos];
     struct item *item = nullptr;
     if (index.m_type == ITEM) {
         item = insert_item((struct item *)index.m_ptr);
@@ -190,25 +203,47 @@ bool DataDao::insertItemAfter(size_t pos)
     }
     if (item != nullptr) {
         int seq = index.m_seq + 1;
-        m_index.insert(std::next(m_index.begin(), pos + 1), IndexItem(item, ITEM, seq));
+        money_t balance = index.m_balance;
+        m_index.insert(std::next(m_index.begin(), pos + 1), IndexItem(item, seq, balance));
         for (auto p = pos + 2; p < m_index.size() && m_index[p].m_type != PAGE; ++p) {
             ++m_index[p].m_seq;
         }
+        updateBalance(pos + 2, balance);
         return true;
     }
     return false;
 }
 
+void DataDao::setInitialBalance(money_t balance)
+{
+    m_index[0].m_balance = balance;
+    updateBalance(1, balance);
+}
+
 void DataDao::createIndex()
 {
+    money_t balance = m_index[0].m_balance;
     m_index.clear();
+    m_index.push_back(IndexItem(balance));
     for (auto p = m_data.pages.first; p != NULL; p = p->next) {
         struct page *page = get_page(p);
-        int seq = 0;
-        m_index.push_back(IndexItem(page, PAGE, seq++));
+        m_index.push_back(IndexItem(page));
+        int seq = 1;
         for (auto q = page->items.first; q != NULL; q = q->next) {
             struct item *item = get_item(q);
-            m_index.push_back(IndexItem(item, ITEM, seq++));
+            balance -= item->amount;
+            m_index.push_back(IndexItem(item, seq++, balance));
+        }
+    }
+}
+
+void DataDao::updateBalance(int row, money_t balance)
+{
+    for (auto i = std::next(m_index.begin(), row); i != m_index.end(); ++i) {
+        if (i->m_type == ITEM) {
+            struct item *item = static_cast<struct item *>(i->m_ptr);
+            balance -= item->amount;
+            i->m_balance = balance;
         }
     }
 }

@@ -17,6 +17,7 @@ public:
     virtual ~DataDao();
 
     enum IndexType {
+        INITIAL,
         PAGE,
         ITEM,
     };
@@ -37,6 +38,7 @@ public:
     std::string getAccountString(int row);
     std::string getChannelString(int row);
     std::string getDescString(int row);
+    std::string getBalanceString(int row);
     std::string getValidString(int row);
 
     void setMoney(int row, const std::string &value, bool negative);
@@ -46,6 +48,8 @@ public:
     void setValid(int row, const std::string &value);
 
     bool insertItemAfter(size_t pos);
+
+    void setInitialBalance(money_t balance);
 
     IndexType getRowType(int row) const
     {
@@ -64,13 +68,23 @@ public:
 
 private:
     struct IndexItem {
-        IndexItem(void *ptr, enum IndexType type, int seq) : m_ptr(ptr), m_type(type), m_seq(seq)
+        explicit IndexItem(struct page *ptr) : m_ptr(ptr), m_type(PAGE), m_seq(0), m_balance(0)
+        {
+        }
+
+        explicit IndexItem(struct item *ptr, int seq, money_t balance)
+            : m_ptr(ptr), m_type(ITEM), m_seq(seq), m_balance(balance)
+        {
+        }
+
+        explicit IndexItem(money_t balance) : m_ptr(nullptr), m_type(INITIAL), m_seq(0), m_balance(balance)
         {
         }
 
         void *m_ptr;
         enum IndexType m_type;
         int m_seq;
+        money_t m_balance;
     };
 
     std::vector<struct IndexItem> m_index;
@@ -86,6 +100,7 @@ private:
     }
 
     void createIndex();
+    void updateBalance(int row, money_t balance);
     void readPage(struct page *page);
     void readItem(struct item *item);
     void writePage(std::ostream &os, const struct page *page) const;

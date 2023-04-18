@@ -3,6 +3,7 @@
 
 #include <functional>
 
+#include "../CsvTable.h"
 #include "../HaGrid.h"
 
 class DaoBase;
@@ -32,6 +33,11 @@ public:
     void OnInsert(wxCommandEvent &event);
     void OnUpdateDelete(wxUpdateUIEvent &event);
     void OnDelete(wxCommandEvent &event);
+
+    CsvTableBase *GetCsvTable()
+    {
+        return dynamic_cast<CsvTableBase *>(GetTable());
+    }
 };
 
 #endif /* _CONFIGS_CONFIGS_GRID_H_ */

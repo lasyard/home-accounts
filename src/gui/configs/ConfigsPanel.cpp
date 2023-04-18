@@ -3,6 +3,7 @@
 #include <wx/filedlg.h>
 #include <wx/listbook.h>
 #include <wx/listctrl.h>
+#include <wx/msgdlg.h>
 
 #include "../Configs.h"
 #include "../Defs.h"
@@ -19,8 +20,8 @@ IMPLEMENT_TM(ConfigsPanel)
 
 BEGIN_EVENT_TABLE(ConfigsPanel, HaPanel)
 EVT_LISTBOOK_PAGE_CHANGED(ID_BOOK_CONFIGS, ConfigsPanel::OnPageChanged)
-EVT_UPDATE_UI(ID_IMPORT, ConfigsPanel::OnUpdateMenu)
-EVT_MENU(ID_IMPORT, ConfigsPanel::OnMenuModify)
+EVT_UPDATE_UI(ID_IMPORT, ConfigsPanel::OnUpdateImport)
+EVT_MENU(ID_IMPORT, ConfigsPanel::OnImport)
 EVT_UPDATE_UI(ID_EXPORT, ConfigsPanel::OnUpdateExport)
 EVT_MENU(ID_EXPORT, ConfigsPanel::OnExport)
 EVT_UPDATE_UI(ID_INSERT, ConfigsPanel::OnUpdateMenu)
@@ -30,7 +31,6 @@ EVT_MENU(ID_DELETE, ConfigsPanel::OnMenuModify)
 END_EVENT_TABLE()
 
 const wxString ConfigsPanel::LABEL = _("Configs");
-const wxString ConfigsPanel::EXPORT_EXT = "csv";
 
 ConfigsPanel::ConfigsPanel(wxWindow *parent, HaDocument *doc) : HaPanel(doc), m_grids()
 {
@@ -79,20 +79,36 @@ void ConfigsPanel::OnPageChanged(wxBookCtrlEvent &event)
     UpdateGrid(grid);
 }
 
-void ConfigsPanel::OnUpdateMenu(wxUpdateUIEvent &event)
+void ConfigsPanel::OnUpdateImport(wxUpdateUIEvent &event)
 {
-    Common::DelegateEvent(GetCurrentGrid(), event);
+    event.Enable(GetCurrentGrid() != nullptr);
 }
 
-void ConfigsPanel::OnMenu(wxCommandEvent &event)
+void ConfigsPanel::OnImport([[maybe_unused]] wxCommandEvent &event)
 {
-    Common::DelegateEvent(GetCurrentGrid(), event);
-}
-
-void ConfigsPanel::OnMenuModify(wxCommandEvent &event)
-{
-    if (Common::DelegateEvent(GetCurrentGrid(), event)) {
-        m_doc->Modify(true);
+    auto sel = m_book->GetSelection();
+    if (sel != wxNOT_FOUND) {
+        auto answer = wxMessageBox(_("Overwrite the existing configuration?"), _("Confirm"), wxYES_NO | wxCENTER);
+        if (answer == wxYES) {
+            auto fileName = wxLoadFileSelector(_("CSV file"), "CSV file (*.csv)|*.csv|Text file(*.txt)|*.txt");
+            if (!fileName.IsEmpty()) {
+                std::ifstream is(fileName.ToStdString());
+                auto grid = GetGrid(sel);
+                auto csvTable = grid->GetCsvTable();
+                if (csvTable != nullptr) {
+                    try {
+                        csvTable->GetDao()->read(is);
+                        SaveGridTable(grid);
+                        UpdateGrid(grid);
+                        m_doc->Modify(true);
+                    } catch (const std::exception &e) {
+                        wxLogError("Error occurred when importing config file \"%s\": \"%s\"", fileName, e.what());
+                        // Restore the original data.
+                        m_doc->TryLoad(csvTable->GetName(), *csvTable->GetDao());
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -108,15 +124,32 @@ void ConfigsPanel::OnExport([[maybe_unused]] wxCommandEvent &event)
         auto grid = GetGrid(sel);
         auto label = m_book->GetPageText(sel);
         SaveGridTable(grid);
-        grid->DumpTable([label](const wxString &name, const DaoBase *dao) -> void {
+        grid->DumpTable([&label](const wxString &name, const DaoBase *dao) -> void {
             auto nameHint = name;
             nameHint.Replace('/', '_');
-            wxString realName = wxSaveFileSelector(label + _(" Config"), EXPORT_EXT, nameHint + "." + EXPORT_EXT);
+            auto realName = wxSaveFileSelector(label + _(" Config"), "CSV File (*.csv)|*.csv", nameHint + ".csv");
             if (!realName.IsEmpty()) {
                 std::ofstream os(realName.ToStdString());
                 dao->write(os);
             }
         });
+    }
+}
+
+void ConfigsPanel::OnUpdateMenu(wxUpdateUIEvent &event)
+{
+    Common::DelegateEvent(GetCurrentGrid(), event);
+}
+
+void ConfigsPanel::OnMenu(wxCommandEvent &event)
+{
+    Common::DelegateEvent(GetCurrentGrid(), event);
+}
+
+void ConfigsPanel::OnMenuModify(wxCommandEvent &event)
+{
+    if (Common::DelegateEvent(GetCurrentGrid(), event)) {
+        m_doc->Modify(true);
     }
 }
 

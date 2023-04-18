@@ -26,11 +26,6 @@ public:
     virtual ColumnType GetColumnType(int col) const = 0;
     virtual DaoBase *GetDao() = 0;
 
-    void Dump(std::function<void(const wxString &, const DaoBase *)> fun)
-    {
-        fun(m_name, GetDao());
-    }
-
 protected:
     wxString m_name;
 };

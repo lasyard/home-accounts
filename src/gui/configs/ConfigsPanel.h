@@ -27,15 +27,15 @@ public:
 
     void OnPageChanged(wxBookCtrlEvent &event);
 
+    void OnUpdateImport(wxUpdateUIEvent &event);
+    void OnImport(wxCommandEvent &event);
+    void OnUpdateExport(wxUpdateUIEvent &event);
+    void OnExport(wxCommandEvent &event);
     void OnUpdateMenu(wxUpdateUIEvent &event);
     void OnMenu(wxCommandEvent &event);
     void OnMenuModify(wxCommandEvent &event);
-    void OnUpdateExport(wxUpdateUIEvent &event);
-    void OnExport(wxCommandEvent &event);
 
 private:
-    static const wxString EXPORT_EXT;
-
     wxListbook *m_book;
     std::map<wxString, ConfigsGrid *> m_grids;
 

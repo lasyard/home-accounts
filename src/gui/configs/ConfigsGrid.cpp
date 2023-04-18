@@ -1,5 +1,4 @@
 #include "ConfigsGrid.h"
-#include "../CsvTable.h"
 #include "../Defs.h"
 
 IMPLEMENT_DYNAMIC_CLASS(ConfigsGrid, HaGrid)
@@ -37,10 +36,9 @@ ConfigsGrid::~ConfigsGrid()
 void ConfigsGrid::DumpTable(std::function<void(const wxString &, const DaoBase *)> fun)
 {
     SaveEditControlValue();
-    auto table = GetTable();
-    auto csvTable = dynamic_cast<CsvTableBase *>(table);
+    auto csvTable = GetCsvTable();
     if (csvTable != nullptr) {
-        csvTable->Dump(fun);
+        fun(csvTable->GetName(), csvTable->GetDao());
     }
 }
 

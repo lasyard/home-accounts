@@ -26,8 +26,8 @@ EVT_UPDATE_UI(ID_EXPORT, ConfigsPanel::OnUpdateExport)
 EVT_MENU(ID_EXPORT, ConfigsPanel::OnExport)
 EVT_UPDATE_UI(ID_INSERT, ConfigsPanel::OnUpdateMenu)
 EVT_MENU(ID_INSERT, ConfigsPanel::OnMenuModify)
-EVT_UPDATE_UI(ID_DELETE, ConfigsPanel::OnUpdateMenu)
-EVT_MENU(ID_DELETE, ConfigsPanel::OnMenuModify)
+EVT_UPDATE_UI(wxID_DELETE, ConfigsPanel::OnUpdateMenu)
+EVT_MENU(wxID_DELETE, ConfigsPanel::OnMenuModify)
 END_EVENT_TABLE()
 
 const wxString ConfigsPanel::LABEL = _("Configs");

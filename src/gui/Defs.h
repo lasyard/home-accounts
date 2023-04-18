@@ -10,7 +10,6 @@
 #define ID_EXPORT      XRCID("export")
 #define ID_CHANGE_PASS XRCID("changePass")
 #define ID_INSERT      XRCID("insert")
-#define ID_DELETE      XRCID("delete")
 #define ID_RAW_MODE    XRCID("rawMode")
 #define ID_ABOUT       XRCID("about")
 #define ID_LICENSE     XRCID("license")

@@ -54,7 +54,7 @@
 					<label>_Insert\tEnter</label>
 					<help></help>
 				</object>
-				<object class="wxMenuItem" name="delete">
+				<object class="wxMenuItem" name="wxID_DELETE">
 					<label>_Delete\tDelete</label>
 					<help></help>
 				</object>

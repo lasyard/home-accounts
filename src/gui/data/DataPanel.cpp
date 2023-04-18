@@ -14,8 +14,8 @@ EVT_UPDATE_UI(ID_EXPORT, DataPanel::OnUpdateMenu)
 EVT_MENU(ID_EXPORT, DataPanel::OnMenu)
 EVT_UPDATE_UI(ID_INSERT, DataPanel::OnUpdateMenu)
 EVT_MENU(ID_INSERT, DataPanel::OnMenuModify)
-EVT_UPDATE_UI(ID_DELETE, DataPanel::OnUpdateMenu)
-EVT_MENU(ID_DELETE, DataPanel::OnMenuModify)
+EVT_UPDATE_UI(wxID_DELETE, DataPanel::OnUpdateMenu)
+EVT_MENU(wxID_DELETE, DataPanel::OnMenuModify)
 END_EVENT_TABLE()
 
 const wxString DataPanel::LABEL = _("Transactions");

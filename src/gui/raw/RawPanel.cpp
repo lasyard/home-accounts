@@ -18,8 +18,8 @@ IMPLEMENT_TM(RawPanel)
 BEGIN_EVENT_TABLE(RawPanel, HaPanel)
 EVT_UPDATE_UI(ID_INSERT, RawPanel::OnUpdateInsert)
 EVT_MENU(ID_INSERT, RawPanel::OnInsert)
-EVT_UPDATE_UI(ID_DELETE, RawPanel::OnUpdateDelete)
-EVT_MENU(ID_DELETE, RawPanel::OnDelete)
+EVT_UPDATE_UI(wxID_DELETE, RawPanel::OnUpdateDelete)
+EVT_MENU(wxID_DELETE, RawPanel::OnDelete)
 END_EVENT_TABLE()
 
 const wxString RawPanel::LABEL = _("Raw");
@@ -107,10 +107,14 @@ void RawPanel::OnDelete([[maybe_unused]] wxCommandEvent &event)
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     int sel = m_book->GetSelection();
     if (sel != wxNOT_FOUND) {
-        Unbind(sel);
-        m_book->DeletePage(sel);
-        m_doc->Modify(true);
-        ReLayout();
+        auto text = wxString::Format(_("Are you sure to delete section \"%s\"?"), m_book->GetPageText(sel));
+        int answer = wxMessageBox(text, _("Confirm"), wxYES_NO | wxCENTER);
+        if (answer == wxYES) {
+            Unbind(sel);
+            m_book->DeletePage(sel);
+            m_doc->Modify(true);
+            ReLayout();
+        }
     }
 }
 

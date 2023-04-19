@@ -202,7 +202,7 @@ void ConfigsPanel::SetGridTable(ConfigsGrid *grid, const wxString &name)
     }
     table->SetAttrProvider(attrProvider);
     grid->SetTable(table, true, wxGrid::wxGridSelectionModes::wxGridSelectRows);
-    grid->AutoFit();
+    grid->AutoSizeAll();
 }
 
 void ConfigsPanel::SaveGridTable(ConfigsGrid *grid)

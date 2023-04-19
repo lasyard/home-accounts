@@ -33,6 +33,13 @@ protected:
     void CacheRow(int row);
     void CacheCell(int row, int col);
 
+    /**
+     * @brief Refresh contents of a grid column and auto resize it to fit the contents.
+     *
+     * @param col the column
+     */
+    void RefreshAndAutoSizeGridColumn(int col);
+
     virtual wxString GetCellValue(int row, int col) = 0;
 
     virtual void SetCellValue(int row, int col, const wxString &value) = 0;

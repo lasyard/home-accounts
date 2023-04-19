@@ -25,7 +25,13 @@ public:
     );
     virtual ~HaGrid();
 
-    void AutoFit()
+    /**
+     * @brief Auto resize rows and columns to fit their cotents.
+     *
+     * It seems as if `wxGrid::AutoSize` != `AutoSizeRows` & `AutoSizeColumns`.
+     *
+     */
+    void AutoSizeAll()
     {
         BeginBatch();
         AutoSizeRows(false);

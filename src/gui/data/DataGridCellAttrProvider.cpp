@@ -19,6 +19,9 @@ DataGridCellAttrProvider::DataGridCellAttrProvider(const DataTable *table) : HaG
 
     m_readOnlyMoneyAttr = m_moneyAttr->Clone();
     m_readOnlyMoneyAttr->SetReadOnly();
+
+    m_readOnlyMoneyRedAttr = m_readOnlyMoneyAttr->Clone();
+    m_readOnlyMoneyRedAttr->SetTextColour(*wxRED);
 }
 
 DataGridCellAttrProvider::~DataGridCellAttrProvider()
@@ -29,6 +32,7 @@ DataGridCellAttrProvider::~DataGridCellAttrProvider()
     m_accountAttr->DecRef();
     m_channelAttr->DecRef();
     m_readOnlyMoneyAttr->DecRef();
+    m_readOnlyMoneyRedAttr->DecRef();
 }
 
 wxGridCellAttr *DataGridCellAttrProvider::GetAttr(int row, int col, wxGridCellAttr::wxAttrKind kind) const
@@ -55,8 +59,7 @@ wxGridCellAttr *DataGridCellAttrProvider::GetAttr(int row, int col, wxGridCellAt
                 // wxLogTrace(TM, "RefCount of channelAttr is %d", m_channelAttr->GetRefCount());
                 return m_channelAttr;
             case DataTable::BALANCE_COL:
-                m_readOnlyMoneyAttr->IncRef();
-                return m_readOnlyMoneyAttr;
+                return GetBalanceAttr(row);
             case DataTable::VALID_COL:
                 m_boolAttr->IncRef();
                 return m_boolAttr;
@@ -65,8 +68,7 @@ wxGridCellAttr *DataGridCellAttrProvider::GetAttr(int row, int col, wxGridCellAt
             }
         } else if (rowType == DataDao::IndexType::INITIAL) {
             if (col == DataTable::BALANCE_COL) {
-                m_readOnlyMoneyAttr->IncRef();
-                return m_readOnlyMoneyAttr;
+                return GetBalanceAttr(row);
             } else {
                 m_readOnlyAttr->IncRef();
                 return m_readOnlyAttr;
@@ -84,4 +86,14 @@ wxGridCellAttr *DataGridCellAttrProvider::GetAttr(int row, int col, wxGridCellAt
     }
     m_defaultAttr->IncRef();
     return m_defaultAttr;
+}
+
+wxGridCellAttr *DataGridCellAttrProvider::GetBalanceAttr(int row) const
+{
+    if (!m_table->GetDao()->isRedBalance(row)) {
+        m_readOnlyMoneyAttr->IncRef();
+        return m_readOnlyMoneyAttr;
+    }
+    m_readOnlyMoneyRedAttr->IncRef();
+    return m_readOnlyMoneyRedAttr;
 }

@@ -58,7 +58,6 @@ void ConfigsGrid::OnInsert([[maybe_unused]] wxCommandEvent &event)
         InsertRows(row + 1);
     }
     SetGridCursor(row + 1, GetGridCursorCol());
-    AutoFit();
     EndBatch();
 }
 
@@ -78,6 +77,5 @@ void ConfigsGrid::OnDelete([[maybe_unused]] wxCommandEvent &event)
             }
         }
     }
-    AutoFit();
     EndBatch();
 }

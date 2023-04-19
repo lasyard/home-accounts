@@ -84,5 +84,5 @@ void DataPanel::ShowData(const wxString &name)
     // `AssignTable` is not existing in earlier version of wxWidgets.
     m_grid->SetTable(table, true);
     m_grid->SetFocus();
-    m_grid->AutoFit();
+    m_grid->AutoSizeAll();
 }

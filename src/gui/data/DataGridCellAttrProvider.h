@@ -31,6 +31,9 @@ private:
     mutable wxGridCellAttr *m_accountAttr;
     mutable wxGridCellAttr *m_channelAttr;
     mutable wxGridCellAttr *m_readOnlyMoneyAttr;
+    mutable wxGridCellAttr *m_readOnlyMoneyRedAttr;
+
+    wxGridCellAttr *GetBalanceAttr(int row) const;
 };
 
 #endif /* _DATA_DATA_GRID_CELL_ATTR_PROVIDER_H_ */

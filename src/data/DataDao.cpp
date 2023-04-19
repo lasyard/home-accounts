@@ -132,7 +132,12 @@ std::string DataDao::getDescString(int row)
 std::string DataDao::getBalanceString(int row)
 {
     auto &index = m_index[row];
-    if (index.m_type == ITEM || index.m_type == INITIAL) {
+    if (index.m_type == ITEM) {
+        struct item *item = static_cast<struct item *>(index.m_ptr);
+        if (item->valid) {
+            return m_parser->toStringByType(MONEY, &index.m_balance);
+        }
+    } else if (index.m_type == INITIAL) {
         return m_parser->toStringByType(MONEY, &index.m_balance);
     }
     return std::string();
@@ -152,7 +157,8 @@ void DataDao::setMoney(int row, const std::string &value, bool negative)
     auto &index = m_index[row];
     if (index.m_type == ITEM) {
         struct item *item = static_cast<struct item *>(index.m_ptr);
-        money_t balance = index.m_balance + item->amount;
+        // Store the blance before this item.
+        money_t balance = index.m_balance + valid_amount(item);
         money_t amount;
         m_parser->parseStringByType(value, MONEY, &amount);
         item->amount = negative ? -amount : amount;
@@ -186,9 +192,13 @@ void DataDao::setDesc(int row, const std::string &value)
 
 void DataDao::setValid(int row, const std::string &value)
 {
-    struct item *item = safeGetItem(row);
-    if (item != nullptr) {
+    auto &index = m_index[row];
+    if (index.m_type == ITEM) {
+        struct item *item = static_cast<struct item *>(index.m_ptr);
+        // Store the blance before this item.
+        money_t balance = index.m_balance + valid_amount(item);
         item->valid = ((value == "1") ? true : false);
+        updateBalance(row, balance);
     }
 }
 
@@ -220,6 +230,12 @@ void DataDao::setInitialBalance(money_t balance)
     updateBalance(1, balance);
 }
 
+bool DataDao::isRedBalance(int row) const
+{
+    auto &index = m_index[row];
+    return (index.m_type == ITEM || index.m_type == INITIAL) && index.m_balance < 0;
+}
+
 void DataDao::createIndex()
 {
     money_t balance = m_index[0].m_balance;
@@ -231,7 +247,7 @@ void DataDao::createIndex()
         int seq = 1;
         for (auto q = page->items.first; q != NULL; q = q->next) {
             struct item *item = get_item(q);
-            balance -= item->amount;
+            balance -= valid_amount(item);
             m_index.push_back(IndexItem(item, seq++, balance));
         }
     }
@@ -242,7 +258,7 @@ void DataDao::updateBalance(int row, money_t balance)
     for (auto i = std::next(m_index.begin(), row); i != m_index.end(); ++i) {
         if (i->m_type == ITEM) {
             struct item *item = static_cast<struct item *>(i->m_ptr);
-            balance -= item->amount;
+            balance -= valid_amount(item);
             i->m_balance = balance;
         }
     }

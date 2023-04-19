@@ -61,7 +61,6 @@ void RawPanel::OnUpdate()
     for (size_t i = 0; i < m_book->GetPageCount(); ++i) {
         m_book->ExpandNode(i);
     }
-    ReLayout();
 }
 
 void RawPanel::SaveContents()
@@ -92,7 +91,6 @@ void RawPanel::OnInsert([[maybe_unused]] wxCommandEvent &event)
         if (!name.IsEmpty()) {
             AddPage(name, wxEmptyString, true);
             m_doc->Modify(true);
-            ReLayout();
         }
     }
 }
@@ -113,7 +111,6 @@ void RawPanel::OnDelete([[maybe_unused]] wxCommandEvent &event)
             Unbind(sel);
             m_book->DeletePage(sel);
             m_doc->Modify(true);
-            ReLayout();
         }
     }
 }
@@ -195,11 +192,4 @@ void RawPanel::Unbind(int sel)
 bool RawPanel::IsLeaf(int sel) const
 {
     return sel != wxNOT_FOUND && m_book->GetPage(sel)->IsKindOf(CLASSINFO(wxTextCtrl));
-}
-
-void RawPanel::ReLayout()
-{
-    // Important to correct the layout.
-    m_book->Fit();
-    Layout();
 }

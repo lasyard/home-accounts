@@ -102,6 +102,7 @@ void DataTable::SetCellValue(int row, int col, const wxString &value)
         break;
     case VALID_COL:
         m_dataDao->setValid(row, v);
+        ReCacheBalances(row);
         break;
     default:
         break;
@@ -124,4 +125,5 @@ void DataTable::ReCacheBalances(int row)
     for (int i = row; i < GetNumberRows(); ++i) {
         CacheCell(i, BALANCE_COL);
     }
+    RefreshAndAutoSizeGridColumn(BALANCE_COL);
 }

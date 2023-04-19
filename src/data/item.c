@@ -26,3 +26,8 @@ bool item_is_empty(const struct item *item)
 {
     return item->amount == 0 && (item->desc == NULL || item->desc[0] == '\0');
 }
+
+money_t valid_amount(struct item *item)
+{
+    return item->valid ? item->amount : 0;
+}

@@ -35,6 +35,11 @@ public:
         return m_dataDao;
     }
 
+    const DataDao *GetDao() const
+    {
+        return m_dataDao;
+    }
+
     void SetAccountChoices(wxArrayString &choices);
     void SetChannelChoices(wxArrayString &choices);
 

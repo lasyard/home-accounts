@@ -51,6 +51,8 @@ public:
 
     void setInitialBalance(money_t balance);
 
+    bool isRedBalance(int row) const;
+
     IndexType getRowType(int row) const
     {
         return m_index[row].m_type;

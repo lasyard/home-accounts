@@ -39,7 +39,6 @@ private:
     wxString GetSectionName(int sel) const;
     void Unbind(int sel);
     bool IsLeaf(int sel) const;
-    void ReLayout();
 };
 
 #endif /* _RAW_RAW_PANEL_H_ */

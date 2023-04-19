@@ -45,8 +45,7 @@ void DataGrid::OnInsert([[maybe_unused]] wxCommandEvent &event)
     BeginBatch();
     auto row = GetGridCursorRow();
     InsertRows(row + 1);
-    // `AutoSizeRow` not work here.
-    AutoSizeRows(false);
+    AutoSizeRow(row + 1);
     SetGridCursor(row + 1, DataTable::OUTLAY_COL);
     EndBatch();
 }

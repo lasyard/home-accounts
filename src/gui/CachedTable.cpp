@@ -52,10 +52,7 @@ void CachedTable::SetValue(int row, int col, const wxString &value)
         wxLogError(e.what());
     }
     CacheCell(row, col);
-    auto grid = GetView();
-    if (grid != nullptr) {
-        grid->AutoSizeColumn(col);
-    }
+    RefreshAndAutoSizeGridColumn(col);
 }
 
 bool CachedTable::InsertRows(size_t pos, size_t numRows)
@@ -128,4 +125,15 @@ void CachedTable::CacheRow(int row)
 void CachedTable::CacheCell(int row, int col)
 {
     (*m_cache)[row][col] = GetCellValue(row, col);
+}
+
+void CachedTable::RefreshAndAutoSizeGridColumn(int col)
+{
+    auto grid = GetView();
+    if (grid != nullptr) {
+        grid->BeginBatch();
+        grid->RefreshBlock(0, col, m_cache->size() - 1, col);
+        grid->AutoSizeColumn(col);
+        grid->EndBatch();
+    }
 }

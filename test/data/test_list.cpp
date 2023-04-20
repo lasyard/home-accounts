@@ -20,8 +20,8 @@ TEST_CASE("test_list_lifecycle")
     CHECK(list_has_only(&head, &node.list));
     CHECK(list_is_first(&head, &node.list));
     CHECK(list_is_last(&head, &node.list));
-    CHECK(list_entry(list_first(&head), struct int_list_node, list)->value == 1);
-    CHECK(list_entry(list_last(&head), struct int_list_node, list)->value == 1);
+    CHECK(list_entry(head.first, struct int_list_node, list)->value == 1);
+    CHECK(list_entry(head.last, struct int_list_node, list)->value == 1);
     struct int_list_node node1;
     list_item_init(&node1.list);
     node1.value = 2;
@@ -30,15 +30,15 @@ TEST_CASE("test_list_lifecycle")
     CHECK(!list_has_only(&head, &node1.list));
     CHECK(list_is_first(&head, &node1.list));
     CHECK(list_is_last(&head, &node.list));
-    CHECK(list_entry(list_first(&head), struct int_list_node, list)->value == 2);
-    CHECK(list_entry(list_last(&head), struct int_list_node, list)->value == 1);
+    CHECK(list_entry(head.first, struct int_list_node, list)->value == 2);
+    CHECK(list_entry(head.last, struct int_list_node, list)->value == 1);
     list_del(&head, &node.list);
     CHECK(!list_is_empty(&head));
     CHECK(list_has_only(&head, &node1.list));
     CHECK(list_is_first(&head, &node1.list));
     CHECK(list_is_last(&head, &node1.list));
-    CHECK(list_entry(list_first(&head), struct int_list_node, list)->value == 2);
-    CHECK(list_entry(list_last(&head), struct int_list_node, list)->value == 2);
+    CHECK(list_entry(head.first, struct int_list_node, list)->value == 2);
+    CHECK(list_entry(head.last, struct int_list_node, list)->value == 2);
     list_del(&head, &node1.list);
     CHECK(list_is_empty(&head));
 }

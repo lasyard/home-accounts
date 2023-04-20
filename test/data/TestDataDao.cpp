@@ -19,12 +19,9 @@ TEST_CASE("read")
     DataDao dataDao;
     dataDao.read(text);
     struct data &data = dataDao.getData();
-    CHECK(data.pages_num == 2);
-    CHECK(data.items_num == 3);
-    struct page *first = get_page(list_first(&data.pages));
+    struct page *first = get_page(data.pages.first);
     CHECK(first->date == 2451545);
-    CHECK(first->items_num == 1);
-    struct item *item = get_item(list_first(&first->items));
+    struct item *item = get_item(first->items.first);
     CHECK(item->time == 36000);
     CHECK(item->amount == 1234);
     CHECK(item->account == 1);
@@ -32,10 +29,9 @@ TEST_CASE("read")
     CHECK(strcmp(item->desc, "New Bee") == 0);
     CHECK(item->valid);
     CHECK(item->batch == 0);
-    struct page *last = get_page(list_last(&data.pages));
+    struct page *last = get_page(data.pages.last);
     CHECK(last->date == 2451546);
-    CHECK(last->items_num == 2);
-    item = get_item(list_first(&last->items));
+    item = get_item(last->items.first);
     CHECK(item->time == 36060);
     CHECK(item->amount == 560);
     CHECK(item->account == 2);
@@ -43,7 +39,7 @@ TEST_CASE("read")
     CHECK(strcmp(item->desc, "Tree New Bee") == 0);
     CHECK(!item->valid);
     CHECK(item->batch == 1);
-    item = get_item(list_last(&last->items));
+    item = get_item(last->items.last);
     CHECK(item->time == 39661);
     CHECK(item->amount == 789);
     CHECK(item->account == 1);

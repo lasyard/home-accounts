@@ -146,6 +146,8 @@ void Sqlite3File::decryptSection(const std::string &name, std::string &content)
         } catch (CryptoPP::HashVerificationFilter::HashVerificationFailed &) {
             throw BadPassword();
         }
+    } else if (rc == SQLITE_DONE) {
+        throw SectionNotFound(name);
     } else {
         throw std::runtime_error("sqlite3_step(getStmt) failed: code = " + std::to_string(rc) + ".");
     }

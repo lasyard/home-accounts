@@ -30,7 +30,7 @@ void release_item(struct item *item);
 
 bool item_is_empty(const struct item *item);
 
-money_t valid_amount(struct item *item);
+money_t valid_amount(const struct item *item);
 
 #ifdef __cplusplus
 }

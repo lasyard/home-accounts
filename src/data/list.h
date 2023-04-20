@@ -29,9 +29,6 @@ void list_head_add(struct list_head *head, struct list_item *item);
 void list_del(struct list_head *head, struct list_item *item);
 void list_ins(struct list_head *head, struct list_item *pos, struct list_item *item);
 
-struct list_item *list_first(struct list_head *head);
-struct list_item *list_last(struct list_head *head);
-
 bool list_is_empty(const struct list_head *head);
 bool list_has_only(const struct list_head *head, const struct list_item *item);
 bool list_is_first(const struct list_head *head, const struct list_item *item);

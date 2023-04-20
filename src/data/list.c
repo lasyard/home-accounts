@@ -58,16 +58,6 @@ void list_ins(struct list_head *head, struct list_item *pos, struct list_item *i
     }
 }
 
-struct list_item *list_first(struct list_head *head)
-{
-    return head->first;
-}
-
-struct list_item *list_last(struct list_head *head)
-{
-    return head->last;
-}
-
 bool list_is_empty(const struct list_head *head)
 {
     return head->first == NULL;

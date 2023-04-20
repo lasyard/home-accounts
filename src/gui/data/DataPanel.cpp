@@ -1,4 +1,4 @@
-#include <wx/translation.h>
+#include <wx/datectrl.h>
 
 #include "../Defs.h"
 #include "../HaDocument.h"
@@ -19,11 +19,13 @@ EVT_MENU(wxID_DELETE, DataPanel::OnMenuModify)
 END_EVENT_TABLE()
 
 const wxString DataPanel::LABEL = _("Transactions");
+const wxString DataPanel::DATA_FILE_PREFIX = "data/";
 
 DataPanel::DataPanel(wxWindow *parent, HaDocument *doc) : HaPanel(doc)
 {
     wxLog::AddTraceMask(TM);
     wxXmlResource::Get()->LoadPanel(this, parent, "panelData");
+    m_date = XRCCTRL(*this, "dateData", wxDatePickerCtrl);
     m_grid = XRCCTRL(*this, "gridData", DataGrid);
     m_grid->Bind(wxEVT_GRID_CELL_CHANGED, &HaDocument::OnChange, doc);
     m_grid->SetAttributes();
@@ -38,14 +40,17 @@ DataPanel::~DataPanel()
 void DataPanel::OnUpdate()
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
-    ShowData("test");
+    auto date = m_date->GetValue();
+    ShowData(
+        DATA_FILE_PREFIX + wxString::Format("%04d", date.GetYear()) + "/" + wxString::Format("%02d", date.GetMonth())
+    );
 }
 
 void DataPanel::SaveContents()
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     m_grid->SaveEditControlValue();
-    m_doc->DoSaveData("test");
+    // m_doc->DoSaveData("test");
 }
 
 void DataPanel::OnUpdateMenu(wxUpdateUIEvent &event)

@@ -7,6 +7,8 @@
 #include "DataGrid.h"
 #include "DataTable.h"
 
+class wxDatePickerCtrl;
+
 class DataPanel : public HaPanel
 {
     DECLARE_DYNAMIC_CLASS(DataPanel)
@@ -30,6 +32,9 @@ public:
     void ShowData(const wxString &name);
 
 private:
+    static const wxString DATA_FILE_PREFIX;
+
+    wxDatePickerCtrl *m_date;
     DataGrid *m_grid;
 };
 

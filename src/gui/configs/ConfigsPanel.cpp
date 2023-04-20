@@ -97,6 +97,8 @@ void ConfigsPanel::OnImport([[maybe_unused]] wxCommandEvent &event)
                 auto csvTable = grid->GetCsvTable();
                 if (csvTable != nullptr) {
                     try {
+                        // In case of failure, the data will be restored.
+                        SaveGridTable(grid);
                         csvTable->GetDao()->read(is);
                         SaveGridTable(grid);
                         UpdateGrid(grid);

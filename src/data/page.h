@@ -4,14 +4,10 @@
 #include "csv/date_time.h"
 #include "list.h"
 
-struct data;
-
 struct page {
     struct list_item list;
-    struct data *data;
     date_t date;
     struct list_head items;
-    int items_num;
 };
 
 struct item;
@@ -28,6 +24,8 @@ void release_page(struct page *page);
 struct item *add_item(struct page *page);
 struct item *add_item_head(struct page *page);
 struct item *insert_item(struct item *pos);
+
+bool page_is_empty(const struct page *page);
 
 #ifdef __cplusplus
 }

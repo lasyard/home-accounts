@@ -28,6 +28,7 @@ void SectionFile::put(const std::string &name, const std::string &content)
     auto &section = m_cache[name];
     section.content = content;
     section.writeDirty = true;
+    section.readDirty = false;
 }
 
 void SectionFile::remove(const std::string &name)

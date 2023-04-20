@@ -6,9 +6,6 @@
 
 struct data {
     struct list_head pages;
-    money_t balance;
-    int pages_num;
-    int items_num;
 };
 
 struct page;
@@ -21,6 +18,8 @@ void init_data(struct data *data);
 void release_data(struct data *data);
 
 struct page *add_page(struct data *data);
+
+bool data_is_empty(const struct data *data);
 
 #ifdef __cplusplus
 }

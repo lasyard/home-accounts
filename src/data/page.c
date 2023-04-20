@@ -7,10 +7,8 @@
 void init_page(struct page *page)
 {
     list_item_init(&page->list);
-    page->data = NULL;
     page->date = 0;
     list_head_init(&page->items);
-    page->items_num = 0;
 }
 
 void release_page(struct page *page)
@@ -24,14 +22,6 @@ void release_page(struct page *page)
     }
 }
 
-static void inc_items_num(struct page *page)
-{
-    page->items_num++;
-    if (page->data != NULL) {
-        page->data->items_num++;
-    }
-}
-
 struct item *add_item(struct page *page)
 {
     struct item *item = malloc(sizeof(struct item));
@@ -39,7 +29,6 @@ struct item *add_item(struct page *page)
         init_item(item);
         item->page = page;
         list_add(&page->items, &item->list);
-        inc_items_num(page);
     }
     return item;
 }
@@ -51,7 +40,6 @@ struct item *add_item_head(struct page *page)
         init_item(item);
         item->page = page;
         list_head_add(&page->items, &item->list);
-        inc_items_num(page);
     }
     return item;
 }
@@ -63,7 +51,17 @@ struct item *insert_item(struct item *pos)
         init_item(item);
         item->page = pos->page;
         list_ins(&pos->page->items, &pos->list, &item->list);
-        inc_items_num(pos->page);
     }
     return item;
+}
+
+bool page_is_empty(const struct page *page)
+{
+    for (struct list_item *p = page->items.first; p != NULL; p = p->next) {
+        struct item *item = get_item(p);
+        if (!item_is_empty(item)) {
+            return false;
+        }
+    }
+    return true;
 }

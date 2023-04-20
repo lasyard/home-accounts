@@ -65,12 +65,15 @@ bool CachedTable::InsertRows(size_t pos, size_t numRows)
         m_cache->insert(std::next(m_cache->begin(), pos), wxArrayString());
         CacheRow(pos);
     }
-    auto grid = GetView();
-    if (grid != nullptr) {
-        wxGridTableMessage msg(this, wxGRIDTABLE_NOTIFY_ROWS_INSERTED, pos, i);
-        grid->ProcessTableMessage(msg);
+    if (i > 0) {
+        auto grid = GetView();
+        if (grid != nullptr) {
+            wxGridTableMessage msg(this, wxGRIDTABLE_NOTIFY_ROWS_INSERTED, pos, i);
+            grid->ProcessTableMessage(msg);
+        }
+        return true;
     }
-    return true;
+    return false;
 }
 
 bool CachedTable::AppendRows(size_t numRows)
@@ -83,12 +86,15 @@ bool CachedTable::AppendRows(size_t numRows)
         m_cache->push_back(wxArrayString());
         CacheRow(m_cache->size() - 1);
     }
-    auto grid = GetView();
-    if (grid != nullptr) {
-        wxGridTableMessage msg(this, wxGRIDTABLE_NOTIFY_ROWS_APPENDED, i, 0);
-        grid->ProcessTableMessage(msg);
+    if (i > 0) {
+        auto grid = GetView();
+        if (grid != nullptr && i > 0) {
+            wxGridTableMessage msg(this, wxGRIDTABLE_NOTIFY_ROWS_APPENDED, i, 0);
+            grid->ProcessTableMessage(msg);
+        }
+        return true;
     }
-    return true;
+    return false;
 }
 
 bool CachedTable::DeleteRows(size_t pos, size_t numRows)
@@ -100,12 +106,15 @@ bool CachedTable::DeleteRows(size_t pos, size_t numRows)
         }
     }
     m_cache->erase(std::next(m_cache->begin(), pos), std::next(m_cache->begin(), pos + i));
-    auto grid = GetView();
-    if (grid != nullptr) {
-        wxGridTableMessage msg(this, wxGRIDTABLE_NOTIFY_ROWS_DELETED, pos, i);
-        grid->ProcessTableMessage(msg);
+    if (i > 0) {
+        auto grid = GetView();
+        if (grid != nullptr && i > 0) {
+            wxGridTableMessage msg(this, wxGRIDTABLE_NOTIFY_ROWS_DELETED, pos, i);
+            grid->ProcessTableMessage(msg);
+        }
+        return true;
     }
-    return true;
+    return false;
 }
 
 bool CachedTable::CanHaveAttributes()

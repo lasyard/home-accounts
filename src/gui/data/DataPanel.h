@@ -36,6 +36,7 @@ private:
 
     wxDatePickerCtrl *m_date;
     DataGrid *m_grid;
+    wxString m_sectionName;
 };
 
 #endif /* _DATA_DATA_PANEL_H_ */

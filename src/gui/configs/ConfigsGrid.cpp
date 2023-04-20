@@ -52,12 +52,15 @@ void ConfigsGrid::OnInsert([[maybe_unused]] wxCommandEvent &event)
 {
     BeginBatch();
     int row = GetGridCursorRow();
+    bool success = false;
     if (row < 0 || row == GetNumberRows() - 1) {
-        AppendRows();
+        success = AppendRows();
     } else {
-        InsertRows(row + 1);
+        success = InsertRows(row + 1);
     }
-    SetGridCursor(row + 1, GetGridCursorCol());
+    if (success) {
+        SetGridCursor(row + 1, GetGridCursorCol());
+    }
     EndBatch();
 }
 

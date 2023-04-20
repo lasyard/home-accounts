@@ -19,7 +19,7 @@ EVT_MENU(wxID_DELETE, DataPanel::OnMenuModify)
 END_EVENT_TABLE()
 
 const wxString DataPanel::LABEL = _("Transactions");
-const wxString DataPanel::DATA_FILE_PREFIX = "data/";
+const wxString DataPanel::DATA_FILE_PREFIX = "data";
 
 DataPanel::DataPanel(wxWindow *parent, HaDocument *doc) : HaPanel(doc)
 {
@@ -29,6 +29,8 @@ DataPanel::DataPanel(wxWindow *parent, HaDocument *doc) : HaPanel(doc)
     m_grid = XRCCTRL(*this, "gridData", DataGrid);
     m_grid->Bind(wxEVT_GRID_CELL_CHANGED, &HaDocument::OnChange, doc);
     m_grid->SetAttributes();
+    auto date = m_date->GetValue();
+    m_sectionName = DATA_FILE_PREFIX + wxString::Format("/%04d/%02d", date.GetYear(), date.GetMonth() + 1);
 }
 
 DataPanel::~DataPanel()
@@ -40,17 +42,18 @@ DataPanel::~DataPanel()
 void DataPanel::OnUpdate()
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
-    auto date = m_date->GetValue();
-    ShowData(
-        DATA_FILE_PREFIX + wxString::Format("%04d", date.GetYear()) + "/" + wxString::Format("%02d", date.GetMonth())
-    );
+    ShowData(m_sectionName);
 }
 
 void DataPanel::SaveContents()
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     m_grid->SaveEditControlValue();
-    // m_doc->DoSaveData("test");
+    if (m_doc->GetDataDao().isEmpty()) {
+        m_doc->DeleteSection(m_sectionName);
+    } else {
+        m_doc->DoSaveData(m_sectionName);
+    }
 }
 
 void DataPanel::OnUpdateMenu(wxUpdateUIEvent &event)

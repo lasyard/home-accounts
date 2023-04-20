@@ -44,9 +44,10 @@ void DataGrid::OnInsert([[maybe_unused]] wxCommandEvent &event)
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     BeginBatch();
     auto row = GetGridCursorRow();
-    InsertRows(row + 1);
-    AutoSizeRow(row + 1);
-    SetGridCursor(row + 1, DataTable::OUTLAY_COL);
+    if (InsertRows(row + 1)) {
+        AutoSizeRow(row + 1);
+        SetGridCursor(row + 1, DataTable::OUTLAY_COL);
+    }
     EndBatch();
 }
 

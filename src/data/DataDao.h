@@ -53,6 +53,11 @@ public:
 
     bool isRedBalance(int row) const;
 
+    bool isEmpty() const
+    {
+        return data_is_empty(&m_data);
+    }
+
     IndexType getRowType(int row) const
     {
         return m_index[row].m_type;

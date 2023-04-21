@@ -41,8 +41,8 @@ private:
 
     void UpdateConfig(const wxString &label, const wxString &name);
     void UpdateGrid(ConfigsGrid *grid);
-    void SetGridTable(ConfigsGrid *grid, const wxString &name);
-    void SaveGridTable(ConfigsGrid *grid);
+
+    CachedTable *CreateTable(const wxString &name);
 
     ConfigsGrid *GetCurrentGrid() const
     {

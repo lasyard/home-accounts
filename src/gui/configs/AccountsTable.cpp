@@ -21,3 +21,13 @@ AccountsTable::AccountsTable(AccountsDao *dao)
 AccountsTable::~AccountsTable()
 {
 }
+
+void AccountsTable::SetOwnerChoices(wxArrayString &choices)
+{
+    static_cast<AccountsGridCellAttrProvider *>(GetAttrProvider())->SetOwnerChoices(choices);
+}
+
+void AccountsTable::SetTypeChoices(wxArrayString &choices)
+{
+    static_cast<AccountsGridCellAttrProvider *>(GetAttrProvider())->SetTypeChoices(choices);
+}

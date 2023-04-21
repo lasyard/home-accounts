@@ -1,7 +1,7 @@
 #include "AccountsGridCellAttrProvider.h"
 #include "data/ConfigPodsTraits.h"
 
-AccountsGridCellAttrProvider::AccountsGridCellAttrProvider(const CsvTableBase *table)
+AccountsGridCellAttrProvider::AccountsGridCellAttrProvider(const CachedTable *table)
     : ConfigsGridCellAttrProvider(table)
 {
     m_ownerAttr = m_readOnlyAttr->Clone();
@@ -10,6 +10,7 @@ AccountsGridCellAttrProvider::AccountsGridCellAttrProvider(const CsvTableBase *t
 
 AccountsGridCellAttrProvider::~AccountsGridCellAttrProvider()
 {
+    wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     m_ownerAttr->DecRef();
     m_typeAttr->DecRef();
 }
@@ -22,6 +23,7 @@ wxGridCellAttr *AccountsGridCellAttrProvider::GetAttr(int row, int col, wxGridCe
         return m_ownerAttr;
     } else if (col == CsvRowTraits<struct account>::TYPE_INDEX) {
         m_typeAttr->IncRef();
+        // wxLogTrace(TM, "RefCount of typeAttr is %d", m_typeAttr->GetRefCount());
         return m_typeAttr;
     }
     return ConfigsGridCellAttrProvider::GetAttr(row, col, kind);

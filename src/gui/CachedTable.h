@@ -4,13 +4,19 @@
 #include <wx/grid.h>
 #include <wx/vector.h>
 
+#include "csv/ColumnType.h"
+
+class DaoBase;
+
 class CachedTable : public wxGridTableBase
 {
 public:
-    CachedTable(size_t cols, const wxString colLabels[]);
+    CachedTable(const wxString &name, size_t cols, const wxString colLabels[]);
     virtual ~CachedTable();
 
     void InitCache(int rows);
+    void CacheRow(int row);
+    void CacheCol(int col);
 
     int GetNumberRows() override;
     int GetNumberCols() override;
@@ -26,11 +32,20 @@ public:
 
     bool CanHaveAttributes() override;
 
+    const wxString &GetName() const
+    {
+        return m_name;
+    }
+
+    virtual DaoBase *GetDao() = 0;
+    virtual const DaoBase *GetDao() const = 0;
+    virtual ColumnType GetColumnType(int col) const = 0;
+
 protected:
+    wxString m_name;
     wxArrayString m_colLabels;
     wxVector<wxArrayString> *m_cache;
 
-    void CacheRow(int row);
     void CacheCell(int row, int col);
 
     /**

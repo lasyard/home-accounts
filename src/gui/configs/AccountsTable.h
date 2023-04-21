@@ -13,6 +13,9 @@ public:
 
     AccountsTable(AccountsDao *dao);
     virtual ~AccountsTable();
+
+    void SetOwnerChoices(wxArrayString &choices);
+    void SetTypeChoices(wxArrayString &choices);
 };
 
 #endif /* _CONFIGS_ACCOUNTS_TABLE_H_ */

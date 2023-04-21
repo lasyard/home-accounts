@@ -58,6 +58,13 @@ public:
         return data_is_empty(&m_data);
     }
 
+    void fillMissingPages(date_t min, date_t max)
+    {
+        if (fill_missing_pages(&m_data, min, max)) {
+            createIndex();
+        }
+    }
+
     IndexType getRowType(int row) const
     {
         return m_index[row].m_type;

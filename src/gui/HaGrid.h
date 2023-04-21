@@ -4,6 +4,7 @@
 #include <wx/grid.h>
 #include <wx/pen.h>
 
+#include "CachedTable.h"
 #include "Common.h"
 
 class HaGrid : public wxGrid
@@ -26,14 +27,13 @@ public:
     virtual ~HaGrid();
 
     /**
-     * @brief Auto resize rows and columns to fit their cotents.
-     *
-     * It seems as if `wxGrid::AutoSize` != `AutoSizeRows` & `AutoSizeColumns`.
-     *
+     * @brief Refresh the grid.
      */
-    void AutoSizeAll()
+    void RefreshContent()
     {
         BeginBatch();
+        ForceRefresh();
+        // It seems as if `wxGrid::AutoSize` != `AutoSizeRows` & `AutoSizeColumns`.
         AutoSizeRows(false);
         AutoSizeColumns(false);
         EndBatch();
@@ -48,6 +48,11 @@ public:
      * @brief Set the attributes of grid, must be called after construction.
      */
     void SetAttributes();
+
+    CachedTable *GetCachedTable()
+    {
+        return dynamic_cast<CachedTable *>(GetTable());
+    }
 
 private:
     static const int ROW_HEIGHT = 25;

@@ -1,12 +1,7 @@
 #ifndef _CONFIGS_CONFIGS_GRID_H_
 #define _CONFIGS_CONFIGS_GRID_H_
 
-#include <functional>
-
-#include "../CsvTable.h"
 #include "../HaGrid.h"
-
-class DaoBase;
 
 class ConfigsGrid : public HaGrid
 {
@@ -27,17 +22,10 @@ public:
     );
     virtual ~ConfigsGrid();
 
-    void DumpTable(std::function<void(const wxString &, const DaoBase *)> fun);
-
     void OnUpdateInsert(wxUpdateUIEvent &event);
     void OnInsert(wxCommandEvent &event);
     void OnUpdateDelete(wxUpdateUIEvent &event);
     void OnDelete(wxCommandEvent &event);
-
-    CsvTableBase *GetCsvTable()
-    {
-        return dynamic_cast<CsvTableBase *>(GetTable());
-    }
 };
 
 #endif /* _CONFIGS_CONFIGS_GRID_H_ */

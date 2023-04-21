@@ -3,6 +3,7 @@
 #include "DataGridCellAttrProvider.h"
 #include "DataTable.h"
 #include "data/DataDao.h"
+#include "data/ItemTraits.h"
 
 const wxString DataTable::COL_LABELS[] = {
     _("Time"),
@@ -15,7 +16,8 @@ const wxString DataTable::COL_LABELS[] = {
     _("Valid"),
 };
 
-DataTable::DataTable(DataDao *dataDao) : CachedTable(COL_NUM, COL_LABELS), m_dataDao(dataDao)
+DataTable::DataTable(const wxString &name, DataDao *dataDao)
+    : CachedTable(name, COL_NUM, COL_LABELS), m_dataDao(dataDao)
 {
     // Do not call `this->GetNumberRows()`, cache is not inited.
     InitCache(dataDao->getNumberRows());
@@ -29,6 +31,21 @@ DataTable::~DataTable()
 wxString DataTable::GetRowLabelValue(int row)
 {
     return m_dataDao->getRowLabel(row);
+}
+
+DataDao *DataTable::GetDao()
+{
+    return m_dataDao;
+}
+
+const DataDao *DataTable::GetDao() const
+{
+    return m_dataDao;
+}
+
+ColumnType DataTable::GetColumnType(int col) const
+{
+    return CsvRowTraits<struct item>::types[col];
 }
 
 void DataTable::SetAccountChoices(wxArrayString &choices)

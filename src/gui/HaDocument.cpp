@@ -7,6 +7,7 @@
 #include "Configs.h"
 #include "Defs.h"
 #include "HaDocument.h"
+#include "HaGrid.h"
 #include "file/SectionFile.h"
 #include "file/sqlite3/Sqlite3File.h"
 
@@ -160,4 +161,16 @@ void HaDocument::OnChangePass([[maybe_unused]] wxCommandEvent &event)
         }
         m_pass = pass;
     }
+}
+
+CachedTable *HaDocument::SaveGridTable(HaGrid *grid)
+{
+    grid->SaveEditControlValue();
+    auto table = grid->GetCachedTable();
+    if (table != nullptr) {
+        std::ostringstream os;
+        table->GetDao()->write(os);
+        SaveSection(table->GetName(), os.str());
+    }
+    return table;
 }

@@ -11,6 +11,8 @@
 #include "data/DataDao.h"
 #include "file/FileExeptions.h"
 
+class CachedTable;
+class HaGrid;
 class SectionFile;
 
 class HaDocument : public wxDocument
@@ -52,6 +54,8 @@ public:
     void OnUpdateChangePass(wxUpdateUIEvent &event);
     void OnChangePass(wxCommandEvent &event);
 
+    CachedTable *SaveGridTable(HaGrid *grid);
+
     DataDao &GetDataDao()
     {
         return m_dataDao;
@@ -79,12 +83,13 @@ public:
 
     void TryLoad(const wxString &name, DaoBase &dao)
     {
+        std::string content;
         try {
-            std::string content;
             GetSection(name, content);
             dao.readString(content);
         } catch (SectionNotFound &e) {
             wxLogStatus(e.what());
+            dao.readString(content);
         } catch (std::exception &e) {
             wxLogError(e.what());
         }

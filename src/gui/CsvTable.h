@@ -6,42 +6,18 @@
 #include "CachedTable.h"
 #include "data/CsvVecDao.h"
 
-class CsvTableBase : public CachedTable
-{
-public:
-    CsvTableBase(const wxString &name, size_t cols, const wxString *const colLabels)
-        : CachedTable(cols, colLabels), m_name(name)
-    {
-    }
-
-    virtual ~CsvTableBase()
-    {
-    }
-
-    const wxString &GetName() const
-    {
-        return m_name;
-    }
-
-    virtual ColumnType GetColumnType(int col) const = 0;
-    virtual DaoBase *GetDao() = 0;
-
-protected:
-    wxString m_name;
-};
-
 /**
  * @brief Table to reader csv.
  *
  * @tparam I the element type of row
  */
-template <typename I> class CsvTable : public CsvTableBase
+template <typename I> class CsvTable : public CachedTable
 {
     typedef CsvRowTraits<I> Traits;
 
 public:
     CsvTable(const wxString &name, size_t cols, const wxString *const colLabels, CsvVecDao<I> *dao)
-        : CsvTableBase(name, cols, colLabels), m_dao(dao)
+        : CachedTable(name, cols, colLabels), m_dao(dao)
     {
         InitCache(dao->getNumberRows());
     }
@@ -61,6 +37,11 @@ public:
     }
 
     DaoBase *GetDao() override
+    {
+        return m_dao;
+    }
+
+    const DaoBase *GetDao() const override
     {
         return m_dao;
     }

@@ -17,6 +17,7 @@
 
 // Controls
 #define ID_BOOK         XRCID("book")
+#define ID_DATE_DATA    XRCID("dateData")
 #define ID_BOOK_CONFIGS XRCID("bookConfigs")
 
 #endif /* _GUI_DEFS_H_ */

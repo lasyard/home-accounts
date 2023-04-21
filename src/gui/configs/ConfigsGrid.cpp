@@ -31,15 +31,7 @@ ConfigsGrid::ConfigsGrid(
 
 ConfigsGrid::~ConfigsGrid()
 {
-}
-
-void ConfigsGrid::DumpTable(std::function<void(const wxString &, const DaoBase *)> fun)
-{
-    SaveEditControlValue();
-    auto csvTable = GetCsvTable();
-    if (csvTable != nullptr) {
-        fun(csvTable->GetName(), csvTable->GetDao());
-    }
+    wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
 }
 
 void ConfigsGrid::OnUpdateInsert(wxUpdateUIEvent &event)

@@ -56,14 +56,13 @@ void ConfigsPanel::OnUpdate()
     UpdateConfig(AccountTypesTable::LABEL, Configs::ACCOUNT_TYPES_SECTION_NAME);
     UpdateConfig(AccountsTable::LABEL, Configs::ACCOUNTS_SECTION_NAME);
     UpdateConfig(ChannelsTable::LABEL, Configs::CHANNELS_SECTION_NAME);
+    UpdateGrid(GetCurrentGrid());
 }
 
 void ConfigsPanel::SaveContents()
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
-    for (const auto &[name, grid] : m_grids) {
-        SaveGridTable(grid);
-    }
+    m_doc->SaveGridTable(GetCurrentGrid());
 }
 
 void ConfigsPanel::OnPageChanged(wxBookCtrlEvent &event)
@@ -72,11 +71,9 @@ void ConfigsPanel::OnPageChanged(wxBookCtrlEvent &event)
     int newSel = event.GetSelection();
     wxLogTrace(TM, "\"%s\" called, from %d to %d.", __WXFUNCTION__, oldSel, newSel);
     if (oldSel >= 0) {
-        auto grid = static_cast<ConfigsGrid *>(m_book->GetPage(oldSel));
-        SaveGridTable(grid);
+        m_doc->SaveGridTable(GetGrid(oldSel));
     }
-    auto grid = static_cast<ConfigsGrid *>(m_book->GetPage(newSel));
-    UpdateGrid(grid);
+    UpdateGrid(GetGrid(newSel));
 }
 
 void ConfigsPanel::OnUpdateImport(wxUpdateUIEvent &event)
@@ -94,19 +91,18 @@ void ConfigsPanel::OnImport([[maybe_unused]] wxCommandEvent &event)
             if (!fileName.IsEmpty()) {
                 std::ifstream is(fileName.ToStdString());
                 auto grid = GetGrid(sel);
-                auto csvTable = grid->GetCsvTable();
-                if (csvTable != nullptr) {
+                // In case of failure, the data will be restored.
+                auto table = m_doc->SaveGridTable(grid);
+                if (table != nullptr) {
                     try {
-                        // In case of failure, the data will be restored.
-                        SaveGridTable(grid);
-                        csvTable->GetDao()->read(is);
-                        SaveGridTable(grid);
-                        UpdateGrid(grid);
+                        table->GetDao()->read(is);
+                        m_doc->SaveGridTable(grid);
                         m_doc->Modify(true);
+                        grid->RefreshContent();
                     } catch (const std::exception &e) {
                         wxLogError("Error occurred when importing config file \"%s\": \"%s\"", fileName, e.what());
                         // Restore the original data.
-                        m_doc->TryLoad(csvTable->GetName(), *csvTable->GetDao());
+                        m_doc->TryLoad(table->GetName(), *table->GetDao());
                     }
                 }
             }
@@ -125,16 +121,14 @@ void ConfigsPanel::OnExport([[maybe_unused]] wxCommandEvent &event)
     if (sel != wxNOT_FOUND) {
         auto grid = GetGrid(sel);
         auto label = m_book->GetPageText(sel);
-        SaveGridTable(grid);
-        grid->DumpTable([&label](const wxString &name, const DaoBase *dao) -> void {
-            auto nameHint = name;
-            nameHint.Replace('/', '_');
-            auto realName = wxSaveFileSelector(label + _(" Config"), "CSV File (*.csv)|*.csv", nameHint + ".csv");
-            if (!realName.IsEmpty()) {
-                std::ofstream os(realName.ToStdString());
-                dao->write(os);
-            }
-        });
+        auto table = m_doc->SaveGridTable(grid);
+        auto nameHint = table->GetName();
+        nameHint.Replace('/', '_');
+        auto realName = wxSaveFileSelector(label + _(" Config"), "CSV File (*.csv)|*.csv", nameHint + ".csv");
+        if (!realName.IsEmpty()) {
+            std::ofstream os(realName.ToStdString());
+            table->GetDao()->write(os);
+        }
     }
 }
 
@@ -157,57 +151,47 @@ void ConfigsPanel::OnMenuModify(wxCommandEvent &event)
 
 void ConfigsPanel::UpdateConfig(const wxString &label, const wxString &name)
 {
-    ConfigsGrid *grid;
     if (!m_grids.contains(name)) {
-        grid = new ConfigsGrid(m_book);
+        auto grid = new ConfigsGrid(m_book);
         grid->Bind(wxEVT_GRID_CELL_CHANGED, &HaDocument::OnChange, m_doc);
         grid->SetAttributes();
+        // Don't need to detor the table mannually.
+        grid->SetTable(CreateTable(name), true);
         m_grids[name] = grid;
         m_book->AddPage(grid, label);
-    } else {
-        grid = m_grids[name];
     }
-    SetGridTable(grid, name);
 }
 
 void ConfigsPanel::UpdateGrid(ConfigsGrid *grid)
 {
-    auto table = dynamic_cast<CsvTableBase *>(grid->GetTable());
+    auto table = grid->GetCachedTable();
     if (table != nullptr) {
-        SetGridTable(grid, table->GetName());
+        if (table->GetName() == Configs::ACCOUNTS_SECTION_NAME) {
+            auto accountsTable = static_cast<AccountsTable *>(table);
+            wxArrayString choices;
+            HaDocument::GetStringsByCol<struct owner, 1>(m_doc->GetOwnersDao(), choices);
+            accountsTable->SetOwnerChoices(choices);
+            HaDocument::GetStringsByCol<struct account_type, 1>(m_doc->GetAccountTypesDao(), choices);
+            accountsTable->SetTypeChoices(choices);
+            table->CacheCol(CsvRowTraits<struct account>::OWNER_INDEX);
+            table->CacheCol(CsvRowTraits<struct account>::TYPE_INDEX);
+        }
+        grid->RefreshContent();
     }
 }
 
-void ConfigsPanel::SetGridTable(ConfigsGrid *grid, const wxString &name)
+CachedTable *ConfigsPanel::CreateTable(const wxString &name)
 {
-    CsvTableBase *table = nullptr;
-    ConfigsGridCellAttrProvider *attrProvider = nullptr;
+    CachedTable *table = nullptr;
     if (name == Configs::OWNERS_SECTION_NAME) {
         table = new OwnersTable(&m_doc->GetOwnersDao());
     } else if (name == Configs::ACCOUNT_TYPES_SECTION_NAME) {
         table = new AccountTypesTable(&m_doc->GetAccountTypesDao());
     } else if (name == Configs::ACCOUNTS_SECTION_NAME) {
         table = new AccountsTable(&m_doc->GetAccountsDao());
-        wxArrayString choices;
-        auto provider = new AccountsGridCellAttrProvider(table);
-        m_doc->GetStringsByCol<struct owner, 1>(m_doc->GetOwnersDao(), choices);
-        provider->SetOwnerChoices(choices);
-        m_doc->GetStringsByCol<struct account_type, 1>(m_doc->GetAccountTypesDao(), choices);
-        provider->SetTypeChoices(choices);
-        attrProvider = provider;
     } else if (name == Configs::CHANNELS_SECTION_NAME) {
         table = new ChannelsTable(&m_doc->GetChannelsDao());
     }
     wxASSERT_MSG(table != nullptr, "Table not defined.");
-    if (attrProvider == nullptr) {
-        attrProvider = new ConfigsGridCellAttrProvider(table);
-    }
-    table->SetAttrProvider(attrProvider);
-    grid->SetTable(table, true, wxGrid::wxGridSelectionModes::wxGridSelectRows);
-    grid->AutoSizeAll();
-}
-
-void ConfigsPanel::SaveGridTable(ConfigsGrid *grid)
-{
-    grid->DumpTable([this](const wxString &name, const DaoBase *dao) -> void { m_doc->DoSave(name, *dao); });
+    return table;
 }

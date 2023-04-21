@@ -32,10 +32,18 @@ void DataDao::read(std::istream &is)
         try {
             if (m_buf[0] == '#') {
                 page = add_page(&m_data);
-                readPage(page);
+                if (page != NULL) {
+                    readPage(page);
+                } else {
+                    throw std::bad_alloc();
+                }
             } else if (page != NULL) {
                 auto item = add_item(page);
-                readItem(item);
+                if (item != NULL) {
+                    readItem(item);
+                } else {
+                    throw std::bad_alloc();
+                }
             } else {
                 throw ParseError("No page error", m_buf);
             }

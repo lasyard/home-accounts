@@ -4,8 +4,8 @@
 
 #include "CachedTable.h"
 
-CachedTable::CachedTable(size_t cols, const wxString colLabels[])
-    : wxGridTableBase(), m_colLabels(cols, colLabels), m_cache(nullptr)
+CachedTable::CachedTable(const wxString &name, size_t cols, const wxString colLabels[])
+    : wxGridTableBase(), m_name(name), m_colLabels(cols, colLabels), m_cache(nullptr)
 {
 }
 
@@ -21,6 +21,22 @@ void CachedTable::InitCache(int rows)
     m_cache = new wxVector<wxArrayString>(rows);
     for (auto i = 0; i < GetNumberRows(); ++i) {
         CacheRow(i);
+    }
+}
+
+void CachedTable::CacheRow(int row)
+{
+    (*m_cache)[row].Empty();
+    int cols = GetNumberCols();
+    for (auto col = 0; col < cols; ++col) {
+        (*m_cache)[row].Add(GetCellValue(row, col));
+    }
+}
+
+void CachedTable::CacheCol(int col)
+{
+    for (auto i = 0; i < GetNumberRows(); ++i) {
+        CacheCell(i, col);
     }
 }
 
@@ -120,15 +136,6 @@ bool CachedTable::DeleteRows(size_t pos, size_t numRows)
 bool CachedTable::CanHaveAttributes()
 {
     return true;
-}
-
-void CachedTable::CacheRow(int row)
-{
-    (*m_cache)[row].Empty();
-    int cols = GetNumberCols();
-    for (auto col = 0; col < cols; ++col) {
-        (*m_cache)[row].Add(GetCellValue(row, col));
-    }
 }
 
 void CachedTable::CacheCell(int row, int col)

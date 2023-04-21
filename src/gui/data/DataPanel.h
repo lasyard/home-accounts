@@ -1,6 +1,7 @@
 #ifndef _DATA_DATA_PANEL_H_
 #define _DATA_DATA_PANEL_H_
 
+#include <wx/datetime.h>
 #include <wx/string.h>
 
 #include "../HaPanel.h"
@@ -8,6 +9,7 @@
 #include "DataTable.h"
 
 class wxDatePickerCtrl;
+class wxDateEvent;
 
 class DataPanel : public HaPanel
 {
@@ -25,18 +27,23 @@ public:
     void OnUpdate() override;
     void SaveContents() override;
 
+    void OnDateChanged(wxDateEvent &event);
     void OnUpdateMenu(wxUpdateUIEvent &event);
     void OnMenu(wxCommandEvent &event);
     void OnMenuModify(wxCommandEvent &event);
 
-    void ShowData(const wxString &name);
+    void ShowData(const wxDateTime &date);
 
 private:
     static const wxString DATA_FILE_PREFIX;
 
     wxDatePickerCtrl *m_date;
     DataGrid *m_grid;
-    wxString m_sectionName;
+
+    static wxString GetSectionName(const wxDateTime &date)
+    {
+        return DATA_FILE_PREFIX + wxString::Format("/%04d/%02d", date.GetYear(), date.GetMonth() + 1);
+    }
 };
 
 #endif /* _DATA_DATA_PANEL_H_ */

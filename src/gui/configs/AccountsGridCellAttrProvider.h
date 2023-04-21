@@ -3,12 +3,10 @@
 
 #include "ConfigsGridCellAttrProvider.h"
 
-class CsvTableBase;
-
 class AccountsGridCellAttrProvider : public ConfigsGridCellAttrProvider
 {
 public:
-    AccountsGridCellAttrProvider(const CsvTableBase *table);
+    AccountsGridCellAttrProvider(const CachedTable *table);
     virtual ~AccountsGridCellAttrProvider();
 
     wxGridCellAttr *GetAttr(int row, int col, wxGridCellAttr::wxAttrKind kind) const override;

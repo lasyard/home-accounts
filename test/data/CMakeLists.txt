@@ -1,5 +1,7 @@
 include_directories(${CMAKE_SOURCE_DIR}/src/data)
 
+add_test(test_data ../test.cpp test_data.cpp)
+target_link_libraries(test_data PRIVATE ${LIB_DATA_NAME})
 add_test(test_defs ../test.cpp test_defs.cpp)
 add_test(test_list ../test.cpp test_list.cpp)
 target_link_libraries(test_list PRIVATE ${LIB_DATA_NAME})

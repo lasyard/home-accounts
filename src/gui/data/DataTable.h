@@ -20,25 +20,19 @@ public:
 
     static const size_t COL_NUM = 8;
 
-    DataTable(DataDao *dataDao);
+    DataTable(const wxString &name, DataDao *dataDao);
     virtual ~DataTable();
-
-    wxString GetRowLabelValue(int row) override;
 
     auto GetRowType(int row) const
     {
         return m_dataDao->getRowType(row);
     }
 
-    DataDao *GetDao()
-    {
-        return m_dataDao;
-    }
+    wxString GetRowLabelValue(int row) override;
 
-    const DataDao *GetDao() const
-    {
-        return m_dataDao;
-    }
+    DataDao *GetDao() override;
+    const DataDao *GetDao() const override;
+    ColumnType GetColumnType(int col) const override;
 
     void SetAccountChoices(wxArrayString &choices);
     void SetChannelChoices(wxArrayString &choices);

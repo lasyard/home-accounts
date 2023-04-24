@@ -22,13 +22,18 @@ void release_page(struct page *page)
     }
 }
 
+void add_item_to(struct page *page, struct item *item)
+{
+    item->page = page;
+    list_add(&page->items, &item->list);
+}
+
 struct item *add_item(struct page *page)
 {
     struct item *item = malloc(sizeof(struct item));
     if (item != NULL) {
         init_item(item);
-        item->page = page;
-        list_add(&page->items, &item->list);
+        add_item_to(page, item);
     }
     return item;
 }

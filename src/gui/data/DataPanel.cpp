@@ -1,17 +1,21 @@
+#include <fstream>
+
 #include <wx/datectrl.h>
 #include <wx/dateevt.h>
+#include <wx/filedlg.h>
 
 #include "../Defs.h"
 #include "../HaDocument.h"
 #include "DataPanel.h"
+#include "data/DataImportDao.h"
 
 IMPLEMENT_DYNAMIC_CLASS(DataPanel, HaPanel)
 IMPLEMENT_TM(DataPanel)
 
 BEGIN_EVENT_TABLE(DataPanel, HaPanel)
 EVT_DATE_CHANGED(ID_DATE_DATA, DataPanel::OnDateChanged)
-EVT_UPDATE_UI(ID_IMPORT, DataPanel::OnUpdateMenu)
-EVT_MENU(ID_IMPORT, DataPanel::OnMenuModify)
+EVT_UPDATE_UI(ID_IMPORT, DataPanel::OnUpdateImport)
+EVT_MENU(ID_IMPORT, DataPanel::OnImport)
 EVT_UPDATE_UI(ID_EXPORT, DataPanel::OnUpdateMenu)
 EVT_MENU(ID_EXPORT, DataPanel::OnMenu)
 EVT_UPDATE_UI(ID_INSERT, DataPanel::OnUpdateMenu)
@@ -64,6 +68,21 @@ void DataPanel::OnDateChanged(wxDateEvent &event)
     wxLogTrace(TM, "\"%s\" called. date = %s", __WXFUNCTION__, event.GetDate().FormatDate());
     m_doc->SaveGridTable(m_grid);
     ShowData(event.GetDate());
+}
+
+void DataPanel::OnUpdateImport([[maybe_unused]] wxUpdateUIEvent &event)
+{
+    event.Enable(true);
+}
+
+void DataPanel::OnImport([[maybe_unused]] wxCommandEvent &event)
+{
+    auto fileName = wxLoadFileSelector(_("CSV file"), "CSV file (*.csv)|*.csv|Text file(*.txt)|*.txt");
+    if (!fileName.IsEmpty()) {
+        DataImportDao dao;
+        std::ifstream is(fileName.ToStdString());
+        dao.read(is);
+    }
 }
 
 void DataPanel::OnUpdateMenu(wxUpdateUIEvent &event)

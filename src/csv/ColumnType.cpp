@@ -19,6 +19,8 @@ const char *nameOf(enum ColumnType type)
         return "DATE";
     case TIME:
         return "TIME";
+    case IGNORE:
+        break;
     }
-    return "UNKNOWN";
+    return "IGNORE";
 }

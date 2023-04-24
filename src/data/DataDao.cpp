@@ -261,6 +261,17 @@ void DataDao::createIndex()
     }
 }
 
+struct page *DataDao::findPage(date_t date)
+{
+    for (auto p = m_data.pages.first; p != NULL; p = p->next) {
+        struct page *page = get_page(p);
+        if (page->date == date) {
+            return page;
+        }
+    }
+    return nullptr;
+}
+
 void DataDao::updateBalance(int row, money_t balance)
 {
     for (auto i = std::next(m_index.begin(), row); i != m_index.end(); ++i) {

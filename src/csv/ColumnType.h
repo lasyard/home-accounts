@@ -10,6 +10,7 @@ enum ColumnType {
     MONEY,
     DATE,
     TIME,
+    IGNORE,
 };
 
 const char *nameOf(enum ColumnType type);

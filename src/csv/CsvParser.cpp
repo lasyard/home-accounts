@@ -71,6 +71,11 @@ const char *CsvParser::parseByType(const char *buf, ColumnType type, void *data)
         return parse_date(buf, (date_t *)data, m_sep, '-');
     case TIME:
         return parse_time(buf, (dtime_t *)data, m_sep);
+    case IGNORE:
+        const char *p;
+        for (p = buf; *p != m_sep && !is_line_end(*p); ++p) {
+        }
+        return p + 1;
     }
     return nullptr;
 }
@@ -94,6 +99,8 @@ char *CsvParser::outputByType(char *buf, ColumnType type, const void *data)
         return output_date(buf, *(const date_t *)data);
     case TIME:
         return output_time(buf, *(const dtime_t *)data);
+    case IGNORE:
+        break;
     }
     return buf;
 }

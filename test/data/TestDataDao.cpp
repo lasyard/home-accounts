@@ -16,9 +16,9 @@ TEST_CASE("read")
                       "11:01:01, 7.89, 1,3,,1,1\n";
     std::stringstream text;
     text << str;
-    DataDao dataDao;
-    dataDao.read(text);
-    struct data &data = dataDao.getData();
+    DataDao dao;
+    dao.read(text);
+    struct data &data = dao.getData();
     struct page *first = get_page(data.pages.first);
     CHECK(first->date == 2451545);
     struct item *item = get_item(first->items.first);
@@ -51,8 +51,8 @@ TEST_CASE("read")
 
 TEST_CASE("write")
 {
-    DataDao dataDao;
-    struct data &data = dataDao.getData();
+    DataDao dao;
+    struct data &data = dao.getData();
     struct page *page = add_page(&data);
     page->date = 2451545;
     struct item *item = add_item(page);
@@ -76,7 +76,7 @@ TEST_CASE("write")
     strcpy(p, "");
     item->desc = p;
     std::ostringstream out;
-    dataDao.write(out);
+    dao.write(out);
     CHECK(
         out.str() == "#2000-01-01\n"
                      "10:00:00,12.34,0,0,New Bee,1,0\n"

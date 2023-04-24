@@ -2,6 +2,7 @@ add_lib(${LIB_DATA_NAME}
     AccountsDao.cpp
     ConfigPodsTraits.cpp
     DataDao.cpp
+    DataImportDao.cpp
     TypeTraits.cpp
     data.c
     item.c

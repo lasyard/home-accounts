@@ -80,6 +80,10 @@ public:
         m_channelJoint = joint;
     }
 
+protected:
+    void createIndex();
+    struct page *findPage(date_t date);
+
 private:
     struct IndexItem {
         explicit IndexItem(struct page *ptr) : m_ptr(ptr), m_type(PAGE), m_seq(0), m_balance(0)
@@ -113,7 +117,6 @@ private:
         return nullptr;
     }
 
-    void createIndex();
     void updateBalance(int row, money_t balance);
     void readPage(struct page *page);
     void readItem(struct item *item);

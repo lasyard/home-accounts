@@ -28,6 +28,9 @@ public:
     void SaveContents() override;
 
     void OnDateChanged(wxDateEvent &event);
+
+    void OnUpdateImport(wxUpdateUIEvent &event);
+    void OnImport(wxCommandEvent &event);
     void OnUpdateMenu(wxUpdateUIEvent &event);
     void OnMenu(wxCommandEvent &event);
     void OnMenuModify(wxCommandEvent &event);

@@ -11,8 +11,13 @@ class ParseError : public std::runtime_error
 public:
     explicit ParseError(const char *msg, const char *buf) : std::runtime_error(msg), m_lineNo(-1)
     {
+#pragma GCC diagnostic push
+#if __GNUC__ >= 8
+#pragma GCC diagnostic ignored "-Wstringop-truncation"
+#endif
         strncpy(m_buf, buf, BUF_LEN - 1);
         m_buf[BUF_LEN - 1] = '\0';
+#pragma GCC diagnostic pop
     }
 
     const char *what() const noexcept override

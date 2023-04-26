@@ -26,11 +26,11 @@
 					<help></help>
 				</object>
 				<object class="wxMenuItem" name="wxID_SAVEAS">
-					<label>Save _As\tCtrl+Shift+S</label>
+					<label>Save As\tCtrl+Shift+S</label>
 					<help></help>
 				</object>
 				<object class="wxMenuItem" name="wxID_CLOSE">
-					<label>_Close\tCtrl+W</label>
+					<label>Close\tCtrl+W</label>
 					<help></help>
 				</object>
 				<object class="separator" />
@@ -51,11 +51,15 @@
 			<object class="wxMenu" name="editMenu">
 				<label>_Edit</label>
 				<object class="wxMenuItem" name="insert">
-					<label>_Insert\tEnter</label>
+					<label>Insert\tEnter</label>
 					<help></help>
 				</object>
 				<object class="wxMenuItem" name="wxID_DELETE">
-					<label>_Delete\tDelete</label>
+					<label>Delete\tDelete</label>
+					<help></help>
+				</object>
+				<object class="wxMenuItem" name="wxID_PASTE">
+					<label>Paste\tCtrl+V</label>
 					<help></help>
 				</object>
 				<object class="separator" />

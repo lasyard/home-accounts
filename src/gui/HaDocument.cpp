@@ -22,14 +22,14 @@ END_EVENT_TABLE()
 const char *const HaDocument::IV = "HomeAccounts";
 
 HaDocument::HaDocument()
-    : wxDocument(),
-      m_doc(new SectionFile()),
-      m_pass(),
-      m_dataDao(),
-      m_ownersDao(),
-      m_accountTypesDao(),
-      m_accountsDao(),
-      m_channelsDao()
+    : wxDocument()
+    , m_doc(new SectionFile())
+    , m_pass()
+    , m_dataDao()
+    , m_ownersDao()
+    , m_accountTypesDao()
+    , m_accountsDao()
+    , m_channelsDao()
 {
     wxLog::AddTraceMask(TM);
 }

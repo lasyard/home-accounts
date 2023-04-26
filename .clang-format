@@ -19,4 +19,5 @@ AllowShortBlocksOnASingleLine: false
 ---
 Language: Cpp
 AccessModifierOffset: -4
-ConstructorInitializerAllOnOneLineOrOnePerLine: true
+PackConstructorInitializers: CurrentLine
+BreakConstructorInitializers: BeforeComma

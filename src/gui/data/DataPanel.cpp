@@ -1,5 +1,6 @@
 #include <fstream>
 
+#include <wx/clipbrd.h>
 #include <wx/datectrl.h>
 #include <wx/dateevt.h>
 #include <wx/filedlg.h>
@@ -22,6 +23,8 @@ EVT_UPDATE_UI(ID_INSERT, DataPanel::OnUpdateMenu)
 EVT_MENU(ID_INSERT, DataPanel::OnMenuModify)
 EVT_UPDATE_UI(wxID_DELETE, DataPanel::OnUpdateMenu)
 EVT_MENU(wxID_DELETE, DataPanel::OnMenuModify)
+EVT_UPDATE_UI(wxID_PASTE, DataPanel::OnUpdatePaste)
+EVT_MENU(wxID_PASTE, DataPanel::OnPaste)
 END_EVENT_TABLE()
 
 const wxString DataPanel::LABEL = _("Transactions");
@@ -83,6 +86,24 @@ void DataPanel::OnImport([[maybe_unused]] wxCommandEvent &event)
         std::ifstream is(fileName.ToStdString());
         dao.read(is);
     }
+}
+
+void DataPanel::OnUpdatePaste([[maybe_unused]] wxUpdateUIEvent &event)
+{
+    event.Enable(true);
+}
+
+void DataPanel::OnPaste([[maybe_unused]] wxCommandEvent &event)
+{
+    wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
+    auto cb = wxClipboard::Get();
+    cb->Open();
+    if (cb->IsSupported(wxDF_UNICODETEXT)) {
+        wxTextDataObject text;
+        cb->GetData(text);
+        wxLogTrace(TM, text.GetText());
+    }
+    cb->Close();
 }
 
 void DataPanel::OnUpdateMenu(wxUpdateUIEvent &event)

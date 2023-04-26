@@ -4,11 +4,7 @@
 
 IMPLEMENT_TM(HaArtProvider)
 
-wxBitmap HaArtProvider::CreateBitmap(
-    const wxArtID &id,
-    const wxArtClient &client,
-    const wxSize &size
-)
+wxBitmap HaArtProvider::CreateBitmap(const wxArtID &id, const wxArtClient &client, const wxSize &size)
 {
     wxLogTrace(TM, "\"%s\" called to create image \"%s\".", __WXFUNCTION__, id);
     if (id == "logo") {

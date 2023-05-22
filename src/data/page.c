@@ -70,3 +70,17 @@ bool page_is_empty(const struct page *page)
     }
     return true;
 }
+
+void calc_page_total(const struct page *page, money_t *income, money_t *outlay)
+{
+    for (struct list_item *p = page->items.first; p != NULL; p = p->next) {
+        struct item *item = get_item(p);
+        if (item->valid) {
+            if (item->amount > 0) {
+                *outlay += item->amount;
+            } else if (item->amount < 0) {
+                *income -= item->amount;
+            }
+        }
+    }
+}

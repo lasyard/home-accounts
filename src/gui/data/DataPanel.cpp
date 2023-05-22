@@ -69,7 +69,7 @@ void DataPanel::SaveContents()
 void DataPanel::OnDateChanged(wxDateEvent &event)
 {
     wxLogTrace(TM, "\"%s\" called. date = %s", __WXFUNCTION__, event.GetDate().FormatDate());
-    m_doc->SaveGridTable(m_grid);
+    SaveContents();
     ShowData(event.GetDate());
 }
 

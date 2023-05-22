@@ -25,7 +25,10 @@ public:
 
     auto GetRowType(int row) const
     {
-        return m_dataDao->getRowType(row);
+        if (row < m_dataDao->getNumberRows()) {
+            return m_dataDao->getRowType(row);
+        }
+        return DataDao::IndexType::OTHER;
     }
 
     wxString GetRowLabelValue(int row) override;
@@ -53,7 +56,8 @@ private:
         return true;
     }
 
-    void ReCacheBalances(int row);
+    void CacheBalances(int row);
+    void CacheTotal();
 };
 
 #endif /* _DATA_DATA_TABLE_H_ */

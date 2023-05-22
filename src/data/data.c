@@ -49,6 +49,17 @@ struct page *ins_page(struct data *data, struct page *page)
     return page;
 }
 
+struct page *find_page(struct data *data, date_t date)
+{
+    for (struct list_item *p = data->pages.first; p != NULL; p = p->next) {
+        struct page *page = get_page(p);
+        if (page->date == date) {
+            return page;
+        }
+    }
+    return NULL;
+}
+
 bool data_is_empty(const struct data *data)
 {
     for (struct list_item *p = data->pages.first; p != NULL; p = p->next) {
@@ -79,4 +90,12 @@ bool fill_missing_pages(struct data *data, date_t min, date_t max)
         }
     }
     return added;
+}
+
+void calc_data_total(const struct data *data, money_t *income, money_t *outlay)
+{
+    for (struct list_item *p = data->pages.first; p != NULL; p = p->next) {
+        struct page *page = get_page(p);
+        calc_page_total(page, income, outlay);
+    }
 }

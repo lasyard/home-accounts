@@ -7,7 +7,13 @@
 #include "csv/str.h"
 #include "page.h"
 
-DataDao::DataDao() : CsvDao<struct item, struct data>(), m_index(), m_accountJoint(), m_channelJoint()
+DataDao::DataDao()
+    : CsvDao<struct item, struct data>()
+    , m_index()
+    , m_accountJoint()
+    , m_channelJoint()
+    , m_totalIncome(0)
+    , m_totalOutlay(0)
 {
     init_data(&m_data);
     m_index.push_back(IndexItem(static_cast<money_t>(0)));
@@ -53,6 +59,7 @@ void DataDao::read(std::istream &is)
         }
     }
     createIndex();
+    updateTotal();
 }
 
 void DataDao::write(std::ostream &os) const
@@ -160,6 +167,16 @@ std::string DataDao::getValidString(int row)
     return std::string();
 }
 
+std::string DataDao::getTotalIncomeString()
+{
+    return m_parser->toStringByType(MONEY, &m_totalIncome);
+}
+
+std::string DataDao::getTotalOutlayString()
+{
+    return m_parser->toStringByType(MONEY, &m_totalOutlay);
+}
+
 void DataDao::setMoney(int row, const std::string &value, bool negative)
 {
     auto &index = m_index[row];
@@ -171,6 +188,7 @@ void DataDao::setMoney(int row, const std::string &value, bool negative)
         m_parser->parseStringByType(value, MONEY, &amount);
         item->amount = negative ? -amount : amount;
         updateBalance(row, balance);
+        updateTotal();
     }
 }
 
@@ -207,6 +225,7 @@ void DataDao::setValid(int row, const std::string &value)
         money_t balance = index.m_balance + valid_amount(item);
         item->valid = ((value == "1") ? true : false);
         updateBalance(row, balance);
+        updateTotal();
     }
 }
 
@@ -227,6 +246,7 @@ bool DataDao::insertItemAfter(size_t pos)
             ++m_index[p].m_seq;
         }
         updateBalance(pos + 2, balance);
+        updateTotal();
         return true;
     }
     return false;
@@ -263,13 +283,7 @@ void DataDao::createIndex()
 
 struct page *DataDao::findPage(date_t date)
 {
-    for (auto p = m_data.pages.first; p != NULL; p = p->next) {
-        struct page *page = get_page(p);
-        if (page->date == date) {
-            return page;
-        }
-    }
-    return nullptr;
+    return find_page(&m_data, date);
 }
 
 void DataDao::updateBalance(int row, money_t balance)
@@ -281,6 +295,13 @@ void DataDao::updateBalance(int row, money_t balance)
             i->m_balance = balance;
         }
     }
+}
+
+void DataDao::updateTotal()
+{
+    m_totalIncome = 0;
+    m_totalOutlay = 0;
+    calc_data_total(&m_data, &m_totalIncome, &m_totalOutlay);
 }
 
 void DataDao::readPage(struct page *page)

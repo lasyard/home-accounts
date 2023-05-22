@@ -17,10 +17,11 @@ const wxString DataTable::COL_LABELS[] = {
 };
 
 DataTable::DataTable(const wxString &name, DataDao *dataDao)
-    : CachedTable(name, COL_NUM, COL_LABELS), m_dataDao(dataDao)
+    : CachedTable(name, COL_NUM, COL_LABELS)
+    , m_dataDao(dataDao)
 {
     // Do not call `this->GetNumberRows()`, cache is not inited.
-    InitCache(dataDao->getNumberRows());
+    InitCache(dataDao->getNumberRows() + 1);
     SetAttrProvider(new DataGridCellAttrProvider(this));
 }
 
@@ -30,7 +31,12 @@ DataTable::~DataTable()
 
 wxString DataTable::GetRowLabelValue(int row)
 {
-    return m_dataDao->getRowLabel(row);
+    if (row < m_dataDao->getNumberRows()) {
+        return m_dataDao->getRowLabel(row);
+    } else if (row == m_dataDao->getNumberRows()) {
+        return _("Total");
+    }
+    return "";
 }
 
 DataDao *DataTable::GetDao()
@@ -60,8 +66,8 @@ void DataTable::SetChannelChoices(wxArrayString &choices)
 
 wxString DataTable::GetCellValue(int row, int col)
 {
-    auto rowType = m_dataDao->getRowType(row);
-    if (rowType == DataDao::IndexType::ITEM) {
+    switch (GetRowType(row)) {
+    case DataDao::IndexType::ITEM:
         switch (col) {
         case TIME_COL:
             return m_dataDao->getTimeString(row);
@@ -82,10 +88,24 @@ wxString DataTable::GetCellValue(int row, int col)
         default:
             break;
         }
-    } else if (rowType == DataDao::IndexType::INITIAL && col == BALANCE_COL) {
-        return m_dataDao->getBalanceString(row);
-    } else if (rowType == DataDao::IndexType::PAGE && col == 0) {
-        return m_dataDao->getPageTitleString(row);
+        break;
+    case DataDao::IndexType::INITIAL:
+        if (col == BALANCE_COL) {
+            return m_dataDao->getBalanceString(row);
+        }
+        break;
+    case DataDao::IndexType::PAGE:
+        if (col == 0) {
+            return m_dataDao->getPageTitleString(row);
+        }
+        break;
+    case DataDao::IndexType::OTHER:
+        if (col == INCOME_COL) {
+            return m_dataDao->getTotalIncomeString();
+        } else if (col == OUTLAY_COL) {
+            return m_dataDao->getTotalOutlayString();
+        }
+        break;
     }
     return wxEmptyString;
 }
@@ -99,14 +119,16 @@ void DataTable::SetCellValue(int row, int col, const wxString &value)
         // Update outlay, too
         CacheCell(row, OUTLAY_COL);
         // Balances after this row are changed.
-        ReCacheBalances(row);
+        CacheBalances(row);
+        CacheTotal();
         break;
     case OUTLAY_COL:
         m_dataDao->setMoney(row, v, false);
         // Update income, too
         CacheCell(row, INCOME_COL);
         // Balances after this row are changed.
-        ReCacheBalances(row);
+        CacheBalances(row);
+        CacheTotal();
         break;
     case ACCOUNT_COL:
         m_dataDao->setAccount(row, v);
@@ -119,7 +141,8 @@ void DataTable::SetCellValue(int row, int col, const wxString &value)
         break;
     case VALID_COL:
         m_dataDao->setValid(row, v);
-        ReCacheBalances(row);
+        CacheBalances(row);
+        CacheTotal();
         break;
     default:
         break;
@@ -137,10 +160,16 @@ bool DataTable::AppendRow()
     return false;
 }
 
-void DataTable::ReCacheBalances(int row)
+void DataTable::CacheBalances(int row)
 {
     for (int i = row; i < GetNumberRows(); ++i) {
         CacheCell(i, BALANCE_COL);
     }
     RefreshAndAutoSizeGridColumn(BALANCE_COL);
+}
+
+void DataTable::CacheTotal()
+{
+    CacheCell(m_dataDao->getNumberRows(), INCOME_COL);
+    CacheCell(m_dataDao->getNumberRows(), OUTLAY_COL);
 }

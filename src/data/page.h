@@ -29,6 +29,8 @@ struct item *insert_item(struct item *pos);
 
 bool page_is_empty(const struct page *page);
 
+void calc_page_total(const struct page *page, money_t *income, money_t *outlay);
+
 #ifdef __cplusplus
 }
 #endif

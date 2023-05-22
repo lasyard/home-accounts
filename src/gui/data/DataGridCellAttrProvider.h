@@ -32,6 +32,7 @@ private:
     mutable wxGridCellAttr *m_channelAttr;
     mutable wxGridCellAttr *m_readOnlyMoneyAttr;
     mutable wxGridCellAttr *m_readOnlyMoneyRedAttr;
+    mutable wxGridCellAttr *m_readOnlyMoneyBoldAttr;
 
     wxGridCellAttr *GetBalanceAttr(int row) const;
 };

@@ -22,6 +22,9 @@ DataGridCellAttrProvider::DataGridCellAttrProvider(const DataTable *table) : HaG
 
     m_readOnlyMoneyRedAttr = m_readOnlyMoneyAttr->Clone();
     m_readOnlyMoneyRedAttr->SetTextColour(*wxRED);
+
+    m_readOnlyMoneyBoldAttr = m_readOnlyMoneyAttr->Clone();
+    m_readOnlyMoneyBoldAttr->SetFont(m_monoFont.Bold());
 }
 
 DataGridCellAttrProvider::~DataGridCellAttrProvider()
@@ -33,14 +36,15 @@ DataGridCellAttrProvider::~DataGridCellAttrProvider()
     m_channelAttr->DecRef();
     m_readOnlyMoneyAttr->DecRef();
     m_readOnlyMoneyRedAttr->DecRef();
+    m_readOnlyMoneyBoldAttr->DecRef();
 }
 
 wxGridCellAttr *DataGridCellAttrProvider::GetAttr(int row, int col, wxGridCellAttr::wxAttrKind kind) const
 {
     // Seems `kind` is always `Any`.
     if (kind == wxGridCellAttr::wxAttrKind::Any || kind == wxGridCellAttr::wxAttrKind::Cell) {
-        auto rowType = m_table->GetRowType(row);
-        if (rowType == DataDao::IndexType::ITEM) {
+        switch (m_table->GetRowType(row)) {
+        case DataDao::IndexType::ITEM:
             switch (col) {
             case DataTable::TIME_COL:
                 m_timeAttr->IncRef();
@@ -66,14 +70,16 @@ wxGridCellAttr *DataGridCellAttrProvider::GetAttr(int row, int col, wxGridCellAt
             default:
                 break;
             }
-        } else if (rowType == DataDao::IndexType::INITIAL) {
+            break;
+        case DataDao::IndexType::INITIAL:
             if (col == DataTable::BALANCE_COL) {
                 return GetBalanceAttr(row);
             } else {
                 m_readOnlyAttr->IncRef();
                 return m_readOnlyAttr;
             }
-        } else if (rowType == DataDao::IndexType::PAGE) {
+            break;
+        case DataDao::IndexType::PAGE:
             // Do not return colSpan > 1 for col > 0, or there will be index out of bond problem.
             if (col == 0) {
                 m_pageTitleAttr->IncRef();
@@ -82,6 +88,16 @@ wxGridCellAttr *DataGridCellAttrProvider::GetAttr(int row, int col, wxGridCellAt
                 m_readOnlyAttr->IncRef();
                 return m_readOnlyAttr;
             }
+            break;
+        case DataDao::IndexType::OTHER:
+            if (col == DataTable::INCOME_COL || col == DataTable::OUTLAY_COL) {
+                m_readOnlyMoneyBoldAttr->IncRef();
+                return m_readOnlyMoneyBoldAttr;
+            } else {
+                m_readOnlyAttr->IncRef();
+                return m_readOnlyAttr;
+            }
+            break;
         }
     }
     m_defaultAttr->IncRef();

@@ -20,6 +20,7 @@ public:
         INITIAL,
         PAGE,
         ITEM,
+        OTHER,
     };
 
     void read(std::istream &is) override;
@@ -40,6 +41,9 @@ public:
     std::string getDescString(int row);
     std::string getBalanceString(int row);
     std::string getValidString(int row);
+
+    std::string getTotalIncomeString();
+    std::string getTotalOutlayString();
 
     void setMoney(int row, const std::string &value, bool negative);
     void setAccount(int row, const std::string &value);
@@ -91,7 +95,10 @@ private:
         }
 
         explicit IndexItem(struct item *ptr, int seq, money_t balance)
-            : m_ptr(ptr), m_type(ITEM), m_seq(seq), m_balance(balance)
+            : m_ptr(ptr)
+            , m_type(ITEM)
+            , m_seq(seq)
+            , m_balance(balance)
         {
         }
 
@@ -108,6 +115,8 @@ private:
     std::vector<struct IndexItem> m_index;
     Joint<const char *, int32_t> m_accountJoint;
     Joint<const char *, int32_t> m_channelJoint;
+    money_t m_totalIncome;
+    money_t m_totalOutlay;
 
     struct item *safeGetItem(int row)
     {
@@ -118,6 +127,7 @@ private:
     }
 
     void updateBalance(int row, money_t balance);
+    void updateTotal();
     void readPage(struct page *page);
     void readItem(struct item *item);
     void writePage(std::ostream &os, const struct page *page) const;

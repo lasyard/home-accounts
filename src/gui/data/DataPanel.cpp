@@ -76,12 +76,15 @@ void DataPanel::OnImport([[maybe_unused]] wxCommandEvent &event)
 {
     // In case of failure, the data will be restored.
     SaveGridTable(m_grid);
-    auto r = m_grid->ImportFile(Description());
-    if (r == 1) {
-        m_doc->Modify(true);
-    } else if (r == -1) {
+    auto desc = Description();
+    try {
+        if (m_grid->ImportFile(desc)) {
+            m_doc->Modify(true);
+        }
+    } catch (const ParseError &e) {
         // Restore the table data.
-        LoadGridTable(m_grid);
+        m_doc->TryLoad(*m_grid->GetCachedTable()->GetDao());
+        wxLogError("Error occurred when importing \"%s\": \"%s\"", desc, e.what());
     }
 }
 

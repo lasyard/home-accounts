@@ -25,14 +25,6 @@ HaPanel::~HaPanel()
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
 }
 
-void HaPanel::LoadGridTable(HaGrid *grid)
-{
-    auto table = grid->GetCachedTable();
-    m_doc->TryLoad(*table->GetDao());
-    grid->SetTable(table, false);
-    grid->RefreshContent();
-}
-
 void HaPanel::SaveGridTable(HaGrid *grid)
 {
     grid->SaveEditControlValue();

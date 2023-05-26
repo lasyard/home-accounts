@@ -90,12 +90,15 @@ void ConfigsPanel::OnImport([[maybe_unused]] wxCommandEvent &event)
         auto grid = GetGrid(sel);
         // In case of failure, the data will be restored.
         SaveGridTable(grid);
-        auto r = grid->ImportFile(Description(sel));
-        if (r == 1) {
-            m_doc->Modify(true);
-        } else if (r == -1) {
+        auto desc = Description(sel);
+        try {
+            if (grid->ImportFile(desc)) {
+                m_doc->Modify(true);
+            }
+        } catch (const ParseError &e) {
             // Restore the table data.
-            LoadGridTable(grid);
+            m_doc->TryLoad(*grid->GetCachedTable()->GetDao());
+            wxLogError("Error occurred when importing \"%s\": \"%s\"", desc, e.what());
         }
     }
 }
@@ -140,7 +143,7 @@ void ConfigsPanel::AddConfig(const wxString &label, CachedTable *table)
         grid->Bind(wxEVT_GRID_CELL_CHANGED, &HaDocument::OnChange, m_doc);
         grid->SetAttributes();
         // Don't need to detor the table mannually.
-        grid->SetTable(table, true);
+        grid->SetTable(table, true, wxGrid::wxGridSelectRows);
         m_grids[name] = grid;
         m_book->AddPage(grid, label);
     }

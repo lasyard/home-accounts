@@ -54,11 +54,10 @@ public:
      * @brief Import a file into table.
      *
      * @param what describe the content
-     * @return 1 successfully imported
-     * @return 0 not imported
-     * @return -1 file reading error, the content of table may need to restore
+     * @return true successfully imported
+     * @return false not imported
      */
-    int ImportFile(const wxString &what);
+    bool ImportFile(const wxString &what);
 
     void ExportTable(const wxString &what);
 

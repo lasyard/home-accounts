@@ -69,7 +69,7 @@ void HaGrid::SetAttributes()
     EndBatch();
 }
 
-int HaGrid::ImportFile(const wxString &what)
+bool HaGrid::ImportFile(const wxString &what)
 {
     auto answer = wxMessageBox(_("Overwrite the existing ") + what + _("?"), _("Confirm"), wxYES_NO | wxCENTER);
     if (answer == wxYES) {
@@ -78,19 +78,16 @@ int HaGrid::ImportFile(const wxString &what)
             std::ifstream is(fileName.ToStdString());
             auto table = GetCachedTable();
             if (table != nullptr) {
-                try {
-                    table->GetDao()->read(is);
-                    SetTable(table, true);
-                    RefreshContent();
-                    return 1;
-                } catch (const std::exception &e) {
-                    wxLogError("Error occurred when importing file \"%s\": \"%s\"", fileName, e.what());
-                    return -1;
-                }
+                table->GetDao()->read(is);
+                // newTable and table share the same dao.
+                auto newTable = table->Clone();
+                SetTable(newTable, true, GetSelectionMode());
+                RefreshContent();
+                return true;
             }
         }
     }
-    return 0;
+    return false;
 }
 
 void HaGrid::ExportTable(const wxString &what)

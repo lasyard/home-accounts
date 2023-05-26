@@ -3,67 +3,30 @@
 
 #include <functional>
 
-#include "TypeTraits.h"
-
-template <typename DT, typename ST> class Joint
+template <typename T, typename S> class Joint
 {
-    typedef std::function<DT(ST)> LookupCallback;
-    typedef std::function<ST(DT)> RevLookupCallback;
-
 public:
-    Joint() : m_lookup(nullptr), m_revLookup(nullptr)
-    {
-    }
-
-    Joint(LookupCallback lookup, RevLookupCallback revLookup) : m_lookup(lookup), m_revLookup(revLookup)
-    {
-    }
-
-    Joint(const Joint &obj) : m_lookup(obj.m_lookup), m_revLookup(obj.m_revLookup)
-    {
-    }
-
-    Joint(const Joint &&obj) : m_lookup(std::move(obj.m_lookup)), m_revLookup(std::move(obj.m_revLookup))
-    {
-    }
-
     virtual ~Joint()
     {
     }
 
-    const Joint &operator=(const Joint &obj)
-    {
-        m_lookup = obj.m_lookup;
-        m_revLookup = obj.m_revLookup;
-        return *this;
-    }
+    /**
+     * @brief Get target value by source value.
+     *
+     * @param s the source value
+     * @return the target value
+     */
+    virtual T lookup(S s) const = 0;
 
-    const Joint &operator=(const Joint &&obj)
-    {
-        m_lookup = std::move(obj.m_lookup);
-        m_revLookup = std::move(obj.m_revLookup);
-        return *this;
-    }
+    /**
+     * @brief Get source value by target value.
+     *
+     * @param t the target value
+     * @return the source value
+     */
+    virtual S revLookup(T t) const = 0;
 
-    DT lookup(ST s)
-    {
-        if (m_lookup != nullptr) {
-            return m_lookup(s);
-        }
-        return TypeTraits<DT>::zero();
-    }
-
-    ST revLookup(DT d)
-    {
-        if (m_revLookup != nullptr) {
-            return m_revLookup(d);
-        }
-        return TypeTraits<ST>::zero();
-    }
-
-private:
-    LookupCallback m_lookup;
-    RevLookupCallback m_revLookup;
+    virtual void forEach(std::function<bool(const T *)> callback) const = 0;
 };
 
 #endif /* _DATA_JOINT_H_ */

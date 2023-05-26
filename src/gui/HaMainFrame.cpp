@@ -6,9 +6,10 @@
 #include <wx/wx.h>
 #include <wx/xrc/xmlres.h>
 
+#include "HaMainFrame.h"
+
 #include "Defs.h"
 #include "HaApp.h"
-#include "HaMainFrame.h"
 
 IMPLEMENT_DYNAMIC_CLASS(HaMainFrame, wxDocParentFrame)
 IMPLEMENT_TM(HaMainFrame)

@@ -7,10 +7,11 @@
 #include <wx/treebook.h>
 #include <wx/treectrl.h>
 
+#include "RawPanel.h"
+
 #include "../Defs.h"
 #include "../HaApp.h"
 #include "../HaDocument.h"
-#include "RawPanel.h"
 
 IMPLEMENT_DYNAMIC_CLASS(RawPanel, HaPanel)
 IMPLEMENT_TM(RawPanel)

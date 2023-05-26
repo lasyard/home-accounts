@@ -7,7 +7,7 @@
 #include "CsvDao.h"
 #include "Joint.h"
 #include "TypeGetter.h"
-#include "TypeTraits.h"
+
 #include "csv/CsvExceptions.h"
 #include "csv/money.h"
 #include "csv/str.h"
@@ -19,25 +19,21 @@
  */
 template <typename I> class CsvVecDao : public CsvDao<I, std::vector<I>>
 {
-    typedef CsvRowTraits<I> Traits;
-    typedef std::vector<I> T;
-    typedef CsvDao<I, T> Csv;
-
-    template <int COL> using ColType = typename TypeGetter<Traits::types[COL]>::Type;
-    template <int COL> using ColTypeTraits = TypeTraits<ColType<COL>>;
+    using D = Dao<std::vector<I>>;
+    using CD = CsvDao<I, std::vector<I>>;
 
 public:
-    CsvVecDao() : Csv()
+    CsvVecDao(const std::string &name = "") : CD(name)
     {
     }
 
     virtual ~CsvVecDao()
     {
-        for (auto &item : Dao<T>::m_data) {
-            for (int i = 0; i < Traits::cols; ++i) {
-                if (Traits::types[i] == CSTR) {
+        for (auto &item : D::m_data) {
+            for (int i = 0; i < CD::Traits::cols; ++i) {
+                if (CD::Traits::types[i] == CSTR) {
                     // Important
-                    char *p = *(char **)Traits::getPtr(&item, i);
+                    char *p = *(char **)CD::Traits::getPtr(&item, i);
                     if (p != nullptr) {
                         free(p);
                     }
@@ -46,13 +42,58 @@ public:
         }
     }
 
+    template <int T_COL, int S_COL> class VecJoint : public Joint<ColType<I, T_COL>, ColType<I, S_COL>>
+    {
+    public:
+        VecJoint(CsvVecDao<I> *dao) : m_dao(dao)
+        {
+        }
+
+        VecJoint(const VecJoint &obj) : m_dao(obj.m_dao)
+        {
+        }
+
+        virtual ~VecJoint()
+        {
+        }
+
+        const VecJoint &operator=(const VecJoint &obj)
+        {
+            m_dao = obj.m_dao;
+            return *this;
+        }
+
+        ColType<I, T_COL> lookup(ColType<I, S_COL> s) const override
+        {
+            return m_dao->getColByCol<T_COL, S_COL>(s);
+        }
+
+        ColType<I, S_COL> revLookup(ColType<I, T_COL> d) const override
+        {
+            return m_dao->getColByCol<S_COL, T_COL>(d);
+        }
+
+        void forEach(std::function<bool(const ColType<I, T_COL> *)> callback) const override
+        {
+            auto &data = m_dao->m_data;
+            for (auto &item : data) {
+                if (!callback((const ColType<I, T_COL> *)CD::Traits::getPtr(&item, T_COL))) {
+                    break;
+                }
+            }
+        }
+
+    private:
+        CsvVecDao<I> *m_dao;
+    };
+
     void read(std::istream &is) override
     {
-        auto &data = Dao<T>::m_data;
-        auto &buf = Csv::m_buf;
+        auto &data = D::m_data;
+        auto &buf = CD::m_buf;
         int lineNo = 0;
         data.clear();
-        while (is.getline(buf, Csv::MAX_LINE_LENGTH)) {
+        while (is.getline(buf, CD::MAX_LINE_LENGTH)) {
             lineNo++;
             if (is_line_end(buf[0])) {
                 continue;
@@ -60,7 +101,7 @@ public:
             try {
                 I item;
                 initItem(&item);
-                Csv::m_parser->parseLine(buf, &item);
+                CD::m_parser->parseLine(buf, &item);
                 data.push_back(std::move(item));
             } catch (ParseError &e) {
                 e.setLineNo(lineNo);
@@ -71,17 +112,17 @@ public:
 
     void write(std::ostream &os) const override
     {
-        auto &data = Dao<T>::m_data;
-        auto &buf = Csv::m_buf;
+        auto &data = D::m_data;
+        auto &buf = CD::m_buf;
         for (auto item : data) {
-            Csv::m_parser->outputLine(buf, &item);
+            CD::m_parser->outputLine(buf, &item);
             os << buf << std::endl;
         }
     }
 
     int getNumberRows() const override
     {
-        return Dao<T>::m_data.size();
+        return D::m_data.size();
     }
 
     std::string getRowLabel(int row)
@@ -91,19 +132,19 @@ public:
 
     virtual std::string getString(int row, int col)
     {
-        auto &data = Dao<T>::m_data;
-        return Csv::m_parser->toStringOfColumn(col, Traits::getPtr(&data[row], col));
+        auto &data = D::m_data;
+        return CD::m_parser->toStringOfColumn(col, CD::Traits::getPtr(&data[row], col));
     }
 
     virtual void setString(int row, int col, const std::string &value)
     {
-        auto &data = Dao<T>::m_data;
-        Csv::m_parser->parseStringOfColumn(value, col, Traits::getPtr(&data[row], col));
+        auto &data = D::m_data;
+        CD::m_parser->parseStringOfColumn(value, col, CD::Traits::getPtr(&data[row], col));
     }
 
     bool insert(size_t pos)
     {
-        auto &data = Dao<T>::m_data;
+        auto &data = D::m_data;
         I item;
         initItem(&item);
         data.insert(std::next(data.begin(), pos), std::move(item));
@@ -112,7 +153,7 @@ public:
 
     bool append()
     {
-        auto &data = Dao<T>::m_data;
+        auto &data = D::m_data;
         I item;
         initItem(&item);
         data.push_back(std::move(item));
@@ -121,16 +162,16 @@ public:
 
     bool remove(size_t pos)
     {
-        auto &data = Dao<T>::m_data;
+        auto &data = D::m_data;
         data.erase(std::next(data.begin(), pos));
         return true;
     }
 
-    template <int COL> I *getByCol(ColType<COL> v)
+    template <int COL> I *getByCol(ColType<I, COL> v)
     {
-        auto &data = Dao<T>::m_data;
+        auto &data = D::m_data;
         for (auto &item : data) {
-            if (ColTypeTraits<COL>::compare(*(ColType<COL> *)Traits::getPtr(&item, COL), v) == 0) {
+            if (ColTraits<I, COL>::compare(*(ColType<I, COL> *)CD::Traits::getPtr(&item, COL), v) == 0) {
                 return &item;
             }
         }
@@ -140,48 +181,45 @@ public:
     /**
      * @brief Get the value of a col.
      *
-     * @tparam D_COL destination col
+     * @tparam T_COL target col
      * @tparam S_COL source col
-     * @param id value of source col
-     * @return ColType<D_COL> value of destination col
+     * @param v value of source col
+     * @return value of target col
      */
-    template <int D_COL, int S_COL> ColType<D_COL> getColByCol(ColType<S_COL> v)
+    template <int T_COL, int S_COL> ColType<I, T_COL> getColByCol(ColType<I, S_COL> v)
     {
         auto item = getByCol<S_COL>(v);
-        return (item != nullptr) ? *(ColType<D_COL> *)Traits::getPtr(item, D_COL) : ColTypeTraits<D_COL>::zero();
+        return (item != nullptr) ? *(ColType<I, T_COL> *)CD::Traits::getPtr(item, T_COL) : ColTraits<I, T_COL>::zero();
     }
 
     /**
      * @brief Get the Joint object of this dao.
      *
-     * @tparam D_COL index of target column
+     * @tparam T_COL index of target column
      * @tparam S_COL index of source column
-     * @return Joint  the object
+     * @return pointer to the object, released by the caller
      */
-    template <int D_COL, int S_COL> Joint<ColType<D_COL>, ColType<S_COL>> getJoint()
+    template <int T_COL, int S_COL> auto *getJoint()
     {
-        return Joint<ColType<D_COL>, ColType<S_COL>>(
-            [this](ColType<S_COL> v) -> auto{ return this->getColByCol<D_COL, S_COL>(v); },
-            [this](ColType<D_COL> v) -> auto{ return this->getColByCol<S_COL, D_COL>(v); }
-        );
+        return new VecJoint<T_COL, S_COL>(this);
     }
 
 protected:
     virtual void initItemField(I *item, int i) const
     {
-        switch (Traits::types[i]) {
+        switch (CD::Traits::types[i]) {
         case INT32:
-            *(int32_t *)Traits::getPtr(item, i) = 0;
+            *(int32_t *)CD::Traits::getPtr(item, i) = 0;
             break;
         case INT64:
-            *(int64_t *)Traits::getPtr(item, i) = 0;
+            *(int64_t *)CD::Traits::getPtr(item, i) = 0;
             break;
         case MONEY:
-            *(money_t *)Traits::getPtr(item, i) = 0;
+            *(money_t *)CD::Traits::getPtr(item, i) = 0;
             break;
         case CSTR:
             // Important, or it will be freed.
-            *(const char **)Traits::getPtr(item, i) = nullptr;
+            *(const char **)CD::Traits::getPtr(item, i) = nullptr;
             break;
         default:
             break;
@@ -191,7 +229,7 @@ protected:
 private:
     void initItem(I *item) const
     {
-        for (int i = 0; i < Traits::cols; ++i) {
+        for (int i = 0; i < CD::Traits::cols; ++i) {
             initItemField(item, i);
         }
     }

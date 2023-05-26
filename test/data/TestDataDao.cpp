@@ -4,8 +4,9 @@
 #include <sstream>
 
 #include "DataDao.h"
-#include "data/item.h"
-#include "data/page.h"
+
+#include "item.h"
+#include "page.h"
 
 TEST_CASE("read")
 {

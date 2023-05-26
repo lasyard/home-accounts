@@ -11,10 +11,9 @@ class DaoBase;
 class CachedTable : public wxGridTableBase
 {
 public:
-    CachedTable(const wxString &name, size_t cols, const wxString colLabels[]);
+    CachedTable(size_t cols, const wxString colLabels[]);
     virtual ~CachedTable();
 
-    void InitCache(int rows);
     void CacheRow(int row);
     void CacheCol(int col);
 
@@ -32,19 +31,19 @@ public:
 
     bool CanHaveAttributes() override;
 
-    const wxString &GetName() const
-    {
-        return m_name;
-    }
+    const std::string &GetDaoName() const;
 
     virtual DaoBase *GetDao() = 0;
     virtual const DaoBase *GetDao() const = 0;
     virtual ColumnType GetColumnType(int col) const = 0;
 
+    virtual CachedTable *Clone() const = 0;
+
 protected:
-    wxString m_name;
     wxArrayString m_colLabels;
     wxVector<wxArrayString> *m_cache;
+
+    void CreateCache(int rows);
 
     void CacheCell(int row, int col);
 

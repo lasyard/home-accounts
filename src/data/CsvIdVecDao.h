@@ -11,16 +11,14 @@
  */
 template <typename I, int ID_COL = 0> class CsvIdVecDao : public CsvVecDao<I>
 {
-    typedef CsvRowTraits<I> Traits;
-    typedef std::vector<I> T;
-    typedef CsvDao<I, T> Csv;
+    using D = Dao<std::vector<I>>;
+    using CD = CsvDao<I, std::vector<I>>;
+    using CVD = CsvVecDao<I>;
 
-    template <int COL> using ColType = typename TypeGetter<Traits::types[COL]>::Type;
-
-    typedef ColType<ID_COL> ID_TYPE;
+    using ID_TYPE = ColType<I, ID_COL>;
 
 public:
-    CsvIdVecDao() : CsvVecDao<I>()
+    CsvIdVecDao(const std::string &name = "") : CVD(name)
     {
     }
 
@@ -32,19 +30,19 @@ protected:
     void initItemField(I *item, int i) const override
     {
         if (i == ID_COL) {
-            *(ID_TYPE *)Traits::getPtr(item, i) = nextValue();
+            *(ID_TYPE *)CD::Traits::getPtr(item, i) = nextValue();
         } else {
-            CsvVecDao<I>::initItemField(item, i);
+            CVD::initItemField(item, i);
         }
     }
 
 private:
     ID_TYPE nextValue() const
     {
-        auto &data = Dao<T>::m_data;
+        auto &data = D::m_data;
         ID_TYPE m = (ID_TYPE)0;
         for (auto d : data) {
-            ID_TYPE v = *(ID_TYPE *)Traits::getPtr(&d, ID_COL);
+            ID_TYPE v = *(ID_TYPE *)CD::Traits::getPtr(&d, ID_COL);
             if (v > m) {
                 m = v;
             }

@@ -1,8 +1,16 @@
+#include <fstream>
+
 #include <wx/artprov.h>
 #include <wx/dc.h>
+#include <wx/filedlg.h>
+#include <wx/msgdlg.h>
 
-#include "Defs.h"
 #include "HaGrid.h"
+
+#include "CachedTable.h"
+#include "Defs.h"
+
+#include "data/Dao.h"
 
 IMPLEMENT_DYNAMIC_CLASS(HaGrid, wxGrid)
 IMPLEMENT_TM(HaGrid)
@@ -59,6 +67,47 @@ void HaGrid::SetAttributes()
     SetColLabelSize(logo.GetHeight() + 2);
     DisableDragColMove();
     EndBatch();
+}
+
+int HaGrid::ImportFile(const wxString &what)
+{
+    auto answer = wxMessageBox(_("Overwrite the existing ") + what + _("?"), _("Confirm"), wxYES_NO | wxCENTER);
+    if (answer == wxYES) {
+        auto fileName = wxLoadFileSelector(_("CSV file"), "CSV file (*.csv)|*.csv|Text file(*.txt)|*.txt");
+        if (!fileName.IsEmpty()) {
+            std::ifstream is(fileName.ToStdString());
+            auto table = GetCachedTable();
+            if (table != nullptr) {
+                try {
+                    table->GetDao()->read(is);
+                    SetTable(table, true);
+                    RefreshContent();
+                    return 1;
+                } catch (const std::exception &e) {
+                    wxLogError("Error occurred when importing file \"%s\": \"%s\"", fileName, e.what());
+                    return -1;
+                }
+            }
+        }
+    }
+    return 0;
+}
+
+void HaGrid::ExportTable(const wxString &what)
+{
+    auto table = GetCachedTable();
+    wxString nameHint = table->GetDaoName();
+    nameHint.Replace('/', '_');
+    auto realName = wxSaveFileSelector(what, "CSV File (*.csv)|*.csv", nameHint + ".csv");
+    if (!realName.IsEmpty()) {
+        std::ofstream os(realName.ToStdString());
+        table->GetDao()->write(os);
+    }
+}
+
+CachedTable *HaGrid::GetCachedTable()
+{
+    return dynamic_cast<CachedTable *>(GetTable());
 }
 
 void HaGrid::CheckEventHandler()

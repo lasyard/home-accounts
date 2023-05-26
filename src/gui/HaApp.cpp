@@ -3,6 +3,7 @@
 #include <wx/xrc/xmlres.h>
 
 #include "HaApp.h"
+
 #include "HaArtProvider.h"
 #include "HaDocument.h"
 #include "HaMainFrame.h"

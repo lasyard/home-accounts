@@ -1,11 +1,13 @@
 #include <wx/listbook.h>
 #include <wx/notebook.h>
 
+#include "HaView.h"
+
 #include "Defs.h"
 #include "HaApp.h"
 #include "HaDocument.h"
 #include "HaMainFrame.h"
-#include "HaView.h"
+
 #include "configs/ConfigsPanel.h"
 #include "data/DataPanel.h"
 #include "raw/RawPanel.h"

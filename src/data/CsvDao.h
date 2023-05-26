@@ -5,14 +5,16 @@
 
 #include "CsvRowTraits.h"
 #include "Dao.h"
+
 #include "csv/CsvParser.h"
 
 template <typename I, typename T> class CsvDao : public Dao<T>
 {
-    typedef CsvRowTraits<I> Traits;
+protected:
+    using Traits = CsvRowTraits<I>;
 
 public:
-    CsvDao() : Dao<T>()
+    CsvDao(const std::string &name = "") : Dao<T>(name)
     {
         m_parser = new CsvParser(Traits::cols, Traits::types, Traits::getPtr);
     }

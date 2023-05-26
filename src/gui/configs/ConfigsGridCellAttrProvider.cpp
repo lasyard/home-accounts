@@ -1,8 +1,10 @@
 #include "ConfigsGridCellAttrProvider.h"
+
 #include "../CsvTable.h"
 
 ConfigsGridCellAttrProvider::ConfigsGridCellAttrProvider(const CachedTable *table)
-    : HaGridCellAttrProvider(), m_table(table)
+    : HaGridCellAttrProvider()
+    , m_table(table)
 {
 }
 

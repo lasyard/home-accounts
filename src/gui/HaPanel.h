@@ -8,6 +8,8 @@
 #include "Common.h"
 
 class HaDocument;
+class HaGrid;
+class CachedTable;
 
 class HaPanel : public wxPanel
 {
@@ -27,6 +29,9 @@ public:
     {
         book->AddPage(new Panel(book, doc), Panel::LABEL, false);
     }
+
+    void LoadGridTable(HaGrid *grid);
+    void SaveGridTable(HaGrid *grid);
 
     virtual void OnEnter();
 

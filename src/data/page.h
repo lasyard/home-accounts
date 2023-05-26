@@ -1,8 +1,10 @@
 #ifndef _DATA_PAGE_H_
 #define _DATA_PAGE_H_
 
-#include "csv/date_time.h"
 #include "list.h"
+
+#include "csv/date_time.h"
+#include "csv/money.h"
 
 struct page {
     struct list_item list;

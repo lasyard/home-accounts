@@ -2,6 +2,7 @@
 #define _DATA_CONFIG_PODS_TRAITS_H_
 
 #include "CsvRowTraits.h"
+
 #include "config_pods.h"
 
 // owner

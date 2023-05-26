@@ -1,6 +1,7 @@
 #include "doctest/doctest.h"
 
 #include "data.h"
+
 #include "page.h"
 
 static void check_page_date(struct data *data, date_t min, date_t max)

@@ -1,4 +1,5 @@
 #include "ConfigsGrid.h"
+
 #include "../Defs.h"
 
 IMPLEMENT_DYNAMIC_CLASS(ConfigsGrid, HaGrid)

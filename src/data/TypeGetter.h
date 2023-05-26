@@ -1,7 +1,10 @@
 #ifndef _DATA_TYPE_GETTER_H_
 #define _DATA_TYPE_GETTER_H_
 
-#include <sys/types.h>
+#include <cstdint>
+
+#include "CsvRowTraits.h"
+#include "TypeTraits.h"
 
 #include "csv/ColumnType.h"
 
@@ -26,5 +29,8 @@ template <> class TypeGetter<INT64>
 public:
     typedef int64_t Type;
 };
+
+template <typename I, int COL> using ColType = typename TypeGetter<CsvRowTraits<I>::types[COL]>::Type;
+template <typename I, int COL> using ColTraits = TypeTraits<ColType<I, COL>>;
 
 #endif /* _DATA_TYPE_GETTER_H_ */

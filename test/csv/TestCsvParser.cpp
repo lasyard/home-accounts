@@ -2,11 +2,11 @@
 
 #include <cstring>
 
+#include "CsvParser.h"
+
 #include "int.h"
 #include "money.h"
 #include "str.h"
-
-#include "CsvParser.h"
 
 struct record {
     struct string str1;

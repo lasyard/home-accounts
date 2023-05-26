@@ -4,6 +4,7 @@
 #include <functional>
 
 #include "CachedTable.h"
+
 #include "data/CsvVecDao.h"
 
 /**
@@ -16,10 +17,9 @@ template <typename I> class CsvTable : public CachedTable
     typedef CsvRowTraits<I> Traits;
 
 public:
-    CsvTable(const wxString &name, size_t cols, const wxString *const colLabels, CsvVecDao<I> *dao)
-        : CachedTable(name, cols, colLabels), m_dao(dao)
+    CsvTable(size_t cols, const wxString *const colLabels, CsvVecDao<I> *dao) : CachedTable(cols, colLabels), m_dao(dao)
     {
-        InitCache(dao->getNumberRows());
+        CreateCache(dao->getNumberRows());
     }
 
     virtual ~CsvTable()
@@ -46,7 +46,7 @@ public:
         return m_dao;
     }
 
-private:
+protected:
     CsvVecDao<I> *m_dao;
 
     wxString GetCellValue(int row, int col) override

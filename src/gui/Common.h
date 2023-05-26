@@ -4,6 +4,8 @@
 #include <wx/log.h>
 #include <wx/xrc/xmlres.h>
 
+#include "data/Joint.h"
+
 #define DECLARE_TM()      static const wxChar *const TM;
 #define IMPLEMENT_TM(cls) const wxChar *const cls::TM = _(#cls);
 
@@ -23,6 +25,8 @@ bool DelegateEvent(wxWindow *win, wxEvent &event);
 void ReadAllText(wxString &text, const wxString &fileName);
 
 void ShowTextBox(const wxString &title, const wxString &text);
+
+void GetChoices(wxArrayString &choices, const Joint<const char *, int32_t> *joint);
 
 }; // namespace Common
 

@@ -1,8 +1,8 @@
 #include <stdlib.h>
 
-#include "data.h"
-#include "item.h"
 #include "page.h"
+
+#include "item.h"
 
 void init_page(struct page *page)
 {

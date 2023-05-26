@@ -1,6 +1,9 @@
 #include "ItemWrap.h"
+
 #include "csv/CsvParser.h"
 #include "csv/str.h"
+
+#include "data/CxxDefs.h"
 
 ItemWrap::ItemWrap() : date(0), item(nullptr), m_parser(nullptr)
 {
@@ -16,7 +19,7 @@ ItemWrap::ItemWrap() : date(0), item(nullptr), m_parser(nullptr)
 
 ItemWrap::~ItemWrap()
 {
-    safeReleaseParser();
+    safe_delete(m_parser);
 }
 
 void *ItemWrap::getPtr(void *data, int i)
@@ -59,7 +62,7 @@ void ItemWrap::parseHeader(const char *line)
         ++cols;
         ++p; // Skip the sep
     }
-    safeReleaseParser();
+    safe_delete(m_parser);
 }
 
 void ItemWrap::parseData(const char *line)
@@ -68,11 +71,4 @@ void ItemWrap::parseData(const char *line)
         m_parser = new CsvParser(cols, types, getPtr);
     }
     m_parser->parseLine(line, this);
-}
-
-void ItemWrap::safeReleaseParser()
-{
-    if (m_parser != nullptr) {
-        delete m_parser;
-    }
 }

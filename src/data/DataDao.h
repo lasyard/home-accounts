@@ -7,8 +7,10 @@
 #include <vector>
 
 #include "CsvDao.h"
-#include "Joint.h"
+
 #include "data.h"
+
+template <typename T, typename S> class Joint;
 
 class DataDao : public CsvDao<struct item, struct data>
 {
@@ -22,6 +24,11 @@ public:
         ITEM,
         OTHER,
     };
+
+    void setName(const std::string &name)
+    {
+        m_name = name;
+    }
 
     void read(std::istream &is) override;
     void write(std::ostream &os) const override;
@@ -57,7 +64,20 @@ public:
 
     bool isRedBalance(int row) const;
 
-    bool isEmpty() const
+    void setAccountJoint(Joint<const char *, int32_t> *joint);
+    void setChannelJoint(Joint<const char *, int32_t> *joint);
+
+    const Joint<const char *, int32_t> *getAccountJoint() const
+    {
+        return m_accountJoint;
+    }
+
+    const Joint<const char *, int32_t> *getChannelJoint() const
+    {
+        return m_channelJoint;
+    }
+
+    bool isEmpty() const override
     {
         return data_is_empty(&m_data);
     }
@@ -72,16 +92,6 @@ public:
     IndexType getRowType(int row) const
     {
         return m_index[row].m_type;
-    }
-
-    void setAccountJoint(Joint<const char *, int32_t> joint)
-    {
-        m_accountJoint = joint;
-    }
-
-    void setChannelJoint(Joint<const char *, int32_t> joint)
-    {
-        m_channelJoint = joint;
     }
 
 protected:
@@ -113,8 +123,8 @@ private:
     };
 
     std::vector<struct IndexItem> m_index;
-    Joint<const char *, int32_t> m_accountJoint;
-    Joint<const char *, int32_t> m_channelJoint;
+    Joint<const char *, int32_t> *m_accountJoint;
+    Joint<const char *, int32_t> *m_channelJoint;
     money_t m_totalIncome;
     money_t m_totalOutlay;
 

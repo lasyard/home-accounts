@@ -4,8 +4,9 @@
 #include <wx/grid.h>
 #include <wx/pen.h>
 
-#include "CachedTable.h"
 #include "Common.h"
+
+class CachedTable;
 
 class HaGrid : public wxGrid
 {
@@ -49,10 +50,19 @@ public:
      */
     void SetAttributes();
 
-    CachedTable *GetCachedTable()
-    {
-        return dynamic_cast<CachedTable *>(GetTable());
-    }
+    /**
+     * @brief Import a file into table.
+     *
+     * @param what describe the content
+     * @return 1 successfully imported
+     * @return 0 not imported
+     * @return -1 file reading error, the content of table may need to restore
+     */
+    int ImportFile(const wxString &what);
+
+    void ExportTable(const wxString &what);
+
+    CachedTable *GetCachedTable();
 
 private:
     static const int ROW_HEIGHT = 25;

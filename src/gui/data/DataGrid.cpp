@@ -1,4 +1,5 @@
 #include "DataGrid.h"
+
 #include "../Defs.h"
 
 IMPLEMENT_DYNAMIC_CLASS(DataGrid, HaGrid);

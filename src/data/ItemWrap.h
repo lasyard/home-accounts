@@ -27,8 +27,6 @@ private:
     int map[ItemTraits::cols];
 
     CsvParser *m_parser;
-
-    void safeReleaseParser();
 };
 
 #endif /* _DATA_ITEM_WRAP_H_ */

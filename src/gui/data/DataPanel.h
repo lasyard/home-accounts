@@ -5,11 +5,11 @@
 #include <wx/string.h>
 
 #include "../HaPanel.h"
-#include "DataGrid.h"
-#include "DataTable.h"
 
-class wxDatePickerCtrl;
 class wxDateEvent;
+class wxDatePickerCtrl;
+
+class DataGrid;
 
 class DataPanel : public HaPanel
 {
@@ -31,6 +31,8 @@ public:
 
     void OnUpdateImport(wxUpdateUIEvent &event);
     void OnImport(wxCommandEvent &event);
+    void OnUpdateExport(wxUpdateUIEvent &event);
+    void OnExport(wxCommandEvent &event);
     void OnUpdatePaste(wxUpdateUIEvent &event);
     void OnPaste(wxCommandEvent &event);
     void OnUpdateMenu(wxUpdateUIEvent &event);
@@ -44,6 +46,8 @@ private:
 
     wxDatePickerCtrl *m_date;
     DataGrid *m_grid;
+
+    wxString Description();
 
     static wxString GetSectionName(const wxDateTime &date)
     {

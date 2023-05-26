@@ -4,24 +4,19 @@
 
 #include "CachedTable.h"
 
-CachedTable::CachedTable(const wxString &name, size_t cols, const wxString colLabels[])
-    : wxGridTableBase(), m_name(name), m_colLabels(cols, colLabels), m_cache(nullptr)
+#include "data/CxxDefs.h"
+#include "data/Dao.h"
+
+CachedTable::CachedTable(size_t cols, const wxString colLabels[])
+    : wxGridTableBase()
+    , m_colLabels(cols, colLabels)
+    , m_cache(nullptr)
 {
 }
 
 CachedTable::~CachedTable()
 {
-    if (m_cache != nullptr) {
-        delete m_cache;
-    }
-}
-
-void CachedTable::InitCache(int rows)
-{
-    m_cache = new wxVector<wxArrayString>(rows);
-    for (auto i = 0; i < GetNumberRows(); ++i) {
-        CacheRow(i);
-    }
+    safe_delete(m_cache);
 }
 
 void CachedTable::CacheRow(int row)
@@ -136,6 +131,20 @@ bool CachedTable::DeleteRows(size_t pos, size_t numRows)
 bool CachedTable::CanHaveAttributes()
 {
     return true;
+}
+
+const std::string &CachedTable::GetDaoName() const
+{
+    return GetDao()->getName();
+}
+
+void CachedTable::CreateCache(int rows)
+{
+    safe_delete(m_cache);
+    m_cache = new wxVector<wxArrayString>(rows);
+    for (auto i = 0; i < GetNumberRows(); ++i) {
+        CacheRow(i);
+    }
 }
 
 void CachedTable::CacheCell(int row, int col)

@@ -1,9 +1,10 @@
 #ifndef _DATA_ITEM_H_
 #define _DATA_ITEM_H_
 
+#include "list.h"
+
 #include "csv/date_time.h"
 #include "csv/money.h"
-#include "list.h"
 
 struct page;
 

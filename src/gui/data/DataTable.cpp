@@ -16,12 +16,9 @@ const wxString DataTable::COL_LABELS[] = {
     _("Valid"),
 };
 
-DataTable::DataTable(const wxString &name, DataDao *dataDao)
-    : CachedTable(name, COL_NUM, COL_LABELS)
-    , m_dataDao(dataDao)
+DataTable::DataTable(DataDao *dataDao) : CachedTable(COL_NUM, COL_LABELS), m_dataDao(dataDao)
 {
-    // Do not call `this->GetNumberRows()`, cache is not inited.
-    InitCache(dataDao->getNumberRows() + 1);
+    CreateCache(m_dataDao->getNumberRows() + 1);
     SetAttrProvider(new DataGridCellAttrProvider(this));
 }
 
@@ -54,13 +51,12 @@ ColumnType DataTable::GetColumnType(int col) const
     return CsvRowTraits<struct item>::types[col];
 }
 
-void DataTable::SetAccountChoices(wxArrayString &choices)
+void DataTable::UpdateChoicesFromJoints()
 {
+    wxArrayString choices;
+    Common::GetChoices(choices, m_dataDao->getAccountJoint());
     static_cast<DataGridCellAttrProvider *>(GetAttrProvider())->SetAccountChoices(choices);
-}
-
-void DataTable::SetChannelChoices(wxArrayString &choices)
-{
+    Common::GetChoices(choices, m_dataDao->getChannelJoint());
     static_cast<DataGridCellAttrProvider *>(GetAttrProvider())->SetChannelChoices(choices);
 }
 

@@ -3,11 +3,13 @@
 #include <wx/msgdlg.h>
 #include <wx/textdlg.h>
 
-#include "ChangePassDialog.h"
-#include "Configs.h"
-#include "Defs.h"
 #include "HaDocument.h"
-#include "HaGrid.h"
+
+#include "CachedTable.h"
+#include "ChangePassDialog.h"
+#include "Defs.h"
+#include "HaView.h"
+
 #include "file/SectionFile.h"
 #include "file/sqlite3/Sqlite3File.h"
 
@@ -21,15 +23,20 @@ END_EVENT_TABLE()
 
 const char *const HaDocument::IV = "HomeAccounts";
 
+const std::string HaDocument::OWNERS_SECTION_NAME = "configs/owners";
+const std::string HaDocument::ACCOUNT_TYPES_SECTION_NAME = "configs/account_types";
+const std::string HaDocument::ACCOUNTS_SECTION_NAME = "configs/accounts";
+const std::string HaDocument::CHANNELS_SECTION_NAME = "configs/channels";
+
 HaDocument::HaDocument()
     : wxDocument()
     , m_doc(new SectionFile())
     , m_pass()
     , m_dataDao()
-    , m_ownersDao()
-    , m_accountTypesDao()
-    , m_accountsDao()
-    , m_channelsDao()
+    , m_ownersDao(OWNERS_SECTION_NAME)
+    , m_accountTypesDao(ACCOUNT_TYPES_SECTION_NAME)
+    , m_accountsDao(ACCOUNTS_SECTION_NAME)
+    , m_channelsDao(CHANNELS_SECTION_NAME)
 {
     wxLog::AddTraceMask(TM);
 }
@@ -69,12 +76,12 @@ bool HaDocument::DoOpenDocument(const wxString &fileName)
         try {
             auto store = new Sqlite3File(fileName.ToStdString(), m_pass.ToStdString(), IV);
             m_doc->attach(store);
-            TryLoad(Configs::OWNERS_SECTION_NAME, m_ownersDao);
-            TryLoad(Configs::ACCOUNT_TYPES_SECTION_NAME, m_accountTypesDao);
-            TryLoad(Configs::ACCOUNTS_SECTION_NAME, m_accountsDao);
-            m_accountsDao.setOwerJoint(m_ownersDao.getJoint<1, 0>());
+            TryLoad(m_ownersDao);
+            TryLoad(m_accountTypesDao);
+            TryLoad(m_accountsDao);
+            m_accountsDao.setOwnerJoint(m_ownersDao.getJoint<1, 0>());
             m_accountsDao.setTypeJoint(m_accountTypesDao.getJoint<1, 0>());
-            TryLoad(Configs::CHANNELS_SECTION_NAME, m_channelsDao);
+            TryLoad(m_channelsDao);
             m_dataDao.setAccountJoint(m_accountsDao.getJoint<1, 0>());
             m_dataDao.setChannelJoint(m_channelsDao.getJoint<1, 0>());
             return true;
@@ -117,19 +124,9 @@ void HaDocument::GetSection(const wxString &name, wxString &content) const
     content = m_doc->get(name.ToStdString());
 }
 
-void HaDocument::GetSection(const wxString &name, std::string &content) const
-{
-    content = m_doc->get(name.ToStdString());
-}
-
 void HaDocument::SaveSection(const wxString &name, const wxString &content)
 {
-    SaveSection(name, content.ToStdString());
-}
-
-void HaDocument::SaveSection(const wxString &name, const std::string &content)
-{
-    m_doc->put(name.ToStdString(), content);
+    m_doc->put(name.ToStdString(), content.ToStdString());
 }
 
 void HaDocument::DeleteSection(const wxString &name)
@@ -163,14 +160,33 @@ void HaDocument::OnChangePass([[maybe_unused]] wxCommandEvent &event)
     }
 }
 
-CachedTable *HaDocument::SaveGridTable(HaGrid *grid)
+void HaDocument::TryLoad(DaoBase &dao)
 {
-    grid->SaveEditControlValue();
-    auto table = grid->GetCachedTable();
-    if (table != nullptr) {
-        std::ostringstream os;
-        table->GetDao()->write(os);
-        SaveSection(table->GetName(), os.str());
+    auto &name = dao.getName();
+    try {
+        dao.readString(m_doc->get(name));
+    } catch (SectionNotFound &e) {
+        wxLogStatus(e.what());
+        dao.readString("");
+    } catch (std::exception &e) {
+        wxLogError(e.what());
     }
-    return table;
+}
+
+void HaDocument::DoSave(DaoBase &dao)
+{
+    auto &name = dao.getName();
+    if (dao.isEmpty()) {
+        m_doc->remove(name);
+    } else {
+        std::ostringstream os;
+        dao.write(os);
+        m_doc->put(name, os.str());
+    }
+}
+
+HaView *HaDocument::GetView() const
+{
+    auto view = this->GetFirstView();
+    return view != nullptr ? static_cast<HaView *>(view) : nullptr;
 }

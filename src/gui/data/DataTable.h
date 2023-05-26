@@ -2,6 +2,7 @@
 #define _DATA_DATA_TABLE_H_
 
 #include "../CachedTable.h"
+
 #include "data/DataDao.h"
 
 class DataTable : public CachedTable
@@ -20,7 +21,7 @@ public:
 
     static const size_t COL_NUM = 8;
 
-    DataTable(const wxString &name, DataDao *dataDao);
+    DataTable(DataDao *dataDao);
     virtual ~DataTable();
 
     auto GetRowType(int row) const
@@ -37,8 +38,12 @@ public:
     const DataDao *GetDao() const override;
     ColumnType GetColumnType(int col) const override;
 
-    void SetAccountChoices(wxArrayString &choices);
-    void SetChannelChoices(wxArrayString &choices);
+    void UpdateChoicesFromJoints();
+
+    DataTable *Clone() const override
+    {
+        return new DataTable(m_dataDao);
+    }
 
 private:
     DataDao *m_dataDao;

@@ -1,8 +1,7 @@
 #include "AccountsTable.h"
-#include "../Configs.h"
+
 #include "AccountsGridCellAttrProvider.h"
 
-const wxString AccountsTable::LABEL = _("Accounts");
 const wxString AccountsTable::COL_LABELS[] = {
     _("ID"),
     _("Name"),
@@ -12,8 +11,7 @@ const wxString AccountsTable::COL_LABELS[] = {
     _("Balance"),
 };
 
-AccountsTable::AccountsTable(AccountsDao *dao)
-    : CsvTable(Configs::ACCOUNTS_SECTION_NAME, sizeof(COL_LABELS) / sizeof(wxString), COL_LABELS, dao)
+AccountsTable::AccountsTable(AccountsDao *dao) : CsvTable(sizeof(COL_LABELS) / sizeof(wxString), COL_LABELS, dao)
 {
     SetAttrProvider(new AccountsGridCellAttrProvider(this));
 }
@@ -22,12 +20,12 @@ AccountsTable::~AccountsTable()
 {
 }
 
-void AccountsTable::SetOwnerChoices(wxArrayString &choices)
+void AccountsTable::UpdateChoicesFromJoints()
 {
+    auto dao = static_cast<AccountsDao *>(m_dao);
+    wxArrayString choices;
+    Common::GetChoices(choices, dao->getOwnerJoint());
     static_cast<AccountsGridCellAttrProvider *>(GetAttrProvider())->SetOwnerChoices(choices);
-}
-
-void AccountsTable::SetTypeChoices(wxArrayString &choices)
-{
+    Common::GetChoices(choices, dao->getTypeJoint());
     static_cast<AccountsGridCellAttrProvider *>(GetAttrProvider())->SetTypeChoices(choices);
 }

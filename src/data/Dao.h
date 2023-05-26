@@ -9,7 +9,7 @@
 class DaoBase
 {
 protected:
-    DaoBase()
+    DaoBase(const std::string &name = "") : m_name(name)
     {
     }
 
@@ -25,7 +25,13 @@ public:
 
     virtual void read(std::istream &is) = 0;
     virtual void write(std::ostream &os) const = 0;
+
     virtual int getNumberRows() const = 0;
+
+    virtual bool isEmpty() const
+    {
+        return false;
+    }
 
     virtual void readString(const std::string &str)
     {
@@ -39,12 +45,20 @@ public:
         write(os);
         str = os.str();
     }
+
+    const std::string &getName() const
+    {
+        return m_name;
+    }
+
+protected:
+    std::string m_name;
 };
 
 template <typename T> class Dao : public DaoBase
 {
-public:
-    Dao() : DaoBase()
+protected:
+    Dao(const std::string &name = "") : DaoBase(name)
     {
     }
 
@@ -52,6 +66,7 @@ public:
     {
     }
 
+public:
     T &getData()
     {
         return m_data;

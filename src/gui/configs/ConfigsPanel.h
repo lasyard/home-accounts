@@ -5,9 +5,10 @@
 
 #include "../Common.h"
 #include "../HaPanel.h"
-#include "ConfigsGrid.h"
 
 class wxListbook;
+
+class ConfigsGrid;
 
 class ConfigsPanel : public HaPanel
 {
@@ -18,6 +19,10 @@ public:
     DECLARE_TM()
 
     static const wxString LABEL;
+    static const wxString OWNERS_LABEL;
+    static const wxString CHANNELS_LABEL;
+    static const wxString ACCOUNT_TYPES_LABEL;
+    static const wxString ACCOUNTS_LABEL;
 
     ConfigsPanel(wxWindow *parent = nullptr, HaDocument *doc = nullptr);
     virtual ~ConfigsPanel();
@@ -39,20 +44,13 @@ private:
     wxListbook *m_book;
     std::map<wxString, ConfigsGrid *> m_grids;
 
-    void UpdateConfig(const wxString &label, const wxString &name);
+    void AddConfig(const wxString &label, CachedTable *table);
     void UpdateGrid(ConfigsGrid *grid);
 
-    CachedTable *CreateTable(const wxString &name);
+    ConfigsGrid *GetCurrentGrid() const;
+    ConfigsGrid *GetGrid(int sel) const;
 
-    ConfigsGrid *GetCurrentGrid() const
-    {
-        return static_cast<ConfigsGrid *>(m_book->GetCurrentPage());
-    }
-
-    ConfigsGrid *GetGrid(int sel) const
-    {
-        return static_cast<ConfigsGrid *>(m_book->GetPage(sel));
-    }
+    wxString Description(int sel);
 };
 
 #endif /* _CONFIGS_CONFIGS_PANEL_H_ */

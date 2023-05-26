@@ -1,4 +1,5 @@
 #include "AccountsGridCellAttrProvider.h"
+
 #include "data/ConfigPodsTraits.h"
 
 AccountsGridCellAttrProvider::AccountsGridCellAttrProvider(const CachedTable *table)

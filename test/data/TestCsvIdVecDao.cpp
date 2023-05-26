@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include "CsvIdVecDao.h"
+
 #include "csv/money.h"
 
 struct item {

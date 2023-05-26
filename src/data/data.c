@@ -1,6 +1,7 @@
 #include <stdlib.h>
 
 #include "data.h"
+
 #include "page.h"
 
 void init_data(struct data *data)

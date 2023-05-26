@@ -7,7 +7,9 @@
 
 #include "../Defs.h"
 #include "../HaDocument.h"
+#include "DataGrid.h"
 #include "DataPanel.h"
+#include "DataTable.h"
 #include "data/DataImportDao.h"
 
 IMPLEMENT_DYNAMIC_CLASS(DataPanel, HaPanel)
@@ -17,8 +19,8 @@ BEGIN_EVENT_TABLE(DataPanel, HaPanel)
 EVT_DATE_CHANGED(ID_DATE_DATA, DataPanel::OnDateChanged)
 EVT_UPDATE_UI(ID_IMPORT, DataPanel::OnUpdateImport)
 EVT_MENU(ID_IMPORT, DataPanel::OnImport)
-EVT_UPDATE_UI(ID_EXPORT, DataPanel::OnUpdateMenu)
-EVT_MENU(ID_EXPORT, DataPanel::OnMenu)
+EVT_UPDATE_UI(ID_EXPORT, DataPanel::OnUpdateExport)
+EVT_MENU(ID_EXPORT, DataPanel::OnExport)
 EVT_UPDATE_UI(ID_INSERT, DataPanel::OnUpdateMenu)
 EVT_MENU(ID_INSERT, DataPanel::OnMenuModify)
 EVT_UPDATE_UI(wxID_DELETE, DataPanel::OnUpdateMenu)
@@ -55,15 +57,7 @@ void DataPanel::OnUpdate()
 void DataPanel::SaveContents()
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
-    m_grid->SaveEditControlValue();
-    auto table = m_grid->GetCachedTable();
-    if (table != nullptr) {
-        if (m_doc->GetDataDao().isEmpty()) {
-            m_doc->DeleteSection(table->GetName());
-        } else {
-            m_doc->SaveGridTable(m_grid);
-        }
-    }
+    SaveGridTable(m_grid);
 }
 
 void DataPanel::OnDateChanged(wxDateEvent &event)
@@ -73,19 +67,33 @@ void DataPanel::OnDateChanged(wxDateEvent &event)
     ShowData(event.GetDate());
 }
 
-void DataPanel::OnUpdateImport([[maybe_unused]] wxUpdateUIEvent &event)
+void DataPanel::OnUpdateImport(wxUpdateUIEvent &event)
 {
     event.Enable(true);
 }
 
 void DataPanel::OnImport([[maybe_unused]] wxCommandEvent &event)
 {
-    auto fileName = wxLoadFileSelector(_("CSV file"), "CSV file (*.csv)|*.csv|Text file(*.txt)|*.txt");
-    if (!fileName.IsEmpty()) {
-        DataImportDao dao;
-        std::ifstream is(fileName.ToStdString());
-        dao.read(is);
+    // In case of failure, the data will be restored.
+    SaveGridTable(m_grid);
+    auto r = m_grid->ImportFile(Description());
+    if (r == 1) {
+        m_doc->Modify(true);
+    } else if (r == -1) {
+        // Restore the table data.
+        LoadGridTable(m_grid);
     }
+}
+
+void DataPanel::OnUpdateExport(wxUpdateUIEvent &event)
+{
+    event.Enable(!m_grid->GetCachedTable()->GetDao()->isEmpty());
+}
+
+void DataPanel::OnExport([[maybe_unused]] wxCommandEvent &event)
+{
+    SaveGridTable(m_grid);
+    m_grid->ExportTable(Description());
 }
 
 void DataPanel::OnUpdatePaste([[maybe_unused]] wxUpdateUIEvent &event)
@@ -125,29 +133,30 @@ void DataPanel::OnMenuModify(wxCommandEvent &event)
 
 void DataPanel::ShowData(const wxDateTime &date)
 {
-    auto &dao = m_doc->GetDataDao();
     auto name = GetSectionName(date);
-    m_doc->TryLoad(name, dao);
+    auto &dao = m_doc->GetDataDao();
+    dao.setName(name.ToStdString());
+    m_doc->TryLoad(dao);
     // TODO: Get the correct balance.
     dao.setInitialBalance(0);
     wxDateTime lastDay = date.GetLastMonthDay();
     int year = lastDay.GetYear();
     int month = lastDay.GetMonth() + 1;
     dao.fillMissingPages(jdn(year, month, 1), jdn(year, month, lastDay.GetDay()));
-    auto table = new DataTable(name, &dao);
-    wxArrayString choices;
-    HaDocument::GetStringsByCol<struct account, 1>(m_doc->GetAccountsDao(), choices);
-    table->SetAccountChoices(choices);
-    HaDocument::GetStringsByCol<struct channel, 1>(m_doc->GetChannelsDao(), choices);
-    table->SetChannelChoices(choices);
+    auto table = new DataTable(&dao);
+    table->UpdateChoicesFromJoints();
+    m_grid->SetTable(table, true);
     // Vital, for the original grid cursor may be out of range.
     int cursorRow = m_grid->GetGridCursorRow();
     int maxRow = table->GetRowsCount() - 1;
     if (cursorRow > maxRow) {
         m_grid->SetGridCursor(maxRow, m_grid->GetGridCursorCol());
     }
-    // `AssignTable` is not existing in earlier version of wxWidgets.
-    m_grid->SetTable(table, true);
     m_grid->SetFocus();
     m_grid->RefreshContent();
+}
+
+wxString DataPanel::Description()
+{
+    return m_date->GetValue().Format(_("Transactions of Date %Y-%m"));
 }

@@ -4,15 +4,15 @@
 #include <wx/docview.h>
 
 #include "Common.h"
-#include "HaView.h"
+
 #include "data/AccountsDao.h"
 #include "data/ConfigPodsTraits.h"
 #include "data/CsvIdVecDao.h"
 #include "data/DataDao.h"
+
 #include "file/FileExeptions.h"
 
-class CachedTable;
-class HaGrid;
+class HaView;
 class SectionFile;
 
 class HaDocument : public wxDocument
@@ -26,14 +26,6 @@ public:
     HaDocument();
     virtual ~HaDocument();
 
-    template <typename I, int COL> static void GetStringsByCol(const CsvVecDao<I> &dao, wxArrayString &strs)
-    {
-        strs.Clear();
-        for (const auto &i : dao.getData()) {
-            strs.push_back(*(const char *const *)CsvRowTraits<I>::getPtr(const_cast<I *>(&i), COL));
-        }
-    }
-
     bool OnNewDocument() override;
     bool OnCloseDocument() override;
     bool DeleteContents() override;
@@ -44,9 +36,7 @@ public:
 
     void GetSectionNames(wxArrayString &names) const;
     void GetSection(const wxString &name, wxString &content) const;
-    void GetSection(const wxString &name, std::string &content) const;
     void SaveSection(const wxString &name, const wxString &content);
-    void SaveSection(const wxString &name, const std::string &content);
     void DeleteSection(const wxString &name);
 
     void OnChange(wxCommandEvent &event);
@@ -54,7 +44,8 @@ public:
     void OnUpdateChangePass(wxUpdateUIEvent &event);
     void OnChangePass(wxCommandEvent &event);
 
-    CachedTable *SaveGridTable(HaGrid *grid);
+    void TryLoad(DaoBase &dao);
+    void DoSave(DaoBase &dao);
 
     DataDao &GetDataDao()
     {
@@ -81,34 +72,13 @@ public:
         return m_channelsDao;
     }
 
-    void TryLoad(const wxString &name, DaoBase &dao)
-    {
-        std::string content;
-        try {
-            GetSection(name, content);
-            dao.readString(content);
-        } catch (SectionNotFound &e) {
-            wxLogStatus(e.what());
-            dao.readString(content);
-        } catch (std::exception &e) {
-            wxLogError(e.what());
-        }
-    }
-
-    void DoSave(const wxString &name, const DaoBase &dao)
-    {
-        std::ostringstream os;
-        dao.write(os);
-        SaveSection(name, os.str());
-    }
-
-    void DoSaveData(const wxString &name)
-    {
-        DoSave(name, m_dataDao);
-    }
-
 private:
     static const char *const IV;
+
+    static const std::string OWNERS_SECTION_NAME;
+    static const std::string ACCOUNT_TYPES_SECTION_NAME;
+    static const std::string ACCOUNTS_SECTION_NAME;
+    static const std::string CHANNELS_SECTION_NAME;
 
     SectionFile *m_doc;
     wxString m_pass;
@@ -119,11 +89,7 @@ private:
     AccountsDao m_accountsDao;
     CsvIdVecDao<struct channel> m_channelsDao;
 
-    HaView *GetView() const
-    {
-        auto view = this->GetFirstView();
-        return view != nullptr ? static_cast<HaView *>(view) : nullptr;
-    }
+    HaView *GetView() const;
 };
 
 #endif /* _GUI_HA_DOCUMENT_H_ */

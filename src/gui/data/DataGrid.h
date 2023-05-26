@@ -1,9 +1,10 @@
 #ifndef _DATA_DATA_GRID_H_
 #define _DATA_DATA_GRID_H_
 
+#include "DataTable.h"
+
 #include "../Common.h"
 #include "../HaGrid.h"
-#include "DataTable.h"
 
 class DataGrid : public HaGrid
 {

@@ -1,5 +1,7 @@
 #include "DataGridCellAttrProvider.h"
+
 #include "DataTable.h"
+
 #include "data/DataDao.h"
 
 DataGridCellAttrProvider::DataGridCellAttrProvider(const DataTable *table) : HaGridCellAttrProvider(), m_table(table)

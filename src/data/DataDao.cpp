@@ -1,17 +1,21 @@
 #include <sstream>
 
+#include "CxxDefs.h"
 #include "DataDao.h"
 #include "ItemTraits.h"
+#include "Joint.h"
+
+#include "page.h"
+
 #include "csv/CsvExceptions.h"
 #include "csv/CsvParser.h"
 #include "csv/str.h"
-#include "page.h"
 
 DataDao::DataDao()
     : CsvDao<struct item, struct data>()
     , m_index()
-    , m_accountJoint()
-    , m_channelJoint()
+    , m_accountJoint(nullptr)
+    , m_channelJoint(nullptr)
     , m_totalIncome(0)
     , m_totalOutlay(0)
 {
@@ -21,6 +25,8 @@ DataDao::DataDao()
 
 DataDao::~DataDao()
 {
+    safe_delete(m_accountJoint);
+    safe_delete(m_channelJoint);
     release_data(&m_data);
 }
 
@@ -126,13 +132,13 @@ std::string DataDao::getOutlayString(int row)
 std::string DataDao::getAccountString(int row)
 {
     const struct item *item = safeGetItem(row);
-    return wrapString((item != nullptr) ? m_accountJoint.lookup(item->account) : nullptr);
+    return wrapString((item != nullptr && m_accountJoint != nullptr) ? m_accountJoint->lookup(item->account) : nullptr);
 }
 
 std::string DataDao::getChannelString(int row)
 {
     const struct item *item = safeGetItem(row);
-    return wrapString((item != nullptr) ? m_channelJoint.lookup(item->channel) : nullptr);
+    return wrapString((item != nullptr && m_channelJoint != nullptr) ? m_channelJoint->lookup(item->channel) : nullptr);
 }
 
 std::string DataDao::getDescString(int row)
@@ -196,7 +202,7 @@ void DataDao::setAccount(int row, const std::string &value)
 {
     struct item *item = safeGetItem(row);
     if (item != nullptr) {
-        item->account = m_accountJoint.revLookup(value.c_str());
+        item->account = m_accountJoint->revLookup(value.c_str());
     }
 }
 
@@ -204,7 +210,7 @@ void DataDao::setChannel(int row, const std::string &value)
 {
     struct item *item = safeGetItem(row);
     if (item != nullptr) {
-        item->channel = m_channelJoint.revLookup(value.c_str());
+        item->channel = m_channelJoint->revLookup(value.c_str());
     }
 }
 
@@ -262,6 +268,18 @@ bool DataDao::isRedBalance(int row) const
 {
     auto &index = m_index[row];
     return (index.m_type == ITEM || index.m_type == INITIAL) && index.m_balance < 0;
+}
+
+void DataDao::setAccountJoint(Joint<const char *, int32_t> *joint)
+{
+    safe_delete(m_accountJoint);
+    m_accountJoint = joint;
+}
+
+void DataDao::setChannelJoint(Joint<const char *, int32_t> *joint)
+{
+    safe_delete(m_channelJoint);
+    m_channelJoint = joint;
 }
 
 void DataDao::createIndex()

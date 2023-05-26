@@ -37,3 +37,12 @@ void Common::ShowTextBox(const wxString &title, const wxString &text)
     dlg.CenterOnParent();
     dlg.ShowModal();
 }
+
+void Common::GetChoices(wxArrayString &choices, const Joint<const char *, int32_t> *joint)
+{
+    choices.Empty();
+    joint->forEach([&choices](const char *const *str) {
+        choices.push_back(*str);
+        return true;
+    });
+}

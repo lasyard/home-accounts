@@ -1,4 +1,5 @@
 #include "CsvParser.h"
+
 #include "CsvExceptions.h"
 
 #include "date_time.h"
@@ -7,7 +8,12 @@
 #include "str.h"
 
 CsvParser::CsvParser(int cols, const ColumnType *types, void *(*getPtr)(void *data, int i))
-    : m_cols(cols), m_types(types), m_sep(','), m_moneyPrec(2), m_moneyMul(100), m_getPtr(getPtr)
+    : m_cols(cols)
+    , m_types(types)
+    , m_sep(',')
+    , m_moneyPrec(2)
+    , m_moneyMul(100)
+    , m_getPtr(getPtr)
 {
 }
 

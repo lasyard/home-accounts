@@ -1,7 +1,7 @@
 #ifndef _CSV_DATE_TIME_H_
 #define _CSV_DATE_TIME_H_
 
-#include <sys/types.h>
+#include <stdint.h>
 
 typedef int32_t date_t;
 typedef int32_t dtime_t;

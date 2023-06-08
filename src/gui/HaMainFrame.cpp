@@ -22,7 +22,7 @@ EVT_UPDATE_UI(ID_EXPORT, HaMainFrame::OnUpdateMenu)
 EVT_UPDATE_UI(ID_CHANGE_PASS, HaMainFrame::OnUpdateMenu)
 EVT_UPDATE_UI(ID_INSERT, HaMainFrame::OnUpdateMenu)
 EVT_UPDATE_UI(wxID_DELETE, HaMainFrame::OnUpdateMenu)
-EVT_UPDATE_UI(wxID_PASTE, HaMainFrame::OnUpdateMenu)
+EVT_UPDATE_UI(ID_PASTE_BILL, HaMainFrame::OnUpdateMenu)
 EVT_UPDATE_UI(ID_RAW_MODE, HaMainFrame::OnUpdateCheckMenu)
 // Don't know why this ID cannot be wxID_ABOUT.
 EVT_MENU(ID_ABOUT, HaMainFrame::OnAbout)

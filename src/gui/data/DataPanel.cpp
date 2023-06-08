@@ -1,15 +1,17 @@
 #include <fstream>
 
-#include <wx/clipbrd.h>
 #include <wx/datectrl.h>
 #include <wx/dateevt.h>
 #include <wx/filedlg.h>
 
 #include "../Defs.h"
 #include "../HaDocument.h"
+
 #include "DataGrid.h"
 #include "DataPanel.h"
 #include "DataTable.h"
+#include "PasteBillDialog.h"
+
 #include "data/DataImportDao.h"
 
 IMPLEMENT_DYNAMIC_CLASS(DataPanel, HaPanel)
@@ -25,8 +27,8 @@ EVT_UPDATE_UI(ID_INSERT, DataPanel::OnUpdateMenu)
 EVT_MENU(ID_INSERT, DataPanel::OnMenuModify)
 EVT_UPDATE_UI(wxID_DELETE, DataPanel::OnUpdateMenu)
 EVT_MENU(wxID_DELETE, DataPanel::OnMenuModify)
-EVT_UPDATE_UI(wxID_PASTE, DataPanel::OnUpdatePaste)
-EVT_MENU(wxID_PASTE, DataPanel::OnPaste)
+EVT_UPDATE_UI(ID_PASTE_BILL, DataPanel::OnUpdatePasteBill)
+EVT_MENU(ID_PASTE_BILL, DataPanel::OnPasteBill)
 END_EVENT_TABLE()
 
 const wxString DataPanel::LABEL = _("Transactions");
@@ -99,22 +101,18 @@ void DataPanel::OnExport([[maybe_unused]] wxCommandEvent &event)
     m_grid->ExportTable(Description());
 }
 
-void DataPanel::OnUpdatePaste([[maybe_unused]] wxUpdateUIEvent &event)
+void DataPanel::OnUpdatePasteBill([[maybe_unused]] wxUpdateUIEvent &event)
 {
     event.Enable(true);
 }
 
-void DataPanel::OnPaste([[maybe_unused]] wxCommandEvent &event)
+void DataPanel::OnPasteBill([[maybe_unused]] wxCommandEvent &event)
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
-    auto cb = wxClipboard::Get();
-    cb->Open();
-    if (cb->IsSupported(wxDF_UNICODETEXT)) {
-        wxTextDataObject text;
-        cb->GetData(text);
-        wxLogTrace(TM, text.GetText());
+    PasteBillDialog dlg(nullptr);
+    if (dlg.ShowModal() == wxID_OK) {
+        wxLogTrace(TM, "content = \n\"%s\"", dlg.GetContent());
     }
-    cb->Close();
 }
 
 void DataPanel::OnUpdateMenu(wxUpdateUIEvent &event)

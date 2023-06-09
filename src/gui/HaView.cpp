@@ -7,6 +7,7 @@
 #include "HaApp.h"
 #include "HaDocument.h"
 #include "HaMainFrame.h"
+#include "PasteBillDialog.h"
 
 #include "configs/ConfigsPanel.h"
 #include "data/DataPanel.h"
@@ -25,8 +26,8 @@ EVT_UPDATE_UI(ID_INSERT, HaView::OnUpdateMenu)
 EVT_MENU(ID_INSERT, HaView::OnMenu)
 EVT_UPDATE_UI(wxID_DELETE, HaView::OnUpdateMenu)
 EVT_MENU(wxID_DELETE, HaView::OnMenu)
-EVT_UPDATE_UI(ID_PASTE_BILL, HaView::OnUpdateMenu)
-EVT_MENU(ID_PASTE_BILL, HaView::OnMenu)
+EVT_UPDATE_UI(ID_PASTE_BILL, HaView::OnUpdatePasteBill)
+EVT_MENU(ID_PASTE_BILL, HaView::OnPasteBill)
 EVT_UPDATE_UI(ID_RAW_MODE, HaView::OnUpdateRawMode)
 EVT_MENU(ID_RAW_MODE, HaView::OnRawMode)
 END_EVENT_TABLE()
@@ -103,6 +104,20 @@ void HaView::OnMenu(wxCommandEvent &event)
 {
     auto panel = GetCurrentPanel();
     Common::DelegateEvent(panel, event);
+}
+
+void HaView::OnUpdatePasteBill([[maybe_unused]] wxUpdateUIEvent &event)
+{
+    event.Enable(true);
+}
+
+void HaView::OnPasteBill([[maybe_unused]] wxCommandEvent &event)
+{
+    wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
+    PasteBillDialog dlg(nullptr);
+    if (dlg.ShowModal() == wxID_OK) {
+        wxLogTrace(TM, "content = \n\"%s\"", dlg.GetContent());
+    }
 }
 
 void HaView::OnUpdateRawMode(wxUpdateUIEvent &event)

@@ -3,7 +3,7 @@
 
 #include <wx/dialog.h>
 
-#include "../Common.h"
+#include "Common.h"
 
 class wxTextCtrl;
 

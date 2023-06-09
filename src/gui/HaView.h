@@ -30,6 +30,8 @@ public:
 
     void OnUpdateMenu(wxUpdateUIEvent &event);
     void OnMenu(wxCommandEvent &event);
+    void OnUpdatePasteBill(wxUpdateUIEvent &event);
+    void OnPasteBill(wxCommandEvent &event);
     void OnUpdateRawMode(wxUpdateUIEvent &event);
     void OnRawMode(wxCommandEvent &event);
 

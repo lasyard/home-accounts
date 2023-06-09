@@ -10,9 +10,6 @@
 #include "DataGrid.h"
 #include "DataPanel.h"
 #include "DataTable.h"
-#include "PasteBillDialog.h"
-
-#include "data/DataImportDao.h"
 
 IMPLEMENT_DYNAMIC_CLASS(DataPanel, HaPanel)
 IMPLEMENT_TM(DataPanel)
@@ -27,8 +24,6 @@ EVT_UPDATE_UI(ID_INSERT, DataPanel::OnUpdateMenu)
 EVT_MENU(ID_INSERT, DataPanel::OnMenuModify)
 EVT_UPDATE_UI(wxID_DELETE, DataPanel::OnUpdateMenu)
 EVT_MENU(wxID_DELETE, DataPanel::OnMenuModify)
-EVT_UPDATE_UI(ID_PASTE_BILL, DataPanel::OnUpdatePasteBill)
-EVT_MENU(ID_PASTE_BILL, DataPanel::OnPasteBill)
 END_EVENT_TABLE()
 
 const wxString DataPanel::LABEL = _("Transactions");
@@ -99,20 +94,6 @@ void DataPanel::OnExport([[maybe_unused]] wxCommandEvent &event)
 {
     SaveGridTable(m_grid);
     m_grid->ExportTable(Description());
-}
-
-void DataPanel::OnUpdatePasteBill([[maybe_unused]] wxUpdateUIEvent &event)
-{
-    event.Enable(true);
-}
-
-void DataPanel::OnPasteBill([[maybe_unused]] wxCommandEvent &event)
-{
-    wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
-    PasteBillDialog dlg(nullptr);
-    if (dlg.ShowModal() == wxID_OK) {
-        wxLogTrace(TM, "content = \n\"%s\"", dlg.GetContent());
-    }
 }
 
 void DataPanel::OnUpdateMenu(wxUpdateUIEvent &event)

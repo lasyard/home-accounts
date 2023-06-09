@@ -33,8 +33,6 @@ public:
     void OnImport(wxCommandEvent &event);
     void OnUpdateExport(wxUpdateUIEvent &event);
     void OnExport(wxCommandEvent &event);
-    void OnUpdatePasteBill(wxUpdateUIEvent &event);
-    void OnPasteBill(wxCommandEvent &event);
     void OnUpdateMenu(wxUpdateUIEvent &event);
     void OnMenu(wxCommandEvent &event);
     void OnMenuModify(wxCommandEvent &event);

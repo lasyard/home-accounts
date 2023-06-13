@@ -1,3 +1,5 @@
+#include <wx/log.h>
+
 #include "DataGrid.h"
 
 #include "../Defs.h"

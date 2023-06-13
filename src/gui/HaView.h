@@ -1,12 +1,15 @@
 #ifndef _GUI_HA_VIEW_H_
 #define _GUI_HA_VIEW_H_
 
-#include <wx/bookctrl.h>
 #include <wx/docview.h>
 
-#include "HaPanel.h"
+#include "Common.h"
 
+class wxBookCtrlEvent;
 class wxNotebook;
+
+class HaDocument;
+class HaPanel;
 
 class HaView : public wxView
 {
@@ -40,15 +43,10 @@ public:
 private:
     wxNotebook *m_book;
 
-    HaPanel *GetCurrentPanel() const
-    {
-        return static_cast<HaPanel *>(m_book->GetCurrentPage());
-    }
+    HaDocument *GetHaDocument() const;
 
-    HaPanel *GetPanel(int sel) const
-    {
-        return static_cast<HaPanel *>(m_book->GetPage(sel));
-    }
+    HaPanel *GetCurrentPanel() const;
+    HaPanel *GetPanel(int sel) const;
 };
 
 #endif /* _GUI_HA_VIEW_H_ */

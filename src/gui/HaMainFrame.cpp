@@ -11,6 +11,8 @@
 #include "Defs.h"
 #include "HaApp.h"
 
+#include "utils/GuiUtils.h"
+
 IMPLEMENT_DYNAMIC_CLASS(HaMainFrame, wxDocParentFrame)
 IMPLEMENT_TM(HaMainFrame)
 
@@ -92,13 +94,13 @@ void HaMainFrame::OnLicense([[maybe_unused]] wxCommandEvent &event)
 {
     wxString text;
     wxString resDir = wxStandardPaths::Get().GetResourcesDir();
-    Common::ReadAllText(text, wxFileName(resDir, LICENSE_FILE_NAME).GetFullPath());
+    Utils::ReadAllText(text, wxFileName(resDir, LICENSE_FILE_NAME).GetFullPath());
 #if wxUSE_UNICODE
     const wxString copyrightSign = wxString::FromUTF8("\xc2\xa9");
     text.Replace("(c)", copyrightSign);
     text.Replace("(C)", copyrightSign);
 #endif
-    Common::ShowTextBox(_("License"), text);
+    Utils::ShowTextBox(_("License"), text);
 }
 
 void HaMainFrame::OnWxInfo([[maybe_unused]] wxCommandEvent &event)

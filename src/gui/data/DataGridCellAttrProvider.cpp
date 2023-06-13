@@ -1,3 +1,5 @@
+#include <wx/log.h>
+
 #include "DataGridCellAttrProvider.h"
 
 #include "DataTable.h"

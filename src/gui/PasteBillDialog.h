@@ -5,6 +5,9 @@
 
 #include "Common.h"
 
+template <typename T, typename S> class Joint;
+
+class wxChoice;
 class wxTextCtrl;
 
 class PasteBillDialog : public wxDialog
@@ -15,7 +18,27 @@ class PasteBillDialog : public wxDialog
 public:
     DECLARE_TM()
 
-    PasteBillDialog(wxWindow *parent = nullptr);
+    PasteBillDialog(
+        wxWindow *parent = nullptr,
+        Joint<const char *, int32_t> *accountJoint = nullptr,
+        Joint<const char *, int32_t> *channelJoint = nullptr
+    );
+    virtual ~PasteBillDialog();
+
+    const wxString &GetBillTitle() const
+    {
+        return m_title;
+    }
+
+    int GetAccount() const
+    {
+        return m_account;
+    }
+
+    int GetChannel() const
+    {
+        return m_channel;
+    }
 
     const wxString &GetContent() const
     {
@@ -25,8 +48,15 @@ public:
     virtual void OnInit(wxInitDialogEvent &event);
 
 protected:
-    wxTextCtrl *m_text;
+    wxString m_title;
+    int m_account;
+    int m_channel;
     wxString m_content;
+
+    wxTextCtrl *m_textTitle;
+    wxChoice *m_choiceAccount;
+    wxChoice *m_choiceChannel;
+    wxTextCtrl *m_text;
 
     bool TransferDataFromWindow() override;
 };

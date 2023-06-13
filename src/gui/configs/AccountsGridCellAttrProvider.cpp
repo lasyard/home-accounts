@@ -1,3 +1,5 @@
+#include <wx/log.h>
+
 #include "AccountsGridCellAttrProvider.h"
 
 #include "data/ConfigPodsTraits.h"

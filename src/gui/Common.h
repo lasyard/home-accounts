@@ -1,33 +1,7 @@
 #ifndef _GUI_COMMON_H_
 #define _GUI_COMMON_H_
 
-#include <wx/log.h>
-#include <wx/xrc/xmlres.h>
-
-#include "data/Joint.h"
-
 #define DECLARE_TM()      static const wxChar *const TM;
 #define IMPLEMENT_TM(cls) const wxChar *const cls::TM = _(#cls);
-
-namespace Common
-{
-
-/**
- * @brief Delegate event to another window.
- *
- * @param win the window
- * @param event  the event
- * @return true means the event is processed
- * @return false means the event is skipped
- */
-bool DelegateEvent(wxWindow *win, wxEvent &event);
-
-void ReadAllText(wxString &text, const wxString &fileName);
-
-void ShowTextBox(const wxString &title, const wxString &text);
-
-void GetChoices(wxArrayString &choices, const Joint<const char *, int32_t> *joint);
-
-}; // namespace Common
 
 #endif /* _GUI_COMMON_H_ */

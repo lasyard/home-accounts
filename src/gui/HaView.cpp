@@ -7,11 +7,14 @@
 #include "HaApp.h"
 #include "HaDocument.h"
 #include "HaMainFrame.h"
+#include "HaPanel.h"
 #include "PasteBillDialog.h"
 
 #include "configs/ConfigsPanel.h"
 #include "data/DataPanel.h"
 #include "raw/RawPanel.h"
+#include "utils/DaoUtils.h"
+#include "utils/GuiUtils.h"
 
 IMPLEMENT_DYNAMIC_CLASS(HaView, wxView)
 IMPLEMENT_TM(HaView)
@@ -97,13 +100,13 @@ void HaView::OnPageChanged(wxBookCtrlEvent &event)
 void HaView::OnUpdateMenu(wxUpdateUIEvent &event)
 {
     auto panel = GetCurrentPanel();
-    Common::DelegateEvent(panel, event);
+    Utils::DelegateEvent(panel, event);
 }
 
 void HaView::OnMenu(wxCommandEvent &event)
 {
     auto panel = GetCurrentPanel();
-    Common::DelegateEvent(panel, event);
+    Utils::DelegateEvent(panel, event);
 }
 
 void HaView::OnUpdatePasteBill([[maybe_unused]] wxUpdateUIEvent &event)
@@ -114,9 +117,13 @@ void HaView::OnUpdatePasteBill([[maybe_unused]] wxUpdateUIEvent &event)
 void HaView::OnPasteBill([[maybe_unused]] wxCommandEvent &event)
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
-    PasteBillDialog dlg(nullptr);
+    auto doc = GetHaDocument();
+    wxArrayString accountChoices;
+    auto jointAccount = doc->GetAccountsDao().getJoint<1, 0>();
+    auto jointChannel = doc->GetChannelsDao().getJoint<1, 0>();
+    PasteBillDialog dlg(nullptr, jointAccount, jointChannel);
     if (dlg.ShowModal() == wxID_OK) {
-        wxLogTrace(TM, "content = \n\"%s\"", dlg.GetContent());
+        wxLogTrace(TM, "content = \"%s\"", dlg.GetContent());
     }
 }
 
@@ -130,7 +137,7 @@ void HaView::OnUpdateRawMode(wxUpdateUIEvent &event)
 void HaView::OnRawMode(wxCommandEvent &event)
 {
     if (event.IsChecked()) {
-        HaPanel::AddToBook<RawPanel>(m_book, static_cast<HaDocument *>(GetDocument()));
+        HaPanel::AddToBook<RawPanel>(m_book, GetHaDocument());
         // It is the last one.
         m_book->SetSelection(m_book->GetPageCount() - 1);
     } else {
@@ -141,4 +148,19 @@ void HaView::OnRawMode(wxCommandEvent &event)
 void HaView::SaveContents()
 {
     GetCurrentPanel()->SaveContents();
+}
+
+HaDocument *HaView::GetHaDocument() const
+{
+    return static_cast<HaDocument *>(GetDocument());
+}
+
+HaPanel *HaView::GetCurrentPanel() const
+{
+    return static_cast<HaPanel *>(m_book->GetCurrentPage());
+}
+
+HaPanel *HaView::GetPanel(int sel) const
+{
+    return static_cast<HaPanel *>(m_book->GetPage(sel));
 }

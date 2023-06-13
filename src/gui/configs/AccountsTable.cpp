@@ -2,6 +2,8 @@
 
 #include "AccountsGridCellAttrProvider.h"
 
+#include "../utils/DaoUtils.h"
+
 const wxString AccountsTable::COL_LABELS[] = {
     _("ID"),
     _("Name"),
@@ -24,8 +26,8 @@ void AccountsTable::UpdateChoicesFromJoints()
 {
     auto dao = static_cast<AccountsDao *>(m_dao);
     wxArrayString choices;
-    Common::GetChoices(choices, dao->getOwnerJoint());
+    Utils::GetStrings(choices, dao->getOwnerJoint());
     static_cast<AccountsGridCellAttrProvider *>(GetAttrProvider())->SetOwnerChoices(choices);
-    Common::GetChoices(choices, dao->getTypeJoint());
+    Utils::GetStrings(choices, dao->getTypeJoint());
     static_cast<AccountsGridCellAttrProvider *>(GetAttrProvider())->SetTypeChoices(choices);
 }

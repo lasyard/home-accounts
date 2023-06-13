@@ -1,3 +1,5 @@
+#include <wx/log.h>
+
 #include "ConfigsGrid.h"
 
 #include "../Defs.h"

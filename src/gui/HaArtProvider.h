@@ -3,6 +3,7 @@
 
 #include <wx/artprov.h>
 #include <wx/bitmap.h>
+#include <wx/log.h>
 
 #include "Common.h"
 

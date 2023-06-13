@@ -72,6 +72,11 @@ public:
         return m_channelsDao;
     }
 
+    CsvIdVecDao<struct batch> &GetBatchDao()
+    {
+        return m_batchDao;
+    }
+
 private:
     static const char *const IV;
 
@@ -79,6 +84,8 @@ private:
     static const std::string ACCOUNT_TYPES_SECTION_NAME;
     static const std::string ACCOUNTS_SECTION_NAME;
     static const std::string CHANNELS_SECTION_NAME;
+    static const std::string BATCHES_SECTION_NAME;
+    static const std::string BILL_SECTION_NAME;
 
     SectionFile *m_doc;
     wxString m_pass;
@@ -88,6 +95,7 @@ private:
     CsvIdVecDao<struct account_type> m_accountTypesDao;
     AccountsDao m_accountsDao;
     CsvIdVecDao<struct channel> m_channelsDao;
+    CsvIdVecDao<struct batch> m_batchDao;
 
     HaView *GetView() const;
 };

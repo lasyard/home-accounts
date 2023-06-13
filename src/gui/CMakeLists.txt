@@ -34,7 +34,6 @@ add_exe(${APP_NAME}
     ${RESOURCE_FILES}
     CachedTable.cpp
     ChangePassDialog.cpp
-    Common.cpp
     HaApp.cpp
     HaArtProvider.cpp
     HaDocument.cpp
@@ -49,6 +48,7 @@ add_subdirectory(configs)
 add_subdirectory(data)
 add_subdirectory(raw)
 add_subdirectory(res)
+add_subdirectory(utils)
 
 target_link_libraries(${APP_NAME} PRIVATE ${wxWidgets_LIBRARIES})
 target_link_libraries(${APP_NAME} PRIVATE ${LIB_FILE_NAME})

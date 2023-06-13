@@ -1,5 +1,6 @@
 #include <sstream>
 
+#include <wx/log.h>
 #include <wx/msgdlg.h>
 #include <wx/textdlg.h>
 
@@ -27,6 +28,7 @@ const std::string HaDocument::OWNERS_SECTION_NAME = "configs/owners";
 const std::string HaDocument::ACCOUNT_TYPES_SECTION_NAME = "configs/account_types";
 const std::string HaDocument::ACCOUNTS_SECTION_NAME = "configs/accounts";
 const std::string HaDocument::CHANNELS_SECTION_NAME = "configs/channels";
+const std::string HaDocument::BATCHES_SECTION_NAME = "configs/batches";
 
 HaDocument::HaDocument()
     : wxDocument()
@@ -84,6 +86,7 @@ bool HaDocument::DoOpenDocument(const wxString &fileName)
             TryLoad(m_channelsDao);
             m_dataDao.setAccountJoint(m_accountsDao.getJoint<1, 0>());
             m_dataDao.setChannelJoint(m_channelsDao.getJoint<1, 0>());
+            TryLoad(m_batchDao);
             return true;
         } catch (std::runtime_error &e) {
             wxLogError("Failed to open \"%s\": %s", (const char *)fileName, e.what());

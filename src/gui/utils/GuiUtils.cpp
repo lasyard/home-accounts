@@ -3,9 +3,9 @@
 #include <wx/textctrl.h>
 #include <wx/textfile.h>
 
-#include "Common.h"
+#include "GuiUtils.h"
 
-bool Common::DelegateEvent(wxWindow *win, wxEvent &event)
+bool Utils::DelegateEvent(wxWindow *win, wxEvent &event)
 {
     // Do not call `ProcessWindowEvent` here, for this function is often called in a window's event handling and the
     // window is often parent of `win`, thus the event will bubble up resulting in dead loop.
@@ -16,7 +16,7 @@ bool Common::DelegateEvent(wxWindow *win, wxEvent &event)
     return false;
 }
 
-void Common::ReadAllText(wxString &text, const wxString &fileName)
+void Utils::ReadAllText(wxString &text, const wxString &fileName)
 {
     wxTextFile file(fileName);
     file.Open();
@@ -26,7 +26,7 @@ void Common::ReadAllText(wxString &text, const wxString &fileName)
     file.Close();
 }
 
-void Common::ShowTextBox(const wxString &title, const wxString &text)
+void Utils::ShowTextBox(const wxString &title, const wxString &text)
 {
     wxDialog dlg((wxWindow *)nullptr, wxID_ANY, title);
     auto sizer = new wxBoxSizer(wxVERTICAL);
@@ -36,13 +36,4 @@ void Common::ShowTextBox(const wxString &title, const wxString &text)
     sizer->Add(ctlText, wxSizerFlags(1).Expand().Border());
     dlg.CenterOnParent();
     dlg.ShowModal();
-}
-
-void Common::GetChoices(wxArrayString &choices, const Joint<const char *, int32_t> *joint)
-{
-    choices.Empty();
-    joint->forEach([&choices](const char *const *str) {
-        choices.push_back(*str);
-        return true;
-    });
 }

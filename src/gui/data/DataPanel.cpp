@@ -3,13 +3,17 @@
 #include <wx/datectrl.h>
 #include <wx/dateevt.h>
 #include <wx/filedlg.h>
+#include <wx/log.h>
+
+#include "DataPanel.h"
+
+#include "DataGrid.h"
+#include "DataTable.h"
 
 #include "../Defs.h"
 #include "../HaDocument.h"
 
-#include "DataGrid.h"
-#include "DataPanel.h"
-#include "DataTable.h"
+#include "../utils/GuiUtils.h"
 
 IMPLEMENT_DYNAMIC_CLASS(DataPanel, HaPanel)
 IMPLEMENT_TM(DataPanel)
@@ -98,17 +102,17 @@ void DataPanel::OnExport([[maybe_unused]] wxCommandEvent &event)
 
 void DataPanel::OnUpdateMenu(wxUpdateUIEvent &event)
 {
-    Common::DelegateEvent(m_grid, event);
+    Utils::DelegateEvent(m_grid, event);
 }
 
 void DataPanel::OnMenu(wxCommandEvent &event)
 {
-    Common::DelegateEvent(m_grid, event);
+    Utils::DelegateEvent(m_grid, event);
 }
 
 void DataPanel::OnMenuModify(wxCommandEvent &event)
 {
-    if (Common::DelegateEvent(m_grid, event)) {
+    if (Utils::DelegateEvent(m_grid, event)) {
         m_doc->Modify(true);
     }
 }

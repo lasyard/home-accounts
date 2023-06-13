@@ -3,6 +3,7 @@
 #include <wx/artprov.h>
 #include <wx/dc.h>
 #include <wx/filedlg.h>
+#include <wx/log.h>
 #include <wx/msgdlg.h>
 
 #include "HaGrid.h"

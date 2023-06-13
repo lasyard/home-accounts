@@ -1,9 +1,12 @@
+#include <wx/log.h>
+
 #include "HaGridCellAttrProvider.h"
 
 IMPLEMENT_TM(HaGridCellAttrProvider)
 
 HaGridCellAttrProvider::HaGridCellAttrProvider()
-    : wxGridCellAttrProvider(), m_monoFont(16, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL)
+    : wxGridCellAttrProvider()
+    , m_monoFont(16, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL)
 {
     wxLog::AddTraceMask(TM);
 

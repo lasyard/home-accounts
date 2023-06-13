@@ -1,7 +1,11 @@
 #include <vector>
 
-#include "DataGridCellAttrProvider.h"
 #include "DataTable.h"
+
+#include "DataGridCellAttrProvider.h"
+
+#include "../utils/DaoUtils.h"
+
 #include "data/DataDao.h"
 #include "data/ItemTraits.h"
 
@@ -54,9 +58,9 @@ ColumnType DataTable::GetColumnType(int col) const
 void DataTable::UpdateChoicesFromJoints()
 {
     wxArrayString choices;
-    Common::GetChoices(choices, m_dataDao->getAccountJoint());
+    Utils::GetStrings(choices, m_dataDao->getAccountJoint());
     static_cast<DataGridCellAttrProvider *>(GetAttrProvider())->SetAccountChoices(choices);
-    Common::GetChoices(choices, m_dataDao->getChannelJoint());
+    Utils::GetStrings(choices, m_dataDao->getChannelJoint());
     static_cast<DataGridCellAttrProvider *>(GetAttrProvider())->SetChannelChoices(choices);
 }
 

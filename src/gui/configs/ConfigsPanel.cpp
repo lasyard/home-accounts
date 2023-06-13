@@ -1,5 +1,6 @@
 #include <wx/listbook.h>
 #include <wx/listctrl.h>
+#include <wx/log.h>
 
 #include "ConfigsPanel.h"
 
@@ -12,6 +13,8 @@
 
 #include "../Defs.h"
 #include "../HaDocument.h"
+
+#include "../utils/GuiUtils.h"
 
 IMPLEMENT_DYNAMIC_CLASS(ConfigsPanel, HaPanel)
 IMPLEMENT_TM(ConfigsPanel)
@@ -120,17 +123,17 @@ void ConfigsPanel::OnExport([[maybe_unused]] wxCommandEvent &event)
 
 void ConfigsPanel::OnUpdateMenu(wxUpdateUIEvent &event)
 {
-    Common::DelegateEvent(GetCurrentGrid(), event);
+    Utils::DelegateEvent(GetCurrentGrid(), event);
 }
 
 void ConfigsPanel::OnMenu(wxCommandEvent &event)
 {
-    Common::DelegateEvent(GetCurrentGrid(), event);
+    Utils::DelegateEvent(GetCurrentGrid(), event);
 }
 
 void ConfigsPanel::OnMenuModify(wxCommandEvent &event)
 {
-    if (Common::DelegateEvent(GetCurrentGrid(), event)) {
+    if (Utils::DelegateEvent(GetCurrentGrid(), event)) {
         m_doc->Modify(true);
     }
 }

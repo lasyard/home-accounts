@@ -27,4 +27,9 @@ struct channel {
     char *name;
 };
 
+struct batch {
+    int id;
+    char *title;
+};
+
 #endif /* _DATA_CONFIG_PODS_H_ */

@@ -71,3 +71,19 @@ void *CsvRowTraits<struct channel>::getPtr(void *data, int i)
     }
     return nullptr;
 }
+
+// batch
+
+void *CsvRowTraits<struct batch>::getPtr(void *data, int i)
+{
+    auto item = static_cast<struct batch *>(data);
+    switch (i) {
+    case 0:
+        return &item->id;
+    case 1:
+        return &item->title;
+    default:
+        break;
+    }
+    return nullptr;
+}

@@ -75,12 +75,7 @@ public:
 
         void forEach(std::function<bool(const ColType<I, T_COL> *)> callback) const override
         {
-            auto &data = m_dao->m_data;
-            for (auto &item : data) {
-                if (!callback((const ColType<I, T_COL> *)CD::Traits::getPtr(&item, T_COL))) {
-                    break;
-                }
-            }
+            m_dao->forEach<T_COL>(callback);
         }
 
     private:
@@ -202,6 +197,16 @@ public:
     template <int T_COL, int S_COL> auto *getJoint()
     {
         return new VecJoint<T_COL, S_COL>(this);
+    }
+
+    template <int COL> void forEach(std::function<bool(const ColType<I, COL> *)> callback)
+    {
+        auto &data = D::m_data;
+        for (auto &item : data) {
+            if (!callback((const ColType<I, COL> *)CD::Traits::getPtr(&item, COL))) {
+                break;
+            }
+        }
     }
 
 protected:

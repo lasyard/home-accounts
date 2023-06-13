@@ -68,4 +68,18 @@ public:
     static void *getPtr(void *data, int i);
 };
 
+// batch
+
+template <> class CsvRowTraits<struct batch>
+{
+public:
+    static const int cols = 2;
+    static const ColumnType constexpr types[] = {
+        INT32,
+        CSTR,
+    };
+
+    static void *getPtr(void *data, int i);
+};
+
 #endif /* _DATA_CONFIG_PODS_TRAITS_H_ */

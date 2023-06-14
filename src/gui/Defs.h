@@ -17,8 +17,10 @@
 #define ID_WX_INFO     XRCID("wxInfo")
 
 // Controls
-#define ID_BOOK         XRCID("book")
-#define ID_DATE_DATA    XRCID("dateData")
-#define ID_BOOK_CONFIGS XRCID("bookConfigs")
+#define ID_BOOK           XRCID("book")
+#define ID_DATE_DATA      XRCID("dateData")
+#define ID_BOOK_CONFIGS   XRCID("bookConfigs")
+#define ID_CHOICE_ACCOUNT XRCID("choiceAccount")
+#define ID_CHOICE_CHANNEL XRCID("choiceChannel")
 
 #endif /* _GUI_DEFS_H_ */

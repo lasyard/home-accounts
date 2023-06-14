@@ -46,8 +46,13 @@ public:
     }
 
     virtual void OnInit(wxInitDialogEvent &event);
+    virtual void OnChoiceAccount(wxCommandEvent &event);
+    virtual void OnChoiceChannel(wxCommandEvent &event);
 
 protected:
+    Joint<const char *, int32_t> *m_accountJoint;
+    Joint<const char *, int32_t> *m_channelJoint;
+
     wxString m_title;
     int m_account;
     int m_channel;
@@ -59,6 +64,11 @@ protected:
     wxTextCtrl *m_text;
 
     bool TransferDataFromWindow() override;
+
+private:
+    wxChoice *CreateChoice(Joint<const char *, int32_t> *joint, wxString name);
+
+    int GetSelectionId(wxChoice *choice, Joint<const char *, int32_t> *joint);
 };
 
 #endif /* _GUI_PASTE_BILL_DIALOG_H_ */

@@ -6,6 +6,8 @@
 
 #include "PasteBillDialog.h"
 
+#include "Defs.h"
+
 #include "utils/DaoUtils.h"
 
 #include "data/CxxDefs.h"
@@ -16,6 +18,8 @@ IMPLEMENT_TM(PasteBillDialog)
 
 BEGIN_EVENT_TABLE(PasteBillDialog, wxDialog)
 EVT_INIT_DIALOG(PasteBillDialog::OnInit)
+EVT_CHOICE(ID_CHOICE_ACCOUNT, PasteBillDialog::OnChoiceAccount)
+EVT_CHOICE(ID_CHOICE_CHANNEL, PasteBillDialog::OnChoiceChannel)
 END_EVENT_TABLE()
 
 PasteBillDialog::PasteBillDialog(
@@ -24,6 +28,8 @@ PasteBillDialog::PasteBillDialog(
     Joint<const char *, int32_t> *channelJoint
 )
     : wxDialog()
+    , m_accountJoint(accountJoint)
+    , m_channelJoint(channelJoint)
     , m_title(_("Untitled"))
     , m_account(0)
     , m_channel(0)
@@ -33,21 +39,16 @@ PasteBillDialog::PasteBillDialog(
     wxXmlResource::Get()->LoadDialog(this, parent, "dlgPasteBill");
     m_textTitle = XRCCTRL(*this, "textTitle", wxTextCtrl);
     m_text = XRCCTRL(*this, "textContent", wxTextCtrl);
-    wxArrayString choices;
-    Utils::GetStrings(choices, accountJoint);
-    safe_delete(accountJoint);
-    m_choiceAccount = new wxChoice(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, choices);
-    wxXmlResource::Get()->AttachUnknownControl("choiceAccount", m_choiceAccount);
-    Utils::GetStrings(choices, channelJoint);
-    safe_delete(channelJoint);
-    m_choiceChannel = new wxChoice(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, choices);
-    wxXmlResource::Get()->AttachUnknownControl("choiceChannel", m_choiceChannel);
+    m_choiceAccount = CreateChoice(m_accountJoint, "choiceAccount");
+    m_choiceChannel = CreateChoice(m_channelJoint, "choiceChannel");
     SetSize(640, 480);
     Center();
 }
 
 PasteBillDialog::~PasteBillDialog()
 {
+    safe_delete(m_accountJoint);
+    safe_delete(m_channelJoint);
 }
 
 void PasteBillDialog::OnInit([[maybe_unused]] wxInitDialogEvent &event)
@@ -63,9 +64,57 @@ void PasteBillDialog::OnInit([[maybe_unused]] wxInitDialogEvent &event)
     cb->Close();
 }
 
+void PasteBillDialog::OnChoiceAccount(wxCommandEvent &event)
+{
+    wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
+    auto sel = event.GetSelection();
+    if (sel != wxNOT_FOUND && sel != 0) {
+        m_choiceChannel->SetSelection(0);
+    }
+}
+
+void PasteBillDialog::OnChoiceChannel(wxCommandEvent &event)
+{
+    wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
+    auto sel = event.GetSelection();
+    if (sel != wxNOT_FOUND && sel != 0) {
+        m_choiceAccount->SetSelection(0);
+    }
+}
+
 bool PasteBillDialog::TransferDataFromWindow()
 {
     wxLogTrace(TM, "has %d lines of text.", m_text->GetNumberOfLines());
     m_content = m_text->GetValue();
+    m_account = GetSelectionId(m_choiceAccount, m_accountJoint);
+    m_channel = GetSelectionId(m_choiceChannel, m_channelJoint);
+    wxString prefix;
+    if (m_account != 0) {
+        prefix = m_accountJoint->lookup(m_account);
+    } else if (m_channel != 0) {
+        prefix = m_channelJoint->lookup(m_channel);
+    }
+    m_title = prefix + ":" + m_textTitle->GetValue();
     return true;
+}
+
+wxChoice *PasteBillDialog::CreateChoice(Joint<const char *, int32_t> *joint, wxString name)
+{
+    wxArrayString choices;
+    Utils::GetStrings(choices, joint);
+    choices.Insert(_("N/A"), 0);
+    auto pControl = new wxChoice(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, choices);
+    // Here the control get the id of placeholder in XRC, so wxID_ANY is ok.
+    wxXmlResource::Get()->AttachUnknownControl(name, pControl);
+    return pControl;
+}
+
+int PasteBillDialog::GetSelectionId(wxChoice *choice, Joint<const char *, int32_t> *joint)
+{
+    auto sel = choice->GetSelection();
+    if (sel != wxNOT_FOUND && sel != 0) {
+        auto v = choice->GetString(sel);
+        return joint->revLookup(v);
+    }
+    return 0;
 }

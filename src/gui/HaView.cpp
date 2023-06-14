@@ -123,7 +123,7 @@ void HaView::OnPasteBill([[maybe_unused]] wxCommandEvent &event)
     auto jointChannel = doc->GetChannelsDao().getJoint<1, 0>();
     PasteBillDialog dlg(nullptr, jointAccount, jointChannel);
     if (dlg.ShowModal() == wxID_OK) {
-        wxLogTrace(TM, "content = \"%s\"", dlg.GetContent());
+        wxLogTrace(TM, "title = \"%s\", content =\n%s", dlg.GetBillTitle(), dlg.GetContent());
     }
 }
 

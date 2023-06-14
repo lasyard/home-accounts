@@ -111,7 +111,7 @@ void HaView::OnMenu(wxCommandEvent &event)
 
 void HaView::OnUpdatePasteBill([[maybe_unused]] wxUpdateUIEvent &event)
 {
-    event.Enable(true);
+    event.Enable(GetCurrentPanel()->IsKindOf(CLASSINFO(DataPanel)));
 }
 
 void HaView::OnPasteBill([[maybe_unused]] wxCommandEvent &event)
@@ -124,6 +124,12 @@ void HaView::OnPasteBill([[maybe_unused]] wxCommandEvent &event)
     PasteBillDialog dlg(nullptr, jointAccount, jointChannel);
     if (dlg.ShowModal() == wxID_OK) {
         wxLogTrace(TM, "title = \"%s\", content =\n%s", dlg.GetBillTitle(), dlg.GetContent());
+        // New batch.
+        auto &dao = doc->GetBatchesDao();
+        dao.append();
+        dao.setString(dao.getNumberRows() - 1, 1, dlg.GetBillTitle().ToStdString());
+        doc->DoSave(dao);
+        // TODO
     }
 }
 

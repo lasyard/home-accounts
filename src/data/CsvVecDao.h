@@ -137,29 +137,33 @@ public:
         CD::m_parser->parseStringOfColumn(value, col, CD::Traits::getPtr(&data[row], col));
     }
 
-    bool insert(size_t pos)
+    I *insert(size_t pos)
     {
         auto &data = D::m_data;
         I item;
         initItem(&item);
-        data.insert(std::next(data.begin(), pos), std::move(item));
-        return true;
+        auto i = data.insert(std::next(data.begin(), pos), std::move(item));
+        return &*i;
     }
 
-    bool append()
+    void append()
     {
         auto &data = D::m_data;
         I item;
         initItem(&item);
         data.push_back(std::move(item));
-        return true;
     }
 
-    bool remove(size_t pos)
+    I *last()
+    {
+        auto &data = D::m_data;
+        return data.back();
+    }
+
+    void remove(size_t pos)
     {
         auto &data = D::m_data;
         data.erase(std::next(data.begin(), pos));
-        return true;
     }
 
     template <int COL> I *getByCol(ColType<I, COL> v)

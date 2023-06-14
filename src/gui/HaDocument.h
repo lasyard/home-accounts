@@ -72,9 +72,9 @@ public:
         return m_channelsDao;
     }
 
-    CsvIdVecDao<struct batch> &GetBatchDao()
+    CsvIdVecDao<struct batch> &GetBatchesDao()
     {
-        return m_batchDao;
+        return m_batchesDao;
     }
 
 private:
@@ -95,7 +95,7 @@ private:
     CsvIdVecDao<struct account_type> m_accountTypesDao;
     AccountsDao m_accountsDao;
     CsvIdVecDao<struct channel> m_channelsDao;
-    CsvIdVecDao<struct batch> m_batchDao;
+    CsvIdVecDao<struct batch> m_batchesDao;
 
     HaView *GetView() const;
 };

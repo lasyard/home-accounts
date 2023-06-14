@@ -39,6 +39,7 @@ HaDocument::HaDocument()
     , m_accountTypesDao(ACCOUNT_TYPES_SECTION_NAME)
     , m_accountsDao(ACCOUNTS_SECTION_NAME)
     , m_channelsDao(CHANNELS_SECTION_NAME)
+    , m_batchesDao(BATCHES_SECTION_NAME)
 {
     wxLog::AddTraceMask(TM);
 }
@@ -86,7 +87,7 @@ bool HaDocument::DoOpenDocument(const wxString &fileName)
             TryLoad(m_channelsDao);
             m_dataDao.setAccountJoint(m_accountsDao.getJoint<1, 0>());
             m_dataDao.setChannelJoint(m_channelsDao.getJoint<1, 0>());
-            TryLoad(m_batchDao);
+            TryLoad(m_batchesDao);
             return true;
         } catch (std::runtime_error &e) {
             wxLogError("Failed to open \"%s\": %s", (const char *)fileName, e.what());

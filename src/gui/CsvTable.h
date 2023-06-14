@@ -61,17 +61,20 @@ protected:
 
     bool InsertRow(size_t pos) override
     {
-        return m_dao->insert(pos);
+        m_dao->insert(pos);
+        return true;
     }
 
     bool AppendRow() override
     {
-        return m_dao->append();
+        m_dao->append();
+        return true;
     }
 
     bool DeleteRow(size_t pos) override
     {
-        return m_dao->remove(pos);
+        m_dao->remove(pos);
+        return true;
     }
 };
 

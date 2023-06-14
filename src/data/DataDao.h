@@ -33,6 +33,8 @@ public:
     void read(std::istream &is) override;
     void write(std::ostream &os) const override;
 
+    void readWrapped(std::istream &is, const char *wrapHeader);
+
     int getNumberRows() const override
     {
         return m_index.size();
@@ -142,6 +144,8 @@ private:
     void readItem(struct item *item);
     void writePage(std::ostream &os, const struct page *page) const;
     void writeItem(std::ostream &os, const struct item *item) const;
+    void beforeRead();
+    void afterRead();
 };
 
 #endif /* _DATA_DATA_DAO_H_ */

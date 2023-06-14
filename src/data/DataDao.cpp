@@ -3,6 +3,7 @@
 #include "CxxDefs.h"
 #include "DataDao.h"
 #include "ItemTraits.h"
+#include "ItemWrap.h"
 #include "Joint.h"
 
 #include "page.h"
@@ -32,8 +33,7 @@ DataDao::~DataDao()
 
 void DataDao::read(std::istream &is)
 {
-    release_data(&m_data);
-    init_data(&m_data);
+    beforeRead();
     int lineNo = 0;
     struct page *page = NULL;
     while (is.getline(m_buf, MAX_LINE_LENGTH)) {
@@ -64,8 +64,7 @@ void DataDao::read(std::istream &is)
             throw;
         }
     }
-    createIndex();
-    updateTotal();
+    afterRead();
 }
 
 void DataDao::write(std::ostream &os) const
@@ -80,6 +79,48 @@ void DataDao::write(std::ostream &os) const
             }
         }
     }
+}
+
+void DataDao::readWrapped(std::istream &is, const char *wrapHeader)
+{
+    beforeRead();
+    ItemWrap wrap(wrapHeader);
+    auto parser = wrap.createParser();
+    int lineNo = 0;
+    while (is.getline(m_buf, MAX_LINE_LENGTH)) {
+        lineNo++;
+        if (is_line_end(m_buf[0])) {
+            continue;
+        }
+        try {
+            struct item *item = (struct item *)malloc(sizeof(struct item));
+            if (item != NULL) {
+                init_item(item);
+                wrap.setItem(item);
+                parser->parseLine(m_buf, &wrap);
+                struct page *page = findPage(wrap.getDate());
+                if (page == nullptr) {
+                    page = add_page(&m_data);
+                    if (page != NULL) {
+                        page->date = wrap.getDate();
+                    } else {
+                        free(item);
+                        delete parser;
+                        throw std::bad_alloc();
+                    }
+                }
+                add_item_to(page, item);
+            } else {
+                delete parser;
+                throw std::bad_alloc();
+            }
+        } catch (ParseError &e) {
+            e.setLineNo(lineNo);
+            throw;
+        }
+    }
+    delete parser;
+    afterRead();
 }
 
 std::string DataDao::getRowLabel(int row)
@@ -349,4 +390,16 @@ void DataDao::writeItem(std::ostream &os, const struct item *item) const
 {
     m_parser->outputLine(m_buf, item);
     os << m_buf << std::endl;
+}
+
+void DataDao::beforeRead()
+{
+    release_data(&m_data);
+    init_data(&m_data);
+}
+
+void DataDao::afterRead()
+{
+    createIndex();
+    updateTotal();
 }

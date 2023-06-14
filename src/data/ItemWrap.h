@@ -12,21 +12,30 @@ public:
 
     int cols;
     ColumnType types[ItemTraits::cols];
-    date_t date;
-    struct item *item;
 
-    ItemWrap();
+    ItemWrap(const char *header);
     virtual ~ItemWrap();
 
     static void *getPtr(void *data, int i);
 
-    void parseHeader(const char *line);
-    void parseData(const char *line);
+    CsvParser *createParser() const;
+
+    date_t getDate() const
+    {
+        return m_date;
+    }
+
+    void setItem(struct item *item)
+    {
+        m_item = item;
+    }
 
 private:
-    int map[ItemTraits::cols];
+    static const char SEP = ',';
 
-    CsvParser *m_parser;
+    date_t m_date;
+    struct item *m_item;
+    int m_map[ItemTraits::cols];
 };
 
 #endif /* _DATA_ITEM_WRAP_H_ */

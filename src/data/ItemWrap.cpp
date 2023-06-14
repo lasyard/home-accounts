@@ -5,70 +5,51 @@
 
 #include "data/CxxDefs.h"
 
-ItemWrap::ItemWrap() : date(0), item(nullptr), m_parser(nullptr)
+ItemWrap::ItemWrap(const char *header) : m_date(0), m_item(nullptr)
 {
-    // default: date, amount, desc
-    cols = 3;
-    map[0] = DATE_INDEX;
-    map[1] = ItemTraits::DESC_INDEX;
-    map[2] = ItemTraits::AMOUNT_INDEX;
-    types[0] = DATE;
-    types[1] = CSTR;
-    types[2] = MONEY;
+    cols = 0;
+    for (const char *p = header; *p != '\0';) {
+        struct string s;
+        p = parse_string(p, &s, SEP);
+        if (string_cstrcmp(&s, "date") == 0) {
+            m_map[cols] = DATE_INDEX;
+            types[cols] = DATE;
+        } else if (string_cstrcmp(&s, "time") == 0) {
+            m_map[cols] = ItemTraits::TIME_INDEX;
+            types[cols] = ItemTraits::types[ItemTraits::TIME_INDEX];
+        } else if (string_cstrcmp(&s, "amount") == 0) {
+            m_map[cols] = ItemTraits::AMOUNT_INDEX;
+            types[cols] = ItemTraits::types[ItemTraits::AMOUNT_INDEX];
+        } else if (string_cstrcmp(&s, "desc") == 0) {
+            m_map[cols] = ItemTraits::DESC_INDEX;
+            types[cols] = ItemTraits::types[ItemTraits::DESC_INDEX];
+        } else {
+            m_map[cols] = -1;
+            types[cols] = IGNORE;
+        }
+        ++cols;
+        // Skip the sep.
+        if (*p == SEP) {
+            ++p;
+        }
+    }
 }
 
 ItemWrap::~ItemWrap()
 {
-    safe_delete(m_parser);
 }
 
 void *ItemWrap::getPtr(void *data, int i)
 {
     ItemWrap *wrap = static_cast<ItemWrap *>(data);
-    int index = wrap->map[i];
+    int index = wrap->m_map[i];
     if (index == DATE_INDEX) {
-        return &wrap->date;
+        return &wrap->m_date;
     }
-    return ItemTraits::getPtr(wrap->item, index);
+    return ItemTraits::getPtr(wrap->m_item, index);
 }
 
-void ItemWrap::parseHeader(const char *line)
+CsvParser *ItemWrap::createParser() const
 {
-    const char *p = line;
-    struct string s;
-    cols = 0;
-    for (int i = 0; *p != '\0'; ++i) {
-        p = parse_string(p, &s, ',');
-        int index = -1;
-        if (string_cstrcmp(&s, "date") == 0) {
-            index = DATE_INDEX;
-            map[cols] = index;
-            types[cols] = DATE;
-        } else if (string_cstrcmp(&s, "time") == 0) {
-            index = ItemTraits::TIME_INDEX;
-            map[cols] = index;
-            types[cols] = ItemTraits::types[index];
-        } else if (string_cstrcmp(&s, "amount") == 0) {
-            index = ItemTraits::AMOUNT_INDEX;
-            map[cols] = index;
-            types[cols] = ItemTraits::types[index];
-        } else if (string_cstrcmp(&s, "desc") == 0) {
-            index = ItemTraits::DESC_INDEX;
-            map[cols] = index;
-            types[cols] = ItemTraits::types[index];
-        } else {
-            types[cols] = IGNORE;
-        }
-        ++cols;
-        ++p; // Skip the sep
-    }
-    safe_delete(m_parser);
-}
-
-void ItemWrap::parseData(const char *line)
-{
-    if (m_parser == nullptr) {
-        m_parser = new CsvParser(cols, types, getPtr);
-    }
-    m_parser->parseLine(line, this);
+    return new CsvParser(cols, types, getPtr);
 }

@@ -1,5 +1,6 @@
 #include <sstream>
 
+#include <wx/datetime.h>
 #include <wx/log.h>
 #include <wx/msgdlg.h>
 #include <wx/textdlg.h>
@@ -30,11 +31,15 @@ const std::string HaDocument::ACCOUNTS_SECTION_NAME = "configs/accounts";
 const std::string HaDocument::CHANNELS_SECTION_NAME = "configs/channels";
 const std::string HaDocument::BATCHES_SECTION_NAME = "configs/batches";
 
+const std::string HaDocument::DATA_SECTION_PREFIX = "data";
+const std::string HaDocument::BILL_SECTION_PREFIX = "bill";
+
 HaDocument::HaDocument()
     : wxDocument()
     , m_doc(new SectionFile())
     , m_pass()
     , m_dataDao()
+    , m_billDao()
     , m_ownersDao(OWNERS_SECTION_NAME)
     , m_accountTypesDao(ACCOUNT_TYPES_SECTION_NAME)
     , m_accountsDao(ACCOUNTS_SECTION_NAME)
@@ -87,6 +92,8 @@ bool HaDocument::DoOpenDocument(const wxString &fileName)
             TryLoad(m_channelsDao);
             m_dataDao.setAccountJoint(m_accountsDao.getJoint<1, 0>());
             m_dataDao.setChannelJoint(m_channelsDao.getJoint<1, 0>());
+            m_billDao.setAccountJoint(m_accountsDao.getJoint<1, 0>());
+            m_billDao.setChannelJoint(m_channelsDao.getJoint<1, 0>());
             TryLoad(m_batchesDao);
             return true;
         } catch (std::runtime_error &e) {
@@ -186,6 +193,41 @@ void HaDocument::DoSave(DaoBase &dao)
         std::ostringstream os;
         dao.write(os);
         m_doc->put(name, os.str());
+    }
+}
+
+void HaDocument::TryLoadData(const wxDateTime &date)
+{
+    m_dataDao.setName(
+        DATA_SECTION_PREFIX + wxString::Format("/%04d/%02d", date.GetYear(), date.GetMonth() + 1).ToStdString()
+    );
+    TryLoad(m_dataDao);
+}
+
+void HaDocument::CreateBill(
+    const wxString &title,
+    const wxString &content,
+    const wxString &account,
+    const wxString &channel
+)
+{
+    // New batch.
+    m_batchesDao.append();
+    m_batchesDao.setString(m_batchesDao.getNumberRows() - 1, 1, title.ToStdString());
+    DoSave(m_batchesDao);
+    // Save bill.
+    std::istringstream is(content.ToStdString());
+    m_billDao.setName(BILL_SECTION_PREFIX + wxString::Format("/%04d", m_batchesDao.last()->id).ToStdString());
+    try {
+        m_billDao.readWrapped(is, "date,time,desc,amount");
+        for (int i = 0; i < m_billDao.getNumberRows(); ++i) {
+            m_billDao.setAccount(i, account.ToStdString());
+            m_billDao.setChannel(i, channel.ToStdString());
+        }
+        DoSave(m_billDao);
+    } catch (const std::exception &e) {
+        m_batchesDao.remove(m_batchesDao.getNumberRows() - 1);
+        wxLogError(e.what());
     }
 }
 

@@ -18,6 +18,8 @@ class PasteBillDialog : public wxDialog
 public:
     DECLARE_TM()
 
+    static const wxString NA;
+
     PasteBillDialog(
         wxWindow *parent = nullptr,
         Joint<const char *, int32_t> *accountJoint = nullptr,
@@ -30,12 +32,12 @@ public:
         return m_title;
     }
 
-    int GetAccount() const
+    const wxString &GetAccount() const
     {
         return m_account;
     }
 
-    int GetChannel() const
+    const wxString &GetChannel() const
     {
         return m_channel;
     }
@@ -54,8 +56,8 @@ protected:
     Joint<const char *, int32_t> *m_channelJoint;
 
     wxString m_title;
-    int m_account;
-    int m_channel;
+    wxString m_account;
+    wxString m_channel;
     wxString m_content;
 
     wxTextCtrl *m_textTitle;
@@ -66,9 +68,9 @@ protected:
     bool TransferDataFromWindow() override;
 
 private:
-    wxChoice *CreateChoice(Joint<const char *, int32_t> *joint, wxString name);
+    static wxString GetSelection(wxChoice *choice);
 
-    int GetSelectionId(wxChoice *choice, Joint<const char *, int32_t> *joint);
+    wxChoice *CreateChoice(Joint<const char *, int32_t> *joint, wxString name);
 };
 
 #endif /* _GUI_PASTE_BILL_DIALOG_H_ */

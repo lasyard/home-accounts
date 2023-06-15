@@ -17,6 +17,11 @@ protected:
     {
     }
 
+private:
+    DaoBase([[maybe_unused]] const DaoBase &dao)
+    {
+    }
+
 public:
     static std::string wrapString(const char *str)
     {

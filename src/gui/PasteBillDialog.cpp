@@ -22,6 +22,8 @@ EVT_CHOICE(ID_CHOICE_ACCOUNT, PasteBillDialog::OnChoiceAccount)
 EVT_CHOICE(ID_CHOICE_CHANNEL, PasteBillDialog::OnChoiceChannel)
 END_EVENT_TABLE()
 
+const wxString PasteBillDialog::NA = _("N/A");
+
 PasteBillDialog::PasteBillDialog(
     wxWindow *parent,
     Joint<const char *, int32_t> *accountJoint,
@@ -31,8 +33,8 @@ PasteBillDialog::PasteBillDialog(
     , m_accountJoint(accountJoint)
     , m_channelJoint(channelJoint)
     , m_title(_("Untitled"))
-    , m_account(0)
-    , m_channel(0)
+    , m_account(NA)
+    , m_channel(NA)
     , m_content()
 {
     wxLog::AddTraceMask(TM);
@@ -85,36 +87,26 @@ void PasteBillDialog::OnChoiceChannel(wxCommandEvent &event)
 bool PasteBillDialog::TransferDataFromWindow()
 {
     wxLogTrace(TM, "has %d lines of text.", m_text->GetNumberOfLines());
+    m_title = m_textTitle->GetValue();
+    m_account = GetSelection(m_choiceAccount);
+    m_channel = GetSelection(m_choiceChannel);
     m_content = m_text->GetValue();
-    m_account = GetSelectionId(m_choiceAccount, m_accountJoint);
-    m_channel = GetSelectionId(m_choiceChannel, m_channelJoint);
-    wxString prefix;
-    if (m_account != 0) {
-        prefix = m_accountJoint->lookup(m_account);
-    } else if (m_channel != 0) {
-        prefix = m_channelJoint->lookup(m_channel);
-    }
-    m_title = prefix + ":" + m_textTitle->GetValue();
     return true;
+}
+
+wxString PasteBillDialog::GetSelection(wxChoice *choice)
+{
+    auto sel = choice->GetSelection();
+    return (sel != wxNOT_FOUND) ? choice->GetString(sel) : NA;
 }
 
 wxChoice *PasteBillDialog::CreateChoice(Joint<const char *, int32_t> *joint, wxString name)
 {
     wxArrayString choices;
     Utils::GetStrings(choices, joint);
-    choices.Insert(_("N/A"), 0);
+    choices.Insert(NA, 0);
     auto pControl = new wxChoice(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, choices);
     // Here the control get the id of placeholder in XRC, so wxID_ANY is ok.
     wxXmlResource::Get()->AttachUnknownControl(name, pControl);
     return pControl;
-}
-
-int PasteBillDialog::GetSelectionId(wxChoice *choice, Joint<const char *, int32_t> *joint)
-{
-    auto sel = choice->GetSelection();
-    if (sel != wxNOT_FOUND && sel != 0) {
-        auto v = choice->GetString(sel);
-        return joint->revLookup(v);
-    }
-    return 0;
 }

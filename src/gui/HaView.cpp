@@ -124,12 +124,7 @@ void HaView::OnPasteBill([[maybe_unused]] wxCommandEvent &event)
     PasteBillDialog dlg(nullptr, jointAccount, jointChannel);
     if (dlg.ShowModal() == wxID_OK) {
         wxLogTrace(TM, "title = \"%s\", content =\n%s", dlg.GetBillTitle(), dlg.GetContent());
-        // New batch.
-        auto &dao = doc->GetBatchesDao();
-        dao.append();
-        dao.setString(dao.getNumberRows() - 1, 1, dlg.GetBillTitle().ToStdString());
-        doc->DoSave(dao);
-        // TODO
+        doc->CreateBill(dlg.GetBillTitle(), dlg.GetContent(), dlg.GetAccount(), dlg.GetChannel());
     }
 }
 

@@ -12,6 +12,8 @@
 
 #include "file/FileExeptions.h"
 
+class wxDateTime;
+
 class HaView;
 class SectionFile;
 
@@ -46,10 +48,18 @@ public:
 
     void TryLoad(DaoBase &dao);
     void DoSave(DaoBase &dao);
+    void TryLoadData(const wxDateTime &date);
+
+    void CreateBill(const wxString &title, const wxString &content, const wxString &account, const wxString &channel);
 
     DataDao &GetDataDao()
     {
         return m_dataDao;
+    }
+
+    DataDao &GetBillDao()
+    {
+        return m_billDao;
     }
 
     CsvIdVecDao<struct owner> &GetOwnersDao()
@@ -85,12 +95,15 @@ private:
     static const std::string ACCOUNTS_SECTION_NAME;
     static const std::string CHANNELS_SECTION_NAME;
     static const std::string BATCHES_SECTION_NAME;
-    static const std::string BILL_SECTION_NAME;
+
+    static const std::string DATA_SECTION_PREFIX;
+    static const std::string BILL_SECTION_PREFIX;
 
     SectionFile *m_doc;
     wxString m_pass;
 
     DataDao m_dataDao;
+    DataDao m_billDao;
     CsvIdVecDao<struct owner> m_ownersDao;
     CsvIdVecDao<struct account_type> m_accountTypesDao;
     AccountsDao m_accountsDao;

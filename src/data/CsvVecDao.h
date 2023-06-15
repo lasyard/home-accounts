@@ -157,7 +157,7 @@ public:
     I *last()
     {
         auto &data = D::m_data;
-        return data.back();
+        return &data.back();
     }
 
     void remove(size_t pos)

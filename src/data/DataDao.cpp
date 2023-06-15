@@ -243,15 +243,15 @@ void DataDao::setAccount(int row, const std::string &value)
 {
     struct item *item = safeGetItem(row);
     if (item != nullptr) {
-        item->account = m_accountJoint->revLookup(value.c_str());
+        item->account = (m_accountJoint != nullptr) ? m_accountJoint->revLookup(value.c_str()) : 0;
     }
 }
 
 void DataDao::setChannel(int row, const std::string &value)
 {
     struct item *item = safeGetItem(row);
-    if (item != nullptr) {
-        item->channel = m_channelJoint->revLookup(value.c_str());
+    if (item != nullptr && m_channelJoint != nullptr) {
+        item->channel = (m_channelJoint != nullptr) ? m_channelJoint->revLookup(value.c_str()) : 0;
     }
 }
 

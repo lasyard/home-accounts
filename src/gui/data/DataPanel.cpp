@@ -31,7 +31,6 @@ EVT_MENU(wxID_DELETE, DataPanel::OnMenuModify)
 END_EVENT_TABLE()
 
 const wxString DataPanel::LABEL = _("Transactions");
-const wxString DataPanel::DATA_FILE_PREFIX = "data";
 
 DataPanel::DataPanel(wxWindow *parent, HaDocument *doc) : HaPanel(doc)
 {
@@ -119,10 +118,8 @@ void DataPanel::OnMenuModify(wxCommandEvent &event)
 
 void DataPanel::ShowData(const wxDateTime &date)
 {
-    auto name = GetSectionName(date);
+    m_doc->TryLoadData(date);
     auto &dao = m_doc->GetDataDao();
-    dao.setName(name.ToStdString());
-    m_doc->TryLoad(dao);
     // TODO: Get the correct balance.
     dao.setInitialBalance(0);
     wxDateTime lastDay = date.GetLastMonthDay();

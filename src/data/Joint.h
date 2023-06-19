@@ -26,7 +26,9 @@ public:
      */
     virtual S revLookup(T t) const = 0;
 
-    virtual void forEach(std::function<bool(const T *)> callback) const = 0;
+    virtual void forEachTarget(std::function<bool(const T *)> callback) const = 0;
+
+    virtual void forEachSource(std::function<bool(const S *)> callback) const = 0;
 };
 
 #endif /* _DATA_JOINT_H_ */

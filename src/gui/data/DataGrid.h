@@ -23,6 +23,8 @@ public:
     void OnInsert(wxCommandEvent &event);
     void OnUpdateDelete(wxUpdateUIEvent &event);
     void OnDelete(wxCommandEvent &event);
+
+    void CreateDataTable(DataDao &dao);
 };
 
 #endif /* _DATA_DATA_GRID_H_ */

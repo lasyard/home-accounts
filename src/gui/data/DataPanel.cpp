@@ -126,17 +126,7 @@ void DataPanel::ShowData(const wxDateTime &date)
     int year = lastDay.GetYear();
     int month = lastDay.GetMonth() + 1;
     dao.fillMissingPages(jdn(year, month, 1), jdn(year, month, lastDay.GetDay()));
-    auto table = new DataTable(&dao);
-    table->UpdateChoicesFromJoints();
-    m_grid->SetTable(table, true);
-    // Vital, for the original grid cursor may be out of range.
-    int cursorRow = m_grid->GetGridCursorRow();
-    int maxRow = table->GetRowsCount() - 1;
-    if (cursorRow > maxRow) {
-        m_grid->SetGridCursor(maxRow, m_grid->GetGridCursorCol());
-    }
-    m_grid->SetFocus();
-    m_grid->RefreshContent();
+    m_grid->CreateDataTable(dao);
 }
 
 wxString DataPanel::Description()

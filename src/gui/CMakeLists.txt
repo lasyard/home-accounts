@@ -42,8 +42,8 @@ add_exe(${APP_NAME}
     HaMainFrame.cpp
     HaPanel.cpp
     HaView.cpp
-    PasteBillDialog.cpp
 )
+add_subdirectory(bill)
 add_subdirectory(configs)
 add_subdirectory(data)
 add_subdirectory(raw)

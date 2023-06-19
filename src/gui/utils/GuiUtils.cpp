@@ -1,9 +1,14 @@
+#include <wx/choice.h>
 #include <wx/dialog.h>
 #include <wx/sizer.h>
 #include <wx/textctrl.h>
 #include <wx/textfile.h>
 
+#include "DaoUtils.h"
 #include "GuiUtils.h"
+#include "IntClientData.h"
+
+#include "data/Joint.h"
 
 bool Utils::DelegateEvent(wxWindow *win, wxEvent &event)
 {
@@ -36,4 +41,28 @@ void Utils::ShowTextBox(const wxString &title, const wxString &text)
     sizer->Add(ctlText, wxSizerFlags(1).Expand().Border());
     dlg.CenterOnParent();
     dlg.ShowModal();
+}
+
+void Utils::SetChoiceItems(wxChoice *choice, Joint<const char *, int32_t> *joint, bool withZero)
+{
+    choice->Clear();
+    if (withZero) {
+        choice->Append(NA);
+    }
+    wxArrayString choices;
+    Utils::GetStrings(choices, joint);
+    choice->Append(choices);
+}
+
+void Utils::SetChoiceItemsWithIds(wxChoice *choice, Joint<const char *, int32_t> *joint, bool withZero)
+{
+    choice->Clear();
+    if (withZero) {
+        choice->Append(NA, new IntClientData(0));
+    }
+    wxArrayString choices;
+    Utils::GetStrings(choices, joint);
+    wxClientData *clientData[choices.size()];
+    Utils::GetIds(clientData, joint);
+    choice->Append(choices, clientData);
 }

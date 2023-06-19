@@ -90,3 +90,18 @@ void DataGrid::OnDelete([[maybe_unused]] wxCommandEvent &event)
     }
     EndBatch();
 }
+
+void DataGrid::CreateDataTable(DataDao &dao)
+{
+    auto table = new DataTable(&dao);
+    table->UpdateChoicesFromJoints();
+    SetTable(table, true);
+    // Vital, for the original grid cursor may be out of range.
+    int cursorRow = GetGridCursorRow();
+    int maxRow = table->GetRowsCount() - 1;
+    if (cursorRow > maxRow) {
+        SetGridCursor(maxRow, GetGridCursorCol());
+    }
+    SetFocus();
+    RefreshContent();
+}

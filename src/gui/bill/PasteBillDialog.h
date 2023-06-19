@@ -1,9 +1,9 @@
-#ifndef _GUI_PASTE_BILL_DIALOG_H_
-#define _GUI_PASTE_BILL_DIALOG_H_
+#ifndef _BILL_PASTE_BILL_DIALOG_H_
+#define _BILL_PASTE_BILL_DIALOG_H_
 
 #include <wx/dialog.h>
 
-#include "Common.h"
+#include "../Common.h"
 
 template <typename T, typename S> class Joint;
 
@@ -17,8 +17,6 @@ class PasteBillDialog : public wxDialog
 
 public:
     DECLARE_TM()
-
-    static const wxString NA;
 
     PasteBillDialog(
         wxWindow *parent = nullptr,
@@ -47,9 +45,9 @@ public:
         return m_content;
     }
 
-    virtual void OnInit(wxInitDialogEvent &event);
-    virtual void OnChoiceAccount(wxCommandEvent &event);
-    virtual void OnChoiceChannel(wxCommandEvent &event);
+    void OnInit(wxInitDialogEvent &event);
+    void OnChoiceAccount(wxCommandEvent &event);
+    void OnChoiceChannel(wxCommandEvent &event);
 
 protected:
     Joint<const char *, int32_t> *m_accountJoint;
@@ -66,11 +64,6 @@ protected:
     wxTextCtrl *m_text;
 
     bool TransferDataFromWindow() override;
-
-private:
-    static wxString GetSelection(wxChoice *choice);
-
-    wxChoice *CreateChoice(Joint<const char *, int32_t> *joint, wxString name);
 };
 
-#endif /* _GUI_PASTE_BILL_DIALOG_H_ */
+#endif /* _BILL_PASTE_BILL_DIALOG_H_ */

@@ -1,6 +1,5 @@
 #include <sstream>
 
-#include <wx/datetime.h>
 #include <wx/log.h>
 #include <wx/msgdlg.h>
 #include <wx/textdlg.h>
@@ -198,26 +197,36 @@ void HaDocument::DoSave(DaoBase &dao)
 
 void HaDocument::TryLoadData(const wxDateTime &date)
 {
-    m_dataDao.setName(
-        DATA_SECTION_PREFIX + wxString::Format("/%04d/%02d", date.GetYear(), date.GetMonth() + 1).ToStdString()
-    );
+    m_dataDao.setName(DataSectionName(date));
     TryLoad(m_dataDao);
 }
 
-void HaDocument::CreateBill(
+void HaDocument::TryLoadBill(int batch)
+{
+    m_billDao.setName(BillSectionName(batch));
+    TryLoad(m_billDao);
+}
+
+bool HaDocument::CreateBill(
     const wxString &title,
     const wxString &content,
     const wxString &account,
     const wxString &channel
 )
 {
+    wxString realTitle;
+    if (!account.IsEmpty()) {
+        realTitle = account + ":" + title;
+    } else if (!channel.IsEmpty()) {
+        realTitle = channel + ":" + title;
+    }
     // New batch.
     m_batchesDao.append();
-    m_batchesDao.setString(m_batchesDao.getNumberRows() - 1, 1, title.ToStdString());
+    m_batchesDao.setString(m_batchesDao.getNumberRows() - 1, 1, realTitle.ToStdString());
     DoSave(m_batchesDao);
     // Save bill.
     std::istringstream is(content.ToStdString());
-    m_billDao.setName(BILL_SECTION_PREFIX + wxString::Format("/%04d", m_batchesDao.last()->id).ToStdString());
+    m_billDao.setName(BillSectionName(m_batchesDao.last()->id));
     try {
         m_billDao.readWrapped(is, "date,time,desc,amount");
         for (int i = 0; i < m_billDao.getNumberRows(); ++i) {
@@ -225,10 +234,13 @@ void HaDocument::CreateBill(
             m_billDao.setChannel(i, channel.ToStdString());
         }
         DoSave(m_billDao);
+        Modify(true);
+        return true;
     } catch (const std::exception &e) {
         m_batchesDao.remove(m_batchesDao.getNumberRows() - 1);
         wxLogError(e.what());
     }
+    return false;
 }
 
 HaView *HaDocument::GetView() const

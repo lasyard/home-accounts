@@ -22,5 +22,6 @@
 #define ID_BOOK_CONFIGS   XRCID("bookConfigs")
 #define ID_CHOICE_ACCOUNT XRCID("choiceAccount")
 #define ID_CHOICE_CHANNEL XRCID("choiceChannel")
+#define ID_CHOICE_BILL    XRCID("choiceBill")
 
 #endif /* _GUI_DEFS_H_ */

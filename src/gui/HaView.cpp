@@ -8,12 +8,11 @@
 #include "HaDocument.h"
 #include "HaMainFrame.h"
 #include "HaPanel.h"
-#include "PasteBillDialog.h"
 
+#include "bill/BillPanel.h"
 #include "configs/ConfigsPanel.h"
 #include "data/DataPanel.h"
 #include "raw/RawPanel.h"
-#include "utils/DaoUtils.h"
 #include "utils/GuiUtils.h"
 
 IMPLEMENT_DYNAMIC_CLASS(HaView, wxView)
@@ -29,8 +28,8 @@ EVT_UPDATE_UI(ID_INSERT, HaView::OnUpdateMenu)
 EVT_MENU(ID_INSERT, HaView::OnMenu)
 EVT_UPDATE_UI(wxID_DELETE, HaView::OnUpdateMenu)
 EVT_MENU(wxID_DELETE, HaView::OnMenu)
-EVT_UPDATE_UI(ID_PASTE_BILL, HaView::OnUpdatePasteBill)
-EVT_MENU(ID_PASTE_BILL, HaView::OnPasteBill)
+EVT_UPDATE_UI(ID_PASTE_BILL, HaView::OnUpdateMenu)
+EVT_MENU(ID_PASTE_BILL, HaView::OnMenu)
 EVT_UPDATE_UI(ID_RAW_MODE, HaView::OnUpdateRawMode)
 EVT_MENU(ID_RAW_MODE, HaView::OnRawMode)
 END_EVENT_TABLE()
@@ -52,6 +51,7 @@ bool HaView::OnCreate(wxDocument *doc, [[maybe_unused]] long flags)
     m_book = XRCCTRL(*frame, "book", wxNotebook);
     auto haDoc = static_cast<HaDocument *>(doc);
     HaPanel::AddToBook<DataPanel>(m_book, haDoc);
+    HaPanel::AddToBook<BillPanel>(m_book, haDoc);
     HaPanel::AddToBook<ConfigsPanel>(m_book, haDoc);
     m_book->Show();
     Activate(true);
@@ -107,25 +107,6 @@ void HaView::OnMenu(wxCommandEvent &event)
 {
     auto panel = GetCurrentPanel();
     Utils::DelegateEvent(panel, event);
-}
-
-void HaView::OnUpdatePasteBill([[maybe_unused]] wxUpdateUIEvent &event)
-{
-    event.Enable(GetCurrentPanel()->IsKindOf(CLASSINFO(DataPanel)));
-}
-
-void HaView::OnPasteBill([[maybe_unused]] wxCommandEvent &event)
-{
-    wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
-    auto doc = GetHaDocument();
-    wxArrayString accountChoices;
-    auto jointAccount = doc->GetAccountsDao().getJoint<1, 0>();
-    auto jointChannel = doc->GetChannelsDao().getJoint<1, 0>();
-    PasteBillDialog dlg(nullptr, jointAccount, jointChannel);
-    if (dlg.ShowModal() == wxID_OK) {
-        wxLogTrace(TM, "title = \"%s\", content =\n%s", dlg.GetBillTitle(), dlg.GetContent());
-        doc->CreateBill(dlg.GetBillTitle(), dlg.GetContent(), dlg.GetAccount(), dlg.GetChannel());
-    }
 }
 
 void HaView::OnUpdateRawMode(wxUpdateUIEvent &event)

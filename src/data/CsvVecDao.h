@@ -73,9 +73,14 @@ public:
             return m_dao->getColByCol<S_COL, T_COL>(d);
         }
 
-        void forEach(std::function<bool(const ColType<I, T_COL> *)> callback) const override
+        void forEachTarget(std::function<bool(const ColType<I, T_COL> *)> callback) const override
         {
             m_dao->forEach<T_COL>(callback);
+        }
+
+        void forEachSource(std::function<bool(const ColType<I, S_COL> *)> callback) const override
+        {
+            m_dao->forEach<S_COL>(callback);
         }
 
     private:

@@ -1,6 +1,7 @@
 #ifndef _GUI_HA_DOCUMENT_H_
 #define _GUI_HA_DOCUMENT_H_
 
+#include <wx/datetime.h>
 #include <wx/docview.h>
 
 #include "Common.h"
@@ -11,8 +12,6 @@
 #include "data/DataDao.h"
 
 #include "file/FileExeptions.h"
-
-class wxDateTime;
 
 class HaView;
 class SectionFile;
@@ -49,8 +48,20 @@ public:
     void TryLoad(DaoBase &dao);
     void DoSave(DaoBase &dao);
     void TryLoadData(const wxDateTime &date);
+    void TryLoadBill(int batch);
 
-    void CreateBill(const wxString &title, const wxString &content, const wxString &account, const wxString &channel);
+    /**
+     * @brief Create a new bill section.
+     *
+     * @param title the title of bill
+     * @param content the string to parse
+     * @param account the account name
+     * @param channel the channel name
+     * @return true created successfully
+     * @return false failed to create
+     */
+    [[nodiscard]] bool
+    CreateBill(const wxString &title, const wxString &content, const wxString &account, const wxString &channel);
 
     DataDao &GetDataDao()
     {
@@ -109,6 +120,16 @@ private:
     AccountsDao m_accountsDao;
     CsvIdVecDao<struct channel> m_channelsDao;
     CsvIdVecDao<struct batch> m_batchesDao;
+
+    static std::string DataSectionName(const wxDateTime &date)
+    {
+        return DATA_SECTION_PREFIX + wxString::Format("/%04d/%02d", date.GetYear(), date.GetMonth() + 1).ToStdString();
+    }
+
+    static std::string BillSectionName(int batch)
+    {
+        return BILL_SECTION_PREFIX + wxString::Format("/%04d", batch).ToStdString();
+    }
 
     HaView *GetView() const;
 };

@@ -51,5 +51,7 @@ void *ItemWrap::getPtr(void *data, int i)
 
 CsvParser *ItemWrap::createParser() const
 {
-    return new CsvParser(cols, types, getPtr);
+    auto parser = new CsvParser(cols, types, getPtr);
+    parser->setSeparator('\t');
+    return parser;
 }

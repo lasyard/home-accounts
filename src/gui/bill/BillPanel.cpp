@@ -108,7 +108,7 @@ void BillPanel::OnPasteBill([[maybe_unused]] wxCommandEvent &event)
     if (dlg.ShowModal() == wxID_OK) {
         wxLogTrace(TM, "title = \"%s\", content =\n%s", dlg.GetBillTitle(), dlg.GetContent());
         if (m_doc->CreateBill(dlg.GetBillTitle(), dlg.GetContent(), dlg.GetAccount(), dlg.GetChannel())) {
-            // TODO: notify the bill panel to show the newest bill.
+            OnUpdate();
         }
     }
 }

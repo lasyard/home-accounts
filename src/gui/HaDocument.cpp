@@ -175,11 +175,11 @@ void HaDocument::TryLoad(DaoBase &dao)
     auto &name = dao.getName();
     try {
         dao.readString(m_doc->get(name));
-    } catch (SectionNotFound &e) {
-        wxLogStatus(e.what());
+    } catch (const SectionNotFound &e) {
+        wxLogStatus("%s", e.what());
         dao.readString("");
-    } catch (std::exception &e) {
-        wxLogError(e.what());
+    } catch (const std::exception &e) {
+        wxLogError("%s", e.what());
     }
 }
 
@@ -228,7 +228,7 @@ bool HaDocument::CreateBill(
     std::istringstream is(content.ToStdString());
     m_billDao.setName(BillSectionName(m_batchesDao.last()->id));
     try {
-        m_billDao.readWrapped(is, "date,time,desc,amount");
+        m_billDao.readWrapped(is, "date,,,desc,,amount");
         for (int i = 0; i < m_billDao.getNumberRows(); ++i) {
             m_billDao.setAccount(i, account.ToStdString());
             m_billDao.setChannel(i, channel.ToStdString());
@@ -238,7 +238,7 @@ bool HaDocument::CreateBill(
         return true;
     } catch (const std::exception &e) {
         m_batchesDao.remove(m_batchesDao.getNumberRows() - 1);
-        wxLogError(e.what());
+        wxLogError("%s", e.what());
     }
     return false;
 }

@@ -18,7 +18,7 @@ const char *parse_money(const char *buf, money_t *data, char sep, int mul)
                 decimal = true;
                 ++p;
                 break;
-            } else {
+            } else if (*p != ',' || sep == ',') { // allow delimeter of numbers
                 return NULL;
             }
         }

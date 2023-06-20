@@ -19,14 +19,14 @@ int jdn(int year, int month, int day)
     return day + 30 * m + (3 * m + 2) / 5 + 365 * y + y / 4 - y / 100 + y / 400 - 32045;
 }
 
-const char *parse_date(const char *buf, date_t *data, char sep, char dsep)
+const char *parse_date(const char *buf, date_t *data, char sep, char dateSep)
 {
     int32_t year, month, day;
     const char *p = buf;
-    p = parse_int32(p, &year, dsep);
+    p = parse_int32(p, &year, dateSep);
     return_null_if_null(p);
     ++p;
-    p = parse_int32(p, &month, dsep);
+    p = parse_int32(p, &month, dateSep);
     return_null_if_null(p);
     ++p;
     p = parse_int32(p, &day, sep);
@@ -51,7 +51,7 @@ const char *parse_time(const char *buf, dtime_t *data, char sep)
     return p;
 }
 
-char *output_date(char *buf, date_t data)
+char *output_date(char *buf, date_t data, char dateSep)
 {
     int j = data + 32044;
     int g = j / 146097;
@@ -73,9 +73,9 @@ char *output_date(char *buf, date_t data)
     int day = d + 1;
     char *p = buf;
     p = output_int64_len(p, year, 4);
-    *(p++) = '-';
+    *(p++) = dateSep;
     p = output_int64_len(p, month, 2);
-    *(p++) = '-';
+    *(p++) = dateSep;
     p = output_int64_len(p, day, 2);
     return p;
 }

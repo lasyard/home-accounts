@@ -381,9 +381,7 @@ void DataDao::readItem(struct item *item)
 
 void DataDao::writePage(std::ostream &os, const struct page *page) const
 {
-    char *p = output_date(m_buf, page->date);
-    *p = '\0';
-    os << '#' << m_buf << std::endl;
+    os << '#' << m_parser->toStringByType(DATE, &page->date) << std::endl;
 }
 
 void DataDao::writeItem(std::ostream &os, const struct item *item) const

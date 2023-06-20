@@ -19,6 +19,16 @@ public:
         m_sep = sep;
     }
 
+    void setNumSeparator(char sep)
+    {
+        m_numSep = sep;
+    }
+
+    void setDateSeparator(char sep)
+    {
+        m_dateSep = sep;
+    }
+
     void setMoneyPrec(int moneyPrec)
     {
         m_moneyPrec = moneyPrec;
@@ -41,9 +51,9 @@ public:
     void parseLine(const char *line, void *data);
     char *outputLine(char *buf, const void *data);
 
-    std::string toStringByType(ColumnType type, const void *data);
+    [[nodiscard]] std::string toStringByType(ColumnType type, const void *data);
 
-    std::string toStringOfColumn(int col, const void *data)
+    [[nodiscard]] std::string toStringOfColumn(int col, const void *data)
     {
         return toStringByType(m_types[col], data);
     }
@@ -59,6 +69,8 @@ protected:
     int m_cols;                           // The number of columns.
     const ColumnType *m_types;            // The types of each column.
     char m_sep;                           // The separator of fields.
+    char m_numSep;                        // The separator in numbers.
+    char m_dateSep;                       // The separator of y/m/d in date.
     int m_moneyPrec;                      // The precision of money.
     int m_moneyMul;                       // The scale factor of money.
     void *(*m_getPtr)(void *data, int i); // Function to get member ptr of data.

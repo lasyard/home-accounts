@@ -11,10 +11,15 @@ CsvParser::CsvParser(int cols, const ColumnType *types, void *(*getPtr)(void *da
     : m_cols(cols)
     , m_types(types)
     , m_sep(',')
+    , m_numSep(' ')
+    , m_dateSep('-')
     , m_moneyPrec(2)
     , m_moneyMul(100)
     , m_getPtr(getPtr)
 {
+    if (m_numSep == m_sep) {
+        throw std::runtime_error("Cannot use the same delimiter for splitting fields and numbers.");
+    }
 }
 
 void CsvParser::parseLine(const char *line, void *data)
@@ -72,9 +77,9 @@ const char *CsvParser::parseByType(const char *buf, ColumnType type, void *data)
     case BOOL:
         return parse_bool(buf, (bool *)data, m_sep);
     case MONEY:
-        return parse_money(buf, (money_t *)data, m_sep, m_moneyMul);
+        return parse_money(buf, (money_t *)data, m_sep, m_moneyMul, m_numSep);
     case DATE:
-        return parse_date(buf, (date_t *)data, m_sep, '-');
+        return parse_date(buf, (date_t *)data, m_sep, m_dateSep);
     case TIME:
         return parse_time(buf, (dtime_t *)data, m_sep);
     case IGNORE:
@@ -102,7 +107,7 @@ char *CsvParser::outputByType(char *buf, ColumnType type, const void *data)
     case MONEY:
         return output_money(buf, *(const money_t *)data, m_moneyPrec, m_moneyMul);
     case DATE:
-        return output_date(buf, *(const date_t *)data);
+        return output_date(buf, *(const date_t *)data, m_dateSep);
     case TIME:
         return output_time(buf, *(const dtime_t *)data);
     case IGNORE:

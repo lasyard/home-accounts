@@ -12,10 +12,10 @@ extern "C" {
 
 int jdn(int year, int month, int day);
 
-const char *parse_date(const char *buf, date_t *data, char sep, char dsep);
+const char *parse_date(const char *buf, date_t *data, char sep, char dateSep);
 const char *parse_time(const char *buf, dtime_t *data, char sep);
 
-char *output_date(char *buf, date_t data);
+char *output_date(char *buf, date_t data, char dateSep);
 char *output_time(char *buf, dtime_t data);
 
 #ifdef __cplusplus

@@ -18,7 +18,7 @@ extern "C" {
  * @param mul must be 10, 100, 1000, etc.
  * @return const char*
  */
-const char *parse_money(const char *buf, money_t *data, char sep, int mul);
+const char *parse_money(const char *buf, money_t *data, char sep, int mul, char numSep);
 
 char *output_money(char *buf, money_t data, int prec, int mul);
 

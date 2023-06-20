@@ -3,7 +3,7 @@
 #include "int.h"
 #include "str.h"
 
-const char *parse_money(const char *buf, money_t *data, char sep, int mul)
+const char *parse_money(const char *buf, money_t *data, char sep, int mul, char numSep)
 {
     money_t num = 0;
     const char *p = skip_space(buf);
@@ -18,7 +18,7 @@ const char *parse_money(const char *buf, money_t *data, char sep, int mul)
                 decimal = true;
                 ++p;
                 break;
-            } else if (*p != ',' || sep == ',') { // allow delimeter of numbers
+            } else if (*p != numSep) { // allow delimiter of numbers
                 return NULL;
             }
         }

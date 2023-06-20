@@ -53,5 +53,6 @@ CsvParser *ItemWrap::createParser() const
 {
     auto parser = new CsvParser(cols, types, getPtr);
     parser->setSeparator('\t');
+    parser->setNumSeparator(',');
     return parser;
 }

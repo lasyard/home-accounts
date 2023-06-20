@@ -89,9 +89,9 @@ TEST_CASE("write")
 
 TEST_CASE("readWrapped")
 {
-    const char *str = "2000-1-1, 10:00:00, 12.34, New Bee\n"
-                      "2000-01-02, 10:01:00, 5.6, Tree New Bee\n"
-                      "2000-01-2, 11:01:01, 7.89, ,\n";
+    const char *str = "2000-1-1\t10:00:00\t12.34\tNew Bee\n"
+                      "2000-01-02\t10:01:00\t5.6\tTree New Bee\n"
+                      "2000-01-2\t11:01:01\t7.89\t \t \n";
     std::stringstream text;
     text << str;
     DataDao dao;

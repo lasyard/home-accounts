@@ -33,10 +33,10 @@ TEST_CASE("parse_time")
 TEST_CASE("output_date")
 {
     char buf[11];
-    char *p = output_date(buf, 2415021);
+    char *p = output_date(buf, 2415021, '-');
     *p = '\0';
     CHECK(strcmp(buf, "1900-01-01") == 0);
-    p = output_date(buf, 2440588);
+    p = output_date(buf, 2440588, '-');
     *p = '\0';
     CHECK(strcmp(buf, "1970-01-01") == 0);
 }

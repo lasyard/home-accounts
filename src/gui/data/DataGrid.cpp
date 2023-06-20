@@ -95,13 +95,14 @@ void DataGrid::CreateDataTable(DataDao &dao)
 {
     auto table = new DataTable(&dao);
     table->UpdateChoicesFromJoints();
-    SetTable(table, true);
     // Vital, for the original grid cursor may be out of range.
     int cursorRow = GetGridCursorRow();
-    int maxRow = table->GetRowsCount() - 1;
+    int maxRow = table->GetNumberRows() - 1;
     if (cursorRow > maxRow) {
         SetGridCursor(maxRow, GetGridCursorCol());
     }
+    // Change table after cursor set.
+    SetTable(table, true);
     SetFocus();
     RefreshContent();
 }

@@ -2,28 +2,45 @@
 #define _CSV_CSV_EXCEPTIONS_H_
 
 #include <cstring>
+#include <sstream>
 #include <stdexcept>
 
 #include "ColumnType.h"
 
-class ParseError : public std::runtime_error
+class ParseErrorBase : public std::runtime_error
 {
-public:
-    explicit ParseError(const char *msg, const char *buf) : std::runtime_error(msg), m_lineNo(-1)
+protected:
+    explicit ParseErrorBase(const char *msg) : std::runtime_error(msg)
     {
-#pragma GCC diagnostic push
-#if __GNUC__ >= 8
-#pragma GCC diagnostic ignored "-Wstringop-truncation"
-#endif
-        strncpy(m_buf, buf, BUF_LEN - 1);
-        m_buf[BUF_LEN - 1] = '\0';
-#pragma GCC diagnostic pop
     }
 
-    const char *what() const noexcept override
+    mutable std::string m_what;
+
+public:
+    [[nodiscard]] const char *what() const noexcept override
     {
-        sprintf(m_what, "%s at %d: %s", std::runtime_error::what(), m_lineNo, m_buf);
-        return m_what;
+        if (m_what.empty()) {
+            std::ostringstream oss;
+            writeWhat(oss);
+            m_what = oss.str();
+        }
+        return m_what.c_str();
+    }
+
+    virtual void writeWhat(std::ostream &os) const noexcept = 0;
+};
+
+class ParseError : public ParseErrorBase
+{
+public:
+    explicit ParseError(const char *msg, const char *buf) : ParseErrorBase(msg), m_lineNo(-1), m_data(buf)
+    {
+    }
+
+    void writeWhat(std::ostream &os) const noexcept override
+    {
+        os << std::runtime_error::what() << " at " << m_lineNo << ": "
+           << "\"" << m_data << "\"";
     }
 
     void setLineNo(int lineNo)
@@ -32,57 +49,46 @@ public:
     }
 
 protected:
-    static const int BUF_LEN = 64;
-
     int m_lineNo;
-    char m_buf[BUF_LEN];
-
-    mutable char m_what[256];
+    std::string m_data;
 };
 
 class DataParseError : public ParseError
 {
 public:
     explicit DataParseError(int column, ColumnType type, const char *buf)
-        : ParseError("CSV parsing error", buf), m_column(column), m_type(type)
+        : ParseError("CSV parsing error", buf)
+        , m_column(column)
+        , m_type(type)
     {
     }
 
-    const char *what() const noexcept override
+    void writeWhat(std::ostream &os) const noexcept override
     {
-        sprintf(
-            m_what,
-            "%s at %d:%d of type %s: %s",
-            std::runtime_error::what(),
-            m_lineNo,
-            m_column,
-            nameOf(m_type),
-            m_buf
-        );
-        return m_what;
+        os << std::runtime_error::what() //
+           << " at " << m_lineNo << ":" << m_column << " of type " << nameOf(m_type) << ": "
+           << "\"" << m_data << "\"";
     }
 
-private:
+protected:
     int m_column;
     ColumnType m_type;
 };
 
-class TypeParseError : public std::runtime_error
+class TypeParseError : public ParseErrorBase
 {
 public:
-    explicit TypeParseError(ColumnType type) : std::runtime_error("Parse error"), m_type(type)
+    explicit TypeParseError(ColumnType type) : ParseErrorBase("Parse error"), m_type(type)
     {
     }
 
-    const char *what() const noexcept override
+    void writeWhat(std::ostream &os) const noexcept override
     {
-        sprintf(m_what, "%s for type %s", std::runtime_error::what(), nameOf(m_type));
-        return m_what;
+        os << std::runtime_error::what() << " for type " << nameOf(m_type);
     }
 
 private:
     ColumnType m_type;
-    mutable char m_what[256];
 };
 
 #endif /* _CSV_CSV_EXCEPTIONS_H_ */

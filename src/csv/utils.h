@@ -1,8 +1,6 @@
 #ifndef _CSV_UTILS_H_
 #define _CSV_UTILS_H_
 
-#define CONFIG_SEP_SEP ':'
-
 struct string;
 
 #ifdef __cplusplus
@@ -13,7 +11,16 @@ int count_chars(const char *buf, char ch);
 
 char parse_sep(const struct string *str);
 
-const char *parse_seps(const char *buf, char *seps, int limit);
+/**
+ * @brief Parse config separators.
+ *
+ * @param buf the string to be parsed
+ * @param seps separators array to put result
+ * @param sep separator char to split the string
+ * @param limit max number of separators
+ * @return const char* point to the next char
+ */
+const char *parse_seps(const char *buf, char *seps, char sep, int limit);
 
 #ifdef __cplusplus
 }

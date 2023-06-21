@@ -26,7 +26,7 @@ TEST_CASE("parse_seps")
     SUBCASE("count < limit")
     {
         char seps[3] = {'0', '1', '2'};
-        const char *p = parse_seps("TAB: COMMA: verbar", seps, 3);
+        const char *p = parse_seps("TAB: COMMA: verbar", seps, ':', 3);
         CHECK(seps[0] == '\t');
         CHECK(seps[1] == ',');
         CHECK(seps[2] == '2');
@@ -35,7 +35,7 @@ TEST_CASE("parse_seps")
     SUBCASE("count == limit")
     {
         char seps[3] = {'0', '1', '2'};
-        const char *p = parse_seps("TAB: COMMA: verbar :", seps, 3);
+        const char *p = parse_seps("TAB/ COMMA/ verbar /", seps, '/', 3);
         CHECK(seps[0] == '\t');
         CHECK(seps[1] == ',');
         CHECK(seps[2] == '|');
@@ -44,7 +44,7 @@ TEST_CASE("parse_seps")
     SUBCASE("count > limit")
     {
         char seps[3] = {'0', '1', '2'};
-        const char *p = parse_seps("TAB: COMMA: verbar :", seps, 2);
+        const char *p = parse_seps("TAB: COMMA: verbar :", seps, ':', 2);
         CHECK(seps[0] == '\t');
         CHECK(seps[1] == ',');
         CHECK(seps[2] == '2');
@@ -53,7 +53,7 @@ TEST_CASE("parse_seps")
     SUBCASE("empty")
     {
         char seps[3] = {'0', '1', '2'};
-        const char *p = parse_seps(" ", seps, 2);
+        const char *p = parse_seps(" ", seps, ':', 2);
         CHECK(seps[0] == '0');
         CHECK(seps[1] == '1');
         CHECK(seps[2] == '2');

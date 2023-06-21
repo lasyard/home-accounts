@@ -7,7 +7,6 @@
 #include "AccountTypesTable.h"
 #include "AccountsGridCellAttrProvider.h"
 #include "AccountsTable.h"
-#include "ChannelsTable.h"
 #include "ConfigsGrid.h"
 #include "OwnersTable.h"
 
@@ -60,7 +59,6 @@ void ConfigsPanel::OnUpdate()
     AddConfig(OWNERS_LABEL, new OwnersTable(&m_doc->GetOwnersDao()));
     AddConfig(ACCOUNT_TYPES_LABEL, new AccountTypesTable(&m_doc->GetAccountTypesDao()));
     AddConfig(ACCOUNTS_LABEL, new AccountsTable(&m_doc->GetAccountsDao()));
-    AddConfig(CHANNELS_LABEL, new ChannelsTable(&m_doc->GetChannelsDao()));
     UpdateGrid(GetCurrentGrid());
 }
 

@@ -60,8 +60,7 @@ public:
      * @return true created successfully
      * @return false failed to create
      */
-    [[nodiscard]] bool
-    CreateBill(const wxString &title, const wxString &content, const wxString &account, const wxString &channel);
+    [[nodiscard]] bool CreateBill(const wxString &title, const wxString &content, int account);
 
     DataDao &GetDataDao()
     {
@@ -88,11 +87,6 @@ public:
         return m_accountsDao;
     }
 
-    CsvIdVecDao<struct channel> &GetChannelsDao()
-    {
-        return m_channelsDao;
-    }
-
     CsvIdVecDao<struct batch> &GetBatchesDao()
     {
         return m_batchesDao;
@@ -104,7 +98,6 @@ private:
     static const std::string OWNERS_SECTION_NAME;
     static const std::string ACCOUNT_TYPES_SECTION_NAME;
     static const std::string ACCOUNTS_SECTION_NAME;
-    static const std::string CHANNELS_SECTION_NAME;
     static const std::string BATCHES_SECTION_NAME;
 
     static const std::string DATA_SECTION_PREFIX;
@@ -118,7 +111,6 @@ private:
     CsvIdVecDao<struct owner> m_ownersDao;
     CsvIdVecDao<struct account_type> m_accountTypesDao;
     AccountsDao m_accountsDao;
-    CsvIdVecDao<struct channel> m_channelsDao;
     CsvIdVecDao<struct batch> m_batchesDao;
 
     static std::string DataSectionName(const wxDateTime &date)

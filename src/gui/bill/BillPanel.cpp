@@ -30,6 +30,7 @@ EVT_UPDATE_UI(wxID_DELETE, BillPanel::OnUpdateMenu)
 EVT_MENU(wxID_DELETE, BillPanel::OnMenuModify)
 EVT_UPDATE_UI(ID_PASTE_BILL, BillPanel::OnUpdatePasteBill)
 EVT_MENU(ID_PASTE_BILL, BillPanel::OnPasteBill)
+EVT_BUTTON(ID_BTN_PASTE_BILL, BillPanel::OnPasteBill)
 END_EVENT_TABLE()
 
 const wxString BillPanel::LABEL = _("Bills");
@@ -103,11 +104,10 @@ void BillPanel::OnPasteBill([[maybe_unused]] wxCommandEvent &event)
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     wxArrayString accountChoices;
     auto jointAccount = m_doc->GetAccountsDao().getJoint<1, 0>();
-    auto jointChannel = m_doc->GetChannelsDao().getJoint<1, 0>();
-    PasteBillDialog dlg(nullptr, jointAccount, jointChannel);
+    PasteBillDialog dlg(nullptr, jointAccount);
     if (dlg.ShowModal() == wxID_OK) {
         wxLogTrace(TM, "title = \"%s\", content =\n%s", dlg.GetBillTitle(), dlg.GetContent());
-        if (m_doc->CreateBill(dlg.GetBillTitle(), dlg.GetContent(), dlg.GetAccount(), dlg.GetChannel())) {
+        if (m_doc->CreateBill(dlg.GetBillTitle(), dlg.GetContent(), dlg.GetAccount())) {
             OnUpdate();
         }
     }

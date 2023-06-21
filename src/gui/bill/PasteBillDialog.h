@@ -18,49 +18,36 @@ class PasteBillDialog : public wxDialog
 public:
     DECLARE_TM()
 
-    PasteBillDialog(
-        wxWindow *parent = nullptr,
-        Joint<const char *, int32_t> *accountJoint = nullptr,
-        Joint<const char *, int32_t> *channelJoint = nullptr
-    );
+    PasteBillDialog(wxWindow *parent = nullptr, Joint<const char *, int32_t> *accountJoint = nullptr);
     virtual ~PasteBillDialog();
 
-    const wxString &GetBillTitle() const
+    const auto &GetBillTitle() const
     {
         return m_title;
     }
 
-    const wxString &GetAccount() const
+    auto GetAccount() const
     {
         return m_account;
     }
 
-    const wxString &GetChannel() const
-    {
-        return m_channel;
-    }
-
-    const wxString &GetContent() const
+    const auto &GetContent() const
     {
         return m_content;
     }
 
     void OnInit(wxInitDialogEvent &event);
     void OnChoiceAccount(wxCommandEvent &event);
-    void OnChoiceChannel(wxCommandEvent &event);
 
 protected:
     Joint<const char *, int32_t> *m_accountJoint;
-    Joint<const char *, int32_t> *m_channelJoint;
 
     wxString m_title;
-    wxString m_account;
-    wxString m_channel;
+    int m_account;
     wxString m_content;
 
     wxTextCtrl *m_textTitle;
     wxChoice *m_choiceAccount;
-    wxChoice *m_choiceChannel;
     wxTextCtrl *m_text;
 
     bool TransferDataFromWindow() override;

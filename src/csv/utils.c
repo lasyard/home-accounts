@@ -31,17 +31,17 @@ char parse_sep(const struct string *str)
     return '\0';
 }
 
-const char *parse_seps(const char *buf, char *seps, int limit)
+const char *parse_seps(const char *buf, char *seps, char sep, int limit)
 {
     const char *p;
     int i = 0;
     for (p = buf; i < limit && !is_line_end(*p);) {
         struct string s;
-        p = parse_string(p, &s, CONFIG_SEP_SEP);
-        if (*p == CONFIG_SEP_SEP) {
-            char sep = parse_sep(&s);
-            if (sep != '\0') {
-                seps[i] = sep;
+        p = parse_string(p, &s, sep);
+        if (*p == sep) {
+            char ch = parse_sep(&s);
+            if (ch != '\0') {
+                seps[i] = ch;
             }
             ++i;
             // skip the SEP.

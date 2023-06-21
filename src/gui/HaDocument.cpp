@@ -27,7 +27,6 @@ const char *const HaDocument::IV = "HomeAccounts";
 const std::string HaDocument::OWNERS_SECTION_NAME = "configs/owners";
 const std::string HaDocument::ACCOUNT_TYPES_SECTION_NAME = "configs/account_types";
 const std::string HaDocument::ACCOUNTS_SECTION_NAME = "configs/accounts";
-const std::string HaDocument::CHANNELS_SECTION_NAME = "configs/channels";
 const std::string HaDocument::BATCHES_SECTION_NAME = "configs/batches";
 
 const std::string HaDocument::DATA_SECTION_PREFIX = "data";
@@ -42,7 +41,6 @@ HaDocument::HaDocument()
     , m_ownersDao(OWNERS_SECTION_NAME)
     , m_accountTypesDao(ACCOUNT_TYPES_SECTION_NAME)
     , m_accountsDao(ACCOUNTS_SECTION_NAME)
-    , m_channelsDao(CHANNELS_SECTION_NAME)
     , m_batchesDao(BATCHES_SECTION_NAME)
 {
     wxLog::AddTraceMask(TM);
@@ -86,13 +84,10 @@ bool HaDocument::DoOpenDocument(const wxString &fileName)
             TryLoad(m_ownersDao);
             TryLoad(m_accountTypesDao);
             TryLoad(m_accountsDao);
-            m_accountsDao.setOwnerJoint(m_ownersDao.getJoint<1, 0>());
-            m_accountsDao.setTypeJoint(m_accountTypesDao.getJoint<1, 0>());
-            TryLoad(m_channelsDao);
-            m_dataDao.setAccountJoint(m_accountsDao.getJoint<1, 0>());
-            m_dataDao.setChannelJoint(m_channelsDao.getJoint<1, 0>());
-            m_billDao.setAccountJoint(m_accountsDao.getJoint<1, 0>());
-            m_billDao.setChannelJoint(m_channelsDao.getJoint<1, 0>());
+            m_accountsDao.setOwnerJoint(m_ownersDao.getNameIdJoint());
+            m_accountsDao.setTypeJoint(m_accountTypesDao.getNameIdJoint());
+            m_dataDao.setAccountJoint(m_accountsDao.getNameIdJoint());
+            m_billDao.setAccountJoint(m_accountsDao.getNameIdJoint());
             TryLoad(m_batchesDao);
             return true;
         } catch (std::runtime_error &e) {
@@ -207,19 +202,10 @@ void HaDocument::TryLoadBill(int batch)
     TryLoad(m_billDao);
 }
 
-bool HaDocument::CreateBill(
-    const wxString &title,
-    const wxString &content,
-    const wxString &account,
-    const wxString &channel
-)
+bool HaDocument::CreateBill(const wxString &title, const wxString &content, int account)
 {
-    wxString realTitle;
-    if (!account.IsEmpty()) {
-        realTitle = account + ":" + title;
-    } else if (!channel.IsEmpty()) {
-        realTitle = channel + ":" + title;
-    }
+    const struct account *accountStruct = m_accountsDao.getById(account);
+    wxString realTitle = wxString::Format("%s-%s", accountStruct->name, title);
     // New batch.
     m_batchesDao.append();
     m_batchesDao.setString(m_batchesDao.getNumberRows() - 1, 1, realTitle.ToStdString());
@@ -228,10 +214,10 @@ bool HaDocument::CreateBill(
     std::istringstream is(content.ToStdString());
     m_billDao.setName(BillSectionName(m_batchesDao.last()->id));
     try {
-        m_billDao.readWrapped(is, "date,,,desc,,amount");
+        m_billDao.readWrapped(is, accountStruct->bill_config);
+        // TODO: set all account
         for (int i = 0; i < m_billDao.getNumberRows(); ++i) {
-            m_billDao.setAccount(i, account.ToStdString());
-            m_billDao.setChannel(i, channel.ToStdString());
+            m_billDao.setAccount(i, std::string(accountStruct->name));
         }
         DoSave(m_billDao);
         Modify(true);

@@ -9,7 +9,6 @@ void init_item(struct item *item)
     item->time = 0;
     item->amount = 0;
     item->account = 0;
-    item->channel = 0;
     item->desc = NULL;
     item->valid = true;
     item->batch = 0;

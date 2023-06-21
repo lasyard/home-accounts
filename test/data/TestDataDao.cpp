@@ -11,10 +11,10 @@
 TEST_CASE("read")
 {
     const char *str = "#2000-1-1\n"
-                      "10:00:00, 12.34, 1,2,New Bee,1,0\n"
+                      "10:00:00, 12.34, 1,New Bee,1,0\n"
                       "#2000-01-02\n"
-                      "10:01:00, 5.6, 2,3,Tree New Bee,0,1\n"
-                      "11:01:01, 7.89, 1,3,,1,1\n";
+                      "10:01:00, 5.6, 2,Tree New Bee,0,1\n"
+                      "11:01:01, 7.89, 1,,1,1\n";
     std::stringstream text;
     text << str;
     DataDao dao;
@@ -26,7 +26,6 @@ TEST_CASE("read")
     CHECK(item->time == 36000);
     CHECK(item->amount == 1234);
     CHECK(item->account == 1);
-    CHECK(item->channel == 2);
     CHECK(strcmp(item->desc, "New Bee") == 0);
     CHECK(item->valid);
     CHECK(item->batch == 0);
@@ -36,7 +35,6 @@ TEST_CASE("read")
     CHECK(item->time == 36060);
     CHECK(item->amount == 560);
     CHECK(item->account == 2);
-    CHECK(item->channel == 3);
     CHECK(strcmp(item->desc, "Tree New Bee") == 0);
     CHECK(!item->valid);
     CHECK(item->batch == 1);
@@ -44,7 +42,6 @@ TEST_CASE("read")
     CHECK(item->time == 39661);
     CHECK(item->amount == 789);
     CHECK(item->account == 1);
-    CHECK(item->channel == 3);
     CHECK(strcmp(item->desc, "") == 0);
     CHECK(item->valid);
     CHECK(item->batch == 1);
@@ -80,10 +77,10 @@ TEST_CASE("write")
     dao.write(out);
     CHECK(
         out.str() == "#2000-01-01\n"
-                     "10:00:00,12.34,0,0,New Bee,1,0\n"
+                     "10:00:00,12.34,0,New Bee,1,0\n"
                      "#2000-01-02\n"
-                     "10:01:00,5.60,0,0,Tree New Bee,1,0\n"
-                     "11:01:01,7.89,0,0,,1,0\n"
+                     "10:01:00,5.60,0,Tree New Bee,1,0\n"
+                     "11:01:01,7.89,0,,1,0\n"
     );
 }
 
@@ -95,7 +92,7 @@ TEST_CASE("readWrapped")
     std::stringstream text;
     text << str;
     DataDao dao;
-    dao.readWrapped(text, "TAB:COMMA:HYPHEN:date, time, amount, desc");
+    dao.readWrapped(text, "TAB:COMMA:HYPHEN:date/time/ amount/  desc");
     struct data &data = dao.getData();
     struct page *first = get_page(data.pages.first);
     CHECK(first->date == 2451545);
@@ -103,7 +100,6 @@ TEST_CASE("readWrapped")
     CHECK(item->time == 36000);
     CHECK(item->amount == 1234);
     CHECK(item->account == 0);
-    CHECK(item->channel == 0);
     CHECK(strcmp(item->desc, "New Bee") == 0);
     CHECK(item->valid);
     CHECK(item->batch == 0);
@@ -113,7 +109,6 @@ TEST_CASE("readWrapped")
     CHECK(item->time == 36060);
     CHECK(item->amount == 560);
     CHECK(item->account == 0);
-    CHECK(item->channel == 0);
     CHECK(strcmp(item->desc, "Tree New Bee") == 0);
     CHECK(item->valid);
     CHECK(item->batch == 0);
@@ -121,7 +116,6 @@ TEST_CASE("readWrapped")
     CHECK(item->time == 39661);
     CHECK(item->amount == 789);
     CHECK(item->account == 0);
-    CHECK(item->channel == 0);
     CHECK(strcmp(item->desc, "") == 0);
     CHECK(item->valid);
     CHECK(item->batch == 0);

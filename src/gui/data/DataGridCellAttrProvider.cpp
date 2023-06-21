@@ -19,8 +19,6 @@ DataGridCellAttrProvider::DataGridCellAttrProvider(const DataTable *table) : HaG
 
     m_accountAttr = m_readOnlyAttr->Clone();
 
-    m_channelAttr = m_readOnlyAttr->Clone();
-
     m_readOnlyMoneyAttr = m_moneyAttr->Clone();
     m_readOnlyMoneyAttr->SetReadOnly();
 
@@ -37,7 +35,6 @@ DataGridCellAttrProvider::~DataGridCellAttrProvider()
     m_pageTitleAttr->DecRef();
     m_timeAttr->DecRef();
     m_accountAttr->DecRef();
-    m_channelAttr->DecRef();
     m_readOnlyMoneyAttr->DecRef();
     m_readOnlyMoneyRedAttr->DecRef();
     m_readOnlyMoneyBoldAttr->DecRef();
@@ -62,10 +59,6 @@ wxGridCellAttr *DataGridCellAttrProvider::GetAttr(int row, int col, wxGridCellAt
                 m_accountAttr->IncRef();
                 // wxLogTrace(TM, "RefCount of accountAttr is %d", m_accountAttr->GetRefCount());
                 return m_accountAttr;
-            case DataTable::CHANNEL_COL:
-                m_channelAttr->IncRef();
-                // wxLogTrace(TM, "RefCount of channelAttr is %d", m_channelAttr->GetRefCount());
-                return m_channelAttr;
             case DataTable::BALANCE_COL:
                 return GetBalanceAttr(row);
             case DataTable::VALID_COL:

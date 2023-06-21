@@ -4,14 +4,8 @@
 
 #include "../utils/DaoUtils.h"
 
-const wxString AccountsTable::COL_LABELS[] = {
-    _("ID"),
-    _("Name"),
-    _("Owner"),
-    _("Type"),
-    _("Description"),
-    _("Balance"),
-};
+const wxString AccountsTable::COL_LABELS[] =
+    {_("ID"), _("Name"), _("Owner"), _("Type"), _("Description"), _("Balance"), _("Bill Config")};
 
 AccountsTable::AccountsTable(AccountsDao *dao) : CsvTable(sizeof(COL_LABELS) / sizeof(wxString), COL_LABELS, dao)
 {

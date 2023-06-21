@@ -18,18 +18,12 @@ public:
         SetChoices(m_accountAttr, choices);
     }
 
-    void SetChannelChoices(const wxArrayString &choices) const
-    {
-        SetChoices(m_channelAttr, choices);
-    }
-
 private:
     const DataTable *m_table;
 
     mutable wxGridCellAttr *m_pageTitleAttr;
     mutable wxGridCellAttr *m_timeAttr;
     mutable wxGridCellAttr *m_accountAttr;
-    mutable wxGridCellAttr *m_channelAttr;
     mutable wxGridCellAttr *m_readOnlyMoneyAttr;
     mutable wxGridCellAttr *m_readOnlyMoneyRedAttr;
     mutable wxGridCellAttr *m_readOnlyMoneyBoldAttr;

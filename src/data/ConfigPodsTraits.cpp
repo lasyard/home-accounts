@@ -50,22 +50,8 @@ void *CsvRowTraits<struct account>::getPtr(void *data, int i)
         return &item->desc;
     case 5:
         return &item->balance;
-    default:
-        break;
-    }
-    return nullptr;
-}
-
-// channel
-
-void *CsvRowTraits<struct channel>::getPtr(void *data, int i)
-{
-    auto item = static_cast<struct channel *>(data);
-    switch (i) {
-    case 0:
-        return &item->id;
-    case 1:
-        return &item->name;
+    case 6:
+        return &item->bill_config;
     default:
         break;
     }

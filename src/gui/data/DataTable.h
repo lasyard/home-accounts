@@ -14,12 +14,11 @@ public:
     static const int INCOME_COL = 1;
     static const int OUTLAY_COL = 2;
     static const int ACCOUNT_COL = 3;
-    static const int CHANNEL_COL = 4;
-    static const int DESC_COL = 5;
-    static const int BALANCE_COL = 6;
-    static const int VALID_COL = 7;
+    static const int DESC_COL = 4;
+    static const int BALANCE_COL = 5;
+    static const int VALID_COL = 6;
 
-    static const size_t COL_NUM = 8;
+    static const size_t COL_NUM = 7;
 
     DataTable(DataDao *dataDao);
     virtual ~DataTable();

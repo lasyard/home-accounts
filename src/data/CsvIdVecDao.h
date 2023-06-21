@@ -26,6 +26,16 @@ public:
     {
     }
 
+    auto *getById(ID_TYPE id)
+    {
+        return CVD::template getByCol<ID_COL>(id);
+    }
+
+    auto *getNameIdJoint()
+    {
+        return CVD::template getJoint<CsvRowTraits<I>::NAME_INDEX, CsvRowTraits<I>::ID_INDEX>();
+    }
+
 protected:
     void initItemField(I *item, int i) const override
     {

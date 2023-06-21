@@ -20,11 +20,7 @@ struct account {
     int type;
     char *desc;
     money_t balance;
-};
-
-struct channel {
-    int id;
-    char *name;
+    char *bill_config;
 };
 
 struct batch {

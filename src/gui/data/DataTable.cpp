@@ -14,7 +14,6 @@ const wxString DataTable::COL_LABELS[] = {
     _("Income"),
     _("Outlay"),
     _("Account"),
-    _("Channel"),
     _("Description"),
     _("Balance"),
     _("Valid"),
@@ -60,8 +59,6 @@ void DataTable::UpdateChoicesFromJoints()
     wxArrayString choices;
     Utils::GetStrings(choices, m_dataDao->getAccountJoint());
     static_cast<DataGridCellAttrProvider *>(GetAttrProvider())->SetAccountChoices(choices);
-    Utils::GetStrings(choices, m_dataDao->getChannelJoint());
-    static_cast<DataGridCellAttrProvider *>(GetAttrProvider())->SetChannelChoices(choices);
 }
 
 wxString DataTable::GetCellValue(int row, int col)
@@ -77,8 +74,6 @@ wxString DataTable::GetCellValue(int row, int col)
             return m_dataDao->getOutlayString(row);
         case ACCOUNT_COL:
             return m_dataDao->getAccountString(row);
-        case CHANNEL_COL:
-            return m_dataDao->getChannelString(row);
         case DESC_COL:
             return m_dataDao->getDescString(row);
         case BALANCE_COL:
@@ -132,9 +127,6 @@ void DataTable::SetCellValue(int row, int col, const wxString &value)
         break;
     case ACCOUNT_COL:
         m_dataDao->setAccount(row, v);
-        break;
-    case CHANNEL_COL:
-        m_dataDao->setChannel(row, v);
         break;
     case DESC_COL:
         m_dataDao->setDesc(row, v);

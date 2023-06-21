@@ -16,12 +16,19 @@
 #define ID_LICENSE     XRCID("license")
 #define ID_WX_INFO     XRCID("wxInfo")
 
-// Controls
-#define ID_BOOK           XRCID("book")
-#define ID_DATE_DATA      XRCID("dateData")
-#define ID_BOOK_CONFIGS   XRCID("bookConfigs")
+// View
+#define ID_BOOK         XRCID("book")
+#define ID_BOOK_CONFIGS XRCID("bookConfigs")
+
+// Data Panel
+#define ID_DATE_DATA XRCID("dateData")
+
+// Paste Bill Dialog
 #define ID_CHOICE_ACCOUNT XRCID("choiceAccount")
-#define ID_CHOICE_CHANNEL XRCID("choiceChannel")
+
+// Bill Panel
 #define ID_CHOICE_BILL    XRCID("choiceBill")
+#define ID_BTN_PASTE_BILL XRCID("btnPasteBill")
+#define ID_BTN_MERGE      XRCID("btnMerge")
 
 #endif /* _GUI_DEFS_H_ */

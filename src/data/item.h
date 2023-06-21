@@ -14,7 +14,6 @@ struct item {
     dtime_t time;
     money_t amount;
     int account;
-    int channel;
     char *desc;
     bool valid;
     int batch;

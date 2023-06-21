@@ -46,7 +46,6 @@ public:
     std::string getIncomeString(int row);
     std::string getOutlayString(int row);
     std::string getAccountString(int row);
-    std::string getChannelString(int row);
     std::string getDescString(int row);
     std::string getBalanceString(int row);
     std::string getValidString(int row);
@@ -56,7 +55,6 @@ public:
 
     void setMoney(int row, const std::string &value, bool negative);
     void setAccount(int row, const std::string &value);
-    void setChannel(int row, const std::string &value);
     void setDesc(int row, const std::string &value);
     void setValid(int row, const std::string &value);
 
@@ -67,16 +65,10 @@ public:
     bool isRedBalance(int row) const;
 
     void setAccountJoint(Joint<const char *, int32_t> *joint);
-    void setChannelJoint(Joint<const char *, int32_t> *joint);
 
     const Joint<const char *, int32_t> *getAccountJoint() const
     {
         return m_accountJoint;
-    }
-
-    const Joint<const char *, int32_t> *getChannelJoint() const
-    {
-        return m_channelJoint;
     }
 
     bool isEmpty() const override
@@ -126,7 +118,6 @@ private:
 
     std::vector<struct IndexItem> m_index;
     Joint<const char *, int32_t> *m_accountJoint;
-    Joint<const char *, int32_t> *m_channelJoint;
     money_t m_totalIncome;
     money_t m_totalOutlay;
 

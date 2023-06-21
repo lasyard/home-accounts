@@ -25,7 +25,8 @@ public:
     }
 
 private:
-    static const char SEP = ',';
+    static const char SEPS_SEP = ':';
+    static const char COLS_SEP = '/';
 
     char m_seps[3];
     int m_cols;

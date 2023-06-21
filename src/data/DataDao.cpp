@@ -3,7 +3,7 @@
 #include "CxxDefs.h"
 #include "DataDao.h"
 #include "ItemTraits.h"
-#include "ItemWrap.h"
+#include "ItemWrapper.h"
 #include "Joint.h"
 
 #include "page.h"
@@ -81,11 +81,11 @@ void DataDao::write(std::ostream &os) const
     }
 }
 
-void DataDao::readWrapped(std::istream &is, const char *wrapHeader)
+void DataDao::readWrapped(std::istream &is, const char *config)
 {
     beforeRead();
-    ItemWrap wrap(wrapHeader);
-    auto parser = wrap.createParser();
+    ItemWrapper wrapper(config);
+    auto parser = wrapper.createParser();
     int lineNo = 0;
     while (is.getline(m_buf, MAX_LINE_LENGTH)) {
         lineNo++;
@@ -96,13 +96,13 @@ void DataDao::readWrapped(std::istream &is, const char *wrapHeader)
             struct item *item = (struct item *)malloc(sizeof(struct item));
             if (item != NULL) {
                 init_item(item);
-                wrap.setItem(item);
-                parser->parseLine(m_buf, &wrap);
-                struct page *page = findPage(wrap.getDate());
+                wrapper.setData(item);
+                parser->parseLine(m_buf, &wrapper);
+                struct page *page = findPage(wrapper.getDate());
                 if (page == nullptr) {
                     page = add_page(&m_data);
                     if (page != NULL) {
-                        page->date = wrap.getDate();
+                        page->date = wrapper.getDate();
                     } else {
                         free(item);
                         delete parser;

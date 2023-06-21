@@ -8,6 +8,8 @@ add_test(test_money ../test.cpp test_money.cpp)
 target_link_libraries(test_money PRIVATE ${LIB_CSV_NAME})
 add_test(test_str ../test.cpp test_str.cpp)
 target_link_libraries(test_str PRIVATE ${LIB_CSV_NAME})
+add_test(test_utils ../test.cpp test_utils.cpp)
+target_link_libraries(test_utils PRIVATE ${LIB_CSV_NAME})
 
 add_test(TestCsvParser ../test.cpp TestCsvParser.cpp)
 target_link_libraries(TestCsvParser PRIVATE ${LIB_CSV_NAME})

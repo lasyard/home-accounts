@@ -33,7 +33,7 @@ public:
     void read(std::istream &is) override;
     void write(std::ostream &os) const override;
 
-    void readWrapped(std::istream &is, const char *wrapHeader);
+    void readWrapped(std::istream &is, const char *config);
 
     int getNumberRows() const override
     {

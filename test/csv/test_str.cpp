@@ -154,3 +154,12 @@ TEST_CASE("string_cstrcmp")
     CHECK(string_cstrcmp(string_ref(&a, "abc", 2), "ab") == 0);
     CHECK(string_cstrcmp(string_ref(&a, "abc", 2), "abb") < 0);
 }
+
+TEST_CASE("string_cstrcmp_nc")
+{
+    struct string a;
+    CHECK(string_cstrcmp_nc(string_ref(&a, "abc", 3), "Acd") < 0);
+    CHECK(string_cstrcmp_nc(string_ref(&a, "abc", 3), "aBc") == 0);
+    CHECK(string_cstrcmp_nc(string_ref(&a, "abC", 3), "abb") > 0);
+    CHECK(string_cstrcmp_nc(string_ref(&a, "aBC", 3), "ac") < 0);
+}

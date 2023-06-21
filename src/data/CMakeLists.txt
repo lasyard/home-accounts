@@ -5,7 +5,7 @@ add_lib(${LIB_DATA_NAME}
     TypeTraits.cpp
     data.c
     item.c
-    ItemWrap.cpp
+    ItemWrapper.cpp
     list.c
     page.c
     rbtree.c

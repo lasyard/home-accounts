@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 
 #include "str.h"
 
@@ -104,7 +105,7 @@ struct string *string_ref(struct string *dst, const char *buf, size_t len)
 }
 
 /**
- * @brief
+ * @brief compare two strings. This function compares bytes after NIL.
  *
  * @param str1
  * @param str2
@@ -127,8 +128,43 @@ int string_compare(const struct string *str1, const struct string *str2)
     return result;
 }
 
+/**
+ * @brief compare two strings ignoring case. This function does not compare bytes after NIL.
+ *
+ * @param str1
+ * @param str2
+ * @return int *NOTE* may not be -1:0:1.
+ */
+int string_compare_nc(const struct string *str1, const struct string *str2)
+{
+    int result;
+    if (str1->len < str2->len) {
+        result = strncasecmp(str1->buf, str2->buf, str1->len);
+        if (result == 0) {
+            return -1;
+        }
+    } else {
+        result = strncasecmp(str1->buf, str2->buf, str2->len);
+        if (result == 0 && str1->len > str2->len) {
+            return 1;
+        }
+    }
+    return result;
+}
+
 int string_cstrcmp(const struct string *str, const char *cstr)
 {
     struct string s;
     return string_compare(str, string_ref(&s, cstr, strlen(cstr)));
+}
+
+int string_cstrcmp_nc(const struct string *str, const char *cstr)
+{
+    struct string s;
+    return string_compare_nc(str, string_ref(&s, cstr, strlen(cstr)));
+}
+
+bool string_is_empty(const struct string *str)
+{
+    return str->buf == NULL || str->len == 0;
 }

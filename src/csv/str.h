@@ -31,7 +31,11 @@ char *output_cstring(char *buf, const char *data);
 struct string *string_ref(struct string *dst, const char *buf, size_t len);
 
 int string_compare(const struct string *str1, const struct string *str2);
+int string_compare_nc(const struct string *str1, const struct string *str2);
 int string_cstrcmp(const struct string *str, const char *cstr);
+int string_cstrcmp_nc(const struct string *str, const char *cstr);
+
+bool string_is_empty(const struct string *str);
 
 #ifdef __cplusplus
 }

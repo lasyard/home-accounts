@@ -95,7 +95,7 @@ TEST_CASE("readWrapped")
     std::stringstream text;
     text << str;
     DataDao dao;
-    dao.readWrapped(text, "date, time, amount, desc");
+    dao.readWrapped(text, "TAB:COMMA:HYPHEN:date, time, amount, desc");
     struct data &data = dao.getData();
     struct page *first = get_page(data.pages.first);
     CHECK(first->date == 2451545);

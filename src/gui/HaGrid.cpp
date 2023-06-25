@@ -76,7 +76,7 @@ bool HaGrid::ImportFile(const wxString &what)
     if (answer == wxYES) {
         auto fileName = wxLoadFileSelector(_("CSV file"), "CSV file (*.csv)|*.csv|Text file(*.txt)|*.txt");
         if (!fileName.IsEmpty()) {
-            std::ifstream is(fileName.ToStdString());
+            std::ifstream is(fileName.utf8_string());
             auto table = GetCachedTable();
             if (table != nullptr) {
                 table->GetDao()->read(is);
@@ -98,7 +98,7 @@ void HaGrid::ExportTable(const wxString &what)
     nameHint.Replace('/', '_');
     auto realName = wxSaveFileSelector(what, "CSV File (*.csv)|*.csv", nameHint + ".csv");
     if (!realName.IsEmpty()) {
-        std::ofstream os(realName.ToStdString());
+        std::ofstream os(realName.utf8_string());
         table->GetDao()->write(os);
     }
 }

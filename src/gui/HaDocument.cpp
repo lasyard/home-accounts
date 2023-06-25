@@ -79,7 +79,7 @@ bool HaDocument::DoOpenDocument(const wxString &fileName)
     if (dlgPass.ShowModal() == wxID_OK) {
         m_pass = dlgPass.GetValue();
         try {
-            auto store = new Sqlite3File(fileName.ToStdString(), m_pass.ToStdString(), IV);
+            auto store = new Sqlite3File(fileName.utf8_string(), m_pass.utf8_string(), IV);
             m_doc->attach(store);
             TryLoad(m_ownersDao);
             TryLoad(m_accountTypesDao);
@@ -104,7 +104,7 @@ bool HaDocument::DoSaveDocument(const wxString &fileName)
     if (view != nullptr) {
         view->SaveContents();
     }
-    auto store = new Sqlite3File(fileName.ToStdString(), m_pass.ToStdString(), IV);
+    auto store = new Sqlite3File(fileName.utf8_string(), m_pass.utf8_string(), IV);
     m_doc->saveAs(store);
     return true;
 }
@@ -126,17 +126,17 @@ void HaDocument::GetSectionNames(wxArrayString &names) const
 
 void HaDocument::GetSection(const wxString &name, wxString &content) const
 {
-    content = m_doc->get(name.ToStdString());
+    content = wxString::FromUTF8(m_doc->get(name.utf8_string()));
 }
 
 void HaDocument::SaveSection(const wxString &name, const wxString &content)
 {
-    m_doc->put(name.ToStdString(), content.ToStdString());
+    m_doc->put(name.utf8_string(), content.utf8_string());
 }
 
 void HaDocument::DeleteSection(const wxString &name)
 {
-    m_doc->remove(name.ToStdString());
+    m_doc->remove(name.utf8_string());
 }
 
 void HaDocument::OnChange(wxCommandEvent &event)
@@ -159,7 +159,7 @@ void HaDocument::OnChangePass([[maybe_unused]] wxCommandEvent &event)
         auto pass = dlg.GetPass();
         CryptedSectionStore *store = dynamic_cast<CryptedSectionStore *>(m_doc->getStore());
         if (store != nullptr) {
-            store->changePass(pass.ToStdString());
+            store->changePass(pass.utf8_string());
         }
         m_pass = pass;
     }
@@ -208,10 +208,10 @@ bool HaDocument::CreateBill(const wxString &title, const wxString &content, int 
     wxString realTitle = wxString::Format("%s-%s", accountStruct->name, title);
     // New batch.
     m_batchesDao.append();
-    m_batchesDao.setString(m_batchesDao.getNumberRows() - 1, 1, realTitle.ToStdString());
+    m_batchesDao.setString(m_batchesDao.getNumberRows() - 1, 1, realTitle.utf8_string());
     DoSave(m_batchesDao);
     // Save bill.
-    std::istringstream is(content.ToStdString());
+    std::istringstream is(content.utf8_string());
     m_billDao.setName(BillSectionName(m_batchesDao.last()->id));
     try {
         m_billDao.readWrapped(is, accountStruct->bill_config);

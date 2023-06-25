@@ -58,7 +58,7 @@ wxString CachedTable::GetColLabelValue(int col)
 void CachedTable::SetValue(int row, int col, const wxString &value)
 {
     try {
-        SetCellValue(row, col, value.ToStdString());
+        SetCellValue(row, col, value);
     } catch (std::runtime_error &e) {
         wxLogError(e.what());
     }

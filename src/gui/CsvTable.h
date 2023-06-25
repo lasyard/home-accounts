@@ -51,12 +51,12 @@ protected:
 
     wxString GetCellValue(int row, int col) override
     {
-        return m_dao->getString(row, col);
+        return wxString::FromUTF8(m_dao->getString(row, col));
     }
 
     void SetCellValue(int row, int col, const wxString &value) override
     {
-        m_dao->setString(row, col, value.ToStdString());
+        m_dao->setString(row, col, value.utf8_string());
     }
 
     bool InsertRow(size_t pos) override

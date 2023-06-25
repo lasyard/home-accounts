@@ -63,51 +63,59 @@ void DataTable::UpdateChoicesFromJoints()
 
 wxString DataTable::GetCellValue(int row, int col)
 {
+    std::string v;
     switch (GetRowType(row)) {
     case DataDao::IndexType::ITEM:
         switch (col) {
         case TIME_COL:
-            return m_dataDao->getTimeString(row);
+            v = m_dataDao->getTimeString(row);
+            break;
         case INCOME_COL:
-            return m_dataDao->getIncomeString(row);
+            v = m_dataDao->getIncomeString(row);
+            break;
         case OUTLAY_COL:
-            return m_dataDao->getOutlayString(row);
+            v = m_dataDao->getOutlayString(row);
+            break;
         case ACCOUNT_COL:
-            return m_dataDao->getAccountString(row);
+            v = m_dataDao->getAccountString(row);
+            break;
         case DESC_COL:
-            return m_dataDao->getDescString(row);
+            v = m_dataDao->getDescString(row);
+            break;
         case BALANCE_COL:
-            return m_dataDao->getBalanceString(row);
+            v = m_dataDao->getBalanceString(row);
+            break;
         case VALID_COL:
-            return m_dataDao->getValidString(row);
+            v = m_dataDao->getValidString(row);
+            break;
         default:
             break;
         }
         break;
     case DataDao::IndexType::INITIAL:
         if (col == BALANCE_COL) {
-            return m_dataDao->getBalanceString(row);
+            v = m_dataDao->getBalanceString(row);
         }
         break;
     case DataDao::IndexType::PAGE:
         if (col == 0) {
-            return m_dataDao->getPageTitleString(row);
+            v = m_dataDao->getPageTitleString(row);
         }
         break;
     case DataDao::IndexType::OTHER:
         if (col == INCOME_COL) {
-            return m_dataDao->getTotalIncomeString();
+            v = m_dataDao->getTotalIncomeString();
         } else if (col == OUTLAY_COL) {
-            return m_dataDao->getTotalOutlayString();
+            v = m_dataDao->getTotalOutlayString();
         }
         break;
     }
-    return wxEmptyString;
+    return wxString::FromUTF8(v);
 }
 
 void DataTable::SetCellValue(int row, int col, const wxString &value)
 {
-    auto const &v = value.ToStdString();
+    auto const &v = value.utf8_string();
     switch (col) {
     case INCOME_COL:
         m_dataDao->setMoney(row, v, true);

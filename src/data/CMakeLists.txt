@@ -2,10 +2,10 @@ add_lib(${LIB_DATA_NAME}
     AccountsDao.cpp
     ConfigPodsTraits.cpp
     DataDao.cpp
+    ItemWrapper.cpp
     TypeTraits.cpp
     data.c
     item.c
-    ItemWrapper.cpp
     list.c
     page.c
     rbtree.c

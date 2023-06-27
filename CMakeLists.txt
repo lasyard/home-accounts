@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.20.0)
 set(CMAKE_OSX_SYSROOT /Library/Developer/CommandLineTools/SDKs/MacOSX12.sdk)
 project(home-accounts VERSION 1.0.0 LANGUAGES C CXX)
 
@@ -37,15 +37,19 @@ function(add_lib target)
     target_common_settings(${target})
 endfunction()
 
-function(copy_file target file)
-    set(SRC_FILE ${CMAKE_CURRENT_SOURCE_DIR}/${file})
-    set(TARGET_FILE ${CMAKE_CURRENT_BINARY_DIR}/${file})
-    add_custom_target(${target} DEPENDS ${TARGET_FILE})
+function(copy_file2 target dst src)
+    set(SRC_FILE ${CMAKE_CURRENT_SOURCE_DIR}/${src})
+    set(DST_FILE ${CMAKE_CURRENT_BINARY_DIR}/${dst})
+    add_custom_target(${target} DEPENDS ${DST_FILE})
     add_custom_command(
-        OUTPUT ${TARGET_FILE}
-        COMMAND ${CMAKE_COMMAND} -E copy ${SRC_FILE} ${TARGET_FILE}
+        OUTPUT ${DST_FILE}
+        COMMAND ${CMAKE_COMMAND} -E copy ${SRC_FILE} ${DST_FILE}
         DEPENDS ${SRC_FILE}
     )
+endfunction()
+
+function(copy_file target file)
+    copy_file2(${target} ${file} ${file})
 endfunction()
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")

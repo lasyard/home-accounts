@@ -20,3 +20,6 @@ build*/
 
 # Files generated accidently by wxFormBuilder
 noname.*
+
+# Generated files
+src/gui/res/i18n/messages.pot

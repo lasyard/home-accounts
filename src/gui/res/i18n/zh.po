@@ -1,0 +1,135 @@
+# Chinese translations for home-accounts package.
+# Copyright (C) 2023 Lasy
+# This file is distributed under the same license as the home-accounts package.
+# Automatically generated, 2023.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: home-accounts 1.0.0\n"
+"Report-Msgid-Bugs-To: lasyard@yeah.net\n"
+"POT-Creation-Date: 2023-06-27 18:38+0800\n"
+"PO-Revision-Date: 2023-06-27 18:38+0800\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: zh\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Wrong password!"
+msgstr ""
+
+msgid "Confirm new password failed!"
+msgstr ""
+
+msgid " Doc"
+msgstr ""
+
+msgid "Accounts View"
+msgstr ""
+
+msgid "Input the password for the file:"
+msgstr ""
+
+msgid "Overwrite the existing "
+msgstr ""
+
+msgid "?"
+msgstr ""
+
+msgid "Confirm"
+msgstr ""
+
+msgid "CSV file"
+msgstr ""
+
+msgid "License"
+msgstr ""
+
+msgid "Bills"
+msgstr ""
+
+msgid "Untitled"
+msgstr ""
+
+msgid "Must select an account."
+msgstr ""
+
+msgid "ID"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Owner"
+msgstr ""
+
+msgid "Type"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Balance"
+msgstr ""
+
+msgid "Bill Config"
+msgstr ""
+
+msgid "Configs"
+msgstr ""
+
+msgid "Owners"
+msgstr ""
+
+msgid "Channels"
+msgstr ""
+
+msgid "Account Types"
+msgstr ""
+
+msgid "Accounts"
+msgstr ""
+
+msgid " Configuration"
+msgstr ""
+
+msgid "Transactions"
+msgstr ""
+
+msgid "Transactions of Date %Y-%m"
+msgstr ""
+
+msgid "Time"
+msgstr ""
+
+msgid "Income"
+msgstr ""
+
+msgid "Outlay"
+msgstr ""
+
+msgid "Account"
+msgstr ""
+
+msgid "Valid"
+msgstr ""
+
+msgid "Total"
+msgstr ""
+
+msgid "Raw"
+msgstr ""
+
+msgid "File is empty."
+msgstr ""
+
+msgid "Input the name of new section."
+msgstr ""
+
+#, c-format
+msgid "Are you sure to delete section \"%s\"?"
+msgstr ""
+
+msgid "N/A"
+msgstr ""

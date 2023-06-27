@@ -3,8 +3,6 @@
 
 #include <wx/xrc/xmlres.h>
 
-#define APP_VERSION "1"
-
 // Menus
 #define ID_IMPORT      XRCID("import")
 #define ID_EXPORT      XRCID("export")

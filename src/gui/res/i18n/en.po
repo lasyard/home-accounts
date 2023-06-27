@@ -1,0 +1,136 @@
+# English translations for home-accounts package.
+# Copyright (C) 2023 Lasy
+# This file is distributed under the same license as the home-accounts package.
+# Automatically generated, 2023.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: home-accounts 1.0.0\n"
+"Report-Msgid-Bugs-To: lasyard@yeah.net\n"
+"POT-Creation-Date: 2023-06-27 18:38+0800\n"
+"PO-Revision-Date: 2023-06-27 18:38+0800\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Wrong password!"
+msgstr "Wrong password!"
+
+msgid "Confirm new password failed!"
+msgstr "Confirm new password failed!"
+
+msgid " Doc"
+msgstr " Doc"
+
+msgid "Accounts View"
+msgstr "Accounts View"
+
+msgid "Input the password for the file:"
+msgstr "Input the password for the file:"
+
+msgid "Overwrite the existing "
+msgstr "Overwrite the existing "
+
+msgid "?"
+msgstr "?"
+
+msgid "Confirm"
+msgstr "Confirm"
+
+msgid "CSV file"
+msgstr "CSV file"
+
+msgid "License"
+msgstr "License"
+
+msgid "Bills"
+msgstr "Bills"
+
+msgid "Untitled"
+msgstr "Untitled"
+
+msgid "Must select an account."
+msgstr "Must select an account."
+
+msgid "ID"
+msgstr "ID"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "Owner"
+msgstr "Owner"
+
+msgid "Type"
+msgstr "Type"
+
+msgid "Description"
+msgstr "Description"
+
+msgid "Balance"
+msgstr "Balance"
+
+msgid "Bill Config"
+msgstr "Bill Config"
+
+msgid "Configs"
+msgstr "Configs"
+
+msgid "Owners"
+msgstr "Owners"
+
+msgid "Channels"
+msgstr "Channels"
+
+msgid "Account Types"
+msgstr "Account Types"
+
+msgid "Accounts"
+msgstr "Accounts"
+
+msgid " Configuration"
+msgstr " Configuration"
+
+msgid "Transactions"
+msgstr "Transactions"
+
+msgid "Transactions of Date %Y-%m"
+msgstr "Transactions of Date %Y-%m"
+
+msgid "Time"
+msgstr "Time"
+
+msgid "Income"
+msgstr "Income"
+
+msgid "Outlay"
+msgstr "Outlay"
+
+msgid "Account"
+msgstr "Account"
+
+msgid "Valid"
+msgstr "Valid"
+
+msgid "Total"
+msgstr "Total"
+
+msgid "Raw"
+msgstr "Raw"
+
+msgid "File is empty."
+msgstr "File is empty."
+
+msgid "Input the name of new section."
+msgstr "Input the name of new section."
+
+#, c-format
+msgid "Are you sure to delete section \"%s\"?"
+msgstr "Are you sure to delete section \"%s\"?"
+
+msgid "N/A"
+msgstr "N/A"

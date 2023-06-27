@@ -85,8 +85,8 @@ void HaMainFrame::OnAbout([[maybe_unused]] wxCommandEvent &event)
     wxAboutDialogInfo info;
     info.SetName(appName);
     info.SetVersion(APP_VERSION);
-    info.SetCopyright("(C) 2022 Yueguang Jiao <lasyard@yeah.net>");
-    info.AddDeveloper("Yueguang Jiao <lasyard@yeah.net>");
+    info.SetCopyright("(C) 2000 - " CURRENT_YEAR " " AUTHOR " " EMAIL);
+    info.AddDeveloper(AUTHOR " " EMAIL);
     wxAboutBox(info);
 }
 

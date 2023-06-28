@@ -8,7 +8,7 @@ on:
       - "**/*.h"
       - "**/*.c"
       - "**/*.cpp"
-      - "**/CMakeList.txt"
+      - "**/CMakeLists.txt"
       - ".github/workflows/cmake.yml"
 
 env:

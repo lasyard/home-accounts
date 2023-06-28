@@ -29,10 +29,11 @@ add_exe(${APP_NAME}
     HaView.cpp
 )
 
+# Order is vital.
 target_link_libraries(${APP_NAME}
     PRIVATE ${wxWidgets_LIBRARIES}
-    PRIVATE ${LIB_CSV_NAME}
     PRIVATE ${LIB_DATA_NAME}
+    PRIVATE ${LIB_CSV_NAME}
     PRIVATE ${LIB_FILE_NAME}
     PRIVATE file_sqlite3
 )

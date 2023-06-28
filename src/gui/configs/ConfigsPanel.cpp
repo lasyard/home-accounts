@@ -30,11 +30,10 @@ EVT_UPDATE_UI(wxID_DELETE, ConfigsPanel::OnUpdateMenu)
 EVT_MENU(wxID_DELETE, ConfigsPanel::OnMenuModify)
 END_EVENT_TABLE()
 
-const wxString ConfigsPanel::LABEL = _("Configs");
-const wxString ConfigsPanel::OWNERS_LABEL = _("Owners");
-const wxString ConfigsPanel::CHANNELS_LABEL = _("Channels");
-const wxString ConfigsPanel::ACCOUNT_TYPES_LABEL = _("Account Types");
-const wxString ConfigsPanel::ACCOUNTS_LABEL = _("Accounts");
+const wxString ConfigsPanel::LABEL = t("Configs");
+const wxString ConfigsPanel::OWNERS_LABEL = t("Owners");
+const wxString ConfigsPanel::ACCOUNT_TYPES_LABEL = t("Account Types");
+const wxString ConfigsPanel::ACCOUNTS_LABEL = t("Accounts");
 
 ConfigsPanel::ConfigsPanel(wxWindow *parent, HaDocument *doc) : HaPanel(doc), m_grids()
 {
@@ -56,9 +55,9 @@ ConfigsPanel::~ConfigsPanel()
 void ConfigsPanel::OnUpdate()
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
-    AddConfig(OWNERS_LABEL, new OwnersTable(&m_doc->GetOwnersDao()));
-    AddConfig(ACCOUNT_TYPES_LABEL, new AccountTypesTable(&m_doc->GetAccountTypesDao()));
-    AddConfig(ACCOUNTS_LABEL, new AccountsTable(&m_doc->GetAccountsDao()));
+    AddConfig(_(OWNERS_LABEL), new OwnersTable(&m_doc->GetOwnersDao()));
+    AddConfig(_(ACCOUNT_TYPES_LABEL), new AccountTypesTable(&m_doc->GetAccountTypesDao()));
+    AddConfig(_(ACCOUNTS_LABEL), new AccountsTable(&m_doc->GetAccountsDao()));
     UpdateGrid(GetCurrentGrid());
 }
 

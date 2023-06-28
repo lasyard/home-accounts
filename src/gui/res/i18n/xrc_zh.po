@@ -1,0 +1,113 @@
+# English translations for home-accounts package.
+# Copyright (C) 2023 Lasy
+# This file is distributed under the same license as the home-accounts package.
+# Automatically generated, 2023.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: home-accounts 1.0.0\n"
+"Report-Msgid-Bugs-To: lasyard@yeah.net\n"
+"POT-Creation-Date: 2023-06-28 16:34+0800\n"
+"PO-Revision-Date: 2023-06-28 15:41+0800\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: zh\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: res/ha.xrc:15
+msgid "File"
+msgstr "File"
+
+#: res/ha.xrc:17
+msgid "&New\tCtrl+N"
+msgstr "新建\tCtrl+N"
+
+#: res/ha.xrc:21
+msgid "&Open\tCtrl+O"
+msgstr "打开\tCtrl+O"
+
+#: res/ha.xrc:25
+msgid "&Save\tCtrl+S"
+msgstr "保存\tCtrl+S"
+
+#: res/ha.xrc:29
+msgid "Save As\tCtrl+Shift+S"
+msgstr "另存为\tCtrl+Shift+S"
+
+#: res/ha.xrc:33
+msgid "Close\tCtrl+W"
+msgstr "关闭\tCtrl+W"
+
+#: res/ha.xrc:38
+msgid "&Import\tCtrl+I"
+msgstr "导入\tCtrl+I"
+
+#: res/ha.xrc:42
+msgid "&Export\tCtrl+E"
+msgstr "导出\tCtrl+E"
+
+#: res/ha.xrc:47
+msgid "Change Password"
+msgstr "修改密码"
+
+#: res/ha.xrc:52
+msgid "Edit"
+msgstr "Edit"
+
+#: res/ha.xrc:54
+msgid "Insert\tEnter"
+msgstr "插入\tEnter"
+
+#: res/ha.xrc:58
+msgid "Delete\tDelete"
+msgstr "删除\tDelete"
+
+#: res/ha.xrc:62 res/ha.xrc:188
+msgid "Paste Bill"
+msgstr "粘贴账单"
+
+#: res/ha.xrc:67
+msgid "Raw Mode"
+msgstr "原初模式"
+
+#: res/ha.xrc:73
+msgid "Help"
+msgstr "Help"
+
+#: res/ha.xrc:75
+msgid "About"
+msgstr "关于"
+
+#: res/ha.xrc:79
+msgid "License"
+msgstr "许可证"
+
+#: res/ha.xrc:83
+msgid "wxWidgets Information"
+msgstr "wxWidgets 信息"
+
+#: res/ha.xrc:200
+msgid "Merge into trasactions"
+msgstr "合并到明细"
+
+#: res/ha.xrc:253
+msgid "Current password"
+msgstr "当前密码"
+
+#: res/ha.xrc:271
+msgid "New password"
+msgstr "新密码"
+
+#: res/ha.xrc:289
+msgid "Confirm new password"
+msgstr "确认新密码"
+
+#: res/ha.xrc:313 res/ha.xrc:377
+msgid "&OK"
+msgstr "确定 (&O)"
+
+#: res/ha.xrc:320 res/ha.xrc:384
+msgid "&Cancel"
+msgstr "取消 (&C)"

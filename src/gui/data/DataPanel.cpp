@@ -30,7 +30,7 @@ EVT_UPDATE_UI(wxID_DELETE, DataPanel::OnUpdateMenu)
 EVT_MENU(wxID_DELETE, DataPanel::OnMenuModify)
 END_EVENT_TABLE()
 
-const wxString DataPanel::LABEL = _("Transactions");
+const wxString DataPanel::LABEL = t("Transactions");
 
 DataPanel::DataPanel(wxWindow *parent, HaDocument *doc) : HaPanel(doc)
 {
@@ -90,7 +90,8 @@ void DataPanel::OnImport([[maybe_unused]] wxCommandEvent &event)
 
 void DataPanel::OnUpdateExport(wxUpdateUIEvent &event)
 {
-    event.Enable(!m_grid->GetCachedTable()->GetDao()->isEmpty());
+    auto table = m_grid->GetCachedTable();
+    event.Enable(table != nullptr && !table->GetDao()->isEmpty());
 }
 
 void DataPanel::OnExport([[maybe_unused]] wxCommandEvent &event)
@@ -131,5 +132,5 @@ void DataPanel::ShowData(const wxDateTime &date)
 
 wxString DataPanel::Description()
 {
-    return m_date->GetValue().Format(_("Transactions of Date %Y-%m"));
+    return m_date->GetValue().Format(_("Transactions of month %Y-%m"));
 }

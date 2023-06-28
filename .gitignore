@@ -22,4 +22,7 @@ build*/
 noname.*
 
 # Generated files
-src/gui/res/i18n/messages.pot
+*.pot
+
+# Backup files
+*~

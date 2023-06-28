@@ -19,6 +19,11 @@ bool HaApp::OnInit()
     }
     wxLog::AddTraceMask(TM);
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
+    m_locale.Init();
+    if (!m_locale.AddCatalog(APP_NAME) || !m_locale.AddCatalog("xrc")) {
+        wxLogError("Could not load translation files for \"" + m_locale.GetCanonicalName() + "\" locale.");
+    }
+    m_locale.AddCatalog("wxstd");
     wxFileSystem::AddHandler(new wxArchiveFSHandler());
     wxXmlResource::Get()->InitAllHandlers();
     wxString resDir = wxStandardPaths::Get().GetResourcesDir();
@@ -36,7 +41,7 @@ bool HaApp::OnInit()
         "",
         "ha",
         GetAppDisplayName() + _(" Doc"),
-        _("Accounts View"),
+        "Accounts View",
         CLASSINFO(HaDocument),
         CLASSINFO(HaView)
     );

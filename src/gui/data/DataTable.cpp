@@ -10,13 +10,13 @@
 #include "data/ItemTraits.h"
 
 const wxString DataTable::COL_LABELS[] = {
-    _("Time"),
-    _("Income"),
-    _("Outlay"),
-    _("Account"),
-    _("Description"),
-    _("Balance"),
-    _("Valid"),
+    t("Time"),
+    t("Income"),
+    t("Outlay"),
+    t("Account"),
+    t("Description"),
+    t("Balance"),
+    t("Valid"),
 };
 
 DataTable::DataTable(DataDao *dataDao) : CachedTable(COL_NUM, COL_LABELS), m_dataDao(dataDao)

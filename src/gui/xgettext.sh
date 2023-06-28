@@ -6,19 +6,22 @@ if [ ! -d "${DIR}" ]; then
     mkdir -p "${DIR}"
 fi
 
-POT="${DIR}/messages.pot"
+OPTIONS="--copyright-holder=Lasy
+--package-name=home-accounts
+--package-version=1.0.0
+--msgid-bugs-address=lasyard@yeah.net"
 
-xgettext --c++ --no-location -k_ -f xgettext.list -o "${POT}" \
-    --copyright-holder=Lasy \
-    --package-name=home-accounts \
-    --package-version=1.0.0 \
-    --msgid-bugs-address=lasyard@yeah.net
+xgettext --c++ -k, -k_ -kt -f "xgettext.list" -p "${DIR}" -o HomeAccounts.pot ${OPTIONS}
 
-for locale in "en" "zh"; do
-    file="${DIR}/${locale}.po"
-    if [ -f "${file}" ]; then
-        msgmerge -U "${file}" "${POT}"
-    else
-        msginit -i "${POT}" -o "${file}" --locale ${locale} --no-translator
-    fi
+wxrc -g res/ha.xrc | xgettext --c++ -k, -k_ -p "${DIR}" -o xrc.pot - ${OPTIONS}
+
+for domain in "HomeAccounts" "xrc"; do
+    for locale in "en" "zh"; do
+        file="${DIR}/${domain}_${locale}.po"
+        if [ -f "${file}" ]; then
+            msgmerge -U "${file}" "${DIR}/${domain}.pot"
+        else
+            msginit -i "${DIR}/${domain}.pot" -o "${file}" --locale ${locale} --no-translator --no-wrap
+        fi
+    done
 done

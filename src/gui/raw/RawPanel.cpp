@@ -82,7 +82,7 @@ void RawPanel::OnUpdateInsert(wxUpdateUIEvent &event)
 void RawPanel::OnInsert([[maybe_unused]] wxCommandEvent &event)
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
-    wxTextEntryDialog dlgName(nullptr, _("Input the name of new section."));
+    wxTextEntryDialog dlgName(nullptr, _("Input the name of new section:"));
     auto sel = m_book->GetSelection();
     if (sel != wxNOT_FOUND) {
         dlgName.SetValue(GetSectionName(sel));

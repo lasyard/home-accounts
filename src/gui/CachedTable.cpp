@@ -52,7 +52,7 @@ wxString CachedTable::GetValue(int row, int col)
 
 wxString CachedTable::GetColLabelValue(int col)
 {
-    return m_colLabels[col];
+    return _(m_colLabels[col]);
 }
 
 void CachedTable::SetValue(int row, int col, const wxString &value)

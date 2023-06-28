@@ -1,0 +1,172 @@
+# Chinese translations for home-accounts package.
+# Copyright (C) 2023 Lasy
+# This file is distributed under the same license as the home-accounts package.
+# Automatically generated, 2023.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: home-accounts 1.0.0\n"
+"Report-Msgid-Bugs-To: lasyard@yeah.net\n"
+"POT-Creation-Date: 2023-06-28 16:34+0800\n"
+"PO-Revision-Date: 2023-06-28 15:41+0800\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: zh\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ChangePassDialog.cpp:17
+msgid "Wrong password!"
+msgstr "密码错误！"
+
+#: ChangePassDialog.cpp:23
+msgid "Confirm new password failed!"
+msgstr "确认新密码失败！"
+
+#: HaApp.cpp:43
+msgid " Doc"
+msgstr " 文档"
+
+#: HaDocument.cpp:78
+msgid "Input the password for the file:"
+msgstr "输入文件的密码："
+
+#: HaGrid.cpp:75
+msgid "Overwrite the existing "
+msgstr "覆盖已有的"
+
+#: HaGrid.cpp:75
+msgid "?"
+msgstr "？"
+
+#: HaGrid.cpp:75 raw/RawPanel.cpp:110
+msgid "Confirm"
+msgstr "确认"
+
+#: HaGrid.cpp:77
+msgid "CSV file"
+msgstr "CSV 文件"
+
+#: HaMainFrame.cpp:103
+msgid "License"
+msgstr "许可证"
+
+#: bill/BillPanel.cpp:36
+msgid "Bills"
+msgstr "账单"
+
+#: bill/BillPanel.cpp:144
+msgid "Bill"
+msgstr "账单"
+
+#: bill/PasteBillDialog.cpp:29
+msgid "Untitled"
+msgstr "无标题"
+
+#: bill/PasteBillDialog.cpp:75
+msgid "Must select an account."
+msgstr "必须选择一个账户。"
+
+#: configs/AccountTypesTable.cpp:6 configs/AccountsTable.cpp:8
+#: configs/OwnersTable.cpp:6
+msgid "ID"
+msgstr "ID"
+
+#: configs/AccountTypesTable.cpp:7 configs/AccountsTable.cpp:9
+#: configs/OwnersTable.cpp:7
+msgid "Name"
+msgstr "名称"
+
+#: configs/AccountsTable.cpp:10
+msgid "Owner"
+msgstr "持有人"
+
+#: configs/AccountsTable.cpp:11
+msgid "Type"
+msgstr "类型"
+
+#: configs/AccountsTable.cpp:12 data/DataTable.cpp:17
+msgid "Description"
+msgstr "说明"
+
+#: configs/AccountsTable.cpp:13 data/DataTable.cpp:18
+msgid "Balance"
+msgstr "结余"
+
+#: configs/AccountsTable.cpp:14
+msgid "Bill Config"
+msgstr "账单设置"
+
+#: configs/ConfigsPanel.cpp:33
+msgid "Configs"
+msgstr "设置"
+
+#: configs/ConfigsPanel.cpp:34
+msgid "Owners"
+msgstr "持有人"
+
+#: configs/ConfigsPanel.cpp:35
+msgid "Account Types"
+msgstr "账户类型"
+
+#: configs/ConfigsPanel.cpp:36
+msgid "Accounts"
+msgstr "账户"
+
+#: configs/ConfigsPanel.cpp:178
+msgid " Configuration"
+msgstr "设置"
+
+#: data/DataPanel.cpp:33
+msgid "Transactions"
+msgstr "明细"
+
+#: data/DataPanel.cpp:135
+msgid "Transactions of month %Y-%m"
+msgstr "%Y-%m 月份的明细"
+
+#: data/DataTable.cpp:13
+msgid "Time"
+msgstr "时间"
+
+#: data/DataTable.cpp:14
+msgid "Income"
+msgstr "收入"
+
+#: data/DataTable.cpp:15
+msgid "Outlay"
+msgstr "支出"
+
+#: data/DataTable.cpp:16
+msgid "Account"
+msgstr "账户"
+
+#: data/DataTable.cpp:19
+msgid "Valid"
+msgstr "生效"
+
+#: data/DataTable.cpp:37
+msgid "Total"
+msgstr "合计"
+
+#: raw/RawPanel.cpp:26
+msgid "Raw"
+msgstr "原初"
+
+#: raw/RawPanel.cpp:53
+msgid "File is empty."
+msgstr "文件是空的。"
+
+#: raw/RawPanel.cpp:85
+msgid "Input the name of new section:"
+msgstr "输入新片段的名称："
+
+#: raw/RawPanel.cpp:109
+#, c-format
+msgid "Are you sure to delete section \"%s\"?"
+msgstr "确实要删除片段 \"%s\"？"
+
+#: utils/DaoUtils.cpp:9
+msgid "N/A"
+msgstr "无"

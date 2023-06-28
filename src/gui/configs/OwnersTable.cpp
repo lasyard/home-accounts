@@ -3,8 +3,8 @@
 #include "ConfigsGridCellAttrProvider.h"
 
 const wxString OwnersTable::COL_LABELS[] = {
-    _("ID"),
-    _("Name"),
+    t("ID"),
+    t("Name"),
 };
 
 OwnersTable::OwnersTable(CsvVecDao<struct owner> *dao)

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: home-accounts 1.0.0\n"
 "Report-Msgid-Bugs-To: lasyard@yeah.net\n"
-"POT-Creation-Date: 2023-06-27 18:38+0800\n"
-"PO-Revision-Date: 2023-06-27 18:38+0800\n"
+"POT-Creation-Date: 2023-06-28 16:34+0800\n"
+"PO-Revision-Date: 2023-06-28 15:41+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "Language: en\n"
@@ -17,120 +17,157 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#: ChangePassDialog.cpp:17
 msgid "Wrong password!"
 msgstr "Wrong password!"
 
+#: ChangePassDialog.cpp:23
 msgid "Confirm new password failed!"
 msgstr "Confirm new password failed!"
 
+#: HaApp.cpp:43
 msgid " Doc"
 msgstr " Doc"
 
-msgid "Accounts View"
-msgstr "Accounts View"
-
+#: HaDocument.cpp:78
 msgid "Input the password for the file:"
 msgstr "Input the password for the file:"
 
+#: HaGrid.cpp:75
 msgid "Overwrite the existing "
 msgstr "Overwrite the existing "
 
+#: HaGrid.cpp:75
 msgid "?"
 msgstr "?"
 
+#: HaGrid.cpp:75 raw/RawPanel.cpp:110
 msgid "Confirm"
 msgstr "Confirm"
 
+#: HaGrid.cpp:77
 msgid "CSV file"
 msgstr "CSV file"
 
+#: HaMainFrame.cpp:103
 msgid "License"
 msgstr "License"
 
+#: bill/BillPanel.cpp:36
 msgid "Bills"
 msgstr "Bills"
 
+#: bill/BillPanel.cpp:144
+msgid "Bill"
+msgstr "Bill"
+
+#: bill/PasteBillDialog.cpp:29
 msgid "Untitled"
 msgstr "Untitled"
 
+#: bill/PasteBillDialog.cpp:75
 msgid "Must select an account."
 msgstr "Must select an account."
 
+#: configs/AccountTypesTable.cpp:6 configs/AccountsTable.cpp:8
+#: configs/OwnersTable.cpp:6
 msgid "ID"
 msgstr "ID"
 
+#: configs/AccountTypesTable.cpp:7 configs/AccountsTable.cpp:9
+#: configs/OwnersTable.cpp:7
 msgid "Name"
 msgstr "Name"
 
+#: configs/AccountsTable.cpp:10
 msgid "Owner"
 msgstr "Owner"
 
+#: configs/AccountsTable.cpp:11
 msgid "Type"
 msgstr "Type"
 
+#: configs/AccountsTable.cpp:12 data/DataTable.cpp:17
 msgid "Description"
 msgstr "Description"
 
+#: configs/AccountsTable.cpp:13 data/DataTable.cpp:18
 msgid "Balance"
 msgstr "Balance"
 
+#: configs/AccountsTable.cpp:14
 msgid "Bill Config"
 msgstr "Bill Config"
 
+#: configs/ConfigsPanel.cpp:33
 msgid "Configs"
 msgstr "Configs"
 
+#: configs/ConfigsPanel.cpp:34
 msgid "Owners"
 msgstr "Owners"
 
-msgid "Channels"
-msgstr "Channels"
-
+#: configs/ConfigsPanel.cpp:35
 msgid "Account Types"
 msgstr "Account Types"
 
+#: configs/ConfigsPanel.cpp:36
 msgid "Accounts"
 msgstr "Accounts"
 
+#: configs/ConfigsPanel.cpp:178
 msgid " Configuration"
 msgstr " Configuration"
 
+#: data/DataPanel.cpp:33
 msgid "Transactions"
 msgstr "Transactions"
 
-msgid "Transactions of Date %Y-%m"
-msgstr "Transactions of Date %Y-%m"
+#: data/DataPanel.cpp:135
+msgid "Transactions of month %Y-%m"
+msgstr "Transactions of month %Y-%m"
 
+#: data/DataTable.cpp:13
 msgid "Time"
 msgstr "Time"
 
+#: data/DataTable.cpp:14
 msgid "Income"
 msgstr "Income"
 
+#: data/DataTable.cpp:15
 msgid "Outlay"
 msgstr "Outlay"
 
+#: data/DataTable.cpp:16
 msgid "Account"
 msgstr "Account"
 
+#: data/DataTable.cpp:19
 msgid "Valid"
 msgstr "Valid"
 
+#: data/DataTable.cpp:37
 msgid "Total"
 msgstr "Total"
 
+#: raw/RawPanel.cpp:26
 msgid "Raw"
 msgstr "Raw"
 
+#: raw/RawPanel.cpp:53
 msgid "File is empty."
 msgstr "File is empty."
 
-msgid "Input the name of new section."
-msgstr "Input the name of new section."
+#: raw/RawPanel.cpp:85
+msgid "Input the name of new section:"
+msgstr "Input the name of new section:"
 
+#: raw/RawPanel.cpp:109
 #, c-format
 msgid "Are you sure to delete section \"%s\"?"
 msgstr "Are you sure to delete section \"%s\"?"
 
+#: utils/DaoUtils.cpp:9
 msgid "N/A"
 msgstr "N/A"

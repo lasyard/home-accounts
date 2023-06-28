@@ -3,8 +3,8 @@
 #include "ConfigsGridCellAttrProvider.h"
 
 const wxString AccountTypesTable::COL_LABELS[] = {
-    _("ID"),
-    _("Name"),
+    t("ID"),
+    t("Name"),
 };
 
 AccountTypesTable::AccountTypesTable(CsvVecDao<struct account_type> *dao)

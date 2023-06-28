@@ -12,7 +12,7 @@
 		</object>
 		<object class="wxMenuBar" name="menuBar">
 			<object class="wxMenu" name="fileMenu">
-				<label>_File</label>
+				<label>File</label>
 				<object class="wxMenuItem" name="wxID_NEW">
 					<label>_New\tCtrl+N</label>
 					<help></help>
@@ -35,11 +35,11 @@
 				</object>
 				<object class="separator" />
 				<object class="wxMenuItem" name="import">
-					<label>_Import\tCTRL+I</label>
+					<label>_Import\tCtrl+I</label>
 					<help></help>
 				</object>
 				<object class="wxMenuItem" name="export">
-					<label>_Export\tCTRL+E</label>
+					<label>_Export\tCtrl+E</label>
 					<help></help>
 				</object>
 				<object class="separator" />
@@ -49,7 +49,7 @@
 				</object>
 			</object>
 			<object class="wxMenu" name="editMenu">
-				<label>_Edit</label>
+				<label>Edit</label>
 				<object class="wxMenuItem" name="insert">
 					<label>Insert\tEnter</label>
 					<help></help>
@@ -70,7 +70,7 @@
 				</object>
 			</object>
 			<object class="wxMenu" name="helpMenu">
-				<label>_Help</label>
+				<label>Help</label>
 				<object class="wxMenuItem" name="about">
 					<label>About</label>
 					<help></help>

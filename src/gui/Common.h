@@ -4,4 +4,6 @@
 #define DECLARE_TM()      static const wxChar *const TM;
 #define IMPLEMENT_TM(cls) const wxChar *const cls::TM = wxS(#cls);
 
+#define t(x) x // helper to translate static text
+
 #endif /* _GUI_COMMON_H_ */

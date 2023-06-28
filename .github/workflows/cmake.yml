@@ -35,7 +35,7 @@ jobs:
         run: sudo apt-add-repository 'deb http://repos.codelite.org/wx3.2.1/ubuntu/ jammy universe'
 
       - name: Install Crypto++ and wxWidgets
-        run: sudo apt satisfy libnotify4 libcrypto++-dev libwxgtk3.2unofficial-dev
+        run: sudo apt satisfy libnotify4 libcrypto++-dev libwxgtk3.2unofficial-dev gettext
 
       - name: Configure CMake
         working-directory: ${{github.workspace}}

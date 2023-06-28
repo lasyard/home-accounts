@@ -141,5 +141,5 @@ void BillPanel::ShowData(int batch)
 
 wxString BillPanel::Description()
 {
-    return "Bill";
+    return m_choice->GetStringSelection() + _("Bill");
 }

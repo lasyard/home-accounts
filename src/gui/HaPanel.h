@@ -27,7 +27,7 @@ public:
         requires std::derived_from<Panel, HaPanel>
     static void AddToBook(wxBookCtrlBase *book, HaDocument *doc)
     {
-        book->AddPage(new Panel(book, doc), Panel::LABEL, false);
+        book->AddPage(new Panel(book, doc), _(Panel::LABEL), false);
     }
 
     void SaveGridTable(HaGrid *grid);

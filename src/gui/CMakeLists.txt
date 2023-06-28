@@ -81,15 +81,26 @@ endif()
 
 # Languages
 set(PO_DIR res/i18n)
-GETTEXT_PROCESS_PO_FILES(en ALL PO_FILES ${PO_DIR}/en.po)
-target_sources(${APP_NAME} PRIVATE en.gmo)
-GETTEXT_PROCESS_PO_FILES(zh ALL PO_FILES ${PO_DIR}/zh.po)
-target_sources(${APP_NAME} PRIVATE zh.gmo)
 
-if(APPLE)
-    set_source_files_properties(en.gmo PROPERTIES MACOSX_PACKAGE_LOCATION Resources/en.lproj)
-    set_source_files_properties(zh.gmo PROPERTIES MACOSX_PACKAGE_LOCATION Resources/zh.lproj)
-endif()
+foreach(domain IN ITEMS ${APP_NAME} "xrc")
+    foreach(locale IN ITEMS en zh)
+        file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${PO_DIR}/${locale})
+        set(PO_FILE ${PO_DIR}/${domain}_${locale}.po)
+        set(MO_FILE ${PO_DIR}/${locale}/${domain}.mo)
+
+        # Target file name of `GETTEXT_PROCESS_PO_FILES` is not ok, so use custom commands.
+        add_custom_command(
+            OUTPUT ${MO_FILE}
+            COMMAND ${GETTEXT_MSGFMT_EXECUTABLE} -o ${MO_FILE} ${CMAKE_CURRENT_SOURCE_DIR}/${PO_FILE}
+            DEPENDS ${PO_FILE}
+        )
+        target_sources(${APP_NAME} PRIVATE ${MO_FILE})
+
+        if(APPLE)
+            set_source_files_properties(${MO_FILE} PROPERTIES MACOSX_PACKAGE_LOCATION Resources/${locale}.lproj)
+        endif()
+    endforeach()
+endforeach()
 
 add_subdirectory(bill)
 add_subdirectory(configs)

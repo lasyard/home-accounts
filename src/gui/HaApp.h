@@ -16,6 +16,8 @@ public:
 
 private:
     wxDocManager *m_docManager;
+    // This must be long lived.
+    wxLocale m_locale;
 };
 
 DECLARE_APP(HaApp)

@@ -1,7 +1,9 @@
 #include <wx/log.h>
+#include <wx/msgdlg.h>
 
 #include "ConfigsGrid.h"
 
+#include "../CachedTable.h"
 #include "../Defs.h"
 
 IMPLEMENT_DYNAMIC_CLASS(ConfigsGrid, HaGrid)
@@ -69,11 +71,32 @@ void ConfigsGrid::OnDelete([[maybe_unused]] wxCommandEvent &event)
     BeginBatch();
     if (GetSelectionMode() == wxGrid::wxGridSelectionModes::wxGridSelectRows) {
         const auto &blocks = GetSelectedRowBlocks();
-        for (auto i = blocks.rbegin(); i != blocks.rend(); ++i) {
-            for (auto j = i->GetBottomRow(); j >= i->GetTopRow(); --j) {
-                DeleteRows(j);
+        if (!blocks.empty()) {
+            wxString desc;
+            for (auto i = blocks.rbegin(); i != blocks.rend(); ++i) {
+                for (auto j = i->GetTopRow(); j <= i->GetBottomRow(); ++j) {
+                    if (!desc.IsEmpty()) {
+                        desc += ", ";
+                    }
+                    desc += "\"" + GetCachedTable()->DescRow(j) + "\"";
+                }
+            }
+            auto answer = wxMessageBox(
+                wxString::Format(_("Are you sure to delete lines %s?"), desc),
+                _("Confirm deleting"),
+                wxYES_NO | wxCENTER
+            );
+            if (answer == wxYES) {
+                for (auto i = blocks.rbegin(); i != blocks.rend(); ++i) {
+                    for (auto j = i->GetBottomRow(); j >= i->GetTopRow(); --j) {
+                        DeleteRows(j);
+                    }
+                }
+                return;
             }
         }
     }
     EndBatch();
+    // Not modified.
+    event.Skip();
 }

@@ -20,6 +20,11 @@ public:
     {
         return new AccountsTable(dynamic_cast<AccountsDao *>(m_dao));
     }
+
+    wxString DescRow(size_t pos) override
+    {
+        return GetCellValue(pos, 1);
+    }
 };
 
 #endif /* _CONFIGS_ACCOUNTS_TABLE_H_ */

@@ -44,6 +44,11 @@ public:
         return new DataTable(m_dataDao);
     }
 
+    wxString DescRow(size_t pos) override
+    {
+        return GetCellValue(pos, DESC_COL);
+    }
+
 private:
     DataDao *m_dataDao;
 

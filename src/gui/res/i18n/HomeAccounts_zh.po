@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: home-accounts 1.0.0\n"
 "Report-Msgid-Bugs-To: lasyard@yeah.net\n"
-"POT-Creation-Date: 2023-06-28 16:34+0800\n"
+"POT-Creation-Date: 2023-07-03 16:17+0800\n"
 "PO-Revision-Date: 2023-06-28 15:41+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -32,19 +32,19 @@ msgstr " 文档"
 msgid "Input the password for the file:"
 msgstr "输入文件的密码："
 
-#: HaGrid.cpp:75
+#: HaGrid.cpp:76
 msgid "Overwrite the existing "
 msgstr "覆盖已有的"
 
-#: HaGrid.cpp:75
+#: HaGrid.cpp:76
 msgid "?"
 msgstr "？"
 
-#: HaGrid.cpp:75 raw/RawPanel.cpp:110
-msgid "Confirm"
-msgstr "确认"
+#: HaGrid.cpp:76
+msgid "Confirm importing"
+msgstr "导入确认"
 
-#: HaGrid.cpp:77
+#: HaGrid.cpp:78
 msgid "CSV file"
 msgstr "CSV 文件"
 
@@ -97,6 +97,15 @@ msgstr "结余"
 #: configs/AccountsTable.cpp:14
 msgid "Bill Config"
 msgstr "账单设置"
+
+#: configs/ConfigsGrid.cpp:85
+#, c-format
+msgid "Are you sure to delete lines %s?"
+msgstr "确实要删除 \"%s\" 这些行？"
+
+#: configs/ConfigsGrid.cpp:86 raw/RawPanel.cpp:110
+msgid "Confirm deleting"
+msgstr "删除确认"
 
 #: configs/ConfigsPanel.cpp:33
 msgid "Configs"

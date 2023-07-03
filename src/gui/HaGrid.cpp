@@ -72,7 +72,8 @@ void HaGrid::SetAttributes()
 
 bool HaGrid::ImportFile(const wxString &what)
 {
-    auto answer = wxMessageBox(_("Overwrite the existing ") + what + _("?"), _("Confirm"), wxYES_NO | wxCENTER);
+    auto answer =
+        wxMessageBox(_("Overwrite the existing ") + what + _("?"), _("Confirm importing"), wxYES_NO | wxCENTER);
     if (answer == wxYES) {
         auto fileName = wxLoadFileSelector(_("CSV file"), "CSV file (*.csv)|*.csv|Text file(*.txt)|*.txt");
         if (!fileName.IsEmpty()) {

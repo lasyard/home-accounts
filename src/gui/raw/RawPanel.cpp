@@ -107,7 +107,7 @@ void RawPanel::OnDelete([[maybe_unused]] wxCommandEvent &event)
     int sel = m_book->GetSelection();
     if (sel != wxNOT_FOUND) {
         auto text = wxString::Format(_("Are you sure to delete section \"%s\"?"), m_book->GetPageText(sel));
-        int answer = wxMessageBox(text, _("Confirm"), wxYES_NO | wxCENTER);
+        int answer = wxMessageBox(text, _("Confirm deleting"), wxYES_NO | wxCENTER);
         if (answer == wxYES) {
             Unbind(sel);
             // Do real deletion.

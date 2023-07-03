@@ -17,6 +17,11 @@ public:
     {
         return new AccountTypesTable(m_dao);
     }
+
+    wxString DescRow(size_t pos) override
+    {
+        return GetCellValue(pos, 1);
+    }
 };
 
 #endif /* _CONFIGS_ACCOUNT_TYPES_TABLE_H_ */

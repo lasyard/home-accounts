@@ -39,6 +39,8 @@ public:
 
     virtual CachedTable *Clone() const = 0;
 
+    virtual wxString DescRow(size_t pos) = 0;
+
 protected:
     wxArrayString m_colLabels;
     wxVector<wxArrayString> *m_cache;

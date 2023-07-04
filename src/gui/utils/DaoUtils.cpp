@@ -4,6 +4,8 @@
 #include "DaoUtils.h"
 #include "IntClientData.h"
 
+#include "../Common.h"
+
 #include "data/Joint.h"
 
 const wxString Utils::NA = _("N/A");
@@ -13,7 +15,7 @@ void Utils::GetStrings(wxArrayString &arrString, const Joint<const char *, int32
     arrString.Empty();
     if (joint != nullptr) {
         joint->forEachTarget([&arrString](const char *const *str) {
-            arrString.push_back(*str);
+            arrString.push_back(c(*str));
             return true;
         });
     }

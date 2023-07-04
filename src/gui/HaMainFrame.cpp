@@ -96,7 +96,7 @@ void HaMainFrame::OnLicense([[maybe_unused]] wxCommandEvent &event)
     wxString resDir = wxStandardPaths::Get().GetResourcesDir();
     Utils::ReadAllText(text, wxFileName(resDir, LICENSE_FILE_NAME).GetFullPath());
 #if wxUSE_UNICODE
-    const wxString copyrightSign = wxString::FromUTF8("\xc2\xa9");
+    const wxString copyrightSign = c("\xc2\xa9");
     text.Replace("(c)", copyrightSign);
     text.Replace("(C)", copyrightSign);
 #endif

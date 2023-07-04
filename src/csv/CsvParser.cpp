@@ -86,7 +86,7 @@ const char *CsvParser::parseByType(const char *buf, ColumnType type, void *data)
         const char *p;
         for (p = buf; *p != m_sep && !is_line_end(*p); ++p) {
         }
-        return p + 1;
+        return p;
     }
     return nullptr;
 }

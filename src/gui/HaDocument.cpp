@@ -79,7 +79,7 @@ bool HaDocument::DoOpenDocument(const wxString &fileName)
     if (dlgPass.ShowModal() == wxID_OK) {
         m_pass = dlgPass.GetValue();
         try {
-            auto store = new Sqlite3File(fileName.utf8_string(), m_pass.utf8_string(), IV);
+            auto store = new Sqlite3File(s(fileName), s(m_pass), IV);
             m_doc->attach(store);
             TryLoad(m_ownersDao);
             TryLoad(m_accountTypesDao);
@@ -88,7 +88,6 @@ bool HaDocument::DoOpenDocument(const wxString &fileName)
             m_accountsDao.setTypeJoint(m_accountTypesDao.getNameIdJoint());
             m_dataDao.setAccountJoint(m_accountsDao.getNameIdJoint());
             m_billDao.setAccountJoint(m_accountsDao.getNameIdJoint());
-            TryLoad(m_batchesDao);
             return true;
         } catch (std::runtime_error &e) {
             wxLogError("Failed to open \"%s\": %s", (const char *)fileName, e.what());
@@ -104,7 +103,7 @@ bool HaDocument::DoSaveDocument(const wxString &fileName)
     if (view != nullptr) {
         view->SaveContents();
     }
-    auto store = new Sqlite3File(fileName.utf8_string(), m_pass.utf8_string(), IV);
+    auto store = new Sqlite3File(s(fileName), s(m_pass), IV);
     m_doc->saveAs(store);
     return true;
 }
@@ -126,17 +125,17 @@ void HaDocument::GetSectionNames(wxArrayString &names) const
 
 void HaDocument::GetSection(const wxString &name, wxString &content) const
 {
-    content = wxString::FromUTF8(m_doc->get(name.utf8_string()));
+    content = c(m_doc->get(s(name)));
 }
 
 void HaDocument::SaveSection(const wxString &name, const wxString &content)
 {
-    m_doc->put(name.utf8_string(), content.utf8_string());
+    m_doc->put(s(name), s(content));
 }
 
 void HaDocument::DeleteSection(const wxString &name)
 {
-    m_doc->remove(name.utf8_string());
+    m_doc->remove(s(name));
 }
 
 void HaDocument::OnChange(wxCommandEvent &event)
@@ -159,7 +158,7 @@ void HaDocument::OnChangePass([[maybe_unused]] wxCommandEvent &event)
         auto pass = dlg.GetPass();
         CryptedSectionStore *store = dynamic_cast<CryptedSectionStore *>(m_doc->getStore());
         if (store != nullptr) {
-            store->changePass(pass.utf8_string());
+            store->changePass(s(pass));
         }
         m_pass = pass;
     }
@@ -205,13 +204,13 @@ void HaDocument::TryLoadBill(int batch)
 bool HaDocument::CreateBill(const wxString &title, const wxString &content, int account)
 {
     const struct account *accountStruct = m_accountsDao.getById(account);
-    wxString realTitle = wxString::Format("%s-%s", accountStruct->name, title);
+    wxString realTitle = wxString::Format("%s (%s)", c(accountStruct->name), title);
     // New batch.
     m_batchesDao.append();
-    m_batchesDao.setString(m_batchesDao.getNumberRows() - 1, 1, realTitle.utf8_string());
+    m_batchesDao.setString(m_batchesDao.getNumberRows() - 1, 1, s(realTitle));
     DoSave(m_batchesDao);
     // Save bill.
-    std::istringstream is(content.utf8_string());
+    std::istringstream is(s(content));
     m_billDao.setName(BillSectionName(m_batchesDao.last()->id));
     try {
         m_billDao.readWrapped(is, accountStruct->bill_config);

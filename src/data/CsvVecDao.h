@@ -73,14 +73,18 @@ public:
             return m_dao->getColByCol<S_COL, T_COL>(d);
         }
 
-        void forEachTarget(std::function<bool(const ColType<I, T_COL> *)> callback) const override
+        void forEachTarget(std::function<bool(ColType<I, T_COL> *)> callback) const override
         {
-            m_dao->forEach<T_COL>(callback);
+            m_dao->forEach([callback](I *item) -> bool {
+                return callback((ColType<I, T_COL> *)CD::Traits::getPtr(item, T_COL));
+            });
         }
 
-        void forEachSource(std::function<bool(const ColType<I, S_COL> *)> callback) const override
+        void forEachSource(std::function<bool(ColType<I, S_COL> *)> callback) const override
         {
-            m_dao->forEach<S_COL>(callback);
+            m_dao->forEach([callback](I *item) -> bool {
+                return callback((ColType<I, S_COL> *)CD::Traits::getPtr(item, S_COL));
+            });
         }
 
     private:
@@ -208,11 +212,11 @@ public:
         return new VecJoint<T_COL, S_COL>(this);
     }
 
-    template <int COL> void forEach(std::function<bool(const ColType<I, COL> *)> callback)
+    void forEach(std::function<bool(I *)> callback)
     {
         auto &data = D::m_data;
         for (auto &item : data) {
-            if (!callback((const ColType<I, COL> *)CD::Traits::getPtr(&item, COL))) {
+            if (!callback(&item)) {
                 break;
             }
         }

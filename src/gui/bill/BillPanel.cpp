@@ -56,6 +56,7 @@ BillPanel::~BillPanel()
 void BillPanel::OnUpdate()
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
+    m_doc->TryLoad(m_doc->GetBatchesDao());
     Utils::SetChoiceItemsWithIds(m_choice, m_batchJoint, false);
     if (!m_choice->IsEmpty()) {
         m_choice->SetSelection(m_choice->GetCount() - 1);
@@ -85,7 +86,8 @@ void BillPanel::OnChoiceBill(wxCommandEvent &event)
 
 void BillPanel::OnUpdateExport(wxUpdateUIEvent &event)
 {
-    event.Enable(!m_grid->GetCachedTable()->GetDao()->isEmpty());
+    auto table = m_grid->GetCachedTable();
+    event.Enable(table != nullptr && !table->GetDao()->isEmpty());
 }
 
 void BillPanel::OnExport([[maybe_unused]] wxCommandEvent &event)
@@ -102,9 +104,7 @@ void BillPanel::OnUpdatePasteBill([[maybe_unused]] wxUpdateUIEvent &event)
 void BillPanel::OnPasteBill([[maybe_unused]] wxCommandEvent &event)
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
-    wxArrayString accountChoices;
-    auto jointAccount = m_doc->GetAccountsDao().getJoint<1, 0>();
-    PasteBillDialog dlg(nullptr, jointAccount);
+    PasteBillDialog dlg(nullptr, &m_doc->GetAccountsDao());
     if (dlg.ShowModal() == wxID_OK) {
         wxLogTrace(TM, "title = \"%s\", content =\n%s", dlg.GetBillTitle(), dlg.GetContent());
         if (m_doc->CreateBill(dlg.GetBillTitle(), dlg.GetContent(), dlg.GetAccount())) {

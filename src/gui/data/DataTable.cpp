@@ -110,12 +110,12 @@ wxString DataTable::GetCellValue(int row, int col)
         }
         break;
     }
-    return wxString::FromUTF8(v);
+    return c(v);
 }
 
 void DataTable::SetCellValue(int row, int col, const wxString &value)
 {
-    auto const &v = value.utf8_string();
+    auto const &v = s(value);
     switch (col) {
     case INCOME_COL:
         m_dataDao->setMoney(row, v, true);

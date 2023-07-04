@@ -9,11 +9,12 @@
 #include "../Defs.h"
 
 #include "../utils/DaoUtils.h"
-#include "../utils/GuiUtils.h"
 #include "../utils/IntClientData.h"
 
+#include "data/ConfigPodsTraits.h"
+#include "data/CsvVecDao.h"
 #include "data/CxxDefs.h"
-#include "data/Joint.h"
+#include "data/config_pods.h"
 
 IMPLEMENT_DYNAMIC_CLASS(PasteBillDialog, wxDialog)
 IMPLEMENT_TM(PasteBillDialog)
@@ -23,9 +24,9 @@ EVT_INIT_DIALOG(PasteBillDialog::OnInit)
 EVT_CHOICE(ID_CHOICE_ACCOUNT, PasteBillDialog::OnChoiceAccount)
 END_EVENT_TABLE()
 
-PasteBillDialog::PasteBillDialog(wxWindow *parent, Joint<const char *, int32_t> *accountJoint)
+PasteBillDialog::PasteBillDialog(wxWindow *parent, CsvVecDao<struct account> *dao)
     : wxDialog()
-    , m_accountJoint(accountJoint)
+    , m_dao(dao)
     , m_title(_("Untitled"))
     , m_account(0)
     , m_content()
@@ -41,14 +42,19 @@ PasteBillDialog::PasteBillDialog(wxWindow *parent, Joint<const char *, int32_t> 
 
 PasteBillDialog::~PasteBillDialog()
 {
-    safe_delete(m_accountJoint);
 }
 
 void PasteBillDialog::OnInit([[maybe_unused]] wxInitDialogEvent &event)
 {
-    auto cb = wxClipboard::Get();
     m_textTitle->SetValue(m_title);
-    Utils::SetChoiceItemsWithIds(m_choiceAccount, m_accountJoint);
+    m_choiceAccount->Append(Utils::NA, new IntClientData(0));
+    m_dao->forEach([this](struct account *i) -> bool {
+        if (i->bill_config[0] != '\0') {
+            this->m_choiceAccount->Append(i->name, new IntClientData(i->id));
+        }
+        return true;
+    });
+    auto cb = wxClipboard::Get();
     cb->Open();
     if (cb->IsSupported(wxDF_UNICODETEXT)) {
         wxTextDataObject text;

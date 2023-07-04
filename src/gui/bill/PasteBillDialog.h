@@ -5,7 +5,7 @@
 
 #include "../Common.h"
 
-template <typename T, typename S> class Joint;
+template <typename I> class CsvVecDao;
 
 class wxChoice;
 class wxTextCtrl;
@@ -18,7 +18,7 @@ class PasteBillDialog : public wxDialog
 public:
     DECLARE_TM()
 
-    PasteBillDialog(wxWindow *parent = nullptr, Joint<const char *, int32_t> *accountJoint = nullptr);
+    PasteBillDialog(wxWindow *parent = nullptr, CsvVecDao<struct account> *dao = nullptr);
     virtual ~PasteBillDialog();
 
     const auto &GetBillTitle() const
@@ -40,7 +40,7 @@ public:
     void OnChoiceAccount(wxCommandEvent &event);
 
 protected:
-    Joint<const char *, int32_t> *m_accountJoint;
+    CsvVecDao<struct account> *m_dao;
 
     wxString m_title;
     int m_account;

@@ -115,12 +115,12 @@ private:
 
     static std::string DataSectionName(const wxDateTime &date)
     {
-        return DATA_SECTION_PREFIX + wxString::Format("/%04d/%02d", date.GetYear(), date.GetMonth() + 1).utf8_string();
+        return DATA_SECTION_PREFIX + s(wxString::Format("/%04d/%02d", date.GetYear(), date.GetMonth() + 1));
     }
 
     static std::string BillSectionName(int batch)
     {
-        return BILL_SECTION_PREFIX + wxString::Format("/%04d", batch).utf8_string();
+        return BILL_SECTION_PREFIX + s(wxString::Format("/%04d", batch));
     }
 
     HaView *GetView() const;

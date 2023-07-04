@@ -14,6 +14,8 @@
 #include "file/SectionFile.h"
 #include "file/sqlite3/Sqlite3File.h"
 
+#include "data/item.h"
+
 IMPLEMENT_DYNAMIC_CLASS(HaDocument, wxDocument)
 IMPLEMENT_TM(HaDocument)
 
@@ -87,6 +89,7 @@ bool HaDocument::DoOpenDocument(const wxString &fileName)
             m_accountsDao.setOwnerJoint(m_ownersDao.getNameIdJoint());
             m_accountsDao.setTypeJoint(m_accountTypesDao.getNameIdJoint());
             m_dataDao.setAccountJoint(m_accountsDao.getNameIdJoint());
+            TryLoad(m_batchesDao);
             m_billDao.setAccountJoint(m_accountsDao.getNameIdJoint());
             return true;
         } catch (std::runtime_error &e) {
@@ -203,21 +206,22 @@ void HaDocument::TryLoadBill(int batch)
 
 bool HaDocument::CreateBill(const wxString &title, const wxString &content, int account)
 {
-    const struct account *accountStruct = m_accountsDao.getById(account);
-    wxString realTitle = wxString::Format("%s (%s)", c(accountStruct->name), title);
     // New batch.
     m_batchesDao.append();
-    m_batchesDao.setString(m_batchesDao.getNumberRows() - 1, 1, s(realTitle));
+    m_batchesDao.last()->account = account;
+    auto strTitle = s(title);
+    set_cstring(&m_batchesDao.last()->title, strTitle.c_str(), strTitle.length());
     DoSave(m_batchesDao);
     // Save bill.
     std::istringstream is(s(content));
     m_billDao.setName(BillSectionName(m_batchesDao.last()->id));
     try {
+        const struct account *accountStruct = m_accountsDao.getById(account);
         m_billDao.readWrapped(is, accountStruct->bill_config);
-        // TODO: set all account
-        for (int i = 0; i < m_billDao.getNumberRows(); ++i) {
-            m_billDao.setAccount(i, std::string(accountStruct->name));
-        }
+        m_billDao.forEachItem([account](struct item *item) -> bool {
+            item->account = account;
+            return true;
+        });
         DoSave(m_billDao);
         Modify(true);
         return true;

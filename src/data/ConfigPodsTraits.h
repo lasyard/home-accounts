@@ -73,11 +73,12 @@ template <> class CsvRowTraits<struct batch>
 {
 public:
     static const int ID_INDEX = 0;
-    static const int NAME_INDEX = 1;
+    static const int NAME_INDEX = 2;
 
-    static const int cols = 2;
+    static const int cols = 3;
 
     static const ColumnType constexpr types[] = {
+        INT32,
         INT32,
         CSTR,
     };

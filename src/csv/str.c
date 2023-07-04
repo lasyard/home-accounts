@@ -2,6 +2,7 @@
 #include <string.h>
 #include <strings.h>
 
+#include "defs.h"
 #include "str.h"
 
 bool is_space(char ch)
@@ -64,19 +65,25 @@ const char *parse_string(const char *buf, struct string *data, char sep)
     return p;
 }
 
+const char *set_cstring(char **data, const char *str, size_t len)
+{
+    if (*data != NULL) {
+        free(*data);
+        *data = NULL;
+    }
+    char *s = malloc(len + 1);
+    return_null_if_null(s);
+    strncpy(s, str, len);
+    s[len] = '\0';
+    *data = s;
+    return s;
+}
+
 const char *parse_cstring(const char *buf, char **data, char sep)
 {
     struct string str;
     const char *p = parse_string(buf, &str, sep);
-    if (*data != NULL) {
-        free(*data);
-    }
-    char *s = malloc(str.len + 1);
-    if (s != NULL) {
-        strncpy(s, str.buf, str.len);
-        s[str.len] = '\0';
-    }
-    *data = s;
+    return_null_if_null(set_cstring(data, str.buf, str.len));
     return p;
 }
 

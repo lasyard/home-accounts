@@ -43,26 +43,19 @@ void Utils::ShowTextBox(const wxString &title, const wxString &text)
     dlg.ShowModal();
 }
 
-void Utils::SetChoiceItems(wxChoice *choice, Joint<const char *, int32_t> *joint, bool withZero)
+void Utils::SetChoiceSelection(wxChoice *choice, int sel)
 {
-    choice->Clear();
-    if (withZero) {
-        choice->Append(NA);
+    choice->SetSelection(sel);
+    wxCommandEvent event(wxEVT_CHOICE, choice->GetId());
+    event.SetEventObject(choice);
+    event.SetInt(sel);
+    if (sel != wxNOT_FOUND) {
+        if (choice->HasClientObjectData()) {
+            event.SetClientObject(choice->GetClientObject(sel));
+        }
+        if (choice->HasClientUntypedData()) {
+            event.SetClientData(choice->GetClientData(sel));
+        }
     }
-    wxArrayString choices;
-    Utils::GetStrings(choices, joint);
-    choice->Append(choices);
-}
-
-void Utils::SetChoiceItemsWithIds(wxChoice *choice, Joint<const char *, int32_t> *joint, bool withZero)
-{
-    choice->Clear();
-    if (withZero) {
-        choice->Append(NA, new IntClientData(0));
-    }
-    wxArrayString choices;
-    Utils::GetStrings(choices, joint);
-    wxClientData *clientData[choices.size()];
-    Utils::GetIds(clientData, joint);
-    choice->Append(choices, clientData);
+    choice->ProcessWindowEvent(event);
 }

@@ -66,6 +66,8 @@ public:
 
     void setAccountJoint(Joint<const char *, int32_t> *joint);
 
+    void forEachItem(std::function<bool(struct item *)> callback);
+
     const Joint<const char *, int32_t> *getAccountJoint() const
     {
         return m_accountJoint;

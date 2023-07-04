@@ -67,6 +67,8 @@ void *CsvRowTraits<struct batch>::getPtr(void *data, int i)
     case 0:
         return &item->id;
     case 1:
+        return &item->account;
+    case 2:
         return &item->title;
     default:
         break;

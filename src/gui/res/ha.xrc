@@ -169,7 +169,16 @@
 						<option>0</option>
 						<flag>wxALL</flag>
 						<border>5</border>
-						<object class="wxChoice" name="choiceBill">
+						<object class="wxChoice" name="choiceBillAccount">
+							<selection>0</selection>
+							<content />
+						</object>
+					</object>
+					<object class="sizeritem">
+						<option>0</option>
+						<flag>wxALL</flag>
+						<border>5</border>
+						<object class="wxChoice" name="choiceBillTitle">
 							<selection>0</selection>
 							<content />
 						</object>

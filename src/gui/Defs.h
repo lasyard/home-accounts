@@ -25,8 +25,9 @@
 #define ID_CHOICE_ACCOUNT XRCID("choiceAccount")
 
 // Bill Panel
-#define ID_CHOICE_BILL    XRCID("choiceBill")
-#define ID_BTN_PASTE_BILL XRCID("btnPasteBill")
-#define ID_BTN_MERGE      XRCID("btnMerge")
+#define ID_CHOICE_BILL_ACCOUNT XRCID("choiceBillAccount")
+#define ID_CHOICE_BILL_TITLE   XRCID("choiceBillTitle")
+#define ID_BTN_PASTE_BILL      XRCID("btnPasteBill")
+#define ID_BTN_MERGE           XRCID("btnMerge")
 
 #endif /* _GUI_DEFS_H_ */

@@ -23,6 +23,7 @@ int hex_value(char ch);
 
 const char *skip_space(const char *buf);
 const char *parse_string(const char *buf, struct string *data, char sep);
+const char *set_cstring(char **data, const char *str, size_t len);
 const char *parse_cstring(const char *buf, char **data, char sep);
 
 char *output_string(char *buf, const struct string *data);

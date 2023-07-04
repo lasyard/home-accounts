@@ -25,9 +25,7 @@ void ReadAllText(wxString &text, const wxString &fileName);
 
 void ShowTextBox(const wxString &title, const wxString &text);
 
-void SetChoiceItems(wxChoice *choice, Joint<const char *, int32_t> *joint, bool withZero = true);
-
-void SetChoiceItemsWithIds(wxChoice *choice, Joint<const char *, int32_t> *joint, bool withZero = true);
+void SetChoiceSelection(wxChoice *choice, int sel);
 
 }; // namespace Utils
 

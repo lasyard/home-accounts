@@ -27,7 +27,8 @@ public:
     void OnUpdate() override;
     void SaveContents() override;
 
-    void OnChoiceBill(wxCommandEvent &event);
+    void OnChoiceBillAccount(wxCommandEvent &event);
+    void OnChoiceBillTitle(wxCommandEvent &event);
 
     void OnUpdateExport(wxUpdateUIEvent &event);
     void OnExport(wxCommandEvent &event);
@@ -40,9 +41,8 @@ public:
     void ShowData(int batch);
 
 private:
-    Joint<const char *, int32_t> *m_batchJoint;
-
-    wxChoice *m_choice;
+    wxChoice *m_choiceAccount;
+    wxChoice *m_choiceTitle;
     DataGrid *m_grid;
 
     wxString Description();

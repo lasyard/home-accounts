@@ -301,6 +301,19 @@ void DataDao::setAccountJoint(Joint<const char *, int32_t> *joint)
     m_accountJoint = joint;
 }
 
+void DataDao::forEachItem(std::function<bool(struct item *)> callback)
+{
+    for (auto p = m_data.pages.first; p != NULL; p = p->next) {
+        struct page *page = get_page(p);
+        for (auto q = page->items.first; q != NULL; q = q->next) {
+            struct item *item = get_item(q);
+            if (!callback(item)) {
+                return;
+            }
+        }
+    }
+}
+
 void DataDao::createIndex()
 {
     money_t balance = m_index[0].m_balance;

@@ -25,6 +25,7 @@ struct account {
 
 struct batch {
     int id;
+    int account;
     char *title;
 };
 

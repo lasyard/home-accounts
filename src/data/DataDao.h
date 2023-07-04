@@ -1,6 +1,7 @@
 #ifndef _DATA_DATA_DAO_H_
 #define _DATA_DATA_DAO_H_
 
+#include <functional>
 #include <istream>
 #include <ostream>
 #include <string>

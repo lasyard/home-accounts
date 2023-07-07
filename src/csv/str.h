@@ -37,6 +37,7 @@ int string_cstrcmp(const struct string *str, const char *cstr);
 int string_cstrcmp_nc(const struct string *str, const char *cstr);
 
 bool string_is_empty(const struct string *str);
+bool cstring_is_empty(const char *data);
 
 #ifdef __cplusplus
 }

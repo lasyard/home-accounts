@@ -49,8 +49,8 @@ void PasteBillDialog::OnInit([[maybe_unused]] wxInitDialogEvent &event)
     m_textTitle->SetValue(m_title);
     m_choiceAccount->Append(Utils::NA, new IntClientData(0));
     m_dao->forEach([this](struct account *i) -> bool {
-        if (i->bill_config[0] != '\0') {
-            this->m_choiceAccount->Append(i->name, new IntClientData(i->id));
+        if (!cstring_is_empty(i->bill_config)) {
+            this->m_choiceAccount->Append(c(i->name), new IntClientData(i->id));
         }
         return true;
     });

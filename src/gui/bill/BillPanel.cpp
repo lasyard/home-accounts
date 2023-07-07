@@ -58,7 +58,7 @@ void BillPanel::OnUpdate()
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     m_choiceAccount->Clear();
     m_doc->GetAccountsDao().forEach([this](struct account *i) -> bool {
-        this->m_choiceAccount->Append(i->name, new IntClientData(i->id));
+        this->m_choiceAccount->Append(c(i->name), new IntClientData(i->id));
         return true;
     });
     if (!m_choiceAccount->IsEmpty()) {
@@ -82,7 +82,7 @@ void BillPanel::OnChoiceBillAccount(wxCommandEvent &event)
             m_choiceTitle->Clear();
             m_doc->GetBatchesDao().forEach([this, account](struct batch *i) -> bool {
                 if (i->account == account) {
-                    this->m_choiceTitle->Append(i->title, new IntClientData(i->id));
+                    this->m_choiceTitle->Append(c(i->title), new IntClientData(i->id));
                 }
                 return true;
             });

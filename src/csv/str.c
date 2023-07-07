@@ -175,3 +175,8 @@ bool string_is_empty(const struct string *str)
 {
     return str->buf == NULL || str->len == 0;
 }
+
+bool cstring_is_empty(const char *data)
+{
+    return data == NULL || data[0] == '\0';
+}

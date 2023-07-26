@@ -90,8 +90,8 @@ msgid "wxWidgets Information"
 msgstr "wxWidgets Information"
 
 #: res/ha.xrc:200
-msgid "Merge into trasactions"
-msgstr "Merge into trasactions"
+msgid "Merge into transactions"
+msgstr "Merge into transactions"
 
 #: res/ha.xrc:253
 msgid "Current password"

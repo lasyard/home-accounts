@@ -31,7 +31,12 @@ EVT_UPDATE_UI(wxID_DELETE, BillPanel::OnUpdateMenu)
 EVT_MENU(wxID_DELETE, BillPanel::OnMenuModify)
 EVT_UPDATE_UI(ID_PASTE_BILL, BillPanel::OnUpdatePasteBill)
 EVT_MENU(ID_PASTE_BILL, BillPanel::OnPasteBill)
+EVT_UPDATE_UI(ID_BTN_PASTE_BILL, BillPanel::OnUpdatePasteBill)
 EVT_BUTTON(ID_BTN_PASTE_BILL, BillPanel::OnPasteBill)
+EVT_UPDATE_UI(ID_MERGE, BillPanel::OnUpdateMerge)
+EVT_MENU(ID_MERGE, BillPanel::OnMerge)
+EVT_UPDATE_UI(ID_BTN_MERGE, BillPanel::OnUpdateMerge)
+EVT_BUTTON(ID_BTN_MERGE, BillPanel::OnMerge)
 END_EVENT_TABLE()
 
 const wxString BillPanel::LABEL = _("Bills");
@@ -123,7 +128,7 @@ void BillPanel::OnExport([[maybe_unused]] wxCommandEvent &event)
     m_grid->ExportTable(Description());
 }
 
-void BillPanel::OnUpdatePasteBill([[maybe_unused]] wxUpdateUIEvent &event)
+void BillPanel::OnUpdatePasteBill(wxUpdateUIEvent &event)
 {
     event.Enable(true);
 }
@@ -139,6 +144,16 @@ void BillPanel::OnPasteBill([[maybe_unused]] wxCommandEvent &event)
             OnUpdate();
         }
     }
+}
+
+void BillPanel::OnUpdateMerge(wxUpdateUIEvent &event)
+{
+    event.Enable(m_choiceTitle->GetSelection() != wxNOT_FOUND);
+}
+
+void BillPanel::OnMerge([[maybe_unused]] wxCommandEvent &event)
+{
+    wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
 }
 
 void BillPanel::OnUpdateMenu(wxUpdateUIEvent &event)

@@ -89,7 +89,7 @@ msgid "wxWidgets Information"
 msgstr "wxWidgets 信息"
 
 #: res/ha.xrc:200
-msgid "Merge into trasactions"
+msgid "Merge into transactions"
 msgstr "合并到明细"
 
 #: res/ha.xrc:253

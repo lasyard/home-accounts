@@ -12,6 +12,27 @@ TEST_CASE("jdn")
     CHECK(jdn(2000, 1, 1) == 2451545);
 }
 
+TEST_CASE("jdn_split")
+{
+    int year, month, day;
+    jdn_split(2415021, &year, &month, &day);
+    CHECK(year == 1900);
+    CHECK(month == 1);
+    CHECK(day == 1);
+    jdn_split(2440588, &year, &month, &day);
+    CHECK(year == 1970);
+    CHECK(month == 1);
+    CHECK(day == 1);
+    jdn_split(0, &year, &month, &day);
+    CHECK(year == -4713);
+    CHECK(month == 11);
+    CHECK(day == 24);
+    jdn_split(2451545, &year, &month, &day);
+    CHECK(year == 2000);
+    CHECK(month == 1);
+    CHECK(day == 1);
+}
+
 TEST_CASE("parse_date")
 {
     date_t data;

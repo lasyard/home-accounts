@@ -25,6 +25,7 @@ struct page *add_page(struct data *data)
     struct page *page = malloc(sizeof(struct page));
     if (page != NULL) {
         init_page(page);
+        page->data = data;
         list_add(&data->pages, &page->list);
     }
     return page;
@@ -35,17 +36,19 @@ struct page *add_page_head(struct data *data)
     struct page *page = malloc(sizeof(struct page));
     if (page != NULL) {
         init_page(page);
+        page->data = data;
         list_head_add(&data->pages, &page->list);
     }
     return page;
 }
 
-struct page *ins_page(struct data *data, struct page *page)
+struct page *insert_page(struct page *pos)
 {
-    struct page *page1 = malloc(sizeof(struct page));
-    if (page1 != NULL) {
+    struct page *page = malloc(sizeof(struct page));
+    if (page != NULL) {
         init_page(page);
-        list_ins(&data->pages, &page->list, &page1->list);
+        page->data = pos->data;
+        list_ins(&pos->data->pages, &pos->list, &page->list);
     }
     return page;
 }
@@ -59,6 +62,38 @@ struct page *find_page(struct data *data, date_t date)
         }
     }
     return NULL;
+}
+
+struct page *find_or_create_page(struct data *data, date_t date)
+{
+    struct list_item *p = data->pages.first;
+    struct page *page = get_page(p);
+    if (page->date == date) {
+        return page;
+    } else if (page->date > date) {
+        struct page *page1 = add_page_head(data);
+        page1->date = date;
+        return page1;
+    }
+    for (; p->next != NULL; p = p->next) {
+        struct page *page = get_page(p->next);
+        if (page->date == date) {
+            return page;
+        } else if (page->date > date) {
+            struct page *page1 = insert_page(get_page(p));
+            page1->date = date;
+            return page1;
+        }
+    }
+    struct page *page1 = add_page(data);
+    page1->date = date;
+    return page1;
+}
+
+struct item *add_item_to_date(struct data *data, date_t date)
+{
+    struct page *page = find_or_create_page(data, date);
+    return add_item(page);
 }
 
 bool data_is_empty(const struct data *data)

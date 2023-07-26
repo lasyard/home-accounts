@@ -19,6 +19,28 @@ int jdn(int year, int month, int day)
     return day + 30 * m + (3 * m + 2) / 5 + 365 * y + y / 4 - y / 100 + y / 400 - 32045;
 }
 
+void jdn_split(int jdn, int *year, int *month, int *day)
+{
+    int j = jdn + 32044;
+    int g = j / 146097;
+    int dg = j % 146097;
+    int c = (dg / 36524 + 1) * 3 / 4;
+    int dc = dg - c * 36524;
+    int b = dc / 1461;
+    int db = dc % 1461;
+    int a = (db / 365 + 1) * 3 / 4;
+    int da = db - a * 365;
+    // Integer number of full years elapsed since -4800-03-01
+    int y = g * 400 + c * 100 + b * 4 + a;
+    // Integer number of full months elapsed since the last 03-01
+    int m = (da * 5 + 308) / 153 - 2;
+    // Number of days elapsed since day 1 of the month
+    int d = da - (m + 4) * 153 / 5 + 122;
+    *year = y - 4800 + (m + 2) / 12;
+    *month = (m + 2) % 12 + 1;
+    *day = d + 1;
+}
+
 const char *parse_date(const char *buf, date_t *data, char sep, char dateSep)
 {
     int32_t year, month, day;
@@ -53,24 +75,8 @@ const char *parse_time(const char *buf, dtime_t *data, char sep)
 
 char *output_date(char *buf, date_t data, char dateSep)
 {
-    int j = data + 32044;
-    int g = j / 146097;
-    int dg = j % 146097;
-    int c = (dg / 36524 + 1) * 3 / 4;
-    int dc = dg - c * 36524;
-    int b = dc / 1461;
-    int db = dc % 1461;
-    int a = (db / 365 + 1) * 3 / 4;
-    int da = db - a * 365;
-    // Integer number of full years elapsed since -4800-03-01
-    int y = g * 400 + c * 100 + b * 4 + a;
-    // Integer number of full months elapsed since the last 03-01
-    int m = (da * 5 + 308) / 153 - 2;
-    // Number of days elapsed since day 1 of the month
-    int d = da - (m + 4) * 153 / 5 + 122;
-    int year = y - 4800 + (m + 2) / 12;
-    int month = (m + 2) % 12 + 1;
-    int day = d + 1;
+    int year, month, day;
+    jdn_split(data, &year, &month, &day);
     char *p = buf;
     p = output_int64_len(p, year, 4);
     *(p++) = dateSep;

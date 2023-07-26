@@ -6,11 +6,11 @@
 #include "csv/date_time.h"
 #include "csv/money.h"
 
+struct page;
+
 struct data {
     struct list_head pages;
 };
-
-struct page;
 
 #ifdef __cplusplus
 extern "C" {
@@ -21,8 +21,11 @@ void release_data(struct data *data);
 
 struct page *add_page(struct data *data);
 struct page *add_page_head(struct data *data);
-struct page *ins_page(struct data *data, struct page *page);
+struct page *insert_page(struct page *pos);
 struct page *find_page(struct data *data, date_t date);
+struct page *find_or_create_page(struct data *data, date_t date);
+
+struct item *add_item_to_date(struct data *data, date_t date);
 
 bool data_is_empty(const struct data *data);
 

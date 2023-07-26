@@ -17,6 +17,8 @@
 
 #include "data/CxxDefs.h"
 
+#include "data/item.h"
+
 IMPLEMENT_DYNAMIC_CLASS(BillPanel, HaPanel)
 IMPLEMENT_TM(BillPanel)
 
@@ -154,6 +156,26 @@ void BillPanel::OnUpdateMerge(wxUpdateUIEvent &event)
 void BillPanel::OnMerge([[maybe_unused]] wxCommandEvent &event)
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
+    SaveGridTable(m_grid);
+    DataDao dao;
+    m_doc->GetBillDao().forEach([this, &dao](date_t date, struct item *item) -> bool {
+        auto name = HaDocument::DataSectionName(date);
+        if (name != dao.getName()) {
+            if (!dao.getName().empty()) {
+                this->m_doc->DoSave(dao);
+            }
+            dao.setName(name);
+            this->m_doc->TryLoad(dao);
+        }
+        auto item1 = add_item_to_date(&dao.getData(), date);
+        if (item1 != NULL) {
+            copy_item(item1, item);
+        }
+        return true;
+    });
+    if (!dao.getName().empty()) {
+        this->m_doc->DoSave(dao);
+    }
 }
 
 void BillPanel::OnUpdateMenu(wxUpdateUIEvent &event)

@@ -218,7 +218,7 @@ bool HaDocument::CreateBill(const wxString &title, const wxString &content, int 
     try {
         const struct account *accountStruct = m_accountsDao.getById(account);
         m_billDao.readWrapped(is, accountStruct->bill_config);
-        m_billDao.forEachItem([account](struct item *item) -> bool {
+        m_billDao.forEach([account]([[maybe_unused]] date_t date, struct item *item) -> bool {
             item->account = account;
             return true;
         });

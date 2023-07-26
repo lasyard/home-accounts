@@ -6,13 +6,15 @@
 #include "csv/date_time.h"
 #include "csv/money.h"
 
+struct data;
+struct item;
+
 struct page {
     struct list_item list;
+    struct data *data;
     date_t date;
     struct list_head items;
 };
-
-struct item;
 
 #define get_page(ptr) list_entry(ptr, struct page, list)
 

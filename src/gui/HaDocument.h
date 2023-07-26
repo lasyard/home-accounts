@@ -27,6 +27,28 @@ public:
     HaDocument();
     virtual ~HaDocument();
 
+    static std::string DataSectionName(int year, int month)
+    {
+        return DATA_SECTION_PREFIX + s(wxString::Format("/%04d/%02d", year, month));
+    }
+
+    static std::string DataSectionName(const wxDateTime &date)
+    {
+        return DataSectionName(date.GetYear(), date.GetMonth() + 1);
+    }
+
+    static std::string DataSectionName(date_t date)
+    {
+        int year, month, day;
+        jdn_split(date, &year, &month, &day);
+        return DataSectionName(year, month);
+    }
+
+    static std::string BillSectionName(int batch)
+    {
+        return BILL_SECTION_PREFIX + s(wxString::Format("/%04d", batch));
+    }
+
     bool OnNewDocument() override;
     bool OnCloseDocument() override;
     bool DeleteContents() override;
@@ -112,16 +134,6 @@ private:
     CsvIdVecDao<struct account_type> m_accountTypesDao;
     AccountsDao m_accountsDao;
     CsvIdVecDao<struct batch> m_batchesDao;
-
-    static std::string DataSectionName(const wxDateTime &date)
-    {
-        return DATA_SECTION_PREFIX + s(wxString::Format("/%04d/%02d", date.GetYear(), date.GetMonth() + 1));
-    }
-
-    static std::string BillSectionName(int batch)
-    {
-        return BILL_SECTION_PREFIX + s(wxString::Format("/%04d", batch));
-    }
 
     HaView *GetView() const;
 };

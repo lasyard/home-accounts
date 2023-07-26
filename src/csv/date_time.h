@@ -11,6 +11,7 @@ extern "C" {
 #endif
 
 int jdn(int year, int month, int day);
+void jdn_split(int jdn, int *year, int *month, int *day);
 
 const char *parse_date(const char *buf, date_t *data, char sep, char dateSep);
 const char *parse_time(const char *buf, dtime_t *data, char sep);

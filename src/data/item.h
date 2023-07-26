@@ -27,6 +27,7 @@ extern "C" {
 
 void init_item(struct item *item);
 void release_item(struct item *item);
+void copy_item(struct item *item, struct item *item1);
 
 bool item_is_empty(const struct item *item);
 

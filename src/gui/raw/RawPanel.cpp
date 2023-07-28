@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include <wx/menu.h>
 #include <wx/msgdlg.h>
 #include <wx/statbmp.h>
@@ -47,16 +49,18 @@ bool RawPanel::OnLeave()
 
 void RawPanel::OnUpdate()
 {
-    wxArrayString names;
-    m_doc->GetSectionNames(names);
-    if (names.IsEmpty()) {
+    std::vector<std::string> names;
+    m_doc->ForEachSection([&names](const std::string &name) -> bool {
+        names.push_back(name);
+        return true;
+    });
+    if (names.empty()) {
         wxLogStatus(_("File is empty."));
         return;
     }
-    names.Sort();
+    std::sort(names.begin(), names.end());
     for (auto const &name : names) {
-        wxString content;
-        m_doc->GetSection(name, content);
+        wxString content = c(m_doc->GetSection(name));
         AddPage(name, content);
     }
     for (size_t i = 0; i < m_book->GetPageCount(); ++i) {
@@ -69,7 +73,7 @@ void RawPanel::SaveContents()
     for (size_t i = 0; i < m_book->GetPageCount(); ++i) {
         auto text = wxDynamicCast(m_book->GetPage(i), wxTextCtrl);
         if (text != nullptr && text->IsModified()) {
-            m_doc->SaveSection(GetSectionName(i), text->GetValue());
+            m_doc->SaveSection(GetSectionName(i), s(text->GetValue()));
         }
     }
 }
@@ -113,7 +117,6 @@ void RawPanel::OnDelete([[maybe_unused]] wxCommandEvent &event)
             // Do real deletion.
             m_doc->DeleteSection(GetSectionName(sel));
             m_book->DeletePage(sel);
-            m_doc->Modify(true);
         }
     }
 }
@@ -175,15 +178,6 @@ void RawPanel::InsertPage(int parent, wxWindow *page, const wxString &text, bool
     }
 }
 
-wxString RawPanel::GetSectionName(int sel) const
-{
-    wxString name = m_book->GetPageText(sel);
-    while ((sel = m_book->GetPageParent(sel)) != wxNOT_FOUND) {
-        name = m_book->GetPageText(sel) + "/" + name;
-    }
-    return name;
-}
-
 void RawPanel::Unbind(int sel)
 {
     auto text = wxDynamicCast(m_book->GetPage(sel), wxTextCtrl);
@@ -195,4 +189,13 @@ void RawPanel::Unbind(int sel)
 bool RawPanel::IsLeaf(int sel) const
 {
     return sel != wxNOT_FOUND && m_book->GetPage(sel)->IsKindOf(CLASSINFO(wxTextCtrl));
+}
+
+std::string RawPanel::GetSectionName(int sel) const
+{
+    wxString name = m_book->GetPageText(sel);
+    while ((sel = m_book->GetPageParent(sel)) != wxNOT_FOUND) {
+        name = m_book->GetPageText(sel) + "/" + name;
+    }
+    return s(name);
 }

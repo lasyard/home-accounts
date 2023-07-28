@@ -36,9 +36,11 @@ private:
     void AddPage(const wxString &name, const wxString &content, bool dirty = false);
     void DeleteAllPages();
     void InsertPage(int parent, wxWindow *page, const wxString &text, bool bSelect = false, int imageId = wxNOT_FOUND);
-    wxString GetSectionName(int sel) const;
     void Unbind(int sel);
+
     bool IsLeaf(int sel) const;
+
+    std::string GetSectionName(int sel) const;
 };
 
 #endif /* _RAW_RAW_PANEL_H_ */

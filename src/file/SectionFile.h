@@ -1,6 +1,7 @@
 #ifndef _FILE_SECTION_FILE_H_
 #define _FILE_SECTION_FILE_H_
 
+#include <functional>
 #include <map>
 #include <string>
 
@@ -40,7 +41,7 @@ public:
     void save();
     void saveAs(SectionStore *store);
 
-    void getSectionNames(std::vector<std::string> &names) const;
+    void forEach(std::function<bool(const std::string &)> callback) const;
 
     SectionStore *getStore() const
     {

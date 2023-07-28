@@ -57,10 +57,11 @@ public:
 
     void Modify(bool modified) override;
 
-    void GetSectionNames(wxArrayString &names) const;
-    void GetSection(const wxString &name, wxString &content) const;
-    void SaveSection(const wxString &name, const wxString &content);
-    void DeleteSection(const wxString &name);
+    const std::string &GetSection(const std::string &name) const;
+    void SaveSection(const std::string &name, const std::string &content);
+    void DeleteSection(const std::string &name);
+
+    void ForEachSection(std::function<bool(const std::string &)> callback) const;
 
     void OnChange(wxCommandEvent &event);
 

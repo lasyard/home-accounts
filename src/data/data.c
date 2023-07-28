@@ -67,22 +67,24 @@ struct page *find_page(struct data *data, date_t date)
 struct page *find_or_create_page(struct data *data, date_t date)
 {
     struct list_item *p = data->pages.first;
-    struct page *page = get_page(p);
-    if (page->date == date) {
-        return page;
-    } else if (page->date > date) {
-        struct page *page1 = add_page_head(data);
-        page1->date = date;
-        return page1;
-    }
-    for (; p->next != NULL; p = p->next) {
-        struct page *page = get_page(p->next);
+    if (p != NULL) {
+        struct page *page = get_page(p);
         if (page->date == date) {
             return page;
         } else if (page->date > date) {
-            struct page *page1 = insert_page(get_page(p));
+            struct page *page1 = add_page_head(data);
             page1->date = date;
             return page1;
+        }
+        for (; p->next != NULL; p = p->next) {
+            struct page *page = get_page(p->next);
+            if (page->date == date) {
+                return page;
+            } else if (page->date > date) {
+                struct page *page1 = insert_page(get_page(p));
+                page1->date = date;
+                return page1;
+            }
         }
     }
     struct page *page1 = add_page(data);

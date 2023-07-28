@@ -117,28 +117,26 @@ void HaDocument::Modify(bool modified)
     wxDocument::Modify(modified);
 }
 
-void HaDocument::GetSectionNames(wxArrayString &names) const
+const std::string &HaDocument::GetSection(const std::string &name) const
 {
-    std::vector<std::string> stdNames;
-    m_doc->getSectionNames(stdNames);
-    for (auto const &name : stdNames) {
-        names.push_back(name);
-    }
+    return m_doc->get(name);
 }
 
-void HaDocument::GetSection(const wxString &name, wxString &content) const
+void HaDocument::SaveSection(const std::string &name, const std::string &content)
 {
-    content = c(m_doc->get(s(name)));
+    m_doc->put(name, content);
+    // Modify flag is set when doc is being edited in view, so need not set here.
 }
 
-void HaDocument::SaveSection(const wxString &name, const wxString &content)
+void HaDocument::DeleteSection(const std::string &name)
 {
-    m_doc->put(s(name), s(content));
+    m_doc->remove(name);
+    Modify();
 }
 
-void HaDocument::DeleteSection(const wxString &name)
+void HaDocument::ForEachSection(std::function<bool(const std::string &)> callback) const
 {
-    m_doc->remove(s(name));
+    m_doc->forEach(callback);
 }
 
 void HaDocument::OnChange(wxCommandEvent &event)
@@ -212,14 +210,16 @@ bool HaDocument::CreateBill(const wxString &title, const wxString &content, int 
     auto strTitle = s(title);
     set_cstring(&m_batchesDao.last()->title, strTitle.c_str(), strTitle.length());
     DoSave(m_batchesDao);
+    auto batchId = m_batchesDao.last()->id;
     // Save bill.
     std::istringstream is(s(content));
-    m_billDao.setName(BillSectionName(m_batchesDao.last()->id));
+    m_billDao.setName(BillSectionName(batchId));
     try {
         const struct account *accountStruct = m_accountsDao.getById(account);
         m_billDao.readWrapped(is, accountStruct->bill_config);
-        m_billDao.forEach([account]([[maybe_unused]] date_t date, struct item *item) -> bool {
+        m_billDao.forEach([account, batchId]([[maybe_unused]] date_t date, struct item *item) -> bool {
             item->account = account;
+            item->batch = batchId;
             return true;
         });
         DoSave(m_billDao);

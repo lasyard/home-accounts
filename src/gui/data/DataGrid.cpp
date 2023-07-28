@@ -103,6 +103,5 @@ void DataGrid::CreateDataTable(DataDao &dao)
     }
     // Change table after cursor set.
     SetTable(table, true);
-    SetFocus();
     RefreshContent();
 }

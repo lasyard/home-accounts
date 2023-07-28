@@ -176,6 +176,9 @@ void BillPanel::OnMerge([[maybe_unused]] wxCommandEvent &event)
     if (!dao.getName().empty()) {
         this->m_doc->DoSave(dao);
     }
+    m_doc->DeleteSection(m_doc->GetBillDao().getName());
+    // Refresh to prevent saving back this section.
+    OnUpdate();
 }
 
 void BillPanel::OnUpdateMenu(wxUpdateUIEvent &event)

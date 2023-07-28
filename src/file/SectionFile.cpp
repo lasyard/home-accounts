@@ -87,9 +87,11 @@ void SectionFile::saveAs(SectionStore *store)
     save();
 }
 
-void SectionFile::getSectionNames(std::vector<std::string> &names) const
+void SectionFile::forEach(std::function<bool(const std::string &)> callback) const
 {
     for (auto const &[name, section] : m_cache) {
-        names.push_back(name);
+        if (!callback(name)) {
+            break;
+        }
     }
 }

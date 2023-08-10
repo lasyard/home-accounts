@@ -5,7 +5,9 @@
 #include "ChangePassDialog.h"
 
 ChangePassDialog::ChangePassDialog(wxWindow *parent, const wxString &currentPass)
-    : wxDialog(), m_currentPass(currentPass), m_newPass()
+    : wxDialog()
+    , m_currentPass(currentPass)
+    , m_newPass()
 {
     wxXmlResource::Get()->LoadDialog(this, parent, "dlgChangePass");
 }

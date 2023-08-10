@@ -9,14 +9,14 @@ const char *const Sqlite3File::CHECK_STUB = "__check_stub__";
 const char *const Sqlite3File::GET_SQL = "SELECT key, data FROM files WHERE name = ?";
 
 Sqlite3File::Sqlite3File(const std::string &fileName, const std::string &pass, const std::string &iv)
-    : CryptedSectionStore(),
-      m_fileName(fileName),
-      m_db(nullptr),
-      m_getStmt(nullptr),
-      m_putStmt(nullptr),
-      m_delStmt(nullptr),
-      m_passStmt(nullptr),
-      m_enumStmt(nullptr)
+    : CryptedSectionStore()
+    , m_fileName(fileName)
+    , m_db(nullptr)
+    , m_getStmt(nullptr)
+    , m_putStmt(nullptr)
+    , m_delStmt(nullptr)
+    , m_passStmt(nullptr)
+    , m_enumStmt(nullptr)
 {
     srand(time(NULL));
     setIV(m_iv, iv);

@@ -7,7 +7,10 @@
 const char *const CryptoFile::CATALOG_NAME = "__catalog__";
 
 CryptoFile::CryptoFile(const std::string &fileName, const std::string &pass, const std::string &iv)
-    : CryptedSectionStore(), m_fileName(fileName), m_file(), m_catalog()
+    : CryptedSectionStore()
+    , m_fileName(fileName)
+    , m_file()
+    , m_catalog()
 {
     srand(time(NULL));
     setIV(m_iv, iv);

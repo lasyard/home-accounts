@@ -39,7 +39,8 @@ class SectionNotFound : public std::runtime_error
 {
 public:
     explicit SectionNotFound(const std::string &name)
-        : std::runtime_error("Section \"" + name + "\" is not found."), m_name(name)
+        : std::runtime_error("Section \"" + name + "\" is not found.")
+        , m_name(name)
     {
     }
 

@@ -1,0 +1,45 @@
+# Chinese translations for HomeAccounts package.
+# Copyright (C) 2025 Lasy
+# This file is distributed under the same license as the HomeAccounts package.
+# Automatically generated, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: HomeAccounts 1.0.0\n"
+"Report-Msgid-Bugs-To: lasyard@yeah.net\n"
+"POT-Creation-Date: 2025-01-10 16:59+0800\n"
+"PO-Revision-Date: 2025-01-10 16:01+0800\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: zh\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ChangePassDialog.cpp:19
+msgid "Wrong password!"
+msgstr "密码错误！"
+
+#: ChangePassDialog.cpp:25
+msgid "Confirm new password failed!"
+msgstr "确认新密码错误！"
+
+#: HaApp.cpp:41
+msgid " Doc"
+msgstr " 文档"
+
+#: HaApp.cpp:42
+msgid " View"
+msgstr " 视"
+
+#: HaDocument.cpp:58
+msgid "Input the password for the file:"
+msgstr "输入文件的密码："
+
+#: HaMainFrame.cpp:73
+msgid "File"
+msgstr "文件"
+
+#: HaMainFrame.cpp:114
+msgid "License"
+msgstr "许可证"

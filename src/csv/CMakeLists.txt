@@ -1,0 +1,13 @@
+add_lib(csv
+    column_type.c
+    csv_parser.c
+    date_time.c
+    int.c
+    item.c
+    list.c
+    money.c
+    segment.c
+    segmental_csv_parser.c
+    segments.c
+    str.c
+)

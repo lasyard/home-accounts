@@ -8,6 +8,8 @@
 #include "HaMainFrame.h"
 #include "Utils.h"
 
+#include "panel/HaRawPanel.h"
+
 IMPLEMENT_DYNAMIC_CLASS(HaView, wxView)
 IMPLEMENT_TM(HaView)
 
@@ -35,6 +37,7 @@ bool HaView::OnCreate([[maybe_unused]] wxDocument *doc, [[maybe_unused]] long fl
     m_book = frame->GetBook();
     m_book->Show();
     frame->Layout();
+    m_book->AddPage(new HaRawPanel(m_book), _("raw"));
     Activate(true);
     return true;
 }
@@ -52,7 +55,8 @@ bool HaView::OnClose(bool deleteWindow)
 void HaView::OnUpdate([[maybe_unused]] wxView *sender, [[maybe_unused]] wxObject *hint)
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
-    // TODO: update book
+    GetCurrentPanel()->SetDocument(GetHaDocument());
+    GetCurrentPanel()->OnUpdate();
 }
 
 void HaView::OnDraw([[maybe_unused]] wxDC *dc)
@@ -65,15 +69,27 @@ void HaView::OnClosingDocument()
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
 }
 
-void HaView::OnUpdateMenu([[maybe_unused]] wxUpdateUIEvent &event)
+void HaView::OnUpdateMenu(wxUpdateUIEvent &event)
 {
-    // TODO: delegate to active panel
+    Utils::DelegateEvent(GetCurrentPanel(), event);
 }
 
-void HaView::OnMenu([[maybe_unused]] wxCommandEvent &event)
+void HaView::OnMenu(wxCommandEvent &event)
 {
+    Utils::DelegateEvent(GetCurrentPanel(), event);
 }
 
 void HaView::SaveContents()
 {
+    GetCurrentPanel()->SaveContents();
+}
+
+HaDocument *HaView::GetHaDocument() const
+{
+    return dynamic_cast<HaDocument *>(GetDocument());
+}
+
+HaPanel *HaView::GetCurrentPanel() const
+{
+    return dynamic_cast<HaPanel *>(m_book->GetCurrentPage());
 }

@@ -4,6 +4,7 @@
 
 #include "HaApp.h"
 
+#include "HaArtProvider.h"
 #include "HaDocument.h"
 #include "HaMainFrame.h"
 #include "HaView.h"
@@ -31,6 +32,7 @@ bool HaApp::OnInit()
     SetVendorName("Lasy");
     SetAppName(_(APP_NAME));
     SetAppDisplayName(_(APP_NAME));
+    wxArtProvider::Push(new HaArtProvider(resDir));
     m_docManager = new wxDocManager();
     (void)new wxDocTemplate(
         m_docManager,

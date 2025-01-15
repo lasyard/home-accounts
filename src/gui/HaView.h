@@ -7,6 +7,9 @@
 
 class wxNotebook;
 
+class HaDocument;
+class HaPanel;
+
 class HaView : public wxView
 {
     DECLARE_DYNAMIC_CLASS(HaView)
@@ -34,6 +37,9 @@ public:
 
 private:
     wxNotebook *m_book;
+
+    HaDocument *GetHaDocument() const;
+    HaPanel *GetCurrentPanel() const;
 };
 
 #endif /* _HA_GUI_HA_VIEW_H_ */

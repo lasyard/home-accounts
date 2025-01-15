@@ -18,6 +18,7 @@ string(TIMESTAMP CURRENT_YEAR "%Y")
 add_exe(${APP_NAME}
     ChangePassDialog.cpp
     HaApp.cpp
+    HaArtProvider.cpp
     HaDocument.cpp
     HaMainFrame.cpp
     HaView.cpp
@@ -99,4 +100,5 @@ foreach(domain IN ITEMS ${APP_NAME} "xrc")
     endforeach()
 endforeach()
 
+add_subdirectory(panel)
 add_subdirectory(res)

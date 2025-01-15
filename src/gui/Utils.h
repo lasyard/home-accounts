@@ -21,6 +21,11 @@ inline wxString c(const char *str)
     return wxString::FromUTF8(str);
 }
 
+inline wxString c(const std::string &str)
+{
+    return wxString::FromUTF8(str);
+}
+
 namespace Utils
 {
 

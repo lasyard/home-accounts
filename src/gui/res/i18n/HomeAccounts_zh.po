@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HomeAccounts 1.0.0\n"
 "Report-Msgid-Bugs-To: lasyard@yeah.net\n"
-"POT-Creation-Date: 2025-01-10 16:59+0800\n"
+"POT-Creation-Date: 2025-01-15 18:47+0800\n"
 "PO-Revision-Date: 2025-01-10 16:01+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -24,11 +24,11 @@ msgstr "密码错误！"
 msgid "Confirm new password failed!"
 msgstr "确认新密码错误！"
 
-#: HaApp.cpp:41
+#: HaApp.cpp:43
 msgid " Doc"
 msgstr " 文档"
 
-#: HaApp.cpp:42
+#: HaApp.cpp:44
 msgid " View"
 msgstr " 视"
 
@@ -43,3 +43,21 @@ msgstr "文件"
 #: HaMainFrame.cpp:114
 msgid "License"
 msgstr "许可证"
+
+#: HaView.cpp:40
+msgid "raw"
+msgstr "源文件"
+
+#: panel/HaRawPanel.cpp:93
+msgid "Input name of the new section:"
+msgstr "输入新段落的名称："
+
+#: panel/HaRawPanel.cpp:111
+#, c-format
+msgid "Are you sure to delete section \"%s\" and all of its sub section?"
+msgstr "确定要删除段落“%s”及其所有子段落吗？"
+
+#: panel/HaRawPanel.cpp:147
+#, c-format
+msgid "Section \"%s\" already exists."
+msgstr "段落“%s”已存在。"

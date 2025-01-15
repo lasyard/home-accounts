@@ -33,18 +33,23 @@
   <ItemGroup>
     <ClCompile Include="..\src\gui\ChangePassDialog.cpp" />
     <ClCompile Include="..\src\gui\HaApp.cpp" />
+    <ClCompile Include="..\src\gui\HaArtProvider.cpp" />
     <ClCompile Include="..\src\gui\HaDocument.cpp" />
     <ClCompile Include="..\src\gui\HaMainFrame.cpp" />
     <ClCompile Include="..\src\gui\HaView.cpp" />
+    <ClCompile Include="..\src\gui\panel\HaRawPanel.cpp" />
     <ClCompile Include="..\src\gui\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\gui\ChangePassDialog.h" />
     <ClInclude Include="..\src\gui\HaApp.h" />
+    <ClInclude Include="..\src\gui\HaArtProvider.h" />
     <ClInclude Include="..\src\gui\HaDefs.h" />
     <ClInclude Include="..\src\gui\HaDocument.h" />
     <ClInclude Include="..\src\gui\HaMainFrame.h" />
     <ClInclude Include="..\src\gui\HaView.h" />
+    <ClInclude Include="..\src\gui\panel\HaPanel.h" />
+    <ClInclude Include="..\src\gui\panel\HaRawPanel.h" />
     <ClInclude Include="..\src\gui\Utils.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>

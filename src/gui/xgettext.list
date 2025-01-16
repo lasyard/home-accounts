@@ -5,5 +5,8 @@ HaDocument.cpp
 HaMainFrame.cpp
 HaView.cpp
 Utils.cpp
+panel/CsvDoc.cpp
+panel/HaDataPanel.cpp
 panel/HaRawPanel.cpp
 panel/NewSectionDialog.cpp
+panel/SegmentalCsvDoc.cpp

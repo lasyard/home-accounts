@@ -4,7 +4,7 @@
 #include "csv_parser.h"
 #include "segments.h"
 
-#define MAX_LINE_LENGTH 512
+#define MAX_LINE_LENGTH 1023
 
 struct segmental_parser_context {
     struct parser_context item_parser_context;
@@ -16,6 +16,9 @@ struct segmental_parser_context {
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+typedef size_t f_read_line(void *context, char *buf, size_t len);
+typedef void f_write_line(void *context, const char *buf, size_t len);
 
 struct item *add_new_item(const struct segmental_parser_context *ctx, struct segment *segment);
 
@@ -36,14 +39,14 @@ struct segment *add_new_segment(const struct segmental_parser_context *ctx, stru
 int segmental_parse(
     const struct segmental_parser_context *ctx,
     struct segments *segments,
-    size_t (*read_line)(void *context, char *buf, size_t len),
+    f_read_line *read_line,
     void *context
 );
 
 int segmental_output(
     const struct segmental_parser_context *ctx,
     struct segments *segments,
-    void (*write_line)(void *context, const char *buf, size_t len),
+    f_write_line *write_line,
     void *context
 );
 

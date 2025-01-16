@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HomeAccounts 1.0.0\n"
 "Report-Msgid-Bugs-To: lasyard@yeah.net\n"
-"POT-Creation-Date: 2025-01-10 16:59+0800\n"
+"POT-Creation-Date: 2025-01-16 16:02+0800\n"
 "PO-Revision-Date: 2025-01-10 16:01+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -52,23 +52,23 @@ msgstr "编辑"
 msgid "Insert"
 msgstr "插入"
 
-#: res/menu_bar.xrc:46
+#: res/menu_bar.xrc:47
 msgid "Delete"
 msgstr "删除"
 
-#: res/menu_bar.xrc:52
+#: res/menu_bar.xrc:54
 msgid "Help"
 msgstr "帮助"
 
-#: res/menu_bar.xrc:54
+#: res/menu_bar.xrc:56
 msgid "About"
 msgstr "关于"
 
-#: res/menu_bar.xrc:59
+#: res/menu_bar.xrc:61
 msgid "License"
 msgstr "许可证"
 
-#: res/menu_bar.xrc:64
+#: res/menu_bar.xrc:66
 msgid "wxWidgets Information"
 msgstr "wxWidgets 信息"
 
@@ -83,3 +83,11 @@ msgstr "新密码"
 #: res/widgets.xrc:64
 msgid "Confirm new password"
 msgstr "确认新密码"
+
+#: res/widgets.xrc:107
+msgid "Input the name for the new section:"
+msgstr "输入新段落的名称："
+
+#: res/widgets.xrc:125
+msgid "Root Section"
+msgstr "根段落"

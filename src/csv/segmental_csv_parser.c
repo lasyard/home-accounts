@@ -95,7 +95,7 @@ struct segment *add_new_segment(const struct segmental_parser_context *ctx, stru
 int segmental_parse(
     const struct segmental_parser_context *ctx,
     struct segments *segments,
-    size_t (*read_line)(void *context, char *buf, size_t len),
+    f_read_line *read_line,
     void *context
 )
 {
@@ -136,7 +136,7 @@ int segmental_parse(
 int segmental_output(
     const struct segmental_parser_context *ctx,
     struct segments *segments,
-    void (*write_line)(void *context, const char *buf, size_t len),
+    f_write_line *write_line,
     void *context
 )
 {

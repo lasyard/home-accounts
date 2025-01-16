@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HomeAccounts 1.0.0\n"
 "Report-Msgid-Bugs-To: lasyard@yeah.net\n"
-"POT-Creation-Date: 2025-01-15 18:47+0800\n"
+"POT-Creation-Date: 2025-01-16 16:02+0800\n"
 "PO-Revision-Date: 2025-01-10 16:01+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ChangePassDialog.cpp:19
+#: ChangePassDialog.cpp:22
 msgid "Wrong password!"
 msgstr "Wrong password!"
 
-#: ChangePassDialog.cpp:25
+#: ChangePassDialog.cpp:28
 msgid "Confirm new password failed!"
 msgstr "Confirm new password failed!"
 
@@ -49,16 +49,22 @@ msgstr "License"
 msgid "raw"
 msgstr "raw"
 
-#: panel/HaRawPanel.cpp:93
-msgid "Input name of the new section:"
-msgstr "Input name of the new section:"
-
-#: panel/HaRawPanel.cpp:111
+#: panel/HaRawPanel.cpp:116
 #, c-format
 msgid "Are you sure to delete section \"%s\" and all of its sub section?"
 msgstr "Are you sure to delete section \"%s\" and all of its sub section?"
 
-#: panel/HaRawPanel.cpp:147
+#: panel/HaRawPanel.cpp:166
 #, c-format
 msgid "Section \"%s\" already exists."
 msgstr "Section \"%s\" already exists."
+
+#: panel/SegmentalCsvDoc.cpp:92
+#, c-format
+msgid "Parse error at line %d"
+msgstr "Parse error at line %d"
+
+#: panel/SegmentalCsvDoc.cpp:95
+#, c-format
+msgid "%d lines read"
+msgstr "%d lines read"

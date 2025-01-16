@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HomeAccounts 1.0.0\n"
 "Report-Msgid-Bugs-To: lasyard@yeah.net\n"
-"POT-Creation-Date: 2025-01-10 17:19+0800\n"
+"POT-Creation-Date: 2025-01-16 16:02+0800\n"
 "PO-Revision-Date: 2025-01-10 16:01+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -53,23 +53,23 @@ msgstr "Edit"
 msgid "Insert"
 msgstr "Insert"
 
-#: res/menu_bar.xrc:46
+#: res/menu_bar.xrc:47
 msgid "Delete"
 msgstr "Delete"
 
-#: res/menu_bar.xrc:52
+#: res/menu_bar.xrc:54
 msgid "Help"
 msgstr "Help"
 
-#: res/menu_bar.xrc:54
+#: res/menu_bar.xrc:56
 msgid "About"
 msgstr "About"
 
-#: res/menu_bar.xrc:59
+#: res/menu_bar.xrc:61
 msgid "License"
 msgstr "License"
 
-#: res/menu_bar.xrc:64
+#: res/menu_bar.xrc:66
 msgid "wxWidgets Information"
 msgstr "wxWidgets Information"
 
@@ -84,3 +84,11 @@ msgstr "New password"
 #: res/widgets.xrc:64
 msgid "Confirm new password"
 msgstr "Confirm new password"
+
+#: res/widgets.xrc:107
+msgid "Input the name for the new section:"
+msgstr "Input the name for the new section:"
+
+#: res/widgets.xrc:125
+msgid "Root Section"
+msgstr "Root Section"

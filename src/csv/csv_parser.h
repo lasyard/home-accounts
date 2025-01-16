@@ -11,14 +11,6 @@ struct parser_options {
     int money_scale; // The scale factor of money.
 };
 
-struct parser_context {
-    struct parser_options options;
-    int cols;                                                   // The number of columns.
-    const enum column_type *types;                              // The types of each column.
-    void *(*f_get_ptr)(void *data, int i, const void *context); // Function to get member ptr of data.
-    const void *context;
-};
-
 struct common_record_meta {
     size_t bytes;      // Total bytes of a record.
     size_t offsets[0]; // Offsets of each field.
@@ -27,6 +19,16 @@ struct common_record_meta {
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+typedef void *f_get(void *data, int i, const void *context); // Function type to get member ptr of data.
+
+struct parser_context {
+    struct parser_options options;
+    int cols;                      // The number of columns.
+    const enum column_type *types; // The types of each column.
+    f_get *f_get_ptr;              // Function to get member ptr of data.
+    const void *context;
+};
 
 void init_options(struct parser_options *opt);
 

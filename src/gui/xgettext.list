@@ -6,3 +6,4 @@ HaMainFrame.cpp
 HaView.cpp
 Utils.cpp
 panel/HaRawPanel.cpp
+panel/NewSectionDialog.cpp

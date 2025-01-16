@@ -11,6 +11,8 @@
 
 #include "HaRawPanel.h"
 
+#include "NewSectionDialog.h"
+
 #include "../HaDefs.h"
 #include "../HaDocument.h"
 
@@ -88,17 +90,15 @@ void HaRawPanel::OnUpdateInsert(wxUpdateUIEvent &event)
     event.Enable(m_book->GetTreeCtrl()->HasFocus() || m_book->GetPageCount() == 0);
 }
 
-void HaRawPanel::OnInsert(wxCommandEvent &event)
+void HaRawPanel::OnInsert([[maybe_unused]] wxCommandEvent &event)
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
-    wxTextEntryDialog dlg(nullptr, _("Input name of the new section:"));
-    dlg.SetTextValidator(wxFILTER_ALPHANUMERIC | wxFILTER_EMPTY);
+    NewSectionDialog dlg(nullptr);
     if (dlg.ShowModal() == wxID_OK) {
-        InsertOrFindSubPage(m_book->GetSelection(), dlg.GetValue(), wxEmptyString);
+        InsertOrFindSubPage(dlg.GetIsRoot() ? wxNOT_FOUND : m_book->GetSelection(), dlg.GetText(), wxEmptyString);
         FitTreeCtrlAndLayout();
         m_doc->Modify(true);
     }
-    event.Skip();
 }
 
 void HaRawPanel::OnUpdateDelete(wxUpdateUIEvent &event)
@@ -106,7 +106,7 @@ void HaRawPanel::OnUpdateDelete(wxUpdateUIEvent &event)
     event.Enable(m_book->GetTreeCtrl()->HasFocus() && m_book->GetSelection() != wxNOT_FOUND);
 }
 
-void HaRawPanel::OnDelete(wxCommandEvent &event)
+void HaRawPanel::OnDelete([[maybe_unused]] wxCommandEvent &event)
 {
     int sel = m_book->GetSelection();
     if (sel != wxNOT_FOUND) {
@@ -119,10 +119,10 @@ void HaRawPanel::OnDelete(wxCommandEvent &event)
         );
         if (dlg.ShowModal() == wxID_OK) {
             m_book->DeletePage(sel);
+            FitTreeCtrlAndLayout();
             m_doc->Modify(true);
         }
     }
-    event.Skip();
 }
 
 wxString HaRawPanel::GetFullName(int sel)

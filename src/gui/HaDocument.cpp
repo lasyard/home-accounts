@@ -4,9 +4,9 @@
 
 #include "HaDocument.h"
 
+#include "ChangePassDialog.h"
 #include "HaDefs.h"
 #include "HaView.h"
-#include "ChangePassDialog.h"
 
 #include "file/Cache.h"
 #include "file/Sqlite3Store.h"
@@ -109,11 +109,10 @@ void HaDocument::ForEachSection(std::function<bool(const std::string &)> callbac
     m_doc->forEach(callback);
 }
 
-void HaDocument::OnChange(wxCommandEvent &event)
+void HaDocument::OnChange([[maybe_unused]] wxCommandEvent &event)
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     Modify(true);
-    event.Skip();
 }
 
 void HaDocument::OnUpdateChangePass(wxUpdateUIEvent &event)

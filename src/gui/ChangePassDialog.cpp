@@ -4,12 +4,15 @@
 
 #include "ChangePassDialog.h"
 
+#include "Utils.h"
+
 ChangePassDialog::ChangePassDialog(wxWindow *parent, const wxString &currentPass)
     : wxDialog()
     , m_currentPass(currentPass)
     , m_newPass()
 {
     wxXmlResource::Get()->LoadDialog(this, parent, "dlgChangePass");
+    Utils::SetXrcDefaultButton(this, "wxID_OK");
 }
 
 bool ChangePassDialog::TransferDataFromWindow()

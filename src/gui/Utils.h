@@ -34,15 +34,21 @@ namespace Utils
  *
  * @param win the window
  * @param event  the event
- * @return true means the event is processed
- * @return false means the event is skipped
  */
-bool DelegateEvent(wxWindow *win, wxEvent &event);
+void DelegateEvent(wxWindow *win, wxEvent &event);
 
 void ReadAllText(wxString &text, const wxString &fileName);
 
 void ShowTextBox(const wxString &title, const wxString &text);
 
-}; // namespace Utils
+/**
+ * @brief Set Default Button in XRC loaded frames. It is not supported in wxFormBuilder so this is needed.
+ *
+ * @param win
+ * @param id
+ */
+void SetXrcDefaultButton(const wxWindow *win, const char *id);
+
+} // namespace Utils
 
 #endif /* _HA_GUI_UTILS_H_ */

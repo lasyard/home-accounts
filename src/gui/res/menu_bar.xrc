@@ -39,12 +39,14 @@
       <label>Edit</label>
       <object class="wxMenuItem" name="insert">
         <label>Insert</label>
-        <accel>Enter</accel>
+        <!-- value `Enter` is not support on Windows -->
+        <accel>Return</accel>
         <help></help>
       </object>
       <object class="wxMenuItem" name="wxID_DELETE">
         <label>Delete</label>
-        <accel>Delete</accel>
+        <!-- value `Delete` is not support on Windows -->
+        <accel>Del</accel>
         <help></help>
       </object>
     </object>

@@ -31,6 +31,7 @@ public:
 private:
     wxTreebook *m_book;
 
+    wxString GetFullName(int sel);
     wxTextCtrl *CreateTextCtrl(wxWindow *parent, const wxString &value);
 
     size_t InsertOrFindSubPage(int parent, const wxString &text, const wxString &value, bool warnDup = true);

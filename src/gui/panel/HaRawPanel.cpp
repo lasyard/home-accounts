@@ -67,6 +67,7 @@ void HaRawPanel::SaveContents()
     for (size_t i = 0; i < m_book->GetPageCount(); ++i) {
         auto *textCtrl = dynamic_cast<wxTextCtrl *>(m_book->GetPage(i));
         if (textCtrl != nullptr) {
+            m_doc->SaveSection(s(GetFullName(i)), s(textCtrl->GetValue()));
         }
     }
 }
@@ -95,6 +96,7 @@ void HaRawPanel::OnInsert(wxCommandEvent &event)
     if (dlg.ShowModal() == wxID_OK) {
         InsertOrFindSubPage(m_book->GetSelection(), dlg.GetValue(), wxEmptyString);
         FitTreeCtrlAndLayout();
+        m_doc->Modify(true);
     }
     event.Skip();
 }
@@ -117,14 +119,30 @@ void HaRawPanel::OnDelete(wxCommandEvent &event)
         );
         if (dlg.ShowModal() == wxID_OK) {
             m_book->DeletePage(sel);
+            m_doc->Modify(true);
         }
     }
     event.Skip();
 }
 
+wxString HaRawPanel::GetFullName(int sel)
+{
+    wxString name = wxEmptyString;
+    while (sel != wxNOT_FOUND) {
+        if (!name.IsEmpty()) {
+            name = "/" + name;
+        }
+        name = m_book->GetPageText(sel) + name;
+        sel = m_book->GetPageParent(sel);
+    }
+    return name;
+}
+
 wxTextCtrl *HaRawPanel::CreateTextCtrl(wxWindow *parent, const wxString &value)
 {
     auto *textCtrl = new wxTextCtrl(parent, wxID_ANY, value, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
+    wxFont font(16, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
+    textCtrl->SetFont(font);
     textCtrl->Bind(wxEVT_TEXT, &HaDocument::OnChange, m_doc);
     return textCtrl;
 }

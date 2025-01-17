@@ -163,10 +163,14 @@ const char *parse_field(const struct parser_context *ctx, const char *buf, void 
 const char *parse_line(const struct parser_context *ctx, const char *line, void *data)
 {
     const char *p = line;
-    for (int i = 0; i < ctx->cols; ++i) {
+    int i;
+    for (i = 0; i < ctx->cols && !is_line_end(*p); ++i) {
         p = parse_field(ctx, p, data, i);
         return_null_if_null(p);
         ++p; // Skip the sep
+    }
+    if (i < ctx->cols) { // less fields
+        return NULL;
     }
     return p;
 }
@@ -244,7 +248,6 @@ char *output_line(const struct parser_context *ctx, char *buf, const void *data)
             *(p++) = ctx->options.sep;
         }
     }
-    *p = '\0';
     return p;
 }
 
@@ -260,7 +263,6 @@ char *output_strings(const struct parser_options *opt, char *buf, const char *co
             *(p++) = opt->sep;
         }
     }
-    *p = '\0';
     return p;
 }
 
@@ -273,7 +275,6 @@ char *output_types(const struct parser_options *opt, char *buf, const enum colum
             *(p++) = opt->sep;
         }
     }
-    *p = '\0';
     return p;
 }
 

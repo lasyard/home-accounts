@@ -4,7 +4,7 @@
 #include "../Utils.h"
 
 #include "csv/column_type.h"
-#include "csv/segmental_csv_parser.h"
+#include "csv/csv_parser.h"
 
 class wxArrayString;
 
@@ -24,17 +24,32 @@ public:
         return m_types[i];
     }
 
-    virtual const wxString GetItemValueString(const struct item *item, int i) const = 0;
-    virtual void SetItemValueString(struct item *item, int i, const wxString &value) = 0;
-    virtual struct item *InsertItem(struct item *pos) = 0;
+    struct list_head &GetSegments()
+    {
+        return m_segments;
+    }
 
-    virtual bool Read(f_read_line *read_line, void *context) = 0;
-    virtual bool Write(f_write_line *write_line, void *context) = 0;
+    const struct list_head &GetSegments() const
+    {
+        return m_segments;
+    }
+
+    const wxString GetItemValueString(const void *item, int i) const;
+    const wxString GetSegmentValueString(const struct segment *segment) const;
+    void SetItemValueString(void *item, int i, const wxString &value);
+    void SetSegmentValueString(struct segment *segment, const wxString &value);
+
+    bool Read(f_read_line *read_line, void *context);
+    bool Write(f_write_line *write_line, void *context);
+
+    virtual struct item *InsertItem(struct item *pos) = 0;
 
 protected:
     int m_count;
     char **m_labels;
     enum column_type *m_types;
+    struct parser_context m_ctx;
+    struct list_head m_segments;
 };
 
 #endif /* _HA_PANEL_CSV_DOC_H_ */

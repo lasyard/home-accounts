@@ -21,8 +21,5 @@ target_link_libraries(test_list PRIVATE ${LIB_CSV})
 add_test(test_money ${TEST_MAIN_SRC} test_money.cpp)
 target_link_libraries(test_money PRIVATE ${LIB_CSV})
 
-add_test(test_segmental_csv_parser ${TEST_MAIN_SRC} test_segmental_csv_parser.cpp)
-target_link_libraries(test_segmental_csv_parser PRIVATE ${LIB_CSV})
-
 add_test(test_str ${TEST_MAIN_SRC} test_str.cpp)
 target_link_libraries(test_str PRIVATE csv)

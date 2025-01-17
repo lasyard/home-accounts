@@ -2,10 +2,11 @@
 
 #include <cstdlib>
 #include <cstring>
+#include <sstream>
 
 #include "csv_parser.h"
-
 #include "money.h"
+#include "segment.h"
 #include "str.h"
 
 struct record {
@@ -43,9 +44,8 @@ TEST_CASE("parse_line")
     enum column_type types[] { CT_STR, CT_CSTR, CT_INT32, CT_INT64, CT_IGNORE, CT_MONEY };
     struct parser_context ctx;
     init_parser(&ctx);
-    ctx.cols = 6;
-    ctx.types = types;
-    ctx.f_get_ptr = get_record_ptr;
+    set_parser_types(&ctx, 6, types);
+    use_record(&ctx, sizeof(struct record), get_record_ptr);
     SUBCASE("sep == ','")
     {
         struct record r;
@@ -154,9 +154,8 @@ TEST_CASE("outputLine")
     column_type types[]{CT_INT32, CT_INT64};
     struct parser_context ctx;
     init_parser(&ctx);
-    ctx.cols = 2;
-    ctx.types = types;
-    ctx.f_get_ptr = get_record1_ptr;
+    set_parser_types(&ctx, 2, types);
+    use_record(&ctx, sizeof(struct record1), get_record1_ptr);
     struct record1 r;
     char buf[256];
     SUBCASE("sep == ','")
@@ -184,10 +183,9 @@ TEST_CASE("commond_record")
     enum column_type types[] { CT_STR, CT_STR, CT_INT32, CT_INT64, CT_IGNORE, CT_MONEY };
     struct parser_context ctx;
     init_parser(&ctx);
-    ctx.cols = 6;
-    ctx.types = types;
+    set_parser_types(&ctx, 6, types);
     struct common_record_meta *crm = use_common_record(&ctx);
-    void *data = malloc(crm->bytes);
+    void *data = malloc(ctx.data_size);
     const char *p = parse_line(&ctx, "   abc, def , 10, -100 ,, 123.45\n", data);
     CHECK(*p == '\0');
     CHECK(string_cstrcmp((struct string *)common_get_ptr(data, 0, crm), "abc") == 0);
@@ -197,4 +195,102 @@ TEST_CASE("commond_record")
     CHECK(*(int64_t *)common_get_ptr(data, 5, crm) == 12345L);
     free(data);
     free(crm);
+}
+
+struct item {
+    struct list_item list;
+    int id;
+    char *name;
+    money_t amount;
+};
+
+extern "C" {
+static void *get_ptr(void *ptr, int i, [[maybe_unused]] const void *context)
+{
+    struct item *item = static_cast<struct item *>(ptr);
+    switch (i) {
+    case 0:
+        return &item->id;
+    case 1:
+        return &item->name;
+    case 2:
+        return &item->amount;
+    case LIST_ITEM_INDEX:
+        return &item->list;
+    default:
+        break;
+    }
+    return NULL;
+}
+
+static const char *test_read(void *context)
+{
+    static char buf[MAX_LINE_LENGTH + 1];
+    std::istringstream *iss = static_cast<std::istringstream *>(context);
+    iss->getline(buf, MAX_LINE_LENGTH);
+    size_t s = iss->gcount();
+    if (s != 0) {
+        buf[s] = '\0';
+        return buf;
+    }
+    return NULL;
+}
+
+static void test_write(void *context, const char *buf, size_t len)
+{
+    std::ostringstream *oss = static_cast<std::ostringstream *>(context);
+    oss->write(buf, len);
+    oss->write("\n", 1);
+}
+}
+
+TEST_CASE("parse/output_segments")
+{
+    const enum column_type types[] = {CT_INT32, CT_CSTR, CT_MONEY};
+    static parser_context ctx;
+    init_parser(&ctx);
+    set_parser_types(&ctx, sizeof(types) / sizeof(enum column_type), types);
+    use_record(&ctx, sizeof(struct item), get_ptr);
+    SUBCASE("parse_segments")
+    {
+        struct list_head segments;
+        list_head_init(&segments);
+        std::istringstream iss("1,abc,10.2\n2,def,0.88");
+        int line = parse_segments(&ctx, &segments, test_read, &iss);
+        CHECK(line == 2);
+        struct segment *segment = get_segment(segments.first);
+        CHECK(segment->comment == NULL);
+        struct item *item = (struct item *)get_item(&ctx, segment->items.first);
+        CHECK(item->id == 1);
+        CHECK(strcmp(item->name, "abc") == 0);
+        CHECK(item->amount == 1020L);
+        item = (struct item *)get_item(&ctx, segment->items.last);
+        CHECK(item->id == 2);
+        CHECK(strcmp(item->name, "def") == 0);
+        CHECK(item->amount == 88L);
+        release_segments(&ctx, &segments);
+    }
+    SUBCASE("segmental_output")
+    {
+        struct list_head segments;
+        list_head_init(&segments);
+        struct segment *segment = add_new_segment(&segments);
+        CHECK(segment != NULL);
+        struct item *item = (struct item *)new_item(&ctx);
+        item->id = 1;
+        item->amount = 10L;
+        list_add(&segment->items, &item->list);
+        segment = add_new_segment(&segments);
+        CHECK(segment != NULL);
+        set_cstring(&segment->comment, "abc", 3);
+        item = (struct item *)new_item(&ctx);
+        item->id = 2;
+        item->amount = 11L;
+        list_add(&segment->items, &item->list);
+        std::ostringstream oss;
+        int line = output_segments(&ctx, &segments, test_write, &oss);
+        release_segments(&ctx, &segments);
+        CHECK(line == 3);
+        CHECK(oss.str() == "1,,0.10\n#abc\n2,,0.11\n");
+    }
 }

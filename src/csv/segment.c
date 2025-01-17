@@ -1,30 +1,46 @@
 #include "segment.h"
 
-#include "item.h"
+#include <stdlib.h>
 
-void init_segment(struct segment *segment, void *data)
+void init_segment(struct segment *segment)
 {
     list_item_init(&segment->list);
     list_head_init(&segment->items);
-    segment->data = data;
+    segment->comment = NULL;
 }
 
-void add_item(struct segment *segment, struct item *item)
+struct segment *new_segment()
 {
-    list_add(&segment->items, &item->list);
+    struct segment *segment = malloc(sizeof(struct segment));
+    return_null_if_null(segment);
+    init_segment(segment);
+    return segment;
 }
 
-void insert_item(struct item *pos, struct item *item)
+void add_segment(struct list_head *segments, struct segment *segment)
 {
-    list_ins(&pos->list, &item->list);
+    list_add(segments, &segment->list);
 }
 
-void insert_item_head(struct segment *segment, struct item *item)
+struct segment *add_new_segment(struct list_head *segments)
 {
-    list_ins_head(&segment->items, &item->list);
+    struct segment *segment = new_segment();
+    return_null_if_null(segment);
+    add_segment(segments, segment);
+    return segment;
+}
+
+struct segment *get_last_segment(struct list_head *segments)
+{
+    return get_segment(segments->last);
 }
 
 bool segment_is_empty(const struct segment *segment)
 {
     return list_is_empty(&segment->items);
+}
+
+bool segment_is_first(const struct list_head *segments, const struct segment *segment)
+{
+    return list_is_first(segments, &segment->list);
 }

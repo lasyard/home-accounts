@@ -116,6 +116,7 @@ void init_options(struct parser_options *opt)
     opt->sep = ',';
     opt->num_sep = ' ';
     opt->date_sep = '-';
+    opt->comment = '#';
     set_options_money_prec(opt, 2);
 }
 
@@ -123,8 +124,22 @@ void init_parser(struct parser_context *ctx)
 {
     ctx->cols = 0;
     ctx->types = NULL;
+    ctx->data_size = 0;
     ctx->f_get_ptr = NULL;
+    ctx->context = NULL;
     init_options(&ctx->options);
+}
+
+void set_parser_types(struct parser_context *ctx, int cols, const enum column_type *types)
+{
+    ctx->cols = cols;
+    ctx->types = types;
+}
+
+void use_record(struct parser_context *ctx, size_t data_size, f_get *f_get_ptr)
+{
+    ctx->data_size = data_size;
+    ctx->f_get_ptr = f_get_ptr;
 }
 
 void set_money_prec(struct parser_context *ctx, int money_prec)
@@ -281,6 +296,9 @@ char *output_types(const struct parser_options *opt, char *buf, const enum colum
 void *common_get_ptr(void *data, int i, const void *context)
 {
     const struct common_record_meta *crm = (const struct common_record_meta *)context;
+    if (i == LIST_ITEM_INDEX) {
+        return data;
+    }
     size_t offset = crm->offsets[i];
     return (char *)data + offset;
 }
@@ -290,13 +308,128 @@ struct common_record_meta *use_common_record(struct parser_context *ctx)
     struct common_record_meta *crm =
         (struct common_record_meta *)malloc(sizeof(struct common_record_meta) + ctx->cols * sizeof(size_t));
     return_null_if_null(crm);
-    size_t offset = sizeof(struct common_record_meta *);
+    size_t offset = sizeof(struct list_item);
     for (int i = 0; i < ctx->cols; ++i) {
         crm->offsets[i] = offset;
         offset += size_of(ctx->types[i]);
     }
-    crm->bytes = offset;
-    ctx->f_get_ptr = common_get_ptr;
+    use_record(ctx, offset, common_get_ptr);
     ctx->context = crm;
     return crm;
+}
+
+void *new_item(const struct parser_context *ctx)
+{
+    void *item = malloc(ctx->data_size);
+    return_null_if_null(item);
+    init_data(ctx, item);
+    struct list_item *list_item = (struct list_item *)get_ptr(ctx, item, LIST_ITEM_INDEX);
+    if (list_item != NULL) {
+        list_item_init((struct list_item *)item);
+    }
+    return item;
+}
+
+void *get_item(const struct parser_context *ctx, struct list_item *list_item)
+{
+    // use non-zero as base to avoid mixing with NULL
+    char *addr = get_ptr(ctx, (void *)123, LIST_ITEM_INDEX);
+    if (addr != NULL) {
+        return (char *)list_item - (addr - (char *)123);
+    }
+    return NULL;
+}
+
+int parse_segments(const struct parser_context *ctx, struct list_head *segments, f_read_line *read_line, void *context)
+{
+    int line = 0;
+    const char *buf;
+    struct segment *segment = add_new_segment(segments);
+    if (segment == NULL) {
+        return 0;
+    }
+    while ((buf = read_line(context)) != NULL) {
+        segment = get_last_segment(segments);
+        ++line;
+        if (is_line_end(buf[0])) {
+            continue;
+        }
+        if (buf[0] == ctx->options.comment) {
+            if (!segment_is_empty(segment)) {
+                segment = add_new_segment(segments);
+            }
+            if (segment != NULL) {
+                if (parse_cstring(&buf[1], &segment->comment, '\n') != NULL) {
+                    continue;
+                }
+                free(segment);
+            }
+        } else {
+            void *item = new_item(ctx);
+            if (item != NULL) {
+                if (parse_line(ctx, buf, item) != NULL) {
+                    struct list_item *list_item = (struct list_item *)get_ptr(ctx, item, LIST_ITEM_INDEX);
+                    if (list_item != NULL) {
+                        list_add(&segment->items, list_item);
+                        continue;
+                    }
+                }
+                release_data(ctx, item);
+                free(item);
+            }
+        }
+        line = -line;
+        break;
+    }
+    return line;
+}
+
+int output_segments(
+    const struct parser_context *ctx,
+    struct list_head *segments,
+    f_write_line *write_line,
+    void *context
+)
+{
+    char buf[MAX_LINE_LENGTH + 1];
+    int line = 0;
+    struct list_item *p, *q;
+    for (p = segments->first; p != NULL; p = p->next) {
+        struct segment *segment = get_segment(p);
+        if (!segment_is_first(segments, segment) || segment->comment != NULL) {
+            buf[0] = '#';
+            char *tail = output_cstring(&buf[1], segment->comment);
+            write_line(context, buf, tail - buf);
+            ++line;
+        }
+        for (q = segment->items.first; q != NULL; q = q->next) {
+            void *item = get_item(ctx, q);
+            char *tail = output_line(ctx, buf, item);
+            write_line(context, buf, tail - buf);
+            ++line;
+        }
+    }
+    return line;
+}
+
+void release_segment(const struct parser_context *ctx, struct segment *segment)
+{
+    struct list_item *q;
+    for (struct list_item *p = segment->items.first; p != NULL; p = q) {
+        q = p->next;
+        void *item = get_item(ctx, p);
+        release_data(ctx, item);
+        free(item);
+    }
+}
+
+void release_segments(const struct parser_context *ctx, struct list_head *segments)
+{
+    struct list_item *q;
+    for (struct list_item *p = segments->first; p != NULL; p = q) {
+        q = p->next;
+        struct segment *segment = get_segment(p);
+        release_segment(ctx, segment);
+        free(segment);
+    }
 }

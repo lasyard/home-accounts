@@ -3,12 +3,10 @@
 
 #include "list.h"
 
-struct item;
-
 struct segment {
     struct list_item list;
     struct list_head items;
-    void *data;
+    char *comment;
 };
 
 #define get_segment(ptr) list_entry(ptr, struct segment, list)
@@ -17,14 +15,19 @@ struct segment {
 extern "C" {
 #endif
 
-void init_segment(struct segment *segment, void *data);
+void init_segment(struct segment *segment);
 
-void add_item(struct segment *segment, struct item *item);
+struct segment *new_segment();
 
-void insert_item(struct item *pos, struct item *item);
-void insert_item_head(struct segment *segment, struct item *item);
+void add_segment(struct list_head *segments, struct segment *segment);
+
+struct segment *add_new_segment(struct list_head *segments);
+
+struct segment *get_last_segment(struct list_head *segments);
 
 bool segment_is_empty(const struct segment *segment);
+
+bool segment_is_first(const struct list_head *segments, const struct segment *segment);
 
 #ifdef __cplusplus
 }

@@ -2,17 +2,23 @@
 #define _HA_CSV_CSV_PARSER_H_
 
 #include "column_type.h"
+#include "list.h"
+#include "segment.h"
+
+#define MAX_LINE_LENGTH 1023
+
+#define LIST_ITEM_INDEX (-1)
 
 struct parser_options {
     char sep;        // The separator of fields.
     char num_sep;    // The separator in numbers.
     char date_sep;   // The separator of y/m/d in date.
+    char comment;    // The leading character of comments.
     int money_prec;  // The precision of money.
     int money_scale; // The scale factor of money.
 };
 
 struct common_record_meta {
-    size_t bytes;      // Total bytes of a record.
     size_t offsets[0]; // Offsets of each field.
 };
 
@@ -20,12 +26,17 @@ struct common_record_meta {
 extern "C" {
 #endif
 
-typedef void *f_get(void *data, int i, const void *context); // Function type to get member ptr of data.
+// Function type to get member ptr of data.
+typedef void *f_get(void *data, int i, const void *context);
+
+typedef const char *f_read_line(void *context);
+typedef void f_write_line(void *context, const char *buf, size_t len);
 
 struct parser_context {
     struct parser_options options;
     int cols;                      // The number of columns.
     const enum column_type *types; // The types of each column.
+    size_t data_size;              // The size of data, for malloc.
     f_get *f_get_ptr;              // Function to get member ptr of data.
     const void *context;
 };
@@ -33,6 +44,10 @@ struct parser_context {
 void init_options(struct parser_options *opt);
 
 void init_parser(struct parser_context *ctx);
+
+void set_parser_types(struct parser_context *ctx, int cols, const enum column_type *types);
+
+void use_record(struct parser_context *ctx, size_t data_size, f_get *f_get_ptr);
 
 void set_money_prec(struct parser_context *ctx, int money_prec);
 
@@ -67,6 +82,31 @@ char *output_types(const struct parser_options *opt, char *buf, const enum colum
 void *common_get_ptr(void *data, int i, const void *context);
 
 struct common_record_meta *use_common_record(struct parser_context *ctx);
+
+void *new_item(const struct parser_context *ctx);
+
+void *get_item(const struct parser_context *ctx, struct list_item *list_item);
+
+/**
+ * @brief Parse segmental csv file
+ *
+ * @param ctx
+ * @param segments
+ * @param read_line
+ * @param context
+ * @return the number of lines read, negative number means error
+ */
+int parse_segments(const struct parser_context *ctx, struct list_head *segments, f_read_line *read_line, void *context);
+
+int output_segments(
+    const struct parser_context *ctx,
+    struct list_head *segments,
+    f_write_line *write_line,
+    void *context
+);
+
+void release_segment(const struct parser_context *ctx, struct segment *segment);
+void release_segments(const struct parser_context *ctx, struct list_head *segments);
 
 #ifdef __cplusplus
 }

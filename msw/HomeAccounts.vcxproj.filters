@@ -39,6 +39,9 @@
     <ClCompile Include="..\src\gui\HaArtProvider.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\gui\panel\NewSectionDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\gui\ChangePassDialog.h">
@@ -72,6 +75,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\gui\HaArtProvider.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\gui\panel\NewSectionDialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

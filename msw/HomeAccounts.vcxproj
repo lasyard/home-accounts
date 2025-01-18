@@ -38,6 +38,7 @@
     <ClCompile Include="..\src\gui\HaMainFrame.cpp" />
     <ClCompile Include="..\src\gui\HaView.cpp" />
     <ClCompile Include="..\src\gui\panel\HaRawPanel.cpp" />
+    <ClCompile Include="..\src\gui\panel\NewSectionDialog.cpp" />
     <ClCompile Include="..\src\gui\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -50,6 +51,7 @@
     <ClInclude Include="..\src\gui\HaView.h" />
     <ClInclude Include="..\src\gui\panel\HaPanel.h" />
     <ClInclude Include="..\src\gui\panel\HaRawPanel.h" />
+    <ClInclude Include="..\src\gui\panel\NewSectionDialog.h" />
     <ClInclude Include="..\src\gui\Utils.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>

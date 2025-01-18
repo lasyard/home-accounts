@@ -19,12 +19,12 @@
         <help></help>
       </object>
       <object class="wxMenuItem" name="wxID_SAVEAS">
-        <label>Save As</label>
+        <label>Save _As</label>
         <accel>Ctrl+Shift+S</accel>
         <help></help>
       </object>
       <object class="wxMenuItem" name="wxID_CLOSE">
-        <label>Close</label>
+        <label>_Close</label>
         <accel>Ctrl+W</accel>
         <help></help>
       </object>
@@ -40,13 +40,12 @@
       <object class="wxMenuItem" name="insert">
         <label>Insert</label>
         <!-- value `Enter` is not support on Windows -->
-        <accel>Return</accel>
+        <accel>Insert</accel>
         <help></help>
       </object>
       <object class="wxMenuItem" name="wxID_DELETE">
         <label>Delete</label>
-        <!-- value `Delete` is not support on Windows -->
-        <accel>Del</accel>
+        <accel>Delete</accel>
         <help></help>
       </object>
     </object>

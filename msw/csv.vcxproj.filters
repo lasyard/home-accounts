@@ -27,9 +27,6 @@
     <ClCompile Include="..\src\csv\int.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\csv\item.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\csv\list.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -37,12 +34,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\csv\segment.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\csv\segmental_csv_parser.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\csv\segments.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\csv\str.c">
@@ -65,9 +56,6 @@
     <ClInclude Include="..\src\csv\int.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\csv\item.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\csv\list.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -75,12 +63,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\csv\segment.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\csv\segmental_csv_parser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\csv\segments.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\csv\str.h">

@@ -95,13 +95,21 @@ const std::string &HaDocument::GetSection(const std::string &name) const
 void HaDocument::SaveSection(const std::string &name, const std::string &content)
 {
     m_doc->put(name, content);
-    // Modify flag is set when doc is being edited in view, so need not set here.
 }
 
 void HaDocument::DeleteSection(const std::string &name)
 {
     m_doc->remove(name);
-    Modify(true);
+}
+
+void HaDocument::DeleteSectionPrefix(const std::string &prefix)
+{
+    m_doc->removePrefix(prefix);
+}
+
+void HaDocument::DeleteAllSections()
+{
+    m_doc->removeAll();
 }
 
 void HaDocument::ForEachSection(std::function<bool(const std::string &)> callback) const
@@ -113,6 +121,8 @@ void HaDocument::OnChange([[maybe_unused]] wxCommandEvent &event)
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     Modify(true);
+    // skip to allow the original operation
+    event.Skip();
 }
 
 void HaDocument::OnUpdateChangePass(wxUpdateUIEvent &event)

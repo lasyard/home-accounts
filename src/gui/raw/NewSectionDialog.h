@@ -1,5 +1,5 @@
-#ifndef _HA_PANEL_NEW_SECTION_DIALOG_H_
-#define _HA_PANEL_NEW_SECTION_DIALOG_H_
+#ifndef _HA_RAW_NEW_SECTION_DIALOG_H_
+#define _HA_RAW_NEW_SECTION_DIALOG_H_
 
 #include <wx/dialog.h>
 
@@ -25,4 +25,4 @@ protected:
     bool TransferDataFromWindow() override;
 };
 
-#endif /* _HA_PANEL_NEW_SECTION_DIALOG_H_ */
+#endif /* _HA_RAW_NEW_SECTION_DIALOG_H_ */

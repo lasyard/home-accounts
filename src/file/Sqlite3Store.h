@@ -24,6 +24,8 @@ public:
 
     void getSectionNames(std::vector<std::string> &names) const override;
 
+    void deleteAllSections() override;
+
     bool contains(const std::string &name) const override;
     bool operator==(const Store &obj) const override;
 
@@ -41,6 +43,7 @@ private:
     mutable sqlite3_stmt *m_getStmt;
     mutable sqlite3_stmt *m_putStmt;
     mutable sqlite3_stmt *m_delStmt;
+    mutable sqlite3_stmt *m_delAllStmt;
     mutable sqlite3_stmt *m_passStmt;
     mutable sqlite3_stmt *m_enumStmt;
 

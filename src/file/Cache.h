@@ -36,6 +36,8 @@ public:
     const std::string &get(const std::string &name);
     void put(const std::string &name, const std::string &content);
     void remove(const std::string &name);
+    void removePrefix(const std::string &prefix);
+    void removeAll();
 
     void attach(Store *store);
     void save();

@@ -1,8 +1,7 @@
-#ifndef _HA_PANEL_HA_RAW_PANEL_H_
-#define _HA_PANEL_HA_RAW_PANEL_H_
+#ifndef _HA_RAW_HA_RAW_PANEL_H_
+#define _HA_RAW_HA_RAW_PANEL_H_
 
-#include "HaPanel.h"
-
+#include "../HaPanel.h"
 #include "../Utils.h"
 
 class wxTextCtrl;
@@ -39,4 +38,4 @@ private:
     void FitTreeCtrlAndLayout();
 };
 
-#endif /* _HA_PANEL_HA_RAW_PANEL_H_ */
+#endif /* _HA_RAW_HA_RAW_PANEL_H_ */

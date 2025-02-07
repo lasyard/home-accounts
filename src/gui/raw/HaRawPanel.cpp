@@ -42,7 +42,6 @@ HaRawPanel::HaRawPanel(wxWindow *parent) : HaPanel(parent)
 
 HaRawPanel::~HaRawPanel()
 {
-    ClearContents();
 }
 
 void HaRawPanel::OnUpdate()
@@ -76,12 +75,6 @@ void HaRawPanel::SaveContents()
 
 void HaRawPanel::ClearContents()
 {
-    for (size_t i = 0; i < m_book->GetPageCount(); ++i) {
-        auto *textCtrl = dynamic_cast<wxTextCtrl *>(m_book->GetPage(i));
-        if (textCtrl != nullptr) {
-            textCtrl->Unbind(wxEVT_TEXT, &HaDocument::OnChange, m_doc);
-        }
-    }
     m_book->DeleteAllPages();
 }
 
@@ -95,7 +88,9 @@ void HaRawPanel::OnInsert([[maybe_unused]] wxCommandEvent &event)
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     NewSectionDialog dlg(nullptr);
     if (dlg.ShowModal() == wxID_OK) {
-        InsertOrFindSubPage(dlg.GetIsRoot() ? wxNOT_FOUND : m_book->GetSelection(), dlg.GetText(), wxEmptyString);
+        m_book->SetSelection(
+            InsertOrFindSubPage(dlg.GetIsRoot() ? wxNOT_FOUND : m_book->GetSelection(), dlg.GetText(), wxEmptyString)
+        );
         FitTreeCtrlAndLayout();
         m_doc->Modify(true);
     }
@@ -118,9 +113,12 @@ void HaRawPanel::OnDelete([[maybe_unused]] wxCommandEvent &event)
             wxOK | wxCANCEL | wxCENTER
         );
         if (dlg.ShowModal() == wxID_OK) {
+            auto name = s(GetFullName(sel));
+            m_doc->DeleteSectionPrefix(name + "/");
+            m_doc->DeleteSection(name);
+            m_doc->Modify(true);
             m_book->DeletePage(sel);
             FitTreeCtrlAndLayout();
-            m_doc->Modify(true);
         }
     }
 }

@@ -8,7 +8,8 @@
 #include "HaMainFrame.h"
 #include "Utils.h"
 
-#include "panel/HaRawPanel.h"
+#include "data/HaDataPanel.h"
+#include "raw/HaRawPanel.h"
 
 IMPLEMENT_DYNAMIC_CLASS(HaView, wxView)
 IMPLEMENT_TM(HaView)
@@ -18,6 +19,8 @@ EVT_UPDATE_UI(ID_INSERT, HaView::OnUpdateMenu)
 EVT_MENU(ID_INSERT, HaView::OnMenu)
 EVT_UPDATE_UI(wxID_DELETE, HaView::OnUpdateMenu)
 EVT_MENU(wxID_DELETE, HaView::OnMenu)
+EVT_NOTEBOOK_PAGE_CHANGING(ID_BOOK, HaView::OnPageChanging)
+EVT_NOTEBOOK_PAGE_CHANGED(ID_BOOK, HaView::OnPageChanged)
 END_EVENT_TABLE()
 
 HaView::HaView() : wxView()
@@ -37,6 +40,7 @@ bool HaView::OnCreate([[maybe_unused]] wxDocument *doc, [[maybe_unused]] long fl
     m_book = frame->GetBook();
     m_book->Show();
     frame->Layout();
+    m_book->AddPage(new HaDataPanel(m_book), _("data"));
     m_book->AddPage(new HaRawPanel(m_book), _("raw"));
     Activate(true);
     return true;
@@ -55,8 +59,7 @@ bool HaView::OnClose(bool deleteWindow)
 void HaView::OnUpdate([[maybe_unused]] wxView *sender, [[maybe_unused]] wxObject *hint)
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
-    GetCurrentPanel()->SetDocument(GetHaDocument());
-    GetCurrentPanel()->OnUpdate();
+    GetCurrentHaPanel()->ShowDocument(GetHaDocument());
 }
 
 void HaView::OnDraw([[maybe_unused]] wxDC *dc)
@@ -71,17 +74,37 @@ void HaView::OnClosingDocument()
 
 void HaView::OnUpdateMenu(wxUpdateUIEvent &event)
 {
-    Utils::DelegateEvent(GetCurrentPanel(), event);
+    Utils::DelegateEvent(GetCurrentHaPanel(), event);
 }
 
 void HaView::OnMenu(wxCommandEvent &event)
 {
-    Utils::DelegateEvent(GetCurrentPanel(), event);
+    Utils::DelegateEvent(GetCurrentHaPanel(), event);
+}
+
+void HaView::OnPageChanging(wxBookCtrlEvent &event)
+{
+    wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
+    int sel = event.GetOldSelection();
+    auto *panel = GetHaPanel(sel);
+    if (panel != nullptr) {
+        panel->HideDocument();
+    }
+}
+
+void HaView::OnPageChanged(wxBookCtrlEvent &event)
+{
+    wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
+    int sel = event.GetSelection();
+    auto *panel = GetHaPanel(sel);
+    if (panel != nullptr) {
+        panel->ShowDocument(GetHaDocument());
+    }
 }
 
 void HaView::SaveContents()
 {
-    GetCurrentPanel()->SaveContents();
+    GetCurrentHaPanel()->SaveContents();
 }
 
 HaDocument *HaView::GetHaDocument() const
@@ -89,7 +112,12 @@ HaDocument *HaView::GetHaDocument() const
     return dynamic_cast<HaDocument *>(GetDocument());
 }
 
-HaPanel *HaView::GetCurrentPanel() const
+HaPanel *HaView::GetHaPanel(int sel) const
+{
+    return dynamic_cast<HaPanel *>(m_book->GetPage(sel));
+}
+
+HaPanel *HaView::GetCurrentHaPanel() const
 {
     return dynamic_cast<HaPanel *>(m_book->GetCurrentPage());
 }

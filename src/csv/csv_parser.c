@@ -106,9 +106,14 @@ static void set_options_money_prec(struct parser_options *opt, int money_prec)
     }
 }
 
-static void *get_ptr(const struct parser_context *ctx, void *data, int i)
+void *get_field(const struct parser_context *ctx, void *data, int i)
 {
     return ctx->f_get_ptr(data, i, ctx->context);
+}
+
+struct list_item *get_list_item(const struct parser_context *ctx, void *data)
+{
+    return get_field(ctx, data, LIST_ITEM_INDEX);
 }
 
 void init_options(struct parser_options *opt)
@@ -166,13 +171,13 @@ void init_data(const struct parser_context *ctx, void *data)
 {
     for (int i = 0; i < ctx->cols; ++i) {
         enum column_type type = ctx->types[i];
-        init_by_type(type, get_ptr(ctx, data, i));
+        init_by_type(type, get_field(ctx, data, i));
     }
 }
 
 const char *parse_field(const struct parser_context *ctx, const char *buf, void *data, int i)
 {
-    return parse_by_type(&ctx->options, buf, ctx->types[i], get_ptr(ctx, data, i));
+    return parse_by_type(&ctx->options, buf, ctx->types[i], get_field(ctx, data, i));
 }
 
 const char *parse_line(const struct parser_context *ctx, const char *line, void *data)
@@ -195,7 +200,7 @@ void release_data(const struct parser_context *ctx, void *data)
     for (int i = 0; i < ctx->cols; ++i) {
         enum column_type type = ctx->types[i];
         if (type == CT_CSTR) {
-            char **cstr = (char **)(get_ptr(ctx, data, i));
+            char **cstr = (char **)(get_field(ctx, data, i));
             free(*cstr);
         }
     }
@@ -245,12 +250,12 @@ const char *parse_types(const struct parser_options *opt, const char *line, enum
 
 char *output_field(const struct parser_context *ctx, char *buf, const void *data, int i)
 {
-    return output_by_type(&ctx->options, buf, ctx->types[i], (const void *)(get_ptr(ctx, (void *)data, i)));
+    return output_by_type(&ctx->options, buf, ctx->types[i], (const void *)(get_field(ctx, (void *)data, i)));
 }
 
 const char *get_cstr_field(const struct parser_context *ctx, const void *data, int i)
 {
-    const char *s = *(const char *const *)(get_ptr(ctx, (void *)data, i));
+    const char *s = *(const char *const *)(get_field(ctx, (void *)data, i));
     return s != NULL ? s : "";
 }
 
@@ -323,7 +328,7 @@ void *new_item(const struct parser_context *ctx)
     void *item = malloc(ctx->data_size);
     return_null_if_null(item);
     init_data(ctx, item);
-    struct list_item *list_item = (struct list_item *)get_ptr(ctx, item, LIST_ITEM_INDEX);
+    struct list_item *list_item = (struct list_item *)get_field(ctx, item, LIST_ITEM_INDEX);
     if (list_item != NULL) {
         list_item_init((struct list_item *)item);
     }
@@ -333,7 +338,7 @@ void *new_item(const struct parser_context *ctx)
 void *get_item(const struct parser_context *ctx, struct list_item *list_item)
 {
     // use non-zero as base to avoid mixing with NULL
-    char *addr = get_ptr(ctx, (void *)123, LIST_ITEM_INDEX);
+    char *addr = get_field(ctx, (void *)123, LIST_ITEM_INDEX);
     if (addr != NULL) {
         return (char *)list_item - (addr - (char *)123);
     }
@@ -368,7 +373,7 @@ int parse_segments(const struct parser_context *ctx, struct list_head *segments,
             void *item = new_item(ctx);
             if (item != NULL) {
                 if (parse_line(ctx, buf, item) != NULL) {
-                    struct list_item *list_item = (struct list_item *)get_ptr(ctx, item, LIST_ITEM_INDEX);
+                    struct list_item *list_item = (struct list_item *)get_field(ctx, item, LIST_ITEM_INDEX);
                     if (list_item != NULL) {
                         list_add(&segment->items, list_item);
                         continue;

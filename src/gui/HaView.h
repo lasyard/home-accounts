@@ -5,6 +5,7 @@
 
 #include "Utils.h"
 
+class wxBookCtrlEvent;
 class wxNotebook;
 
 class HaDocument;
@@ -32,6 +33,8 @@ public:
     void OnMenu(wxCommandEvent &event);
     void OnUpdateRawMode(wxUpdateUIEvent &event);
     void OnRawMode(wxCommandEvent &event);
+    void OnPageChanging(wxBookCtrlEvent &event);
+    void OnPageChanged(wxBookCtrlEvent &event);
 
     void SaveContents();
 
@@ -39,7 +42,8 @@ private:
     wxNotebook *m_book;
 
     HaDocument *GetHaDocument() const;
-    HaPanel *GetCurrentPanel() const;
+    HaPanel *GetHaPanel(int sel) const;
+    HaPanel *GetCurrentHaPanel() const;
 };
 
 #endif /* _HA_GUI_HA_VIEW_H_ */

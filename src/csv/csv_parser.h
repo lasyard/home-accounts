@@ -41,6 +41,10 @@ struct parser_context {
     const void *context;
 };
 
+void *get_field(const struct parser_context *ctx, void *data, int i);
+
+struct list_item *get_list_item(const struct parser_context *ctx, void *data);
+
 void init_options(struct parser_options *opt);
 
 void init_parser(struct parser_context *ctx);

@@ -10,4 +10,7 @@
 #define ID_LICENSE     XRCID("license")
 #define ID_WX_INFO     XRCID("wxInfo")
 
+// Controls
+#define ID_BOOK (wxID_HIGHEST + 1)
+
 #endif /* _HA_GUI_HA_DEFS_H_ */

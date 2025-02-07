@@ -61,7 +61,7 @@ HaMainFrame::HaMainFrame(
     statusBar->SetFieldsCount();
     SetStatusBar(statusBar);
     auto *sizer = new wxBoxSizer(wxVERTICAL);
-    m_book = new wxNotebook(this, wxID_ANY);
+    m_book = new wxNotebook(this, ID_BOOK);
     sizer->Add(m_book, wxSizerFlags().Expand().Border(wxALL, 0).Proportion(1));
     SetSizer(sizer);
     m_book->Show(false);

@@ -39,6 +39,26 @@ void Cache::remove(const std::string &name)
     m_cache.erase(name);
 }
 
+void Cache::removePrefix(const std::string &prefix)
+{
+    if (m_store != nullptr) {
+        m_store->deleteSectionPrefix(prefix);
+    }
+    for (auto &[name, section] : m_cache) {
+        if (name.starts_with(prefix)) {
+            m_cache.erase(name);
+        }
+    }
+}
+
+void Cache::removeAll()
+{
+    if (m_store != nullptr) {
+        m_store->deleteAllSections();
+    }
+    m_cache.clear();
+}
+
 void Cache::attach(Store *store)
 {
     if (m_store != nullptr) {

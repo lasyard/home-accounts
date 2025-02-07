@@ -30,6 +30,8 @@ public:
     const std::string &GetSection(const std::string &name) const;
     void SaveSection(const std::string &name, const std::string &content);
     void DeleteSection(const std::string &name);
+    void DeleteSectionPrefix(const std::string &prefix);
+    void DeleteAllSections();
 
     void ForEachSection(std::function<bool(const std::string &)> callback) const;
 

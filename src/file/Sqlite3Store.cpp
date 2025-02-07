@@ -16,6 +16,7 @@ Sqlite3Store::Sqlite3Store(const std::string &fileName, const std::string &pass,
     , m_getStmt(nullptr)
     , m_putStmt(nullptr)
     , m_delStmt(nullptr)
+    , m_delAllStmt(nullptr)
     , m_passStmt(nullptr)
     , m_enumStmt(nullptr)
 {
@@ -31,6 +32,7 @@ Sqlite3Store::~Sqlite3Store()
         closeStmt(m_getStmt);
         closeStmt(m_putStmt);
         closeStmt(m_delStmt);
+        closeStmt(m_delAllStmt);
         closeStmt(m_passStmt);
         closeStmt(m_enumStmt);
         sqlite3_close(m_db);
@@ -92,6 +94,15 @@ void Sqlite3Store::getSectionNames(std::vector<std::string> &names) const
         } else {
             throw std::runtime_error("sqlite3_step(enumStmt) failed: code = " + std::to_string(rc) + ".");
         }
+    }
+}
+
+void Sqlite3Store::deleteAllSections()
+{
+    prepareSql(m_delAllStmt, std::string("DELETE FROM files WHERE name <> '") + CHECK_STUB + "'");
+    auto rc = sqlite3_step(m_delAllStmt);
+    if (rc != SQLITE_DONE) {
+        throw std::runtime_error("sqlite3_step(delAllStmt) failed: code = " + std::to_string(rc) + ".");
     }
 }
 

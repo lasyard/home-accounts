@@ -31,6 +31,26 @@ public:
 
     virtual void getSectionNames(std::vector<std::string> &names) const = 0;
 
+    virtual void deleteSectionPrefix(const std::string &prefix)
+    {
+        std::vector<std::string> names;
+        getSectionNames(names);
+        for (std::string &name : names) {
+            if (name.starts_with(prefix)) {
+                deleteSection(name);
+            }
+        }
+    }
+
+    virtual void deleteAllSections()
+    {
+        std::vector<std::string> names;
+        getSectionNames(names);
+        for (std::string &name : names) {
+            deleteSection(name);
+        }
+    }
+
     virtual bool contains(const std::string &name) const = 0;
     virtual bool operator==(const Store &obj) const = 0;
 

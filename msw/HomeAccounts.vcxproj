@@ -32,26 +32,44 @@
   </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="..\src\gui\ChangePassDialog.cpp" />
+    <ClCompile Include="..\src\gui\CsvDoc.cpp" />
+    <ClCompile Include="..\src\gui\data\HaDataGrid.cpp" />
+    <ClCompile Include="..\src\gui\data\HaDataGridCellAttrProvider.cpp" />
+    <ClCompile Include="..\src\gui\data\HaDataPanel.cpp" />
+    <ClCompile Include="..\src\gui\data\HaDataTable.cpp" />
     <ClCompile Include="..\src\gui\HaApp.cpp" />
     <ClCompile Include="..\src\gui\HaArtProvider.cpp" />
     <ClCompile Include="..\src\gui\HaDocument.cpp" />
+    <ClCompile Include="..\src\gui\HaGrid.cpp" />
+    <ClCompile Include="..\src\gui\HaGridCellAttrProvider.cpp" />
     <ClCompile Include="..\src\gui\HaMainFrame.cpp" />
+    <ClCompile Include="..\src\gui\HaTable.cpp" />
     <ClCompile Include="..\src\gui\HaView.cpp" />
-    <ClCompile Include="..\src\gui\panel\HaRawPanel.cpp" />
-    <ClCompile Include="..\src\gui\panel\NewSectionDialog.cpp" />
+    <ClCompile Include="..\src\gui\raw\HaRawPanel.cpp" />
+    <ClCompile Include="..\src\gui\raw\NewSectionDialog.cpp" />
+    <ClCompile Include="..\src\gui\StdStreamAccessor.cpp" />
     <ClCompile Include="..\src\gui\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\gui\ChangePassDialog.h" />
+    <ClInclude Include="..\src\gui\CsvDoc.h" />
+    <ClInclude Include="..\src\gui\data\HaDataGrid.h" />
+    <ClInclude Include="..\src\gui\data\HaDataGridCellAttrProvider.h" />
+    <ClInclude Include="..\src\gui\data\HaDataPanel.h" />
+    <ClInclude Include="..\src\gui\data\HaDataTable.h" />
     <ClInclude Include="..\src\gui\HaApp.h" />
     <ClInclude Include="..\src\gui\HaArtProvider.h" />
     <ClInclude Include="..\src\gui\HaDefs.h" />
     <ClInclude Include="..\src\gui\HaDocument.h" />
+    <ClInclude Include="..\src\gui\HaGrid.h" />
+    <ClInclude Include="..\src\gui\HaGridCellAttrProvider.h" />
     <ClInclude Include="..\src\gui\HaMainFrame.h" />
+    <ClInclude Include="..\src\gui\HaPanel.h" />
+    <ClInclude Include="..\src\gui\HaTable.h" />
     <ClInclude Include="..\src\gui\HaView.h" />
-    <ClInclude Include="..\src\gui\panel\HaPanel.h" />
-    <ClInclude Include="..\src\gui\panel\HaRawPanel.h" />
-    <ClInclude Include="..\src\gui\panel\NewSectionDialog.h" />
+    <ClInclude Include="..\src\gui\raw\HaRawPanel.h" />
+    <ClInclude Include="..\src\gui\raw\NewSectionDialog.h" />
+    <ClInclude Include="..\src\gui\StdStreamAccessor.h" />
     <ClInclude Include="..\src\gui\Utils.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>

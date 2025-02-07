@@ -53,7 +53,7 @@ const wxString CsvDoc::GetItemValueString(const void *item, int i) const
 
 const wxString CsvDoc::GetSegmentValueString(const struct segment *segment) const
 {
-    return segment->comment != NULL ? c(segment->comment) : "";
+    return segment->comment != NULL ? c(segment->comment) : wxString(wxEmptyString);
 }
 
 void CsvDoc::SetItemValueString(void *item, int i, const wxString &value)

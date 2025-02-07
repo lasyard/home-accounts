@@ -1,5 +1,7 @@
 #include <wx/log.h>
 
+#include <stdexcept>
+
 #include "HaTable.h"
 
 #include "HaGridCellAttrProvider.h"

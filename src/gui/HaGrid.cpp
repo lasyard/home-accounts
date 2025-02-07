@@ -42,14 +42,15 @@ HaGrid::~HaGrid()
     CheckEventHandler();
 }
 
+// `wxTRANSPARENT_PEN` is problematic on Windows
 wxPen HaGrid::GetRowGridLinePen([[maybe_unused]] int row)
 {
-    return *wxTRANSPARENT_PEN;
+    return *wxLIGHT_GREY_PEN;
 }
 
 wxPen HaGrid::GetColGridLinePen([[maybe_unused]] int col)
 {
-    return *wxTRANSPARENT_PEN;
+    return *wxLIGHT_GREY_PEN;
 }
 
 void HaGrid::DrawCornerLabel(wxDC &dc)

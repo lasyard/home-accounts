@@ -39,8 +39,9 @@
       <label>Edit</label>
       <object class="wxMenuItem" name="insert">
         <label>Insert</label>
+        <accel platform="mac">Enter</accel>
         <!-- value `Enter` is not support on Windows -->
-        <accel>Insert</accel>
+        <accel platform="msw">Insert</accel>
         <help></help>
       </object>
       <object class="wxMenuItem" name="wxID_DELETE">

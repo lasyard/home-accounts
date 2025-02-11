@@ -61,6 +61,10 @@ public:
 protected:
     static const int ROW_HEIGHT = 25;
 
+    bool SelectionIsWholeRow(const wxGridBlocks &blocks);
+    void DeleteAllRowsInBlocks(const wxGridBlocks &blocks);
+    void ClearAllCellsInBlocks(const wxGridBlocks &blocks);
+
     virtual wxGridTableBase *CreateHaTable(CsvDoc *doc) = 0;
 
     void SafeClearCell(wxGridCellCoords coords)

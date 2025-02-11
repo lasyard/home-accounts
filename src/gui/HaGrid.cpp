@@ -6,6 +6,7 @@
 
 #include "HaGrid.h"
 
+#include "Algos.h"
 #include "HaDefs.h"
 #include "HaTable.h"
 
@@ -120,17 +121,51 @@ void HaGrid::OnDelete([[maybe_unused]] wxCommandEvent &event)
     BeginBatch();
     if (IsSelection()) {
         auto blocks = GetSelectedBlocks();
-        for (auto &block : blocks) {
-            for (int i = block.GetTopRow(); i <= block.GetBottomRow(); ++i) {
-                for (int j = block.GetLeftCol(); j <= block.GetRightCol(); ++j) {
-                    SafeClearCell(wxGridCellCoords(i, j));
-                }
-            }
+        if (SelectionIsWholeRow(blocks)) {
+            DeleteAllRowsInBlocks(blocks);
+        } else {
+            ClearAllCellsInBlocks(blocks);
         }
     } else {
         SafeClearCell(GetGridCursorCoords());
     }
     EndBatch();
+}
+
+bool HaGrid::SelectionIsWholeRow(const wxGridBlocks &blocks)
+{
+    for (auto &block : blocks) {
+        for (int i = block.GetTopRow(); i <= block.GetBottomRow(); ++i) {
+            if (block.GetLeftCol() != 0 || block.GetRightCol() != GetNumberCols() - 1) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+void HaGrid::DeleteAllRowsInBlocks(const wxGridBlocks &blocks)
+{
+    std::vector<std::pair<int, int>> rows;
+    for (auto &block : blocks) {
+        rows.push_back(std::make_pair(block.GetTopRow(), block.GetBottomRow()));
+    }
+    std::vector<std::pair<int, int>> sorted;
+    Algos::MergeRange(rows, sorted);
+    for (auto i = sorted.crbegin(); i != sorted.crend(); ++i) {
+        DeleteRows(i->first, i->second - i->first + 1);
+    }
+}
+
+void HaGrid::ClearAllCellsInBlocks(const wxGridBlocks &blocks)
+{
+    for (auto &block : blocks) {
+        for (int i = block.GetTopRow(); i <= block.GetBottomRow(); ++i) {
+            for (int j = block.GetLeftCol(); j <= block.GetRightCol(); ++j) {
+                SafeClearCell(wxGridCellCoords(i, j));
+            }
+        }
+    }
 }
 
 void HaGrid::CheckEventHandler()

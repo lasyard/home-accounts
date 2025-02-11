@@ -113,6 +113,19 @@ bool HaDataTable::AppendRow()
 
 bool HaDataTable::DeleteRow([[maybe_unused]] size_t pos)
 {
+    if (m_index[pos].m_type == ITEM) {
+        void *item = m_index[pos].m_ptr;
+        size_t sp;
+        for (sp = pos - 1; m_index[sp].m_type != SEGMENT; --sp)
+            ;
+        struct segment *segment = (struct segment *)m_index[sp].m_ptr;
+        m_doc->DeleteItem(segment, item);
+        m_index.erase(std::next(m_index.begin(), pos));
+        for (auto p = pos; p < m_index.size() && m_index[p].m_type != SEGMENT; ++p) {
+            --m_index[p].m_seq;
+        }
+        return true;
+    }
     // do not delete
     return false;
 }

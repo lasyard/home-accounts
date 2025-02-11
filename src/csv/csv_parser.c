@@ -353,6 +353,7 @@ int parse_segments(const struct parser_context *ctx, struct list_head *segments,
     if (segment == NULL) {
         return 0;
     }
+    bool default_segment = true;
     while ((buf = read_line(context)) != NULL) {
         segment = get_last_segment(segments);
         ++line;
@@ -360,7 +361,12 @@ int parse_segments(const struct parser_context *ctx, struct list_head *segments,
             continue;
         }
         if (buf[0] == ctx->options.comment) {
-            if (!segment_is_empty(segment)) {
+            if (default_segment) {
+                if (!segment_is_empty(segment)) {
+                    segment = add_new_segment(segments);
+                }
+                default_segment = false;
+            } else {
                 segment = add_new_segment(segments);
             }
             if (segment != NULL) {

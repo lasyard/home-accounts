@@ -102,6 +102,13 @@ void *CsvDoc::InsertItemHead(struct segment *segment)
     return item;
 }
 
+void CsvDoc::DeleteItem(struct segment *segment, void *item)
+{
+    list_del(&segment->items, get_list_item(&m_ctx, item));
+    release_data(&m_ctx, item);
+    free(item);
+}
+
 bool CsvDoc::Read(f_read_line *read_line, void *context)
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);

@@ -47,6 +47,7 @@ public:
 
     void *InsertItem(void *pos);
     void *InsertItemHead(struct segment *segment);
+    void DeleteItem(struct segment *segment, void *item);
 
     bool Read(f_read_line *read_line, void *context);
     bool Write(f_write_line *write_line, void *context);

@@ -51,6 +51,7 @@
     <ClCompile Include="..\src\gui\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\gui\Algos.h" />
     <ClInclude Include="..\src\gui\ChangePassDialog.h" />
     <ClInclude Include="..\src\gui\CsvDoc.h" />
     <ClInclude Include="..\src\gui\data\HaDataGrid.h" />

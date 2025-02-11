@@ -134,6 +134,9 @@
     <ClInclude Include="..\src\gui\raw\NewSectionDialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\gui\Algos.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="HomeAccounts.rc">

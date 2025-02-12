@@ -40,8 +40,8 @@ bool HaView::OnCreate([[maybe_unused]] wxDocument *doc, [[maybe_unused]] long fl
     m_book = frame->GetBook();
     m_book->Show();
     frame->Layout();
-    m_book->AddPage(new HaDataPanel(m_book), _("data"));
-    m_book->AddPage(new HaRawPanel(m_book), _("raw"));
+    m_book->AddPage(new HaDataPanel(m_book), _("Tabular"));
+    m_book->AddPage(new HaRawPanel(m_book), _("Raw"));
     Activate(true);
     return true;
 }

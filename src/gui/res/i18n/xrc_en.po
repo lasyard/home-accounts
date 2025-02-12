@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HomeAccounts 1.0.0\n"
 "Report-Msgid-Bugs-To: lasyard@yeah.net\n"
-"POT-Creation-Date: 2025-01-16 16:02+0800\n"
+"POT-Creation-Date: 2025-02-12 17:30+0800\n"
 "PO-Revision-Date: 2025-01-10 16:01+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -34,12 +34,12 @@ msgid "&Save"
 msgstr "&Save"
 
 #: res/menu_bar.xrc:22
-msgid "Save As"
-msgstr "Save As"
+msgid "Save &As"
+msgstr "Save &As"
 
 #: res/menu_bar.xrc:27
-msgid "Close"
-msgstr "Close"
+msgid "&Close"
+msgstr "&Close"
 
 #: res/menu_bar.xrc:33
 msgid "Change Password"
@@ -53,7 +53,7 @@ msgstr "Edit"
 msgid "Insert"
 msgstr "Insert"
 
-#: res/menu_bar.xrc:47
+#: res/menu_bar.xrc:48
 msgid "Delete"
 msgstr "Delete"
 

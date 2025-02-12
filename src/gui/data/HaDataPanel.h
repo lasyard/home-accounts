@@ -6,7 +6,9 @@
 
 #include "csv/column_type.h"
 
+class wxDatePickerCtrl;
 class HaDataGrid;
+class wxDateEvent;
 
 class HaDataPanel : public HaPanel
 {
@@ -25,15 +27,21 @@ public:
 
     void OnUpdateMenu(wxUpdateUIEvent &event);
     void OnMenu(wxCommandEvent &event);
+    void OnDateChanged(wxDateEvent &event);
 
 private:
+    static const char *const DATA_PREFIX;
+
     static const char *const m_labels[];
     static const enum column_type m_types[];
 
+    wxDatePickerCtrl *m_date;
     HaDataGrid *m_grid;
     std::string m_currentSection;
 
     void DoSetDocument(HaDocument *doc) override;
+
+    void ShowDataOfDate(const wxDateTime &date);
 };
 
 #endif /* _HA_PANEL_HA_DATA_PANEL_H_ */

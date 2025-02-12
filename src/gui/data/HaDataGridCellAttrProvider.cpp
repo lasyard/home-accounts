@@ -12,7 +12,9 @@ HaDataGridCellAttrProvider::HaDataGridCellAttrProvider(const HaDataTable *table)
 
     m_segmentAttr = m_defaultAttr->Clone();
     m_segmentAttr->SetSize(1, m_table->GetColsCount());
-    m_segmentAttr->SetBackgroundColour(*wxLIGHT_GREY);
+    m_segmentAttr->SetBackgroundColour(*wxBLUE);
+    m_segmentAttr->SetTextColour(*wxWHITE);
+    m_segmentAttr->SetFont(m_monoFont);
     m_segmentAttr->SetAlignment(wxALIGN_CENTER_VERTICAL, wxALIGN_LEFT);
     m_segmentAttr->SetReadOnly();
 }

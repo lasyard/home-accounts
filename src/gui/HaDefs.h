@@ -12,5 +12,6 @@
 
 // Controls
 #define ID_BOOK (wxID_HIGHEST + 1)
+#define ID_DATE (wxID_HIGHEST + 2)
 
 #endif /* _HA_GUI_HA_DEFS_H_ */

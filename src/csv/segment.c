@@ -22,11 +22,24 @@ void add_segment(struct list_head *segments, struct segment *segment)
     list_add(segments, &segment->list);
 }
 
+void ins_segment_head(struct list_head *segments, struct segment *segment)
+{
+    list_ins_head(segments, &segment->list);
+}
+
 struct segment *add_new_segment(struct list_head *segments)
 {
     struct segment *segment = new_segment();
     return_null_if_null(segment);
     add_segment(segments, segment);
+    return segment;
+}
+
+struct segment *ins_new_segment_head(struct list_head *segments)
+{
+    struct segment *segment = new_segment();
+    return_null_if_null(segment);
+    ins_segment_head(segments, segment);
     return segment;
 }
 

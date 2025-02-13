@@ -24,6 +24,7 @@ protected:
     mutable wxGridCellAttr *m_monoAttr;
     mutable wxGridCellAttr *m_integerAttr;
     mutable wxGridCellAttr *m_boolAttr;
+    mutable wxGridCellAttr *m_segmentAttr;
 
     const HaTable *m_table;
 

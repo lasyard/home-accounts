@@ -30,6 +30,13 @@ HaGridCellAttrProvider::HaGridCellAttrProvider(const HaTable *table)
     auto *boolEditor = new wxGridCellBoolEditor();
     boolEditor->UseStringValues("1", "0");
     m_boolAttr->SetEditor(boolEditor);
+
+    m_segmentAttr = m_defaultAttr->Clone();
+    m_segmentAttr->SetSize(1, m_table->GetColsCount());
+    m_segmentAttr->SetBackgroundColour(wxColour(0xDD, 0xEE, 0xFF));
+    m_segmentAttr->SetFont(m_monoFont);
+    m_segmentAttr->SetAlignment(wxALIGN_CENTER_VERTICAL, wxALIGN_LEFT);
+    m_segmentAttr->SetReadOnly();
 }
 
 HaGridCellAttrProvider::~HaGridCellAttrProvider()
@@ -38,6 +45,7 @@ HaGridCellAttrProvider::~HaGridCellAttrProvider()
     m_monoAttr->DecRef();
     m_integerAttr->DecRef();
     m_boolAttr->DecRef();
+    m_segmentAttr->DecRef();
 }
 
 wxGridCellAttr *
@@ -45,6 +53,19 @@ HaGridCellAttrProvider::GetAttr([[maybe_unused]] int row, int col, wxGridCellAtt
 {
     // Seems `kind` is always `Any`.
     if (kind == wxGridCellAttr::wxAttrKind::Any || kind == wxGridCellAttr::wxAttrKind::Cell) {
+        switch (m_table->GetRowType(row)) {
+        case HaTable::ITEM:
+            return GetAttrByColumnType(col);
+        case HaTable::SEGMENT:
+            // Do not return colSpan > 1 for col > 0, or there will be index out of bound problem.
+            if (col == 0) {
+                m_segmentAttr->IncRef();
+                return m_segmentAttr;
+            }
+            break;
+        default:
+            break;
+        }
         return GetAttrByColumnType(col);
     }
     m_defaultAttr->IncRef();

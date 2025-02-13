@@ -9,6 +9,7 @@
 HaTable::HaTable(CsvDoc *doc) : wxGridTableBase(), m_doc(doc), m_cache(nullptr)
 {
     m_doc->GetColLabels(m_colLabels);
+    CreateIndexAndCache();
     SetAttrProvider(new HaGridCellAttrProvider(this));
 }
 
@@ -39,8 +40,14 @@ wxString HaTable::GetColLabelValue(int col)
     return m_colLabels[col];
 }
 
-wxString HaTable::GetRowLabelValue([[maybe_unused]] int row)
+wxString HaTable::GetRowLabelValue(int row)
 {
+    if ((size_t)row < m_index.size()) {
+        const struct IndexItem &item = m_index[row];
+        if (item.m_type == ITEM) {
+            return wxString::Format("%d", item.m_seq);
+        }
+    }
     return wxEmptyString;
 }
 
@@ -143,6 +150,27 @@ void HaTable::CacheCol(int col)
     }
 }
 
+void HaTable::CreateIndexAndCache()
+{
+    m_index.clear();
+    if (m_doc != nullptr) {
+        m_doc->ForEachSegment([this](struct segment *segment) -> bool {
+            m_index.push_back(IndexItem(segment));
+            int seq = 1;
+            m_doc->ForEachItem(segment, [this, &seq](void *item) -> bool {
+                m_index.push_back(IndexItem(item, seq++));
+                return true;
+            });
+            return true;
+        });
+    }
+    int rows = m_index.size();
+    m_cache = new wxVector<wxArrayString>(rows);
+    for (auto i = 0; i < rows; ++i) {
+        CacheRow(i);
+    }
+}
+
 void HaTable::RefreshAndAutoSizeGridColumn(int col)
 {
     auto grid = GetView();
@@ -152,4 +180,86 @@ void HaTable::RefreshAndAutoSizeGridColumn(int col)
         grid->AutoSizeColumn(col);
         grid->EndBatch();
     }
+}
+
+const wxString HaTable::GetCellValue(int row, int col)
+{
+    switch (GetRowType(row)) {
+    case ITEM:
+        if ((size_t)col < m_colLabels.size()) {
+            return m_doc->GetItemValueString(m_index[row].m_ptr, col);
+        }
+        break;
+    case SEGMENT:
+        if (col == 0) {
+            return m_doc->GetSegmentValueString(static_cast<struct segment *>(m_index[row].m_ptr));
+        }
+        break;
+    case OTHER:
+        break;
+    }
+    return "";
+}
+
+void HaTable::SetCellValue(int row, int col, const wxString &value)
+{
+    switch (GetRowType(row)) {
+    case ITEM:
+        if ((size_t)col < m_colLabels.size()) {
+            m_doc->SetItemValueString(static_cast<struct item *>(m_index[row].m_ptr), col, value);
+        }
+        break;
+    case SEGMENT:
+        if (col == 0) {
+            m_doc->SetSegmentValueString(static_cast<struct segment *>(m_index[row].m_ptr), value);
+        }
+        break;
+    case OTHER:
+        break;
+    }
+}
+
+bool HaTable::InsertRow(size_t pos)
+{
+    auto &index = m_index[pos];
+    void *item = nullptr;
+    if (index.m_type == ITEM) {
+        item = m_doc->InsertItem(index.m_ptr);
+    } else if (index.m_type == SEGMENT) {
+        item = m_doc->InsertItemHead(static_cast<struct segment *>(index.m_ptr));
+    }
+    if (item != nullptr) {
+        int seq = index.m_seq + 1;
+        m_index.insert(std::next(m_index.begin(), pos + 1), IndexItem(item, seq));
+        for (auto p = pos + 2; p < m_index.size() && m_index[p].m_type != SEGMENT; ++p) {
+            ++m_index[p].m_seq;
+        }
+        return true;
+    }
+    return false;
+}
+
+bool HaTable::AppendRow()
+{
+    // never append
+    return false;
+}
+
+bool HaTable::DeleteRow([[maybe_unused]] size_t pos)
+{
+    if (m_index[pos].m_type == ITEM) {
+        void *item = m_index[pos].m_ptr;
+        size_t sp;
+        for (sp = pos - 1; m_index[sp].m_type != SEGMENT; --sp)
+            ;
+        struct segment *segment = (struct segment *)m_index[sp].m_ptr;
+        m_doc->DeleteItem(segment, item);
+        m_index.erase(std::next(m_index.begin(), pos));
+        for (auto p = pos; p < m_index.size() && m_index[p].m_type != SEGMENT; ++p) {
+            --m_index[p].m_seq;
+        }
+        return true;
+    }
+    // do not delete
+    return false;
 }

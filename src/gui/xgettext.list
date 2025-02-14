@@ -8,8 +8,8 @@ HaGridCellAttrProvider.cpp
 HaMainFrame.cpp
 HaTable.cpp
 HaView.cpp
-StdStreamAccessor.cpp
 Utils.cpp
+data/DataDoc.cpp
 data/HaDataGrid.cpp
 data/HaDataGridCellAttrProvider.cpp
 data/HaDataPanel.cpp

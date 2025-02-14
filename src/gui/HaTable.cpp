@@ -6,6 +6,8 @@
 
 #include "HaGridCellAttrProvider.h"
 
+#include "data/StdStreamAccessor.h"
+
 HaTable::HaTable(CsvDoc *doc) : wxGridTableBase(), m_doc(doc), m_cache(nullptr)
 {
     m_doc->GetColLabels(m_colLabels);
@@ -17,6 +19,9 @@ HaTable::~HaTable()
 {
     if (m_cache != nullptr) {
         delete m_cache;
+    }
+    if (m_doc != nullptr) {
+        delete m_doc;
     }
 }
 
@@ -127,6 +132,11 @@ bool HaTable::DeleteRows(size_t pos, size_t numRows)
 bool HaTable::CanHaveAttributes()
 {
     return true;
+}
+
+void HaTable::SaveTo(std::ostream &os)
+{
+    m_doc->Write(stream_writer, &os);
 }
 
 void HaTable::CacheCell(int row, int col)

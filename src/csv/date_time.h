@@ -3,6 +3,9 @@
 
 #include <stdint.h>
 
+#define DATE_LEN (4 + 1 + 2 + 1 + 2)
+#define TIME_LEN (2 + 1 + 2 + 1 + 2)
+
 typedef int32_t date_t;
 typedef int32_t dtime_t;
 
@@ -18,6 +21,8 @@ const char *parse_time(const char *buf, dtime_t *data, char sep);
 
 char *output_date(char *buf, date_t data, char dateSep);
 char *output_time(char *buf, dtime_t data);
+
+int end_day_of_month(int year, int month);
 
 #ifdef __cplusplus
 }

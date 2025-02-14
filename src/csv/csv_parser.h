@@ -109,7 +109,6 @@ int output_segments(
     void *context
 );
 
-void release_segment(const struct parser_context *ctx, struct segment *segment);
 void release_segments(const struct parser_context *ctx, struct list_head *segments);
 
 #ifdef __cplusplus

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HomeAccounts 1.0.0\n"
 "Report-Msgid-Bugs-To: lasyard@yeah.net\n"
-"POT-Creation-Date: 2025-02-12 17:45+0800\n"
+"POT-Creation-Date: 2025-02-14 12:08+0800\n"
 "PO-Revision-Date: 2025-01-10 16:01+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -62,7 +62,12 @@ msgstr "表格"
 msgid "Raw"
 msgstr "源文件"
 
-#: data/HaDataPanel.cpp:52
+#: data/DataDoc.cpp:38
+#, c-format
+msgid "Invalid date: %s"
+msgstr "不合理的日期：%s"
+
+#: data/HaDataPanel.cpp:40
 msgid "Select Date: "
 msgstr "选择日期："
 

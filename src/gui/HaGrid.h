@@ -7,6 +7,7 @@
 #include "Utils.h"
 
 class CsvDoc;
+class HaTable;
 
 class HaGrid : public wxGrid
 {
@@ -50,6 +51,7 @@ public:
     void SetAttributes();
 
     void InitTable(CsvDoc *doc);
+    void SaveTable(std::ostream &os);
 
     CsvDoc *GetTableDoc();
 
@@ -57,6 +59,7 @@ public:
     void OnInsert(wxCommandEvent &event);
     void OnUpdateDelete(wxUpdateUIEvent &event);
     void OnDelete(wxCommandEvent &event);
+    void OnSelectCell(wxGridEvent &event);
 
 protected:
     static const int ROW_HEIGHT = 25;
@@ -73,6 +76,8 @@ protected:
             SetCellValue(coords, wxEmptyString);
         }
     }
+
+    HaTable *GetHaTable();
 
     /**
      * @brief Check the pushed event handler of a `wxWindow`.

@@ -1,5 +1,5 @@
-#ifndef _HA_GUI_STD_STREAM_ACCESSOR_H_
-#define _HA_GUI_STD_STREAM_ACCESSOR_H_
+#ifndef _HA_DATA_STD_STREAM_ACCESSOR_H_
+#define _HA_DATA_STD_STREAM_ACCESSOR_H_
 
 #include "stddef.h"
 
@@ -15,4 +15,4 @@ void stream_writer(void *context, const char *buf, size_t len);
 }
 #endif
 
-#endif /* _HA_GUI_STD_STREAM_ACCESSOR_H_ */
+#endif /* _HA_DATA_STD_STREAM_ACCESSOR_H_ */

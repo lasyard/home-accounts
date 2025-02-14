@@ -349,44 +349,34 @@ int parse_segments(const struct parser_context *ctx, struct list_head *segments,
 {
     int line = 0;
     const char *buf;
-    struct segment *segment = add_new_segment(segments);
-    if (segment == NULL) {
-        return 0;
-    }
-    bool default_segment = true;
     while ((buf = read_line(context)) != NULL) {
-        segment = get_last_segment(segments);
+        struct segment *segment = get_last_segment(segments);
         ++line;
         if (is_line_end(buf[0])) {
             continue;
         }
         if (buf[0] == ctx->options.comment) {
-            if (default_segment) {
-                if (!segment_is_empty(segment)) {
-                    segment = add_new_segment(segments);
-                }
-                default_segment = false;
-            } else {
+            segment = add_new_segment(segments);
+            if (segment != NULL && parse_cstring(&buf[1], &segment->comment, '\n') != NULL) {
+                continue;
+            }
+        } else {
+            if (segment == NULL) {
                 segment = add_new_segment(segments);
             }
             if (segment != NULL) {
-                if (parse_cstring(&buf[1], &segment->comment, '\n') != NULL) {
-                    continue;
-                }
-                free(segment);
-            }
-        } else {
-            void *item = new_item(ctx);
-            if (item != NULL) {
-                if (parse_line(ctx, buf, item) != NULL) {
-                    struct list_item *list_item = (struct list_item *)get_field(ctx, item, LIST_ITEM_INDEX);
-                    if (list_item != NULL) {
-                        list_add(&segment->items, list_item);
-                        continue;
+                void *item = new_item(ctx);
+                if (item != NULL) {
+                    if (parse_line(ctx, buf, item) != NULL) {
+                        struct list_item *list_item = (struct list_item *)get_field(ctx, item, LIST_ITEM_INDEX);
+                        if (list_item != NULL) {
+                            list_add(&segment->items, list_item);
+                            continue;
+                        }
                     }
+                    release_data(ctx, item);
+                    free(item);
                 }
-                release_data(ctx, item);
-                free(item);
             }
         }
         line = -line;
@@ -423,24 +413,25 @@ int output_segments(
     return line;
 }
 
-void release_segment(const struct parser_context *ctx, struct segment *segment)
+static void release_item(struct list_item *list, void *context)
 {
-    struct list_item *q;
-    for (struct list_item *p = segment->items.first; p != NULL; p = q) {
-        q = p->next;
-        void *item = get_item(ctx, p);
-        release_data(ctx, item);
-        free(item);
+    const struct parser_context *ctx = (const struct parser_context *)context;
+    void *item = get_item(ctx, list);
+    release_data(ctx, item);
+    free(item);
+}
+
+static void release_segment(struct list_item *list, void *context)
+{
+    struct segment *segment = get_segment(list);
+    list_release(&segment->items, release_item, context);
+    if (segment->comment != NULL) {
+        free(segment->comment);
     }
+    free(segment);
 }
 
 void release_segments(const struct parser_context *ctx, struct list_head *segments)
 {
-    struct list_item *q;
-    for (struct list_item *p = segments->first; p != NULL; p = q) {
-        q = p->next;
-        struct segment *segment = get_segment(p);
-        release_segment(ctx, segment);
-        free(segment);
-    }
+    list_release(segments, release_segment, (void *)ctx);
 }

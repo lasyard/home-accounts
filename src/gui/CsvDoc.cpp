@@ -118,14 +118,17 @@ bool CsvDoc::Read(f_read_line *read_line, void *context)
         return false;
     }
     wxLogStatus(_("%d lines read"), lines + 2);
-    return true;
+    return AfterRead();
 }
 
 bool CsvDoc::Write(f_write_line *write_line, void *context)
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
-    output_segments(&m_ctx, &m_segments, write_line, context);
-    return true;
+    if (BeforeWrite()) {
+        output_segments(&m_ctx, &m_segments, write_line, context);
+        return true;
+    }
+    return false;
 }
 
 void CsvDoc::Init()

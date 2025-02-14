@@ -22,8 +22,6 @@ public:
     );
     virtual ~HaDataGrid();
 
-    void OnSelectCell(wxGridEvent &event);
-
 private:
     wxGridTableBase *CreateHaTable(CsvDoc *doc) override;
 };

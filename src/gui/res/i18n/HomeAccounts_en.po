@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HomeAccounts 1.0.0\n"
 "Report-Msgid-Bugs-To: lasyard@yeah.net\n"
-"POT-Creation-Date: 2025-02-12 17:45+0800\n"
+"POT-Creation-Date: 2025-02-14 12:08+0800\n"
 "PO-Revision-Date: 2025-01-10 16:01+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -57,15 +57,20 @@ msgstr "License"
 
 #: HaView.cpp:43
 msgid "Tabular"
-msgstr ""
+msgstr "Tabular"
 
 #: HaView.cpp:44
 msgid "Raw"
-msgstr "raw"
+msgstr "Raw"
 
-#: data/HaDataPanel.cpp:52
+#: data/DataDoc.cpp:38
+#, c-format
+msgid "Invalid date: %s"
+msgstr "Invalid date: %s"
+
+#: data/HaDataPanel.cpp:40
 msgid "Select Date: "
-msgstr ""
+msgstr "Select Date: "
 
 #: raw/HaRawPanel.cpp:111
 #, c-format

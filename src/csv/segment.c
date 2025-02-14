@@ -48,11 +48,6 @@ struct segment *get_last_segment(struct list_head *segments)
     return get_segment(segments->last);
 }
 
-bool segment_is_empty(const struct segment *segment)
-{
-    return list_is_empty(&segment->items);
-}
-
 bool segment_is_first(const struct list_head *segments, const struct segment *segment)
 {
     return list_is_first(segments, &segment->list);

@@ -32,9 +32,6 @@ public:
 private:
     static const char *const DATA_PREFIX;
 
-    static const char *const m_labels[];
-    static const enum column_type m_types[];
-
     wxDatePickerCtrl *m_date;
     HaDataGrid *m_grid;
     std::string m_currentSection;

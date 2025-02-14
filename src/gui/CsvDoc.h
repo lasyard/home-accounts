@@ -27,16 +27,6 @@ public:
         return m_types[i];
     }
 
-    struct list_head &GetSegments()
-    {
-        return m_segments;
-    }
-
-    const struct list_head &GetSegments() const
-    {
-        return m_segments;
-    }
-
     const wxString GetItemValueString(const void *item, int i) const;
     const wxString GetSegmentValueString(const struct segment *segment) const;
     void SetItemValueString(void *item, int i, const wxString &value);
@@ -58,6 +48,16 @@ protected:
     const enum column_type *m_types;
     struct parser_context m_ctx;
     struct list_head m_segments;
+
+    virtual bool AfterRead()
+    {
+        return true;
+    }
+
+    virtual bool BeforeWrite()
+    {
+        return true;
+    }
 
 private:
     void Init();

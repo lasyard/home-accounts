@@ -97,3 +97,22 @@ char *output_time(char *buf, dtime_t data)
     p = output_int64_len(p, (data % 60), 2);
     return p;
 }
+
+int end_day_of_month(int year, int month)
+{
+    switch (month) {
+    case 1:
+    case 3:
+    case 5:
+    case 7:
+    case 8:
+    case 10:
+    case 12:
+        return 31;
+    case 2:
+        return (year % 100 != 0 && year % 4 == 0) || year % 400 == 0 ? 29 : 28;
+    default:
+        break;
+    }
+    return 30;
+}

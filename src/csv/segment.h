@@ -29,8 +29,6 @@ struct segment *ins_new_segment_head(struct list_head *segments);
 
 struct segment *get_last_segment(struct list_head *segments);
 
-bool segment_is_empty(const struct segment *segment);
-
 bool segment_is_first(const struct list_head *segments, const struct segment *segment);
 
 #ifdef __cplusplus

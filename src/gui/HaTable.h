@@ -49,6 +49,8 @@ public:
         return m_doc;
     }
 
+    virtual void SaveTo(std::ostream &os);
+
 protected:
     struct IndexItem {
         explicit IndexItem(struct segment *ptr) : m_ptr(ptr), m_type(SEGMENT), m_seq(0)

@@ -26,15 +26,12 @@ add_exe(${APP_NAME}
     HaMainFrame.cpp
     HaTable.cpp
     HaView.cpp
-    StdStreamAccessor.cpp
     Utils.cpp
 )
 
 # Order is vital.
 target_link_libraries(${APP_NAME}
-    PRIVATE ${wxWidgets_LIBRARIES}
-    PRIVATE file
-    PRIVATE csv
+    PRIVATE ${wxWidgets_LIBRARIES} data file csv
 )
 
 # XRS

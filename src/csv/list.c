@@ -45,6 +45,9 @@ void list_ins_head(struct list_head *head, struct list_item *item)
 
 void list_del(struct list_head *head, struct list_item *item)
 {
+    if (head->first == NULL) {
+        return;
+    }
     if (head->first == item) {
         head->first = item->next;
         if (head->last == item) {
@@ -62,6 +65,49 @@ void list_del(struct list_head *head, struct list_item *item)
             break;
         }
     }
+}
+
+void list_del_if(
+    struct list_head *head,
+    bool (*pred)(struct list_item *item, void *context),
+    void (*release)(struct list_item *item, void *context),
+    void *context
+)
+{
+    if (head->first == NULL) {
+        return;
+    }
+    while (pred(head->first, context)) {
+        struct list_item *item = head->first;
+        head->first = item->next;
+        if (head->last == item) {
+            head->last = head->first;
+        }
+        release(item, context);
+    }
+    to_real_last(head);
+    for (struct list_item *p = head->first; p->next != NULL;) {
+        if (pred(p->next, context)) {
+            struct list_item *item = p->next;
+            p->next = item->next;
+            if (head->last == item) {
+                head->last = p;
+            }
+            release(item, context);
+        } else {
+            p = p->next;
+        }
+    }
+}
+
+void list_release(struct list_head *head, void (*release)(struct list_item *item, void *context), void *context)
+{
+    struct list_item *q;
+    for (struct list_item *p = head->first; p != NULL; p = q) {
+        q = p->next;
+        release(p, context);
+    }
+    head->last = head->first = NULL;
 }
 
 bool list_is_empty(const struct list_head *head)

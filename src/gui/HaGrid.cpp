@@ -17,6 +17,7 @@ EVT_UPDATE_UI(ID_INSERT, HaGrid::OnUpdateInsert)
 EVT_MENU(ID_INSERT, HaGrid::OnInsert)
 EVT_UPDATE_UI(wxID_DELETE, HaGrid::OnUpdateDelete)
 EVT_MENU(wxID_DELETE, HaGrid::OnDelete)
+EVT_GRID_SELECT_CELL(HaGrid::OnSelectCell)
 END_EVENT_TABLE()
 
 HaGrid::HaGrid() : wxGrid()
@@ -78,10 +79,19 @@ void HaGrid::InitTable(CsvDoc *doc)
     ForceRefresh();
 }
 
+void HaGrid::SaveTable(std::ostream &os)
+{
+    SaveEditControlValue();
+    auto *table = GetHaTable();
+    if (table != nullptr) {
+        table->SaveTo(os);
+    }
+}
+
 CsvDoc *HaGrid::GetTableDoc()
 {
-    auto *table = dynamic_cast<HaTable *>(GetTable());
-    return table->GetCsvDoc();
+    auto *table = GetHaTable();
+    return table != nullptr ? table->GetCsvDoc() : nullptr;
 }
 
 void HaGrid::OnUpdateInsert(wxUpdateUIEvent &event)
@@ -132,6 +142,20 @@ void HaGrid::OnDelete([[maybe_unused]] wxCommandEvent &event)
     EndBatch();
 }
 
+void HaGrid::OnSelectCell(wxGridEvent &event)
+{
+    int row = event.GetRow();
+    int col = event.GetCol();
+    auto *table = static_cast<const HaTable *>(GetTable());
+    if (table->GetRowType(row) == HaTable::SEGMENT) {
+        if (col > 0) {
+            event.Veto();
+            SetGridCursor(row, 0);
+        }
+    }
+    event.Skip();
+}
+
 bool HaGrid::SelectionIsWholeRow(const wxGridBlocks &blocks)
 {
     for (auto &block : blocks) {
@@ -166,6 +190,11 @@ void HaGrid::ClearAllCellsInBlocks(const wxGridBlocks &blocks)
             }
         }
     }
+}
+
+HaTable *HaGrid::GetHaTable()
+{
+    return dynamic_cast<HaTable *>(GetTable());
 }
 
 void HaGrid::CheckEventHandler()

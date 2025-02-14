@@ -9,13 +9,13 @@
 
 #include "HaDataPanel.h"
 
+#include "DataDoc.h"
 #include "HaDataGrid.h"
 
-#include "../CsvDoc.h"
 #include "../HaDefs.h"
 #include "../HaDocument.h"
-#include "../StdStreamAccessor.h"
 
+#include "data/StdStreamAccessor.h"
 #include "file/Exeptions.h"
 
 IMPLEMENT_DYNAMIC_CLASS(HaDataPanel, HaPanel)
@@ -30,18 +30,6 @@ EVT_DATE_CHANGED(ID_DATE, HaDataPanel::OnDateChanged)
 END_EVENT_TABLE()
 
 const char *const HaDataPanel::DATA_PREFIX = "data";
-
-const char *const HaDataPanel::m_labels[] = {
-    "id",
-    "name",
-    "active",
-};
-
-const enum column_type HaDataPanel::m_types[] = {
-    CT_INT32,
-    CT_CSTR,
-    CT_BOOL,
-};
 
 HaDataPanel::HaDataPanel(wxWindow *parent) : HaPanel(parent), m_currentSection()
 {
@@ -74,10 +62,8 @@ void HaDataPanel::OnUpdate()
 
 void HaDataPanel::SaveContents()
 {
-    m_grid->SaveEditControlValue();
-    auto *csv = m_grid->GetTableDoc();
     std::ostringstream oss;
-    csv->Write(stream_writer, &oss);
+    m_grid->SaveTable(oss);
     m_doc->SaveSection(m_currentSection, oss.str());
 }
 
@@ -111,8 +97,10 @@ void HaDataPanel::DoSetDocument(HaDocument *doc)
 
 void HaDataPanel::ShowDataOfDate(const wxDateTime &date)
 {
-    char buf[16];
-    snprintf(buf, 16, "%4s/%04d/%02d", DATA_PREFIX, date.GetYear(), date.GetMonth() + 1);
+    char buf[30];
+    int year = date.GetYear();
+    int month = date.GetMonth() + 1;
+    snprintf(buf, 30, "%4s/%04d/%02d", DATA_PREFIX, year, month);
     m_currentSection = std::string(buf);
     const std::string *data = nullptr;
     try {
@@ -122,7 +110,7 @@ void HaDataPanel::ShowDataOfDate(const wxDateTime &date)
         data = &m_doc->GetSection(m_currentSection);
     }
     wxASSERT(data != nullptr);
-    auto *csv = new CsvDoc(sizeof(m_labels) / sizeof(const char *), m_labels, m_types);
+    auto *csv = new DataDoc(year, month);
     std::istringstream iss(*data);
     csv->Read(stream_reader, &iss);
     m_grid->InitTable(csv);

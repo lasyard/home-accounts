@@ -64,7 +64,11 @@ void HaDataPanel::SaveContents()
 {
     std::ostringstream oss;
     m_grid->SaveTable(oss);
-    m_doc->SaveSection(m_currentSection, oss.str());
+    if (!oss.str().empty()) {
+        m_doc->SaveSection(m_currentSection, oss.str());
+    } else {
+        m_doc->DeleteSection(m_currentSection);
+    }
 }
 
 void HaDataPanel::ClearContents()
@@ -85,6 +89,7 @@ void HaDataPanel::OnMenu([[maybe_unused]] wxCommandEvent &event)
 
 void HaDataPanel::OnDateChanged(wxDateEvent &event)
 {
+    SaveContents();
     ShowDataOfDate(event.GetDate());
 }
 

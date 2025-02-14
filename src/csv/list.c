@@ -12,8 +12,10 @@ void list_head_init(struct list_head *head)
 
 static void to_real_last(struct list_head *head)
 {
-    while (head->last->next != NULL) {
-        head->last = head->last->next;
+    if (head->last != NULL) {
+        while (head->last->next != NULL) {
+            head->last = head->last->next;
+        }
     }
 }
 
@@ -74,10 +76,7 @@ void list_del_if(
     void *context
 )
 {
-    if (head->first == NULL) {
-        return;
-    }
-    while (pred(head->first, context)) {
+    while (head->first != NULL && pred(head->first, context)) {
         struct list_item *item = head->first;
         head->first = item->next;
         if (head->last == item) {
@@ -85,17 +84,19 @@ void list_del_if(
         }
         release(item, context);
     }
-    to_real_last(head);
-    for (struct list_item *p = head->first; p->next != NULL;) {
-        if (pred(p->next, context)) {
-            struct list_item *item = p->next;
-            p->next = item->next;
-            if (head->last == item) {
-                head->last = p;
+    if (head->first != NULL) {
+        to_real_last(head);
+        for (struct list_item *p = head->first; p->next != NULL;) {
+            if (pred(p->next, context)) {
+                struct list_item *item = p->next;
+                p->next = item->next;
+                if (head->last == item) {
+                    head->last = p;
+                }
+                release(item, context);
+            } else {
+                p = p->next;
             }
-            release(item, context);
-        } else {
-            p = p->next;
         }
     }
 }

@@ -1,5 +1,7 @@
 #include "doctest/doctest.h"
 
+#include <cstdlib>
+
 #include "list.h"
 
 #define get_int_node(p) ((struct int_node *)container_of(p, struct int_node, list))

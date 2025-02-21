@@ -14,9 +14,9 @@ OPTIONS="--copyright-holder=Lasy
 --package-version=1.0.0
 --msgid-bugs-address=lasyard@yeah.net"
 
-xgettext --c++ -k, -k_ -kt -f "xgettext.list" -p "${DIR}" -o ${APP_POT_NAME}.pot ${OPTIONS}
+xgettext --c++ -k -k_ -kTEXT -f "xgettext.list" -p "${DIR}" -o ${APP_POT_NAME}.pot ${OPTIONS}
 
-wxrc -g res/*.xrc | xgettext --c++ -k, -k_ -p "${DIR}" -o ${XRC_POT_NAME}.pot - ${OPTIONS}
+wxrc -g res/*.xrc | xgettext --c++ -k -k_ -p "${DIR}" -o ${XRC_POT_NAME}.pot - ${OPTIONS}
 
 for domain in "${APP_POT_NAME}" "${XRC_POT_NAME}"; do
     for locale in "en" "zh"; do

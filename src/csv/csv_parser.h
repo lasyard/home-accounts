@@ -3,7 +3,6 @@
 
 #include "column_type.h"
 #include "list.h"
-#include "segment.h"
 
 #define MAX_LINE_LENGTH 1023
 

@@ -2,9 +2,50 @@
 
 #include "data.h"
 
+#include "csv/csv_parser.h"
 #include "csv/str.h"
 
 #define DATE_SEP '-'
+
+const enum column_type data_types[DATA_COLS] = {
+    CT_TIME,
+    CT_MONEY,
+    CT_INT32,
+    CT_CSTR,
+    CT_MONEY,
+    CT_CSTR,
+    CT_CSTR,
+    CT_BOOL,
+};
+
+void *data_get(void *data, int i, const void *context)
+{
+    (void)context;
+    struct data *d = (struct data *)data;
+    switch (i) {
+    case LIST_ITEM_INDEX:
+        return &d->list;
+    case DATA_TIME_COL:
+        return &d->time;
+    case DATA_AMOUNT_COL:
+        return &d->amount;
+    case DATA_ACCOUNT_COL:
+        return &d->account;
+    case DATA_DESC_COL:
+        return &d->desc;
+    case DATA_REAL_AMOUNT_COL:
+        return &d->real_amount;
+    case DATA_REAL_DESC_COL:
+        return &d->real_desc;
+    case DATA_MEMO_COL:
+        return &d->memo;
+    case DATA_AUTO_SET_COL:
+        return &d->auto_set;
+    default:
+        break;
+    }
+    return NULL;
+}
 
 static bool set_segment_comment(struct segment *segment, date_t date)
 {

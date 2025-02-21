@@ -4,22 +4,19 @@
 
 #include "CsvDoc.h"
 
+#include "csv/segment.h"
 #include "csv/str.h"
 
 IMPLEMENT_TM(CsvDoc)
 
-CsvDoc::CsvDoc(int count, const char *const labels[], const enum column_type types[])
-    : m_count(count)
-    , m_labels(labels)
-    , m_types(types)
+CsvDoc::CsvDoc(int count, const enum column_type types[]) : m_count(count), m_types(types)
 {
     Init();
     use_common_record(&m_ctx);
 }
 
-CsvDoc::CsvDoc(int count, const char *const labels[], const enum column_type types[], size_t dataSize, f_get *getPtr)
+CsvDoc::CsvDoc(int count, const enum column_type types[], size_t dataSize, f_get *getPtr)
     : m_count(count)
-    , m_labels(labels)
     , m_types(types)
 {
     Init();
@@ -29,14 +26,6 @@ CsvDoc::CsvDoc(int count, const char *const labels[], const enum column_type typ
 CsvDoc::~CsvDoc()
 {
     release_segments(&m_ctx, &m_segments);
-}
-
-void CsvDoc::GetColLabels(wxArrayString &labels)
-{
-    labels.Clear();
-    for (int i = 0; i < m_count; ++i) {
-        labels.push_back(m_labels[i]);
-    }
 }
 
 const wxString CsvDoc::GetItemValueString(const void *item, int i) const

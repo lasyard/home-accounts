@@ -4,8 +4,6 @@
 #include "../HaPanel.h"
 #include "../Utils.h"
 
-#include "csv/column_type.h"
-
 class wxDatePickerCtrl;
 class HaDataGrid;
 class wxDateEvent;
@@ -35,6 +33,7 @@ private:
     wxDatePickerCtrl *m_date;
     HaDataGrid *m_grid;
     std::string m_currentSection;
+    bool m_parseError;
 
     void DoSetDocument(HaDocument *doc) override;
 

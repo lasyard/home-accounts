@@ -31,7 +31,7 @@ END_EVENT_TABLE()
 
 const char *const HaDataPanel::DATA_PREFIX = "data";
 
-HaDataPanel::HaDataPanel(wxWindow *parent) : HaPanel(parent), m_currentSection()
+HaDataPanel::HaDataPanel(wxWindow *parent) : HaPanel(parent), m_currentSection(), m_parseError(false)
 {
     wxLog::AddTraceMask(TM);
     auto *sizer = new wxBoxSizer(wxVERTICAL);
@@ -62,6 +62,9 @@ void HaDataPanel::OnUpdate()
 
 void HaDataPanel::SaveContents()
 {
+    if (m_parseError) {
+        return;
+    }
     std::ostringstream oss;
     m_grid->SaveTable(oss);
     if (!oss.str().empty()) {
@@ -117,6 +120,6 @@ void HaDataPanel::ShowDataOfDate(const wxDateTime &date)
     wxASSERT(data != nullptr);
     auto *csv = new DataDoc(year, month);
     std::istringstream iss(*data);
-    csv->Read(stream_reader, &iss);
+    m_parseError = !csv->Read(stream_reader, &iss);
     m_grid->InitTable(csv);
 }

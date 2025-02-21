@@ -23,7 +23,7 @@ public:
     virtual ~HaDataGrid();
 
 private:
-    wxGridTableBase *CreateHaTable(CsvDoc *doc) override;
+    HaTable *CreateHaTable(CsvDoc *doc) override;
 };
 
 #endif /* _HA_PANEL_HA_DATA_GRID_H_ */

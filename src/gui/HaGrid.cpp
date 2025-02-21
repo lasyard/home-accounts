@@ -75,6 +75,7 @@ void HaGrid::SetAttributes()
 void HaGrid::InitTable(CsvDoc *doc)
 {
     auto *table = CreateHaTable(doc);
+    table->Init();
     SetTable(table, true);
     ForceRefresh();
 }

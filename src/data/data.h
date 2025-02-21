@@ -3,13 +3,43 @@
 
 #include <stdbool.h>
 
+#include "csv/column_type.h"
 #include "csv/date_time.h"
 #include "csv/list.h"
+#include "csv/money.h"
 #include "csv/segment.h"
+
+#define DATA_TIME_COL        0
+#define DATA_AMOUNT_COL      1
+#define DATA_ACCOUNT_COL     2
+#define DATA_DESC_COL        3
+#define DATA_REAL_AMOUNT_COL 4
+#define DATA_REAL_DESC_COL   5
+#define DATA_MEMO_COL        6
+#define DATA_AUTO_SET_COL    7
+#define DATA_COLS            8
+
+struct data {
+    struct list_item list;
+    // original info
+    dtime_t time;
+    money_t amount;
+    int account;
+    char *desc;
+    // generated or mannually set
+    money_t real_amount;
+    char *real_desc;
+    char *memo;
+    bool auto_set;
+};
+
+extern const enum column_type data_types[DATA_COLS];
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+void *data_get(void *data, int i, const void *context);
 
 date_t get_segment_date(const struct segment *segment);
 

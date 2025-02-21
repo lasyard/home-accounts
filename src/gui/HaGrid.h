@@ -68,7 +68,7 @@ protected:
     void DeleteAllRowsInBlocks(const wxGridBlocks &blocks);
     void ClearAllCellsInBlocks(const wxGridBlocks &blocks);
 
-    virtual wxGridTableBase *CreateHaTable(CsvDoc *doc) = 0;
+    virtual HaTable *CreateHaTable(CsvDoc *doc) = 0;
 
     void SafeClearCell(wxGridCellCoords coords)
     {

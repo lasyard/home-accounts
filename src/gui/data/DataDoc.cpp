@@ -7,20 +7,8 @@
 
 IMPLEMENT_TM(DataDoc)
 
-const char *const DataDoc::m_labels[] = {
-    "id",
-    "name",
-    "active",
-};
-
-const enum column_type DataDoc::m_types[] = {
-    CT_INT32,
-    CT_CSTR,
-    CT_BOOL,
-};
-
 DataDoc::DataDoc(int year, int month)
-    : CsvDoc(sizeof(m_labels) / sizeof(const char *), m_labels, m_types)
+    : CsvDoc(DATA_COLS, data_types, sizeof(struct data), data_get)
     , m_year(year)
     , m_month(month)
 {

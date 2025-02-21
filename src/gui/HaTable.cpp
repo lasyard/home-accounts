@@ -4,16 +4,7 @@
 
 #include "HaTable.h"
 
-#include "HaGridCellAttrProvider.h"
-
 #include "data/StdStreamAccessor.h"
-
-HaTable::HaTable(CsvDoc *doc) : wxGridTableBase(), m_doc(doc), m_cache(nullptr)
-{
-    m_doc->GetColLabels(m_colLabels);
-    CreateIndexAndCache();
-    SetAttrProvider(new HaGridCellAttrProvider(this));
-}
 
 HaTable::~HaTable()
 {
@@ -42,7 +33,7 @@ wxString HaTable::GetValue(int row, int col)
 
 wxString HaTable::GetColLabelValue(int col)
 {
-    return m_colLabels[col];
+    return _(m_colLabels[col]);
 }
 
 wxString HaTable::GetRowLabelValue(int row)
@@ -160,7 +151,7 @@ void HaTable::CacheCol(int col)
     }
 }
 
-void HaTable::CreateIndexAndCache()
+void HaTable::Init()
 {
     m_index.clear();
     if (m_doc != nullptr) {
@@ -179,6 +170,7 @@ void HaTable::CreateIndexAndCache()
     for (auto i = 0; i < rows; ++i) {
         CacheRow(i);
     }
+    SetAttrProvider(new HaGridCellAttrProvider(this));
 }
 
 void HaTable::RefreshAndAutoSizeGridColumn(int col)
@@ -197,18 +189,28 @@ const wxString HaTable::GetCellValue(int row, int col)
     switch (GetRowType(row)) {
     case ITEM:
         if ((size_t)col < m_colLabels.size()) {
-            return m_doc->GetItemValueString(m_index[row].m_ptr, col);
+            return GetItemCellValue(row, col);
         }
         break;
     case SEGMENT:
         if (col == 0) {
-            return m_doc->GetSegmentValueString(static_cast<struct segment *>(m_index[row].m_ptr));
+            return GetSegmentCellValue(row);
         }
         break;
     case OTHER:
         break;
     }
-    return "";
+    return wxEmptyString;
+}
+
+const wxString HaTable::GetItemCellValue(int row, int col)
+{
+    return m_doc->GetItemValueString(m_index[row].m_ptr, col);
+}
+
+const wxString HaTable::GetSegmentCellValue(int row)
+{
+    return m_doc->GetSegmentValueString(static_cast<struct segment *>(m_index[row].m_ptr));
 }
 
 void HaTable::SetCellValue(int row, int col, const wxString &value)
@@ -216,17 +218,27 @@ void HaTable::SetCellValue(int row, int col, const wxString &value)
     switch (GetRowType(row)) {
     case ITEM:
         if ((size_t)col < m_colLabels.size()) {
-            m_doc->SetItemValueString(static_cast<struct item *>(m_index[row].m_ptr), col, value);
+            SetItemCellValue(row, col, value);
         }
         break;
     case SEGMENT:
         if (col == 0) {
-            m_doc->SetSegmentValueString(static_cast<struct segment *>(m_index[row].m_ptr), value);
+            SetSegmentCellValue(row, value);
         }
         break;
     case OTHER:
         break;
     }
+}
+
+void HaTable::SetItemCellValue(int row, int col, const wxString &value)
+{
+    m_doc->SetItemValueString(static_cast<struct item *>(m_index[row].m_ptr), col, value);
+}
+
+void HaTable::SetSegmentCellValue(int row, const wxString &value)
+{
+    m_doc->SetSegmentValueString(static_cast<struct segment *>(m_index[row].m_ptr), value);
 }
 
 bool HaTable::InsertRow(size_t pos)

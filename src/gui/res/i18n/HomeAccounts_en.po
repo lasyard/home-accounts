@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HomeAccounts 1.0.0\n"
 "Report-Msgid-Bugs-To: lasyard@yeah.net\n"
-"POT-Creation-Date: 2025-02-14 12:08+0800\n"
+"POT-Creation-Date: 2025-02-21 16:41+0800\n"
 "PO-Revision-Date: 2025-01-10 16:01+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -25,12 +25,12 @@ msgstr "Wrong password!"
 msgid "Confirm new password failed!"
 msgstr "Confirm new password failed!"
 
-#: CsvDoc.cpp:117
+#: CsvDoc.cpp:106
 #, c-format
 msgid "Parse error at line %d"
 msgstr "Parse error at line %d"
 
-#: CsvDoc.cpp:120
+#: CsvDoc.cpp:109
 #, c-format
 msgid "%d lines read"
 msgstr "%d lines read"
@@ -63,7 +63,7 @@ msgstr "Tabular"
 msgid "Raw"
 msgstr "Raw"
 
-#: data/DataDoc.cpp:38
+#: data/DataDoc.cpp:26
 #, c-format
 msgid "Invalid date: %s"
 msgstr "Invalid date: %s"
@@ -71,6 +71,42 @@ msgstr "Invalid date: %s"
 #: data/HaDataPanel.cpp:40
 msgid "Select Date: "
 msgstr "Select Date: "
+
+#: data/HaDataTable.cpp:13
+msgid "time"
+msgstr "time"
+
+#: data/HaDataTable.cpp:14
+msgid "amount"
+msgstr "amount"
+
+#: data/HaDataTable.cpp:15
+msgid "account"
+msgstr "account"
+
+#: data/HaDataTable.cpp:16
+msgid "desc"
+msgstr "desc"
+
+#: data/HaDataTable.cpp:17
+msgid "income"
+msgstr "income"
+
+#: data/HaDataTable.cpp:18
+msgid "outlay"
+msgstr "outlay"
+
+#: data/HaDataTable.cpp:19
+msgid "item"
+msgstr "item"
+
+#: data/HaDataTable.cpp:20
+msgid "memo"
+msgstr "memo"
+
+#: data/HaDataTable.cpp:21
+msgid "category"
+msgstr "category"
 
 #: raw/HaRawPanel.cpp:111
 #, c-format

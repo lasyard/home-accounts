@@ -15,11 +15,9 @@ class CsvDoc
 public:
     DECLARE_TM()
 
-    CsvDoc(int count, const char *const labels[], const enum column_type types[]);
-    CsvDoc(int count, const char *const labels[], const enum column_type types[], size_t dataSize, f_get *getPtr);
+    CsvDoc(int count, const enum column_type types[]);
+    CsvDoc(int count, const enum column_type types[], size_t dataSize, f_get *getPtr);
     virtual ~CsvDoc();
-
-    void GetColLabels(wxArrayString &labels);
 
     enum column_type GetItemValueType(int i) const
     {
@@ -44,7 +42,6 @@ public:
 
 protected:
     int m_count;
-    const char *const *m_labels;
     const enum column_type *m_types;
     struct parser_context m_ctx;
     struct list_head m_segments;

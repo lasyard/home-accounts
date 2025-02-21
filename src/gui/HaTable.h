@@ -5,16 +5,27 @@
 #include <wx/vector.h>
 
 #include "CsvDoc.h"
+#include "HaGridCellAttrProvider.h"
 
 #include "csv/column_type.h"
 
 class HaTable : public wxGridTableBase
 {
 public:
-    HaTable(CsvDoc *doc);
+    template <typename T>
+    HaTable(CsvDoc *doc, std::initializer_list<T> colLabels)
+        : wxGridTableBase()
+        , m_doc(doc)
+        , m_colLabels(colLabels)
+        , m_cache(nullptr)
+    {
+    }
+
     virtual ~HaTable();
 
     enum IndexType { SEGMENT, ITEM, OTHER };
+
+    virtual void Init();
 
     int GetNumberRows() override;
     int GetNumberCols() override;
@@ -39,7 +50,7 @@ public:
         return OTHER;
     }
 
-    enum column_type GetItemFieldType(int col) const
+    virtual enum column_type GetItemFieldType(int col) const
     {
         return m_doc->GetItemValueType(col);
     }
@@ -67,15 +78,13 @@ protected:
     };
 
     CsvDoc *m_doc;
+    wxArrayString m_colLabels;
     std::vector<struct IndexItem> m_index;
     wxVector<wxArrayString> *m_cache;
-    wxArrayString m_colLabels;
 
     void CacheCell(int row, int col);
     void CacheRow(int row);
     void CacheCol(int col);
-
-    void CreateIndexAndCache();
 
     /**
      * @brief Refresh contents of a grid column and auto resize it to fit the contents.
@@ -85,7 +94,12 @@ protected:
     void RefreshAndAutoSizeGridColumn(int col);
 
     virtual const wxString GetCellValue(int row, int col);
+    virtual const wxString GetItemCellValue(int row, int col);
+    virtual const wxString GetSegmentCellValue(int row);
+
     virtual void SetCellValue(int row, int col, const wxString &value);
+    virtual void SetItemCellValue(int row, int col, const wxString &value);
+    virtual void SetSegmentCellValue(int row, const wxString &value);
 
     virtual bool InsertRow(size_t pos);
     virtual bool AppendRow();

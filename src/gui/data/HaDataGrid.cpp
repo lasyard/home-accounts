@@ -32,7 +32,8 @@ HaDataGrid::~HaDataGrid()
 {
 }
 
-wxGridTableBase *HaDataGrid::CreateHaTable(CsvDoc *doc)
+HaTable *HaDataGrid::CreateHaTable(CsvDoc *doc)
 {
-    return new HaDataTable(doc);
+    auto *table = new HaDataTable(doc);
+    return table;
 }

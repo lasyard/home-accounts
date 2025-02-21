@@ -6,6 +6,7 @@
 #include "defs.h"
 #include "int.h"
 #include "money.h"
+#include "segment.h"
 #include "str.h"
 
 static void init_by_type(enum column_type type, void *data)

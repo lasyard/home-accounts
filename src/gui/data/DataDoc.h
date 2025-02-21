@@ -12,9 +12,6 @@ public:
     virtual ~DataDoc();
 
 private:
-    static const char *const m_labels[];
-    static const enum column_type m_types[];
-
     int m_year;
     int m_month;
 

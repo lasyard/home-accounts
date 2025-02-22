@@ -10,15 +10,15 @@ HaDataTable::HaDataTable(CsvDoc *doc)
     : HaTable(
           doc,
           {
-              TEXT("time"),
-              TEXT("amount"),
-              TEXT("account"),
-              TEXT("desc"),
-              TEXT("income"),
-              TEXT("outlay"),
-              TEXT("item"),
-              TEXT("memo"),
-              TEXT("category"),
+              TT("time"),
+              TT("amount"),
+              TT("account"),
+              TT("desc"),
+              TT("income"),
+              TT("outlay"),
+              TT("item"),
+              TT("memo"),
+              TT("category"),
           }
       )
 {

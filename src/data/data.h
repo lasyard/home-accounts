@@ -33,11 +33,11 @@ struct data {
     bool auto_set;
 };
 
-extern const enum column_type data_types[DATA_COLS];
-
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+extern const enum column_type data_types[DATA_COLS];
 
 void *data_get(void *data, int i, const void *context);
 

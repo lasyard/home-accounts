@@ -48,9 +48,6 @@
     <ClCompile Include="..\src\gui\HaTable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\gui\StdStreamAccessor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\gui\data\HaDataGrid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -67,6 +64,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\gui\raw\NewSectionDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\gui\data\DataDoc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -113,9 +113,6 @@
     <ClInclude Include="..\src\gui\HaTable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\gui\StdStreamAccessor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\gui\data\HaDataGrid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -135,6 +132,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\gui\Algos.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\gui\data\DataDoc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

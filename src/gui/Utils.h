@@ -7,7 +7,7 @@
 
 #define IMPLEMENT_TM(class) const wxString class ::TM = #class;
 
-#define TEXT(str) str
+#define TT(str) str
 
 class wxEvent;
 class wxString;

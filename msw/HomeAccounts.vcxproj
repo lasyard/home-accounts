@@ -7,7 +7,7 @@
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{d3c8dba1-90a3-4a33-9a7b-0c47766d5a69}</ProjectGuid>
-    <RootNamespace>CryptoFileViewer</RootNamespace>
+    <RootNamespace>HomeAccounts</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -33,6 +33,7 @@
   <ItemGroup>
     <ClCompile Include="..\src\gui\ChangePassDialog.cpp" />
     <ClCompile Include="..\src\gui\CsvDoc.cpp" />
+    <ClCompile Include="..\src\gui\data\DataDoc.cpp" />
     <ClCompile Include="..\src\gui\data\HaDataGrid.cpp" />
     <ClCompile Include="..\src\gui\data\HaDataGridCellAttrProvider.cpp" />
     <ClCompile Include="..\src\gui\data\HaDataPanel.cpp" />
@@ -47,13 +48,13 @@
     <ClCompile Include="..\src\gui\HaView.cpp" />
     <ClCompile Include="..\src\gui\raw\HaRawPanel.cpp" />
     <ClCompile Include="..\src\gui\raw\NewSectionDialog.cpp" />
-    <ClCompile Include="..\src\gui\StdStreamAccessor.cpp" />
     <ClCompile Include="..\src\gui\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\gui\Algos.h" />
     <ClInclude Include="..\src\gui\ChangePassDialog.h" />
     <ClInclude Include="..\src\gui\CsvDoc.h" />
+    <ClInclude Include="..\src\gui\data\DataDoc.h" />
     <ClInclude Include="..\src\gui\data\HaDataGrid.h" />
     <ClInclude Include="..\src\gui\data\HaDataGridCellAttrProvider.h" />
     <ClInclude Include="..\src\gui\data\HaDataPanel.h" />
@@ -70,7 +71,6 @@
     <ClInclude Include="..\src\gui\HaView.h" />
     <ClInclude Include="..\src\gui\raw\HaRawPanel.h" />
     <ClInclude Include="..\src\gui\raw\NewSectionDialog.h" />
-    <ClInclude Include="..\src\gui\StdStreamAccessor.h" />
     <ClInclude Include="..\src\gui\Utils.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
@@ -90,7 +90,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)..\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>csv.lib;file.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>csv.lib;data.lib;file.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -105,7 +105,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)..\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>csv.lib;file.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>csv.lib;data.lib;file.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -118,7 +118,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)..\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>csv.lib;file.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>csv.lib;data.lib;file.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -133,7 +133,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)..\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>csv.lib;file.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>csv.lib;data.lib;file.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>

@@ -6,8 +6,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{7adb846d-c347-4a12-877d-f548173476ac}</ProjectGuid>
-    <RootNamespace>file</RootNamespace>
+    <ProjectGuid>{6f840503-0266-401b-a303-9896e66399bc}</ProjectGuid>
+    <RootNamespace>data</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -27,10 +27,9 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\external\sqlite-amalgamation-3460100;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
     </Link>
@@ -40,10 +39,9 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\external\sqlite-amalgamation-3460100;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
     </Link>
@@ -51,10 +49,9 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\external\sqlite-amalgamation-3460100;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
     </Link>
@@ -64,33 +61,20 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\external\sqlite-amalgamation-3460100;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\external\sqlite-amalgamation-3460100\sqlite3.c" />
-    <ClCompile Include="..\src\file\Cache.cpp" />
-    <ClCompile Include="..\src\file\Crypto.cpp" />
-    <ClCompile Include="..\src\file\DirectoryStore.cpp" />
-    <ClCompile Include="..\src\file\FileStore.cpp" />
-    <ClCompile Include="..\src\file\SectionRecord.cpp" />
-    <ClCompile Include="..\src\file\Sqlite3Store.cpp" />
+    <ClCompile Include="..\src\data\data.c" />
+    <ClCompile Include="..\src\data\StdStreamAccessor.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\external\sqlite-amalgamation-3460100\sqlite3.h" />
-    <ClInclude Include="..\src\file\Cache.h" />
-    <ClInclude Include="..\src\file\Crypto.h" />
-    <ClInclude Include="..\src\file\CryptoStore.h" />
-    <ClInclude Include="..\src\file\DirectoryStore.h" />
-    <ClInclude Include="..\src\file\Exeptions.h" />
-    <ClInclude Include="..\src\file\FileStore.h" />
-    <ClInclude Include="..\src\file\SectionRecord.h" />
-    <ClInclude Include="..\src\file\Sqlite3Store.h" />
-    <ClInclude Include="..\src\file\Store.h" />
+    <ClInclude Include="..\src\data\data.h" />
+    <ClInclude Include="..\src\data\StdStreamAccessor.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

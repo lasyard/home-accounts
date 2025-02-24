@@ -4,6 +4,8 @@
 
 #include "../Utils.h"
 
+#include "data/data.h"
+
 IMPLEMENT_DYNAMIC_CLASS(HaDataTable, HaTable)
 
 HaDataTable::HaDataTable(CsvDoc *doc)
@@ -22,6 +24,29 @@ HaDataTable::HaDataTable(CsvDoc *doc)
           }
       )
 {
+    SetColImpl(m_colImpl[0], DATA_TIME_COL);
+    SetColImpl(m_colImpl[1], DATA_AMOUNT_COL);
+    SetColImpl(m_colImpl[2], DATA_ACCOUNT_COL);
+    SetColImpl(m_colImpl[3], DATA_DESC_COL);
+    m_colImpl[4].type = m_doc->GetItemValueType(DATA_REAL_AMOUNT_COL);
+    m_colImpl[4].get = [this](int row) -> wxString {
+        return HaTable::GetItemCellMoneyValueBySign(row, DATA_REAL_AMOUNT_COL, true);
+    };
+    m_colImpl[4].set = [this](int row, const wxString &value) -> void {
+        HaTable::SetItemCellValue(row, DATA_REAL_AMOUNT_COL, "-" + value);
+        CacheCell(row, 5);
+    };
+    m_colImpl[5].type = m_doc->GetItemValueType(DATA_REAL_AMOUNT_COL);
+    m_colImpl[5].get = [this](int row) -> wxString {
+        return HaTable::GetItemCellMoneyValueBySign(row, DATA_REAL_AMOUNT_COL, false);
+    };
+    m_colImpl[5].set = [this](int row, const wxString &value) -> void {
+        HaTable::SetItemCellValue(row, DATA_REAL_AMOUNT_COL, value);
+        CacheCell(row, 4);
+    };
+    SetColImpl(m_colImpl[6], DATA_REAL_DESC_COL);
+    SetColImpl(m_colImpl[7], DATA_MEMO_COL);
+    UnsetColImpl(m_colImpl[8]);
 }
 
 HaDataTable::~HaDataTable()
@@ -34,63 +59,30 @@ void HaDataTable::Init()
     SetAttrProvider(new HaDataGridCellAttrProvider(this));
 }
 
+void HaDataTable::SetColImpl(struct ColImpl &colImpl, int col)
+{
+    colImpl.type = m_doc->GetItemValueType(col);
+    colImpl.get = [this, col](int row) -> wxString { return HaTable::GetItemCellValue(row, col); };
+    colImpl.set = [this, col](int row, const wxString &value) -> void {
+        return HaTable::SetItemCellValue(row, col, value);
+    };
+}
+
+void HaDataTable::UnsetColImpl(struct ColImpl &colImpl)
+{
+    colImpl.type = CT_IGNORE;
+    colImpl.get = [](int) -> wxString { return _("not implemented"); };
+    colImpl.set = [](int, const wxString &) -> void {};
+}
+
 const wxString HaDataTable::GetItemCellValue(int row, int col)
 {
-    switch (col) {
-    case TIME_COL:
-        return HaTable::GetItemCellValue(row, DATA_TIME_COL);
-    case AMOUNT_COL:
-        return HaTable::GetItemCellValue(row, DATA_AMOUNT_COL);
-    case ACCOUNT_COL:
-        return HaTable::GetItemCellValue(row, DATA_ACCOUNT_COL);
-    case DESC_COL:
-        return HaTable::GetItemCellValue(row, DATA_DESC_COL);
-    case INCOME_COL:
-        return HaTable::GetItemCellMoneyValueBySign(row, DATA_REAL_AMOUNT_COL, true);
-    case OUTLAY_COL:
-        return HaTable::GetItemCellMoneyValueBySign(row, DATA_REAL_AMOUNT_COL, false);
-    case ITEM_COL:
-        return HaTable::GetItemCellValue(row, DATA_REAL_DESC_COL);
-    case MEMO_COL:
-        return HaTable::GetItemCellValue(row, DATA_MEMO_COL);
-    case CATEGORY_COL:
-    default:
-        break;
-    }
-    return wxEmptyString;
+    return col < COLUMNS ? m_colImpl[col].get(row) : "";
 }
 
 void HaDataTable::SetItemCellValue(int row, int col, const wxString &value)
 {
-    switch (col) {
-    case TIME_COL:
-        HaTable::SetItemCellValue(row, DATA_TIME_COL, value);
-        break;
-    case AMOUNT_COL:
-        HaTable::SetItemCellValue(row, DATA_AMOUNT_COL, value);
-        break;
-    case ACCOUNT_COL:
-        HaTable::SetItemCellValue(row, DATA_ACCOUNT_COL, value);
-        break;
-    case DESC_COL:
-        HaTable::SetItemCellValue(row, DATA_DESC_COL, value);
-        break;
-    case INCOME_COL:
-        HaTable::SetItemCellValue(row, DATA_REAL_AMOUNT_COL, "-" + value);
-        CacheCell(row, OUTLAY_COL);
-        break;
-    case OUTLAY_COL:
-        HaTable::SetItemCellValue(row, DATA_REAL_AMOUNT_COL, value);
-        CacheCell(row, INCOME_COL);
-        break;
-    case ITEM_COL:
-        HaTable::SetItemCellValue(row, DATA_REAL_DESC_COL, value);
-        break;
-    case MEMO_COL:
-        HaTable::SetItemCellValue(row, DATA_MEMO_COL, value);
-        break;
-    case CATEGORY_COL:
-    default:
-        break;
+    if (col < COLUMNS) {
+        m_colImpl[col].set(row, value);
     }
 }

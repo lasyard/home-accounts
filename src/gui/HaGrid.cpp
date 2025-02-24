@@ -77,7 +77,7 @@ void HaGrid::InitTable(CsvDoc *doc)
     auto *table = CreateHaTable(doc);
     table->Init();
     SetTable(table, true);
-    ForceRefresh();
+    RefreshContent();
 }
 
 void HaGrid::SaveTable(std::ostream &os)

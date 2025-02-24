@@ -3,13 +3,13 @@
 
 #include "../HaTable.h"
 
-#include "data/data.h"
-
 class HaDataTable : public HaTable
 {
     DECLARE_DYNAMIC_CLASS(HaDataTable)
 
 public:
+    static const int COLUMNS = 9;
+
     HaDataTable(CsvDoc *doc = nullptr);
     virtual ~HaDataTable();
 
@@ -17,40 +17,20 @@ public:
 
     enum column_type GetItemFieldType(int col) const override
     {
-        switch (col) {
-        case TIME_COL:
-            return m_doc->GetItemValueType(DATA_TIME_COL);
-        case AMOUNT_COL:
-            return m_doc->GetItemValueType(DATA_AMOUNT_COL);
-        case ACCOUNT_COL:
-            return m_doc->GetItemValueType(DATA_ACCOUNT_COL);
-        case DESC_COL:
-            return m_doc->GetItemValueType(DATA_DESC_COL);
-        case INCOME_COL:
-        case OUTLAY_COL:
-            return m_doc->GetItemValueType(DATA_REAL_AMOUNT_COL);
-        case ITEM_COL:
-            return m_doc->GetItemValueType(DATA_REAL_DESC_COL);
-        case MEMO_COL:
-            return m_doc->GetItemValueType(DATA_MEMO_COL);
-        case CATEGORY_COL:
-            return CT_INT32;
-        default:
-            break;
-        }
-        return CT_IGNORE;
+        return col < COLUMNS ? m_colImpl[col].type : CT_IGNORE;
     }
 
 private:
-    static const int TIME_COL = 0;
-    static const int AMOUNT_COL = 1;
-    static const int ACCOUNT_COL = 2;
-    static const int DESC_COL = 3;
-    static const int INCOME_COL = 4;
-    static const int OUTLAY_COL = 5;
-    static const int ITEM_COL = 6;
-    static const int MEMO_COL = 7;
-    static const int CATEGORY_COL = 8;
+    struct ColImpl {
+        enum column_type type;
+        std::function<wxString(int)> get;
+        std::function<void(int, const wxString &)> set;
+    };
+
+    struct ColImpl m_colImpl[COLUMNS];
+
+    void SetColImpl(struct ColImpl &colImpl, int col);
+    void UnsetColImpl(struct ColImpl &colImpl);
 
     const wxString GetItemCellValue(int row, int col) override;
 

@@ -27,6 +27,8 @@ public:
 
     const wxString GetItemValueString(const void *item, int i) const;
     const wxString GetSegmentValueString(const struct segment *segment) const;
+    const wxString GetItemMoneyStringBySign(const void *item, int i, bool negative);
+
     void SetItemValueString(void *item, int i, const wxString &value);
     void SetSegmentValueString(struct segment *segment, const wxString &value);
 

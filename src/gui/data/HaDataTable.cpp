@@ -46,8 +46,9 @@ const wxString HaDataTable::GetItemCellValue(int row, int col)
     case DESC_COL:
         return HaTable::GetItemCellValue(row, DATA_DESC_COL);
     case INCOME_COL:
+        return HaTable::GetItemCellMoneyValueBySign(row, DATA_REAL_AMOUNT_COL, true);
     case OUTLAY_COL:
-        return HaTable::GetItemCellValue(row, DATA_REAL_AMOUNT_COL);
+        return HaTable::GetItemCellMoneyValueBySign(row, DATA_REAL_AMOUNT_COL, false);
     case ITEM_COL:
         return HaTable::GetItemCellValue(row, DATA_REAL_DESC_COL);
     case MEMO_COL:
@@ -75,8 +76,12 @@ void HaDataTable::SetItemCellValue(int row, int col, const wxString &value)
         HaTable::SetItemCellValue(row, DATA_DESC_COL, value);
         break;
     case INCOME_COL:
+        HaTable::SetItemCellValue(row, DATA_REAL_AMOUNT_COL, "-" + value);
+        CacheCell(row, OUTLAY_COL);
+        break;
     case OUTLAY_COL:
         HaTable::SetItemCellValue(row, DATA_REAL_AMOUNT_COL, value);
+        CacheCell(row, INCOME_COL);
         break;
     case ITEM_COL:
         HaTable::SetItemCellValue(row, DATA_REAL_DESC_COL, value);

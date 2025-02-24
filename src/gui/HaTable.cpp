@@ -208,6 +208,11 @@ const wxString HaTable::GetItemCellValue(int row, int col)
     return m_doc->GetItemValueString(m_index[row].m_ptr, col);
 }
 
+const wxString HaTable::GetItemCellMoneyValueBySign(int row, int col, bool negative)
+{
+    return m_doc->GetItemMoneyStringBySign(m_index[row].m_ptr, col, negative);
+}
+
 const wxString HaTable::GetSegmentCellValue(int row)
 {
     return m_doc->GetSegmentValueString(static_cast<struct segment *>(m_index[row].m_ptr));

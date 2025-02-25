@@ -77,7 +77,10 @@ void HaDataTable::UnsetColImpl(struct ColImpl &colImpl)
 
 const wxString HaDataTable::GetItemCellValue(int row, int col)
 {
-    return col < COLUMNS ? m_colImpl[col].get(row) : "";
+    if (col < COLUMNS) {
+        return m_colImpl[col].get(row);
+    }
+    return wxEmptyString;
 }
 
 void HaDataTable::SetItemCellValue(int row, int col, const wxString &value)

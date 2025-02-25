@@ -113,7 +113,7 @@ void HaDataPanel::ShowDataOfDate(const wxDateTime &date)
     const std::string *data = nullptr;
     try {
         data = &m_doc->GetSection(m_currentSection);
-    } catch (SectionNotFound &e) {
+    } catch ([[maybe_unused]] SectionNotFound &e) {
         m_doc->SaveSection(m_currentSection, "");
         data = &m_doc->GetSection(m_currentSection);
     }

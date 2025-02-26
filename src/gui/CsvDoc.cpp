@@ -4,7 +4,6 @@
 
 #include "CsvDoc.h"
 
-#include "csv/money.h"
 #include "csv/segment.h"
 #include "csv/str.h"
 
@@ -44,18 +43,23 @@ const wxString CsvDoc::GetItemValueString(const void *item, int i) const
 const wxString CsvDoc::GetItemMoneyStringBySign(const void *item, int i, bool negative)
 {
     wxASSERT(m_types[i] == CT_MONEY);
-    char buf[MAX_LINE_LENGTH + 1];
-    char *p = buf;
     const money_t m = *(const money_t *)get_field(&m_ctx, (void *)item, i);
     if (negative) {
         if (m < 0) {
-            p = output_money(buf, -m, m_ctx.options.money_prec, m_ctx.options.money_scale);
+            return GetMoneyString(-m);
         }
     } else {
         if (m > 0) {
-            p = output_money(buf, m, m_ctx.options.money_prec, m_ctx.options.money_scale);
+            return GetMoneyString(m);
         }
     }
+    return wxEmptyString;
+}
+
+const wxString CsvDoc::GetMoneyString(money_t val)
+{
+    char buf[MAX_LINE_LENGTH + 1];
+    char *p = output_money(buf, val, m_ctx.options.money_prec, m_ctx.options.money_scale);
     *p = '\0';
     return buf;
 }

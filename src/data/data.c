@@ -47,6 +47,32 @@ void *data_get(void *data, int i, const void *context)
     return NULL;
 }
 
+void calc_balance(struct segment *segment, struct data *data, int initial)
+{
+    int balance = initial;
+    struct list_item *p = &segment->list;
+    struct list_item *q = &data->list;
+    while (p != NULL) {
+        while (q != NULL) {
+            struct data *d = get_data(q);
+            d->balance = balance - d->real_amount;
+            balance = d->balance;
+            q = q->next;
+        }
+        p = p->next;
+        if (p != NULL) {
+            q = get_segment(p)->items.first;
+        }
+    }
+}
+
+void calc_all_balance(struct list_head *segments, int initial)
+{
+    struct segment *segment = get_segment(segments->first);
+    struct data *data = get_data(segment->items.first);
+    calc_balance(segment, data, initial);
+}
+
 static bool set_segment_comment(struct segment *segment, date_t date)
 {
     char buf[DATE_LEN + 1];

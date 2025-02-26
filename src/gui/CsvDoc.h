@@ -7,6 +7,7 @@
 
 #include "csv/column_type.h"
 #include "csv/csv_parser.h"
+#include "csv/money.h"
 
 class wxArrayString;
 
@@ -28,6 +29,7 @@ public:
     const wxString GetItemValueString(const void *item, int i) const;
     const wxString GetSegmentValueString(const struct segment *segment) const;
     const wxString GetItemMoneyStringBySign(const void *item, int i, bool negative);
+    const wxString GetMoneyString(money_t val);
 
     void SetItemValueString(void *item, int i, const wxString &value);
     void SetSegmentValueString(struct segment *segment, const wxString &value);

@@ -6,6 +6,7 @@
 
 #include "CsvDoc.h"
 #include "HaGridCellAttrProvider.h"
+#include "HaTableIndex.h"
 
 #include "csv/column_type.h"
 
@@ -22,8 +23,6 @@ public:
     }
 
     virtual ~HaTable();
-
-    enum IndexType { SEGMENT, ITEM, OTHER };
 
     virtual void Init();
 
@@ -42,12 +41,12 @@ public:
 
     bool CanHaveAttributes() override;
 
-    IndexType GetRowType(int row) const
+    HaTableIndex::Type GetRowType(int row) const
     {
         if ((size_t)row < m_index.size()) {
-            return m_index[row].m_type;
+            return m_index[row].GetType();
         }
-        return OTHER;
+        return HaTableIndex::INVALID;
     }
 
     virtual enum column_type GetItemFieldType(int col) const
@@ -63,23 +62,9 @@ public:
     virtual void SaveTo(std::ostream &os);
 
 protected:
-    struct IndexItem {
-        explicit IndexItem(struct segment *ptr) : m_ptr(ptr), m_type(SEGMENT), m_seq(0)
-        {
-        }
-
-        explicit IndexItem(void *ptr, int seq) : m_ptr(ptr), m_type(ITEM), m_seq(seq)
-        {
-        }
-
-        void *m_ptr;
-        enum IndexType m_type;
-        int m_seq;
-    };
-
     CsvDoc *m_doc;
     wxArrayString m_colLabels;
-    std::vector<struct IndexItem> m_index;
+    std::vector<HaTableIndex> m_index;
     wxVector<wxArrayString> *m_cache;
 
     void CacheCell(int row, int col);

@@ -26,6 +26,7 @@ bool DataDoc::AfterRead()
         wxLogWarning(_("Invalid date: %s"), wrong->comment != NULL ? wrong->comment : "");
         return false;
     }
+    calc_all_balance(&m_segments, 0);
     return true;
 }
 

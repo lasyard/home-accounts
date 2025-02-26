@@ -19,34 +19,51 @@ HaDataTable::HaDataTable(CsvDoc *doc)
               TT("income"),
               TT("outlay"),
               TT("item"),
+              TT("balance"),
               TT("memo"),
               TT("category"),
           }
       )
+    , m_initial(0L)
 {
-    SetColImpl(m_colImpl[0], DATA_TIME_COL);
-    SetColImpl(m_colImpl[1], DATA_AMOUNT_COL);
-    SetColImpl(m_colImpl[2], DATA_ACCOUNT_COL);
-    SetColImpl(m_colImpl[3], DATA_DESC_COL);
-    m_colImpl[4].type = m_doc->GetItemValueType(DATA_REAL_AMOUNT_COL);
-    m_colImpl[4].get = [this](int row) -> wxString {
-        return HaTable::GetItemCellMoneyValueBySign(row, DATA_REAL_AMOUNT_COL, true);
+    MapColImpl(m_colImpl[0], DATA_TIME_COL);
+    MapColImpl(m_colImpl[1], DATA_AMOUNT_COL);
+    MapColImpl(m_colImpl[2], DATA_ACCOUNT_COL);
+    MapColImpl(m_colImpl[3], DATA_DESC_COL);
+    m_colImpl[4] = {
+        .type = m_doc->GetItemValueType(DATA_REAL_AMOUNT_COL),
+        .get = [this](int row) -> wxString {
+            return HaTable::GetItemCellMoneyValueBySign(row, DATA_REAL_AMOUNT_COL, true);
+        },
+        .set = [this](int row, const wxString &value) -> void {
+            HaTable::SetItemCellValue(row, DATA_REAL_AMOUNT_COL, "-" + value);
+            CacheCell(row, 5);
+            CalcAndCacheBalanceFromRow(row);
+        },
     };
-    m_colImpl[4].set = [this](int row, const wxString &value) -> void {
-        HaTable::SetItemCellValue(row, DATA_REAL_AMOUNT_COL, "-" + value);
-        CacheCell(row, 5);
+    m_colImpl[5] = {
+        .type = m_doc->GetItemValueType(DATA_REAL_AMOUNT_COL),
+        .get = [this](int row) -> wxString {
+            return HaTable::GetItemCellMoneyValueBySign(row, DATA_REAL_AMOUNT_COL, false);
+        },
+        .set = [this](int row, const wxString &value) -> void {
+            HaTable::SetItemCellValue(row, DATA_REAL_AMOUNT_COL, value);
+            CacheCell(row, 4);
+            CalcAndCacheBalanceFromRow(row);
+        },
     };
-    m_colImpl[5].type = m_doc->GetItemValueType(DATA_REAL_AMOUNT_COL);
-    m_colImpl[5].get = [this](int row) -> wxString {
-        return HaTable::GetItemCellMoneyValueBySign(row, DATA_REAL_AMOUNT_COL, false);
+    MapColImpl(m_colImpl[6], DATA_REAL_DESC_COL);
+    m_colImpl[BALANCE_COL] = {
+        .type = CT_MONEY,
+        .get = [this](int row) -> wxString { return m_doc->GetMoneyString(GetData(row)->balance); },
+        .set = nullptr,
     };
-    m_colImpl[5].set = [this](int row, const wxString &value) -> void {
-        HaTable::SetItemCellValue(row, DATA_REAL_AMOUNT_COL, value);
-        CacheCell(row, 4);
+    MapColImpl(m_colImpl[8], DATA_MEMO_COL);
+    m_colImpl[9] = {
+        .type = CT_IGNORE,
+        .get = nullptr,
+        .set = nullptr,
     };
-    SetColImpl(m_colImpl[6], DATA_REAL_DESC_COL);
-    SetColImpl(m_colImpl[7], DATA_MEMO_COL);
-    UnsetColImpl(m_colImpl[8]);
 }
 
 HaDataTable::~HaDataTable()
@@ -59,7 +76,7 @@ void HaDataTable::Init()
     SetAttrProvider(new HaDataGridCellAttrProvider(this));
 }
 
-void HaDataTable::SetColImpl(struct ColImpl &colImpl, int col)
+void HaDataTable::MapColImpl(struct ColImpl &colImpl, int col)
 {
     colImpl.type = m_doc->GetItemValueType(col);
     colImpl.get = [this, col](int row) -> wxString { return HaTable::GetItemCellValue(row, col); };
@@ -68,24 +85,44 @@ void HaDataTable::SetColImpl(struct ColImpl &colImpl, int col)
     };
 }
 
-void HaDataTable::UnsetColImpl(struct ColImpl &colImpl)
-{
-    colImpl.type = CT_IGNORE;
-    colImpl.get = [](int) -> wxString { return _("not implemented"); };
-    colImpl.set = [](int, const wxString &) -> void {};
-}
-
 const wxString HaDataTable::GetItemCellValue(int row, int col)
 {
     if (col < COLUMNS) {
-        return m_colImpl[col].get(row);
+        if (m_colImpl[col].get != nullptr) {
+            return m_colImpl[col].get(row);
+        }
+        return _("not implemented");
     }
     return wxEmptyString;
 }
 
 void HaDataTable::SetItemCellValue(int row, int col, const wxString &value)
 {
-    if (col < COLUMNS) {
+    if (col < COLUMNS && m_colImpl[col].set != nullptr) {
         m_colImpl[col].set(row, value);
+    }
+}
+
+struct data *HaDataTable::GetData(int row) const
+{
+    wxASSERT(m_index[row].GetType() == HaTableIndex::ITEM);
+    return (struct data *)m_index[row].GetItem();
+}
+
+money_t HaDataTable::GetInitial(int row) const
+{
+    wxASSERT(row > 1);
+    while (--row > 0 && GetRowType(row) == HaTableIndex::SEGMENT)
+        ;
+    return row == 0 ? m_initial : GetData(row)->balance;
+}
+
+void HaDataTable::CalcAndCacheBalanceFromRow(int row)
+{
+    calc_balance(m_index[row].GetSegment(), GetData(row), GetInitial(row));
+    for (auto i = row; i < GetNumberRows(); ++i) {
+        if (GetRowType(i) != HaTableIndex::SEGMENT) {
+            CacheCell(i, BALANCE_COL);
+        }
     }
 }

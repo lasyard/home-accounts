@@ -39,9 +39,9 @@ wxString HaTable::GetColLabelValue(int col)
 wxString HaTable::GetRowLabelValue(int row)
 {
     if ((size_t)row < m_index.size()) {
-        const struct IndexItem &item = m_index[row];
-        if (item.m_type == ITEM) {
-            return wxString::Format("%d", item.m_seq);
+        const HaTableIndex &item = m_index[row];
+        if (item.GetType() == HaTableIndex::ITEM) {
+            return wxString::Format("%d", item.GetSeq());
         }
     }
     return wxEmptyString;
@@ -156,10 +156,10 @@ void HaTable::Init()
     m_index.clear();
     if (m_doc != nullptr) {
         m_doc->ForEachSegment([this](struct segment *segment) -> bool {
-            m_index.push_back(IndexItem(segment));
+            m_index.push_back(HaTableIndex(segment));
             int seq = 1;
-            m_doc->ForEachItem(segment, [this, &seq](void *item) -> bool {
-                m_index.push_back(IndexItem(item, seq++));
+            m_doc->ForEachItem(segment, [this, segment, &seq](void *item) -> bool {
+                m_index.push_back(HaTableIndex(segment, item, seq++));
                 return true;
             });
             return true;
@@ -187,17 +187,17 @@ void HaTable::RefreshAndAutoSizeGridColumn(int col)
 const wxString HaTable::GetCellValue(int row, int col)
 {
     switch (GetRowType(row)) {
-    case ITEM:
+    case HaTableIndex::ITEM:
         if ((size_t)col < m_colLabels.size()) {
             return GetItemCellValue(row, col);
         }
         break;
-    case SEGMENT:
+    case HaTableIndex::SEGMENT:
         if (col == 0) {
             return GetSegmentCellValue(row);
         }
         break;
-    case OTHER:
+    case HaTableIndex::INVALID:
         break;
     }
     return wxEmptyString;
@@ -205,61 +205,61 @@ const wxString HaTable::GetCellValue(int row, int col)
 
 const wxString HaTable::GetItemCellValue(int row, int col)
 {
-    return m_doc->GetItemValueString(m_index[row].m_ptr, col);
+    return m_doc->GetItemValueString(m_index[row].GetItem(), col);
 }
 
 const wxString HaTable::GetItemCellMoneyValueBySign(int row, int col, bool negative)
 {
-    return m_doc->GetItemMoneyStringBySign(m_index[row].m_ptr, col, negative);
+    return m_doc->GetItemMoneyStringBySign(m_index[row].GetItem(), col, negative);
 }
 
 const wxString HaTable::GetSegmentCellValue(int row)
 {
-    return m_doc->GetSegmentValueString(static_cast<struct segment *>(m_index[row].m_ptr));
+    return m_doc->GetSegmentValueString(m_index[row].GetSegment());
 }
 
 void HaTable::SetCellValue(int row, int col, const wxString &value)
 {
     switch (GetRowType(row)) {
-    case ITEM:
+    case HaTableIndex::ITEM:
         if ((size_t)col < m_colLabels.size()) {
             SetItemCellValue(row, col, value);
         }
         break;
-    case SEGMENT:
+    case HaTableIndex::SEGMENT:
         if (col == 0) {
             SetSegmentCellValue(row, value);
         }
         break;
-    case OTHER:
+    case HaTableIndex::INVALID:
         break;
     }
 }
 
 void HaTable::SetItemCellValue(int row, int col, const wxString &value)
 {
-    m_doc->SetItemValueString(static_cast<struct item *>(m_index[row].m_ptr), col, value);
+    m_doc->SetItemValueString(m_index[row].GetItem(), col, value);
 }
 
 void HaTable::SetSegmentCellValue(int row, const wxString &value)
 {
-    m_doc->SetSegmentValueString(static_cast<struct segment *>(m_index[row].m_ptr), value);
+    m_doc->SetSegmentValueString(m_index[row].GetSegment(), value);
 }
 
 bool HaTable::InsertRow(size_t pos)
 {
     auto &index = m_index[pos];
     void *item = nullptr;
-    if (index.m_type == ITEM) {
-        item = m_doc->InsertItem(index.m_ptr);
-    } else if (index.m_type == SEGMENT) {
-        item = m_doc->InsertItemHead(static_cast<struct segment *>(index.m_ptr));
+    if (index.GetType() == HaTableIndex::ITEM) {
+        item = m_doc->InsertItem(index.GetItem());
+    } else if (index.GetType() == HaTableIndex::SEGMENT) {
+        item = m_doc->InsertItemHead(index.GetSegment());
     }
     if (item != nullptr) {
-        int seq = index.m_seq + 1;
-        m_index.insert(std::next(m_index.begin(), pos + 1), IndexItem(item, seq));
-        for (auto p = pos + 2; p < m_index.size() && m_index[p].m_type != SEGMENT; ++p) {
-            ++m_index[p].m_seq;
+        int seq = index.GetSeq() + 1;
+        m_index.insert(std::next(m_index.begin(), pos + 1), HaTableIndex(index.GetSegment(), item, seq));
+        for (auto p = pos + 2; p < m_index.size() && m_index[p].GetType() != HaTableIndex::SEGMENT; ++p) {
+            ++m_index[p].GetSeq();
         }
         return true;
     }
@@ -274,16 +274,11 @@ bool HaTable::AppendRow()
 
 bool HaTable::DeleteRow([[maybe_unused]] size_t pos)
 {
-    if (m_index[pos].m_type == ITEM) {
-        void *item = m_index[pos].m_ptr;
-        size_t sp;
-        for (sp = pos - 1; m_index[sp].m_type != SEGMENT; --sp)
-            ;
-        struct segment *segment = (struct segment *)m_index[sp].m_ptr;
-        m_doc->DeleteItem(segment, item);
+    if (m_index[pos].GetType() == HaTableIndex::ITEM) {
+        m_doc->DeleteItem(m_index[pos].GetSegment(), m_index[pos].GetItem());
         m_index.erase(std::next(m_index.begin(), pos));
-        for (auto p = pos; p < m_index.size() && m_index[p].m_type != SEGMENT; ++p) {
-            --m_index[p].m_seq;
+        for (auto p = pos; p < m_index.size() && m_index[p].GetType() != HaTableIndex::SEGMENT; ++p) {
+            --m_index[p].GetSeq();
         }
         return true;
     }

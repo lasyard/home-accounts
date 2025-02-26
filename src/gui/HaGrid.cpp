@@ -148,7 +148,7 @@ void HaGrid::OnSelectCell(wxGridEvent &event)
     int row = event.GetRow();
     int col = event.GetCol();
     auto *table = static_cast<const HaTable *>(GetTable());
-    if (table->GetRowType(row) == HaTable::SEGMENT) {
+    if (table->GetRowType(row) == HaTableIndex::SEGMENT) {
         if (col > 0) {
             event.Veto();
             SetGridCursor(row, 0);

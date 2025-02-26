@@ -54,9 +54,9 @@ HaGridCellAttrProvider::GetAttr([[maybe_unused]] int row, int col, wxGridCellAtt
     // Seems `kind` is always `Any`.
     if (kind == wxGridCellAttr::wxAttrKind::Any || kind == wxGridCellAttr::wxAttrKind::Cell) {
         switch (m_table->GetRowType(row)) {
-        case HaTable::ITEM:
+        case HaTableIndex::ITEM:
             return GetAttrByColumnType(col);
-        case HaTable::SEGMENT:
+        case HaTableIndex::SEGMENT:
             // Do not return colSpan > 1 for col > 0, or there will be index out of bound problem.
             if (col == 0) {
                 m_segmentAttr->IncRef();

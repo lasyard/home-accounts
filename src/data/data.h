@@ -31,7 +31,10 @@ struct data {
     char *real_desc;
     char *memo;
     bool auto_set;
+    money_t balance;
 };
+
+#define get_data(ptr) list_entry(ptr, struct data, list);
 
 #ifdef __cplusplus
 extern "C" {
@@ -40,6 +43,9 @@ extern "C" {
 extern const enum column_type data_types[DATA_COLS];
 
 void *data_get(void *data, int i, const void *context);
+
+void calc_balance(struct segment *segment, struct data *data, int initial);
+void calc_all_balance(struct list_head *segments, int initial);
 
 date_t get_segment_date(const struct segment *segment);
 

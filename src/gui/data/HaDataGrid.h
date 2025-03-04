@@ -3,6 +3,9 @@
 
 #include "../HaGrid.h"
 
+#include "DataDoc.h"
+#include "HaDataTable.h"
+
 class HaDataGrid : public HaGrid
 {
     DECLARE_DYNAMIC_CLASS(HaDataGrid)
@@ -22,8 +25,20 @@ public:
     );
     virtual ~HaDataGrid();
 
+    DataDoc *GetTableDoc() override;
+
 private:
     HaTable *CreateHaTable(CsvDoc *doc) override;
+
+    int CursorColOfNewRow() override
+    {
+        return HaDataTable::OUTLAY_COL;
+    }
+
+    HaDataTable *GetHaDataTable() const
+    {
+        return static_cast<HaDataTable *>(GetTable());
+    }
 };
 
 #endif /* _HA_PANEL_HA_DATA_GRID_H_ */

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HomeAccounts 1.0.0\n"
 "Report-Msgid-Bugs-To: lasyard@yeah.net\n"
-"POT-Creation-Date: 2025-02-21 16:41+0800\n"
+"POT-Creation-Date: 2025-03-04 15:40+0800\n"
 "PO-Revision-Date: 2025-01-10 16:01+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -24,12 +24,12 @@ msgstr "密码错误！"
 msgid "Confirm new password failed!"
 msgstr "确认新密码错误！"
 
-#: CsvDoc.cpp:106
+#: CsvDoc.cpp:130
 #, c-format
 msgid "Parse error at line %d"
 msgstr "第 %d 行解析错误"
 
-#: CsvDoc.cpp:109
+#: CsvDoc.cpp:133
 #, c-format
 msgid "%d lines read"
 msgstr "读取了 %d 行"
@@ -62,50 +62,74 @@ msgstr "表格"
 msgid "Raw"
 msgstr "源文件"
 
-#: data/DataDoc.cpp:26
+#: data/DataDoc.cpp:29
 #, c-format
 msgid "Invalid date: %s"
 msgstr "不合理的日期：%s"
 
-#: data/HaDataPanel.cpp:40
+#: data/HaDataPanel.cpp:39
 msgid "Select Date: "
 msgstr "选择日期："
 
-#: data/HaDataTable.cpp:13
-msgid "time"
-msgstr "时间"
+#: data/HaDataPanel.cpp:43
+msgid "Opening: "
+msgstr "期初余额："
+
+#: data/HaDataPanel.cpp:45
+msgid "Total Income: "
+msgstr "总收入："
+
+#: data/HaDataPanel.cpp:48
+msgid "Total Outlay: "
+msgstr "总支出："
+
+#: data/HaDataPanel.cpp:51
+msgid "Closing: "
+msgstr "期末结余："
 
 #: data/HaDataTable.cpp:14
-msgid "amount"
-msgstr "金额"
+msgid "Time"
+msgstr "时间"
 
 #: data/HaDataTable.cpp:15
-msgid "account"
-msgstr "账户"
+msgid "Amount"
+msgstr "金额"
 
 #: data/HaDataTable.cpp:16
-msgid "desc"
-msgstr "描述"
+msgid "Account"
+msgstr "账户"
 
 #: data/HaDataTable.cpp:17
-msgid "income"
-msgstr "收入"
+msgid "Description"
+msgstr "说明"
 
 #: data/HaDataTable.cpp:18
-msgid "outlay"
-msgstr "支出"
+msgid "Income"
+msgstr "收入"
 
 #: data/HaDataTable.cpp:19
-msgid "item"
-msgstr "项目"
+msgid "Outlay"
+msgstr "支出"
 
 #: data/HaDataTable.cpp:20
-msgid "memo"
-msgstr "备注"
+msgid "Item"
+msgstr "项目"
 
 #: data/HaDataTable.cpp:21
-msgid "category"
+msgid "Balance"
+msgstr "结余"
+
+#: data/HaDataTable.cpp:22
+msgid "Memo"
+msgstr "备注"
+
+#: data/HaDataTable.cpp:23
+msgid "Category"
 msgstr "分类"
+
+#: data/HaDataTable.cpp:103
+msgid "not implemented"
+msgstr "未实现"
 
 #: raw/HaRawPanel.cpp:111
 #, c-format

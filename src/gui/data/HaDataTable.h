@@ -3,14 +3,18 @@
 
 #include "../HaTable.h"
 
+class DataDoc;
+
 class HaDataTable : public HaTable
 {
     DECLARE_DYNAMIC_CLASS(HaDataTable)
 
 public:
     static const int COLUMNS = 10;
+    static const int OUTLAY_COL = 5;
+    static const int BALANCE_COL = 7;
 
-    HaDataTable(CsvDoc *doc = nullptr);
+    HaDataTable(DataDoc *doc = nullptr);
     virtual ~HaDataTable();
 
     void Init() override;
@@ -20,6 +24,10 @@ public:
         return col < COLUMNS ? m_colImpl[col].type : CT_IGNORE;
     }
 
+    DataDoc *GetDataDoc();
+
+    struct data *GetData(int row) const;
+
 private:
     struct ColImpl {
         enum column_type type;
@@ -27,23 +35,15 @@ private:
         std::function<void(int, const wxString &)> set;
     };
 
-    static const int BALANCE_COL = 7;
-
     struct ColImpl m_colImpl[COLUMNS];
-
-    money_t m_initial;
 
     void MapColImpl(struct ColImpl &colImpl, int col);
 
     const wxString GetItemCellValue(int row, int col) override;
-
     void SetItemCellValue(int row, int col, const wxString &value) override;
+    void OnNewRow(size_t pos, void *item) override;
 
-    struct data *GetData(int row) const;
-
-    money_t GetInitial(int row) const;
-
-    void CalcAndCacheBalanceFromRow(int row);
+    void UpdateDocAndCache(int row);
 };
 
 #endif /* _HA_PANEL_HA_DATA_TABLE_H_ */

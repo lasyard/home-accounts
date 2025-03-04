@@ -34,6 +34,13 @@ struct data {
     money_t balance;
 };
 
+struct data_stat {
+    money_t opening;
+    money_t closing;
+    money_t income;
+    money_t outlay;
+};
+
 #define get_data(ptr) list_entry(ptr, struct data, list);
 
 #ifdef __cplusplus
@@ -44,8 +51,8 @@ extern const enum column_type data_types[DATA_COLS];
 
 void *data_get(void *data, int i, const void *context);
 
-void calc_balance(struct segment *segment, struct data *data, int initial);
-void calc_all_balance(struct list_head *segments, int initial);
+void calc_balance_stat(struct segment *segment, struct data *data, struct data_stat *stat);
+void calc_all_balance_stat(struct list_head *segments, struct data_stat *stat);
 
 date_t get_segment_date(const struct segment *segment);
 

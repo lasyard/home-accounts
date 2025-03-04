@@ -21,6 +21,7 @@ add_exe(${APP_NAME}
     HaApp.cpp
     HaArtProvider.cpp
     HaDocument.cpp
+    HaGdi.cpp
     HaGrid.cpp
     HaGridCellAttrProvider.cpp
     HaMainFrame.cpp

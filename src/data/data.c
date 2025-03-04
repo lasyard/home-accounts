@@ -47,15 +47,23 @@ void *data_get(void *data, int i, const void *context)
     return NULL;
 }
 
-void calc_balance(struct segment *segment, struct data *data, int initial)
+void calc_balance_stat(struct segment *segment, struct data *data, struct data_stat *stat)
 {
-    int balance = initial;
+    int balance = stat->opening;
+    stat->income = 0;
+    stat->outlay = 0;
     struct list_item *p = &segment->list;
     struct list_item *q = &data->list;
     while (p != NULL) {
         while (q != NULL) {
             struct data *d = get_data(q);
-            d->balance = balance - d->real_amount;
+            money_t amount = d->real_amount;
+            if (amount < 0) {
+                stat->income -= amount;
+            } else {
+                stat->outlay += amount;
+            }
+            d->balance = balance - amount;
             balance = d->balance;
             q = q->next;
         }
@@ -64,13 +72,14 @@ void calc_balance(struct segment *segment, struct data *data, int initial)
             q = get_segment(p)->items.first;
         }
     }
+    stat->closing = balance;
 }
 
-void calc_all_balance(struct list_head *segments, int initial)
+void calc_all_balance_stat(struct list_head *segments, struct data_stat *stat)
 {
     struct segment *segment = get_segment(segments->first);
     struct data *data = get_data(segment->items.first);
-    calc_balance(segment, data, initial);
+    calc_balance_stat(segment, data, stat);
 }
 
 static bool set_segment_comment(struct segment *segment, date_t date)

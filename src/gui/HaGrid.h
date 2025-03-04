@@ -53,7 +53,7 @@ public:
     void InitTable(CsvDoc *doc);
     void SaveTable(std::ostream &os);
 
-    CsvDoc *GetTableDoc();
+    virtual CsvDoc *GetTableDoc();
 
     void OnUpdateInsert(wxUpdateUIEvent &event);
     void OnInsert(wxCommandEvent &event);
@@ -70,6 +70,11 @@ protected:
 
     virtual HaTable *CreateHaTable(CsvDoc *doc) = 0;
 
+    virtual int CursorColOfNewRow()
+    {
+        return -1;
+    }
+
     void SafeClearCell(wxGridCellCoords coords)
     {
         if (coords != wxGridNoCellCoords && !GetCellAttrPtr(coords)->IsReadOnly()) {
@@ -77,7 +82,7 @@ protected:
         }
     }
 
-    HaTable *GetHaTable();
+    HaTable *GetHaTable() const;
 
     /**
      * @brief Check the pushed event handler of a `wxWindow`.

@@ -1,30 +1,28 @@
 #include "HaDataTable.h"
 
+#include "DataDoc.h"
 #include "HaDataGridCellAttrProvider.h"
 
 #include "../Utils.h"
 
-#include "data/data.h"
-
 IMPLEMENT_DYNAMIC_CLASS(HaDataTable, HaTable)
 
-HaDataTable::HaDataTable(CsvDoc *doc)
+HaDataTable::HaDataTable(DataDoc *doc)
     : HaTable(
           doc,
           {
-              TT("time"),
-              TT("amount"),
-              TT("account"),
-              TT("desc"),
-              TT("income"),
-              TT("outlay"),
-              TT("item"),
-              TT("balance"),
-              TT("memo"),
-              TT("category"),
+              TT("Time"),
+              TT("Amount"),
+              TT("Account"),
+              TT("Description"),
+              TT("Income"),
+              TT("Outlay"),
+              TT("Item"),
+              TT("Balance"),
+              TT("Memo"),
+              TT("Category"),
           }
       )
-    , m_initial(0L)
 {
     MapColImpl(m_colImpl[0], DATA_TIME_COL);
     MapColImpl(m_colImpl[1], DATA_AMOUNT_COL);
@@ -38,10 +36,10 @@ HaDataTable::HaDataTable(CsvDoc *doc)
         .set = [this](int row, const wxString &value) -> void {
             HaTable::SetItemCellValue(row, DATA_REAL_AMOUNT_COL, "-" + value);
             CacheCell(row, 5);
-            CalcAndCacheBalanceFromRow(row);
+            UpdateDocAndCache(row);
         },
     };
-    m_colImpl[5] = {
+    m_colImpl[OUTLAY_COL] = {
         .type = m_doc->GetItemValueType(DATA_REAL_AMOUNT_COL),
         .get = [this](int row) -> wxString {
             return HaTable::GetItemCellMoneyValueBySign(row, DATA_REAL_AMOUNT_COL, false);
@@ -49,7 +47,7 @@ HaDataTable::HaDataTable(CsvDoc *doc)
         .set = [this](int row, const wxString &value) -> void {
             HaTable::SetItemCellValue(row, DATA_REAL_AMOUNT_COL, value);
             CacheCell(row, 4);
-            CalcAndCacheBalanceFromRow(row);
+            UpdateDocAndCache(row);
         },
     };
     MapColImpl(m_colImpl[6], DATA_REAL_DESC_COL);
@@ -74,6 +72,17 @@ void HaDataTable::Init()
 {
     HaTable::Init();
     SetAttrProvider(new HaDataGridCellAttrProvider(this));
+}
+
+DataDoc *HaDataTable::GetDataDoc()
+{
+    return static_cast<DataDoc *>(m_doc);
+}
+
+struct data *HaDataTable::GetData(int row) const
+{
+    wxASSERT(m_index[row].GetType() == HaTableIndex::ITEM);
+    return (struct data *)m_index[row].GetItem();
 }
 
 void HaDataTable::MapColImpl(struct ColImpl &colImpl, int col)
@@ -103,23 +112,15 @@ void HaDataTable::SetItemCellValue(int row, int col, const wxString &value)
     }
 }
 
-struct data *HaDataTable::GetData(int row) const
+void HaDataTable::OnNewRow(size_t pos, void *item)
 {
-    wxASSERT(m_index[row].GetType() == HaTableIndex::ITEM);
-    return (struct data *)m_index[row].GetItem();
+    HaTable::OnNewRow(pos, item);
+    UpdateDocAndCache(pos);
 }
 
-money_t HaDataTable::GetInitial(int row) const
+void HaDataTable::UpdateDocAndCache(int row)
 {
-    wxASSERT(row > 1);
-    while (--row > 0 && GetRowType(row) == HaTableIndex::SEGMENT)
-        ;
-    return row == 0 ? m_initial : GetData(row)->balance;
-}
-
-void HaDataTable::CalcAndCacheBalanceFromRow(int row)
-{
-    calc_balance(m_index[row].GetSegment(), GetData(row), GetInitial(row));
+    GetDataDoc()->UpdateBalanceStat();
     for (auto i = row; i < GetNumberRows(); ++i) {
         if (GetRowType(i) != HaTableIndex::SEGMENT) {
             CacheCell(i, BALANCE_COL);

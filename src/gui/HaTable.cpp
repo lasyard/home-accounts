@@ -256,11 +256,7 @@ bool HaTable::InsertRow(size_t pos)
         item = m_doc->InsertItemHead(index.GetSegment());
     }
     if (item != nullptr) {
-        int seq = index.GetSeq() + 1;
-        m_index.insert(std::next(m_index.begin(), pos + 1), HaTableIndex(index.GetSegment(), item, seq));
-        for (auto p = pos + 2; p < m_index.size() && m_index[p].GetType() != HaTableIndex::SEGMENT; ++p) {
-            ++m_index[p].GetSeq();
-        }
+        OnNewRow(pos + 1, item);
         return true;
     }
     return false;
@@ -284,4 +280,15 @@ bool HaTable::DeleteRow([[maybe_unused]] size_t pos)
     }
     // do not delete
     return false;
+}
+
+void HaTable::OnNewRow(size_t pos, void *item)
+{
+    wxASSERT(pos >= 1);
+    auto &index = m_index[pos - 1];
+    int seq = index.GetSeq() + 1;
+    m_index.insert(std::next(m_index.begin(), pos), HaTableIndex(index.GetSegment(), item, seq));
+    for (auto p = pos + 1; p < m_index.size() && m_index[p].GetType() != HaTableIndex::SEGMENT; ++p) {
+        ++m_index[p].GetSeq();
+    }
 }

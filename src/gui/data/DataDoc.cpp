@@ -3,8 +3,6 @@
 
 #include "DataDoc.h"
 
-#include "data/data.h"
-
 IMPLEMENT_TM(DataDoc)
 
 DataDoc::DataDoc(int year, int month)
@@ -19,6 +17,11 @@ DataDoc::~DataDoc()
 {
 }
 
+void DataDoc::UpdateBalanceStat()
+{
+    calc_all_balance_stat(&m_segments, &m_stat);
+}
+
 bool DataDoc::AfterRead()
 {
     struct segment *wrong = fill_days_of_month(&m_segments, m_year, m_month);
@@ -26,7 +29,8 @@ bool DataDoc::AfterRead()
         wxLogWarning(_("Invalid date: %s"), wrong->comment != NULL ? wrong->comment : "");
         return false;
     }
-    calc_all_balance(&m_segments, 0);
+    m_stat.opening = 0;
+    UpdateBalanceStat();
     return true;
 }
 

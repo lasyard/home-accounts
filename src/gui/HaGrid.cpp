@@ -107,7 +107,12 @@ void HaGrid::OnInsert([[maybe_unused]] wxCommandEvent &event)
     auto row = GetGridCursorRow();
     if (InsertRows(row + 1)) {
         AutoSizeRow(row + 1);
-        SetGridCursor(row + 1, 1);
+        int col = CursorColOfNewRow();
+        if (col < 0) {
+            col = GetGridCursorCol();
+        }
+        SetGridCursor(row + 1, col);
+        GoToCell(row + 1, col);
     }
     EndBatch();
 }
@@ -193,9 +198,9 @@ void HaGrid::ClearAllCellsInBlocks(const wxGridBlocks &blocks)
     }
 }
 
-HaTable *HaGrid::GetHaTable()
+HaTable *HaGrid::GetHaTable() const
 {
-    return dynamic_cast<HaTable *>(GetTable());
+    return static_cast<HaTable *>(GetTable());
 }
 
 void HaGrid::CheckEventHandler()

@@ -90,6 +90,8 @@ protected:
     virtual bool InsertRow(size_t pos);
     virtual bool AppendRow();
     virtual bool DeleteRow(size_t pos);
+
+    virtual void OnNewRow(size_t pos, void *item);
 };
 
 #endif /* _HA_GUI_HA_TABLE_H_ */

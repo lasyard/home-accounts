@@ -2,14 +2,12 @@
 
 #include "HaGridCellAttrProvider.h"
 
+#include "HaGdi.h"
 #include "HaTable.h"
 
 IMPLEMENT_TM(HaGridCellAttrProvider)
 
-HaGridCellAttrProvider::HaGridCellAttrProvider(const HaTable *table)
-    : wxGridCellAttrProvider()
-    , m_monoFont(16, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL)
-    , m_table(table)
+HaGridCellAttrProvider::HaGridCellAttrProvider(const HaTable *table) : wxGridCellAttrProvider(), m_table(table)
 {
     wxLog::AddTraceMask(TM);
 
@@ -19,11 +17,13 @@ HaGridCellAttrProvider::HaGridCellAttrProvider(const HaTable *table)
 
     m_monoAttr = m_defaultAttr->Clone();
     m_monoAttr->SetAlignment(wxALIGN_RIGHT, wxALIGN_CENTER);
-    m_monoAttr->SetFont(m_monoFont);
+    m_monoAttr->SetFont(HaGdi::MONO_FONT);
 
     m_integerAttr = m_monoAttr->Clone();
-    m_integerAttr->SetRenderer(new wxGridCellNumberRenderer());
     m_integerAttr->SetEditor(new wxGridCellNumberEditor());
+
+    m_moneyAttr = m_monoAttr->Clone();
+    m_moneyAttr->SetEditor(new wxGridCellFloatEditor(-1, 2));
 
     m_boolAttr = m_defaultAttr->Clone();
     m_boolAttr->SetRenderer(new wxGridCellBoolRenderer());
@@ -33,8 +33,8 @@ HaGridCellAttrProvider::HaGridCellAttrProvider(const HaTable *table)
 
     m_segmentAttr = m_defaultAttr->Clone();
     m_segmentAttr->SetSize(1, m_table->GetColsCount());
-    m_segmentAttr->SetBackgroundColour(wxColour(0xDD, 0xEE, 0xFF));
-    m_segmentAttr->SetFont(m_monoFont);
+    m_segmentAttr->SetBackgroundColour(HaGdi::SEGMENT_COLOR);
+    m_segmentAttr->SetFont(HaGdi::MONO_FONT);
     m_segmentAttr->SetAlignment(wxALIGN_CENTER_VERTICAL, wxALIGN_LEFT);
     m_segmentAttr->SetReadOnly();
 }
@@ -44,18 +44,18 @@ HaGridCellAttrProvider::~HaGridCellAttrProvider()
     m_defaultAttr->DecRef();
     m_monoAttr->DecRef();
     m_integerAttr->DecRef();
+    m_moneyAttr->DecRef();
     m_boolAttr->DecRef();
     m_segmentAttr->DecRef();
 }
 
-wxGridCellAttr *
-HaGridCellAttrProvider::GetAttr([[maybe_unused]] int row, int col, wxGridCellAttr::wxAttrKind kind) const
+wxGridCellAttr *HaGridCellAttrProvider::GetAttr(int row, int col, wxGridCellAttr::wxAttrKind kind) const
 {
     // Seems `kind` is always `Any`.
     if (kind == wxGridCellAttr::wxAttrKind::Any || kind == wxGridCellAttr::wxAttrKind::Cell) {
         switch (m_table->GetRowType(row)) {
         case HaTableIndex::ITEM:
-            return GetAttrByColumnType(col);
+            return GetItemCellAttr(row, col);
         case HaTableIndex::SEGMENT:
             // Do not return colSpan > 1 for col > 0, or there will be index out of bound problem.
             if (col == 0) {
@@ -66,13 +66,12 @@ HaGridCellAttrProvider::GetAttr([[maybe_unused]] int row, int col, wxGridCellAtt
         default:
             break;
         }
-        return GetAttrByColumnType(col);
     }
     m_defaultAttr->IncRef();
     return m_defaultAttr;
 }
 
-wxGridCellAttr *HaGridCellAttrProvider::GetAttrByColumnType(int col) const
+wxGridCellAttr *HaGridCellAttrProvider::GetItemCellAttr([[maybe_unused]] int row, int col) const
 {
     switch (m_table->GetItemFieldType(col)) {
     case CT_INT32:
@@ -80,6 +79,8 @@ wxGridCellAttr *HaGridCellAttrProvider::GetAttrByColumnType(int col) const
         m_integerAttr->IncRef();
         return m_integerAttr;
     case CT_MONEY:
+        m_moneyAttr->IncRef();
+        return m_moneyAttr;
     case CT_DATE:
     case CT_TIME:
         m_monoAttr->IncRef();

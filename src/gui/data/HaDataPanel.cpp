@@ -14,6 +14,7 @@
 
 #include "../HaDefs.h"
 #include "../HaDocument.h"
+#include "../HaGdi.h"
 
 #include "data/StdStreamAccessor.h"
 #include "file/Exeptions.h"
@@ -34,17 +35,23 @@ const char *const HaDataPanel::DATA_PREFIX = "data";
 HaDataPanel::HaDataPanel(wxWindow *parent) : HaPanel(parent), m_currentSection(), m_parseError(false)
 {
     wxLog::AddTraceMask(TM);
-    auto *sizer = new wxBoxSizer(wxVERTICAL);
-    auto *header = new wxBoxSizer(wxHORIZONTAL);
-    wxFont promptFont(24, wxFONTFAMILY_SCRIPT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
-    auto *prompt = new wxStaticText(this, wxID_ANY, _("Select Date: "));
-    prompt->SetFont(promptFont);
-    header->Add(prompt);
+    m_header = new wxBoxSizer(wxHORIZONTAL);
+    AddLabel(m_header, _("Select Date: "), HaGdi::BIG_FONT, wxLEFT);
     m_date = new wxDatePickerCtrl(this, ID_DATE);
-    wxFont dateFont(24, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
-    m_date->SetFont(dateFont);
-    header->Add(m_date, wxSizerFlags().Border(wxALL, 0).Proportion(0));
-    sizer->Add(header, wxSizerFlags().Expand().Border(wxALL, 0).Proportion(0));
+    m_date->SetFont(HaGdi::BIG_MONO_FONT);
+    m_header->Add(m_date, wxSizerFlags().Border(wxRIGHT, 9).Proportion(0));
+    AddLabel(m_header, _("Opening: "), HaGdi::BIG_FONT, wxLEFT);
+    m_opening = AddLabel(m_header, wxEmptyString, HaGdi::BIG_MONO_FONT, wxRIGHT);
+    AddLabel(m_header, _("Total Income: "), HaGdi::BIG_FONT, wxLEFT);
+    m_income = AddLabel(m_header, wxEmptyString, HaGdi::BIG_MONO_FONT, wxRIGHT);
+    m_income->SetBackgroundColour(HaGdi::SURPLUS_COLOR);
+    AddLabel(m_header, _("Total Outlay: "), HaGdi::BIG_FONT, wxLEFT);
+    m_outlay = AddLabel(m_header, wxEmptyString, HaGdi::BIG_MONO_FONT, wxRIGHT);
+    m_outlay->SetBackgroundColour(HaGdi::DEFICIT_COLOR);
+    AddLabel(m_header, _("Closing: "), HaGdi::BIG_FONT, wxLEFT);
+    m_closing = AddLabel(m_header, wxEmptyString, HaGdi::BIG_MONO_FONT, wxRIGHT);
+    auto *sizer = new wxBoxSizer(wxVERTICAL);
+    sizer->Add(m_header, wxSizerFlags().Expand().Border(wxALL, 0).Proportion(0));
     m_grid = new HaDataGrid(this, wxID_ANY);
     sizer->Add(m_grid, wxSizerFlags().Expand().Border(wxALL, 0).Proportion(1));
     SetSizer(sizer);
@@ -96,8 +103,14 @@ void HaDataPanel::OnDateChanged(wxDateEvent &event)
     ShowDataOfDate(event.GetDate());
 }
 
+void HaDataPanel::OnUpdateStatistic([[maybe_unused]] wxCommandEvent &event)
+{
+    UpdateStatistic();
+}
+
 void HaDataPanel::DoSetDocument(HaDocument *doc)
 {
+    m_grid->Bind(wxEVT_GRID_CELL_CHANGED, &HaDataPanel::OnUpdateStatistic, this);
     m_grid->Bind(wxEVT_GRID_CELL_CHANGED, &HaDocument::OnChange, doc);
     m_grid->Bind(wxEVT_MENU, &HaDocument::OnChange, doc, ID_INSERT);
     m_grid->Bind(wxEVT_MENU, &HaDocument::OnChange, doc, wxID_DELETE);
@@ -122,4 +135,26 @@ void HaDataPanel::ShowDataOfDate(const wxDateTime &date)
     std::istringstream iss(*data);
     m_parseError = !csv->Read(stream_reader, &iss);
     m_grid->InitTable(csv);
+    UpdateStatistic();
+}
+
+void HaDataPanel::UpdateStatistic()
+{
+    auto *doc = m_grid->GetTableDoc();
+    auto *stat = doc->GetStat();
+    m_opening->SetLabel(doc->GetMoneyString(stat->opening));
+    m_opening->SetBackgroundColour(stat->opening >= 0 ? HaGdi::SURPLUS_COLOR : HaGdi::DEFICIT_COLOR);
+    m_closing->SetLabel(doc->GetMoneyString(stat->closing));
+    m_closing->SetBackgroundColour(stat->closing >= 0 ? HaGdi::SURPLUS_COLOR : HaGdi::DEFICIT_COLOR);
+    m_income->SetLabel(doc->GetMoneyString(stat->income));
+    m_outlay->SetLabel(doc->GetMoneyString(stat->outlay));
+    m_header->Layout();
+}
+
+wxStaticText *HaDataPanel::AddLabel(wxSizer *sizer, const wxString &title, const wxFont &font, int borderDirection)
+{
+    auto *label = new wxStaticText(this, wxID_ANY, title);
+    label->SetFont(font);
+    sizer->Add(label, wxSizerFlags().Border(borderDirection, 9));
+    return label;
 }

@@ -2,8 +2,6 @@
 
 #include "HaDataGrid.h"
 
-#include "HaDataTable.h"
-
 IMPLEMENT_TM(HaDataGrid)
 IMPLEMENT_DYNAMIC_CLASS(HaDataGrid, HaGrid)
 
@@ -32,8 +30,15 @@ HaDataGrid::~HaDataGrid()
 {
 }
 
+DataDoc *HaDataGrid::GetTableDoc()
+{
+    return GetHaDataTable()->GetDataDoc();
+}
+
 HaTable *HaDataGrid::CreateHaTable(CsvDoc *doc)
 {
-    auto *table = new HaDataTable(doc);
+    auto *ddoc = dynamic_cast<DataDoc *>(doc);
+    wxASSERT(ddoc != nullptr);
+    auto *table = new HaDataTable(ddoc);
     return table;
 }

@@ -3,6 +3,8 @@
 
 #include "../CsvDoc.h"
 
+#include "data/data.h"
+
 class DataDoc : public CsvDoc
 {
 public:
@@ -11,9 +13,17 @@ public:
     DataDoc(int year, int month);
     virtual ~DataDoc();
 
+    const struct data_stat *GetStat() const
+    {
+        return &m_stat;
+    }
+
+    void UpdateBalanceStat();
+
 private:
     int m_year;
     int m_month;
+    struct data_stat m_stat;
 
     bool AfterRead() override;
     bool BeforeWrite() override;

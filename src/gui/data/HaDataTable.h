@@ -1,5 +1,5 @@
-#ifndef _HA_PANEL_HA_DATA_TABLE_H_
-#define _HA_PANEL_HA_DATA_TABLE_H_
+#ifndef _HA_DATA_HA_DATA_TABLE_H_
+#define _HA_DATA_HA_DATA_TABLE_H_
 
 #include "../HaTable.h"
 
@@ -46,4 +46,4 @@ private:
     void UpdateDocAndCache(int row);
 };
 
-#endif /* _HA_PANEL_HA_DATA_TABLE_H_ */
+#endif /* _HA_DATA_HA_DATA_TABLE_H_ */

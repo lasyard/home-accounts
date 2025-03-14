@@ -1,5 +1,5 @@
-#ifndef _HA_PANEL_HA_DATA_PANEL_H_
-#define _HA_PANEL_HA_DATA_PANEL_H_
+#ifndef _HA_DATA_HA_DATA_PANEL_H_
+#define _HA_DATA_HA_DATA_PANEL_H_
 
 #include "../HaPanel.h"
 #include "../Utils.h"
@@ -55,4 +55,4 @@ private:
     AddLabel(wxSizer *sizer, const wxString &title, const wxFont &font, int borderDirection = wxLEFT | wxRIGHT);
 };
 
-#endif /* _HA_PANEL_HA_DATA_PANEL_H_ */
+#endif /* _HA_DATA_HA_DATA_PANEL_H_ */

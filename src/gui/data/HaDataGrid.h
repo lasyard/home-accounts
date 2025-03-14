@@ -1,5 +1,5 @@
-#ifndef _HA_PANEL_HA_DATA_GRID_H_
-#define _HA_PANEL_HA_DATA_GRID_H_
+#ifndef _HA_DATA_HA_DATA_GRID_H_
+#define _HA_DATA_HA_DATA_GRID_H_
 
 #include "../HaGrid.h"
 
@@ -41,4 +41,4 @@ private:
     }
 };
 
-#endif /* _HA_PANEL_HA_DATA_GRID_H_ */
+#endif /* _HA_DATA_HA_DATA_GRID_H_ */

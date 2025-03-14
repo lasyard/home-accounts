@@ -1,5 +1,5 @@
-#ifndef _HA_GUI_HA_COLOUR_H_
-#define _HA_GUI_HA_COLOUR_H_
+#ifndef _HA_GUI_HA_GDI_H_
+#define _HA_GUI_HA_GDI_H_
 
 #include <wx/colour.h>
 #include <wx/font.h>
@@ -22,4 +22,4 @@ private:
     virtual ~HaGdi();
 };
 
-#endif /* _HA_GUI_HA_COLOUR_H_ */
+#endif /* _HA_GUI_HA_GDI_H_ */

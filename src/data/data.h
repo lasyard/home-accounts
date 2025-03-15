@@ -34,14 +34,15 @@ struct data {
     money_t balance;
 };
 
+// `get_data` is conflicting with some msxml headers
+#define get_datap(ptr) list_entry(ptr, struct data, list);
+
 struct data_stat {
     money_t opening;
     money_t closing;
     money_t income;
     money_t outlay;
 };
-
-#define get_data(ptr) list_entry(ptr, struct data, list);
 
 #ifdef __cplusplus
 extern "C" {

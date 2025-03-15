@@ -41,6 +41,7 @@
     <ClCompile Include="..\src\gui\HaApp.cpp" />
     <ClCompile Include="..\src\gui\HaArtProvider.cpp" />
     <ClCompile Include="..\src\gui\HaDocument.cpp" />
+    <ClCompile Include="..\src\gui\HaGdi.cpp" />
     <ClCompile Include="..\src\gui\HaGrid.cpp" />
     <ClCompile Include="..\src\gui\HaGridCellAttrProvider.cpp" />
     <ClCompile Include="..\src\gui\HaMainFrame.cpp" />
@@ -63,11 +64,13 @@
     <ClInclude Include="..\src\gui\HaArtProvider.h" />
     <ClInclude Include="..\src\gui\HaDefs.h" />
     <ClInclude Include="..\src\gui\HaDocument.h" />
+    <ClInclude Include="..\src\gui\HaGdi.h" />
     <ClInclude Include="..\src\gui\HaGrid.h" />
     <ClInclude Include="..\src\gui\HaGridCellAttrProvider.h" />
     <ClInclude Include="..\src\gui\HaMainFrame.h" />
     <ClInclude Include="..\src\gui\HaPanel.h" />
     <ClInclude Include="..\src\gui\HaTable.h" />
+    <ClInclude Include="..\src\gui\HaTableIndex.h" />
     <ClInclude Include="..\src\gui\HaView.h" />
     <ClInclude Include="..\src\gui\raw\HaRawPanel.h" />
     <ClInclude Include="..\src\gui\raw\NewSectionDialog.h" />

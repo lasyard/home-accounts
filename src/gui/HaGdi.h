@@ -13,13 +13,19 @@ public:
     static const wxColour SURPLUS_COLOR;
 
     // font
-    static const wxFont MONO_FONT;
+    // `MONO_FONT` is conflicting with some msvc names
+    static const wxFont DIGI_FONT;
     static const wxFont BIG_FONT;
     static const wxFont BIG_MONO_FONT;
 
 private:
-    HaGdi();
-    virtual ~HaGdi();
+    HaGdi()
+    {
+    }
+
+    ~HaGdi()
+    {
+    }
 };
 
 #endif /* _HA_GUI_HA_GDI_H_ */

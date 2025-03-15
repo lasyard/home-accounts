@@ -15,6 +15,10 @@ Zip `..\src\gui\res\*.xrc` and rename it to the target.
 
 These language files are generated from files in `..\src\gui\res\i18n\`. You can use [PoEdit](https://poedit.net/).
 
+`logo.png`
+
+Copy for `..\src\gui\res\images\logo.png`.
+
 Where to put these files:
 
 - When run in the build tree, put them to where the solution file is, (i.e. this directory)

@@ -17,7 +17,7 @@ HaGridCellAttrProvider::HaGridCellAttrProvider(const HaTable *table) : wxGridCel
 
     m_monoAttr = m_defaultAttr->Clone();
     m_monoAttr->SetAlignment(wxALIGN_RIGHT, wxALIGN_CENTER);
-    m_monoAttr->SetFont(HaGdi::MONO_FONT);
+    m_monoAttr->SetFont(HaGdi::DIGI_FONT);
 
     m_integerAttr = m_monoAttr->Clone();
     m_integerAttr->SetEditor(new wxGridCellNumberEditor());
@@ -34,7 +34,7 @@ HaGridCellAttrProvider::HaGridCellAttrProvider(const HaTable *table) : wxGridCel
     m_segmentAttr = m_defaultAttr->Clone();
     m_segmentAttr->SetSize(1, m_table->GetColsCount());
     m_segmentAttr->SetBackgroundColour(HaGdi::SEGMENT_COLOR);
-    m_segmentAttr->SetFont(HaGdi::MONO_FONT);
+    m_segmentAttr->SetFont(HaGdi::DIGI_FONT);
     m_segmentAttr->SetAlignment(wxALIGN_CENTER_VERTICAL, wxALIGN_LEFT);
     m_segmentAttr->SetReadOnly();
 }

@@ -49,14 +49,14 @@ void *data_get(void *data, int i, const void *context)
 
 void calc_balance_stat(struct segment *segment, struct data *data, struct data_stat *stat)
 {
-    int balance = stat->opening;
+    money_t balance = stat->opening;
     stat->income = 0;
     stat->outlay = 0;
     struct list_item *p = &segment->list;
     struct list_item *q = &data->list;
     while (p != NULL) {
         while (q != NULL) {
-            struct data *d = get_data(q);
+            struct data *d = get_datap(q);
             money_t amount = d->real_amount;
             if (amount < 0) {
                 stat->income -= amount;
@@ -78,7 +78,7 @@ void calc_balance_stat(struct segment *segment, struct data *data, struct data_s
 void calc_all_balance_stat(struct list_head *segments, struct data_stat *stat)
 {
     struct segment *segment = get_segment(segments->first);
-    struct data *data = get_data(segment->items.first);
+    struct data *data = get_datap(segment->items.first);
     calc_balance_stat(segment, data, stat);
 }
 

@@ -80,15 +80,6 @@ void HaGrid::InitTable(CsvDoc *doc)
     RefreshContent();
 }
 
-void HaGrid::SaveTable(std::ostream &os)
-{
-    SaveEditControlValue();
-    auto *table = GetHaTable();
-    if (table != nullptr) {
-        table->SaveTo(os);
-    }
-}
-
 CsvDoc *HaGrid::GetTableDoc()
 {
     auto *table = GetHaTable();

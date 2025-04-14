@@ -34,6 +34,16 @@ public:
     void SetItemValueString(void *item, int i, const wxString &value);
     void SetSegmentValueString(struct segment *segment, const wxString &value);
 
+    const struct list_head *GetSegments() const
+    {
+        return &m_segments;
+    }
+
+    struct list_head *GetSegments()
+    {
+        return &m_segments;
+    }
+
     void ForEachSegment(std::function<bool(struct segment *segment)> callback) const;
     void ForEachItem(const struct segment *segment, std::function<bool(void *item)> callback) const;
 
@@ -42,6 +52,7 @@ public:
     void DeleteItem(struct segment *segment, void *item);
 
     bool Read(f_read_line *read_line, void *context);
+    bool Read(const std::string &data);
     bool Write(f_write_line *write_line, void *context);
 
 protected:

@@ -24,6 +24,9 @@ extern "C" {
 void list_item_init(struct list_item *item);
 void list_head_init(struct list_head *head);
 
+struct list_item *list_get_first(struct list_head *head);
+struct list_item *list_get_last(struct list_head *head);
+
 void list_add(struct list_head *head, struct list_item *item);
 
 void list_ins(struct list_item *pos, struct list_item *item);

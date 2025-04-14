@@ -17,6 +17,12 @@ DataDoc::~DataDoc()
 {
 }
 
+void DataDoc::SetOpening(money_t opening)
+{
+    m_stat.opening = opening;
+    UpdateBalanceStat();
+}
+
 void DataDoc::UpdateBalanceStat()
 {
     calc_all_balance_stat(&m_segments, &m_stat);
@@ -29,8 +35,6 @@ bool DataDoc::AfterRead()
         wxLogWarning(_("Invalid date: %s"), wrong->comment != NULL ? wrong->comment : "");
         return false;
     }
-    m_stat.opening = 0;
-    UpdateBalanceStat();
     return true;
 }
 

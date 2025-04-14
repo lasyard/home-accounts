@@ -46,10 +46,10 @@ TEST_CASE("parse_line")
     init_parser(&ctx);
     set_parser_types(&ctx, 6, types);
     use_record(&ctx, sizeof(struct record), get_record_ptr);
+    struct record r;
+    init_data(&ctx, &r);
     SUBCASE("sep == ','")
     {
-        struct record r;
-        init_data(&ctx, &r);
         const char *p = parse_line(&ctx, "   abc, def , 10, -100 ,, 123.45\n", &r);
         CHECK(*p == '\0');
         CHECK(string_cstrcmp(&r.str1, "abc") == 0);
@@ -57,12 +57,9 @@ TEST_CASE("parse_line")
         CHECK(r.i1 == 10);
         CHECK(r.i2 == -100);
         CHECK(r.amount == 12345);
-        release_data(&ctx, &r);
     }
     SUBCASE("sep == ',', less fields")
     {
-        struct record r;
-        init_data(&ctx, &r);
         const char *p = parse_line(&ctx, "   abc, def , 10, -100 , 123.45", &r);
         CHECK(p == NULL);
         CHECK(string_cstrcmp(&r.str1, "abc") == 0);
@@ -70,13 +67,10 @@ TEST_CASE("parse_line")
         CHECK(r.i1 == 10);
         CHECK(r.i2 == -100);
         CHECK(r.amount == 0);
-        release_data(&ctx, &r);
     }
     SUBCASE("sep == '|'")
     {
         ctx.options.sep = '|';
-        struct record r;
-        init_data(&ctx, &r);
         const char *p = parse_line(&ctx, "   123| 4567 | -32768| 343 | sdafsfsd| 67 89.10\n", &r);
         CHECK(*p == '\0');
         CHECK(string_cstrcmp(&r.str1, "123") == 0);
@@ -84,8 +78,8 @@ TEST_CASE("parse_line")
         CHECK(r.i1 == -32768);
         CHECK(r.i2 == 343);
         CHECK(r.amount == 678910);
-        release_data(&ctx, &r);
     }
+    release_data(&ctx, &r);
 }
 
 TEST_CASE("parse_strings")
@@ -166,7 +160,6 @@ TEST_CASE("outputLine")
         CHECK(*p == '\0');
         CHECK(strcmp(buf, "10,-100") == 0);
     }
-
     SUBCASE("sep == '|'")
     {
         r.i1 = 10;
@@ -251,10 +244,10 @@ TEST_CASE("parse/output_segments")
     init_parser(&ctx);
     set_parser_types(&ctx, sizeof(types) / sizeof(enum column_type), types);
     use_record(&ctx, sizeof(struct item), get_ptr);
+    struct list_head segments;
+    list_head_init(&segments);
     SUBCASE("parse_segments")
     {
-        struct list_head segments;
-        list_head_init(&segments);
         std::istringstream iss("1,abc,10.2\n2,def,0.88");
         int line = parse_segments(&ctx, &segments, test_read, &iss);
         CHECK(line == 2);
@@ -268,12 +261,9 @@ TEST_CASE("parse/output_segments")
         CHECK(item->id == 2);
         CHECK(strcmp(item->name, "def") == 0);
         CHECK(item->amount == 88L);
-        release_segments(&ctx, &segments);
     }
     SUBCASE("segmental_output")
     {
-        struct list_head segments;
-        list_head_init(&segments);
         struct segment *segment = add_new_segment(&segments);
         CHECK(segment != NULL);
         struct item *item = (struct item *)new_item(&ctx);
@@ -289,8 +279,8 @@ TEST_CASE("parse/output_segments")
         list_add(&segment->items, &item->list);
         std::ostringstream oss;
         int line = output_segments(&ctx, &segments, test_write, &oss);
-        release_segments(&ctx, &segments);
         CHECK(line == 3);
         CHECK(oss.str() == "1,,0.10\n#abc\n2,,0.11\n");
     }
+    release_segments(&ctx, &segments);
 }

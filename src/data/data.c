@@ -47,6 +47,31 @@ void *data_get(void *data, int i, const void *context)
     return NULL;
 }
 
+const enum column_type period_stat_types[3] = {
+    CT_INT32,
+    CT_MONEY,
+    CT_MONEY,
+};
+
+void *period_stat_data_get(void *data, int i, const void *context)
+{
+    (void)context;
+    struct period_stat *d = (struct period_stat *)data;
+    switch (i) {
+    case LIST_ITEM_INDEX:
+        return &d->list;
+    case 0:
+        return &d->period;
+    case 1:
+        return &d->income;
+    case 2:
+        return &d->outlay;
+    default:
+        break;
+    }
+    return NULL;
+}
+
 void calc_balance_stat(struct segment *segment, struct data *data, struct data_stat *stat)
 {
     money_t balance = stat->opening;
@@ -149,4 +174,96 @@ static void release_empty_segment(struct list_item *list, void *context)
 void delete_empty(struct list_head *segments)
 {
     list_del_if(segments, is_empty_segment, release_empty_segment, NULL);
+}
+
+money_t get_period_opening(struct list_head *segments, int period, money_t opening)
+{
+    struct segment *segment = get_first_segment(segments);
+    if (segment != NULL) {
+        for (struct list_item *p = segment->items.first; p != NULL; p = p->next) {
+            struct period_stat *data = list_entry(p, struct period_stat, list);
+            if (data->period >= period) {
+                break;
+            }
+            opening += data->income;
+            opening -= data->outlay;
+        }
+    }
+    return opening;
+}
+
+static struct period_stat *find_or_insert_period_stat(struct segment *segment, int period)
+{
+    struct period_stat *data = NULL;
+    for (struct list_item **curr_pos = &segment->items.first; *curr_pos != NULL; curr_pos = &(*curr_pos)->next) {
+        data = list_entry(*curr_pos, struct period_stat, list);
+        if (data->period == period) {
+            return data;
+        } else if (data->period > period) {
+            data = malloc(sizeof *data);
+            if (data != NULL) {
+                list_item_init(&data->list);
+                data->period = period;
+                data->list.next = *curr_pos;
+                *curr_pos = &data->list;
+            }
+            return data;
+        }
+    }
+    data = malloc(sizeof *data);
+    if (data != NULL) {
+        list_item_init(&data->list);
+        data->period = period;
+        list_add(&segment->items, &data->list);
+    }
+    return data;
+}
+
+static bool period_stat_pred(struct list_item *item, void *context)
+{
+    struct period_stat *ps = list_entry(item, struct period_stat, list);
+    return ps->period == *(int *)context;
+}
+
+static void period_stat_release(struct list_item *item, void *context)
+{
+    (void)context;
+    struct period_stat *ps = list_entry(item, struct period_stat, list);
+    free(ps);
+}
+
+void set_period_stat(struct list_head *segments, int period, money_t income, money_t outlay)
+{
+    struct segment *segment = get_first_segment(segments);
+    if (income != 0 || outlay != 0) {
+        if (segment == NULL) {
+            segment = add_new_segment(segments);
+            if (segment == NULL) {
+                return;
+            }
+        }
+        struct period_stat *data = find_or_insert_period_stat(segment, period);
+        if (data != NULL) {
+            data->income = income;
+            data->outlay = outlay;
+        }
+    } else {
+        if (segment != NULL) {
+            list_del_if(&segment->items, period_stat_pred, period_stat_release, &period);
+        }
+    }
+}
+
+void sum_period_stat(struct list_head *segments, money_t *income, money_t *outlay)
+{
+    *income = 0;
+    *outlay = 0;
+    struct segment *segment = get_first_segment(segments);
+    if (segment != NULL) {
+        for (struct list_item *p = segment->items.first; p != NULL; p = p->next) {
+            struct period_stat *data = list_entry(p, struct period_stat, list);
+            *income += data->income;
+            *outlay += data->outlay;
+        }
+    }
 }

@@ -43,9 +43,14 @@ struct segment *ins_new_segment_head(struct list_head *segments)
     return segment;
 }
 
+struct segment *get_first_segment(struct list_head *segments)
+{
+    return get_segment(list_get_first(segments));
+}
+
 struct segment *get_last_segment(struct list_head *segments)
 {
-    return get_segment(segments->last);
+    return get_segment(list_get_last(segments));
 }
 
 bool segment_is_first(const struct list_head *segments, const struct segment *segment)

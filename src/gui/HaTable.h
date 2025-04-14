@@ -59,8 +59,6 @@ public:
         return m_doc;
     }
 
-    virtual void SaveTo(std::ostream &os);
-
 protected:
     CsvDoc *m_doc;
     wxArrayString m_colLabels;

@@ -4,8 +4,6 @@
 
 #include "HaTable.h"
 
-#include "data/StdStreamAccessor.h"
-
 HaTable::~HaTable()
 {
     if (m_cache != nullptr) {
@@ -123,11 +121,6 @@ bool HaTable::DeleteRows(size_t pos, size_t numRows)
 bool HaTable::CanHaveAttributes()
 {
     return true;
-}
-
-void HaTable::SaveTo(std::ostream &os)
-{
-    m_doc->Write(stream_writer, &os);
 }
 
 void HaTable::CacheCell(int row, int col)

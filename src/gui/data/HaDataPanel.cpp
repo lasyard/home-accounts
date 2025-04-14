@@ -1,23 +1,23 @@
+#include <cstdio>
+#include <sstream>
+
 #include <wx/datectrl.h>
 #include <wx/dateevt.h>
 #include <wx/log.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 
-#include <cstdio>
-#include <sstream>
-
 #include "HaDataPanel.h"
 
 #include "DataDoc.h"
 #include "HaDataGrid.h"
 
+#include "../CsvDoc.h"
 #include "../HaDefs.h"
 #include "../HaDocument.h"
 #include "../HaGdi.h"
 
 #include "data/StdStreamAccessor.h"
-#include "file/Exeptions.h"
 
 IMPLEMENT_DYNAMIC_CLASS(HaDataPanel, HaPanel)
 IMPLEMENT_TM(HaDataPanel)
@@ -32,7 +32,17 @@ END_EVENT_TABLE()
 
 const char *const HaDataPanel::DATA_PREFIX = "data";
 
-HaDataPanel::HaDataPanel(wxWindow *parent) : HaPanel(parent), m_currentSection(), m_parseError(false)
+HaDataPanel::HaDataPanel(wxWindow *parent)
+    : HaPanel(parent)
+    , m_currentYear(1970)
+    , m_currentMonth(1)
+    , m_parseError(false)
+    , m_period_doc(new CsvDoc(
+          sizeof(period_stat_types) / sizeof(enum column_type),
+          period_stat_types,
+          sizeof(struct period_stat),
+          period_stat_data_get
+      ))
 {
     wxLog::AddTraceMask(TM);
     m_header = new wxBoxSizer(wxHORIZONTAL);
@@ -64,7 +74,10 @@ HaDataPanel::~HaDataPanel()
 
 void HaDataPanel::OnUpdate()
 {
-    ShowDataOfDate(m_date->GetValue());
+    auto date = m_date->GetValue();
+    m_currentYear = date.GetYear();
+    m_currentMonth = date.GetMonth() + 1;
+    ShowDataOfDate(m_currentYear, m_currentMonth);
 }
 
 void HaDataPanel::SaveContents()
@@ -72,13 +85,25 @@ void HaDataPanel::SaveContents()
     if (m_parseError) {
         return;
     }
+    m_grid->SaveEditControlValue();
+    DataDoc *doc = m_grid->GetTableDoc();
+    wxASSERT(doc != nullptr);
     std::ostringstream oss;
-    m_grid->SaveTable(oss);
+    doc->Write(stream_writer, &oss);
+    char buf[32];
+    FillDataSectionName(buf, 32, m_currentYear, m_currentMonth);
     if (!oss.str().empty()) {
-        m_doc->SaveSection(m_currentSection, oss.str());
+        m_doc->SaveSection(buf, oss.str());
     } else {
-        m_doc->DeleteSection(m_currentSection);
+        m_doc->DeleteSection(buf);
     }
+    FillMonthlySectionName(buf, 32, m_currentYear);
+    auto *stat = doc->GetStat();
+    SetPeriodStat(buf, m_currentMonth, stat->income, stat->outlay);
+    money_t income, outlay;
+    sum_period_stat(m_period_doc->GetSegments(), &income, &outlay);
+    FillAnnuallySectionName(buf, 32);
+    SetPeriodStat(buf, m_currentYear, income, outlay);
 }
 
 void HaDataPanel::ClearContents()
@@ -100,7 +125,10 @@ void HaDataPanel::OnMenu([[maybe_unused]] wxCommandEvent &event)
 void HaDataPanel::OnDateChanged(wxDateEvent &event)
 {
     SaveContents();
-    ShowDataOfDate(event.GetDate());
+    auto &date = event.GetDate();
+    m_currentYear = date.GetYear();
+    m_currentMonth = date.GetMonth() + 1;
+    ShowDataOfDate(m_currentYear, m_currentMonth);
 }
 
 void HaDataPanel::OnUpdateStatistic([[maybe_unused]] wxCommandEvent &event)
@@ -116,24 +144,14 @@ void HaDataPanel::DoSetDocument(HaDocument *doc)
     m_grid->Bind(wxEVT_MENU, &HaDocument::OnChange, doc, wxID_DELETE);
 }
 
-void HaDataPanel::ShowDataOfDate(const wxDateTime &date)
+void HaDataPanel::ShowDataOfDate(int year, int month)
 {
-    char buf[30];
-    int year = date.GetYear();
-    int month = date.GetMonth() + 1;
-    snprintf(buf, 30, "%4s/%04d/%02d", DATA_PREFIX, year, month);
-    m_currentSection = std::string(buf);
-    const std::string *data = nullptr;
-    try {
-        data = &m_doc->GetSection(m_currentSection);
-    } catch ([[maybe_unused]] SectionNotFound &e) {
-        m_doc->SaveSection(m_currentSection, "");
-        data = &m_doc->GetSection(m_currentSection);
-    }
-    wxASSERT(data != nullptr);
+    char buf[32];
+    FillDataSectionName(buf, 32, year, month);
+    auto &data = m_doc->GetOrCreateSection(buf);
     auto *csv = new DataDoc(year, month);
-    std::istringstream iss(*data);
-    m_parseError = !csv->Read(stream_reader, &iss);
+    m_parseError = !csv->Read(data);
+    csv->SetOpening(GetOpening(year, month));
     m_grid->InitTable(csv);
     UpdateStatistic();
 }
@@ -151,10 +169,53 @@ void HaDataPanel::UpdateStatistic()
     m_header->Layout();
 }
 
+money_t HaDataPanel::GetOpening(int year, int month)
+{
+    char buf[32];
+    FillAnnuallySectionName(buf, 32);
+    auto &annually = m_doc->GetOrCreateSection(buf);
+    m_period_doc->Read(annually);
+    money_t opening = get_period_opening(m_period_doc->GetSegments(), year, 0);
+    FillMonthlySectionName(buf, 32, year);
+    auto &monthly = m_doc->GetOrCreateSection(buf);
+    m_period_doc->Read(monthly);
+    opening = get_period_opening(m_period_doc->GetSegments(), month, opening);
+    return opening;
+}
+
 wxStaticText *HaDataPanel::AddLabel(wxSizer *sizer, const wxString &title, const wxFont &font, int borderDirection)
 {
     auto *label = new wxStaticText(this, wxID_ANY, title);
     label->SetFont(font);
     sizer->Add(label, wxSizerFlags().Border(borderDirection, 9));
     return label;
+}
+
+void HaDataPanel::FillAnnuallySectionName(char *buf, size_t len)
+{
+    snprintf(buf, len, "%4s", DATA_PREFIX);
+}
+
+void HaDataPanel::FillMonthlySectionName(char *buf, size_t len, int year)
+{
+    snprintf(buf, len, "%4s/%04d", DATA_PREFIX, year);
+}
+
+void HaDataPanel::FillDataSectionName(char *buf, size_t len, int year, int month)
+{
+    snprintf(buf, len, "%4s/%04d/%02d", DATA_PREFIX, year, month);
+}
+
+void HaDataPanel::SetPeriodStat(const char *sectionName, int period, money_t income, money_t outlay)
+{
+    auto &data = m_doc->GetOrCreateSection(sectionName);
+    m_period_doc->Read(data);
+    set_period_stat(m_period_doc->GetSegments(), period, income, outlay);
+    std::ostringstream oss;
+    m_period_doc->Write(stream_writer, &oss);
+    if (!oss.str().empty()) {
+        m_doc->SaveSection(sectionName, oss.str());
+    } else {
+        m_doc->DeleteSection(sectionName);
+    }
 }

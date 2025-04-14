@@ -1,3 +1,5 @@
+#include <sstream>
+
 #include <wx/arrstr.h>
 #include <wx/log.h>
 #include <wx/translation.h>
@@ -6,6 +8,7 @@
 
 #include "csv/segment.h"
 #include "csv/str.h"
+#include "data/StdStreamAccessor.h"
 
 IMPLEMENT_TM(CsvDoc)
 
@@ -132,6 +135,14 @@ bool CsvDoc::Read(f_read_line *read_line, void *context)
     }
     wxLogStatus(_("%d lines read"), lines + 2);
     return AfterRead();
+}
+
+bool CsvDoc::Read(const std::string &data)
+{
+    release_segments(&m_ctx, &m_segments);
+    list_head_init(&m_segments);
+    std::istringstream iss(data);
+    return Read(stream_reader, &iss);
 }
 
 bool CsvDoc::Write(f_write_line *write_line, void *context)

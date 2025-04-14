@@ -19,13 +19,23 @@ static void to_real_last(struct list_head *head)
     }
 }
 
+struct list_item *list_get_first(struct list_head *head)
+{
+    return head->first;
+}
+
+struct list_item *list_get_last(struct list_head *head)
+{
+    to_real_last(head);
+    return head->last;
+}
+
 void list_add(struct list_head *head, struct list_item *item)
 {
     if (head->first == NULL) {
         head->first = head->last = item;
     } else {
-        to_real_last(head);
-        head->last->next = item;
+        list_get_last(head)->next = item;
         head->last = item;
     }
 }
@@ -128,6 +138,5 @@ bool list_is_first(const struct list_head *head, const struct list_item *item)
 
 bool list_is_last(struct list_head *head, const struct list_item *item)
 {
-    to_real_last(head);
-    return head->last == item;
+    return list_get_last(head) == item;
 }

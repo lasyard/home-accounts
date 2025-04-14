@@ -51,7 +51,6 @@ public:
     void SetAttributes();
 
     void InitTable(CsvDoc *doc);
-    void SaveTable(std::ostream &os);
 
     virtual CsvDoc *GetTableDoc();
 

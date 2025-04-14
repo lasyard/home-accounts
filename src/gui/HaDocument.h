@@ -28,6 +28,7 @@ public:
     void Modify(bool modified) override;
 
     const std::string &GetSection(const std::string &name) const;
+    const std::string &GetOrCreateSection(const std::string &name);
     void SaveSection(const std::string &name, const std::string &content);
     void DeleteSection(const std::string &name);
     void DeleteSectionPrefix(const std::string &prefix);

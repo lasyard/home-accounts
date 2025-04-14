@@ -9,6 +9,7 @@
 #include "HaView.h"
 
 #include "file/Cache.h"
+#include "file/Exeptions.h"
 #include "file/Sqlite3Store.h"
 
 IMPLEMENT_DYNAMIC_CLASS(HaDocument, wxDocument)
@@ -90,6 +91,16 @@ void HaDocument::Modify(bool modified)
 const std::string &HaDocument::GetSection(const std::string &name) const
 {
     return m_doc->get(name);
+}
+
+const std::string &HaDocument::GetOrCreateSection(const std::string &name)
+{
+    try {
+        return GetSection(name);
+    } catch ([[maybe_unused]] SectionNotFound &e) {
+        SaveSection(name, "");
+        return GetSection(name);
+    }
 }
 
 void HaDocument::SaveSection(const std::string &name, const std::string &content)

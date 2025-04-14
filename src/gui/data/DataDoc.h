@@ -18,6 +18,7 @@ public:
         return &m_stat;
     }
 
+    void SetOpening(money_t opening);
     void UpdateBalanceStat();
 
 private:

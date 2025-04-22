@@ -17,12 +17,16 @@ struct parser_options {
     int money_scale; // The scale factor of money.
 };
 
+#ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning(disable : 4200)
+#endif
 struct common_record_meta {
     size_t offsets[0]; // Offsets of each field.
 };
+#ifdef _MSC_VER
 #pragma warning(pop)
+#endif
 
 #ifdef __cplusplus
 extern "C" {

@@ -2,6 +2,7 @@
 
 #include "defs.h"
 #include "int.h"
+#include "str.h"
 
 /**
  * @brief Get JDN of a specified year/month/day, see
@@ -60,8 +61,12 @@ const char *parse_date(const char *buf, date_t *data, char sep, char dateSep)
 
 const char *parse_time(const char *buf, dtime_t *data, char sep)
 {
-    int32_t hour, min, sec;
-    const char *p = buf;
+    int32_t hour = 0, min = 0, sec = 0;
+    const char *p = skip_space(buf);
+    if (*p == sep || is_line_end(*p)) {
+        *data = 0;
+        return p;
+    }
     p = parse_int32(p, &hour, ':');
     return_null_if_null(p);
     ++p;

@@ -91,7 +91,10 @@ static char *output_by_type(const struct parser_options *opt, char *buf, enum co
     case CT_DATE:
         return output_date(buf, *(const date_t *)data, opt->date_sep);
     case CT_TIME:
-        return output_time(buf, *(const dtime_t *)data);
+        if (!opt->empty_zero_time || *(const dtime_t *)data != 0) {
+            return output_time(buf, *(const dtime_t *)data);
+        }
+        break;
     case CT_IGNORE:
         break;
     }
@@ -124,6 +127,7 @@ void init_options(struct parser_options *opt)
     opt->date_sep = '-';
     opt->comment = '#';
     set_options_money_prec(opt, 2);
+    opt->empty_zero_time = true;
 }
 
 void init_parser(struct parser_context *ctx)

@@ -49,6 +49,8 @@ TEST_CASE("parse_time")
     CHECK(data == 605);
     parse_time("11:20:3", &data, '\0');
     CHECK(data == 40803);
+    parse_time("", &data, '\0');
+    CHECK(data == 0);
 }
 
 TEST_CASE("output_date")

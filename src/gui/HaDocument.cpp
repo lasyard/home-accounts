@@ -113,6 +113,15 @@ void HaDocument::DeleteSection(const std::string &name)
     m_doc->remove(name);
 }
 
+void HaDocument::SaveOrDeleteSection(const std::string &name, const std::string &content)
+{
+    if (!content.empty()) {
+        SaveSection(name, content);
+    } else {
+        DeleteSection(name);
+    }
+}
+
 void HaDocument::DeleteSectionPrefix(const std::string &prefix)
 {
     m_doc->removePrefix(prefix);

@@ -31,6 +31,7 @@ public:
     const std::string &GetOrCreateSection(const std::string &name);
     void SaveSection(const std::string &name, const std::string &content);
     void DeleteSection(const std::string &name);
+    void SaveOrDeleteSection(const std::string &name, const std::string &content);
     void DeleteSectionPrefix(const std::string &prefix);
     void DeleteAllSections();
 

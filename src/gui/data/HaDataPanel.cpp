@@ -92,11 +92,7 @@ void HaDataPanel::SaveContents()
     doc->Write(stream_writer, &oss);
     char buf[32];
     FillDataSectionName(buf, 32, m_currentYear, m_currentMonth);
-    if (!oss.str().empty()) {
-        m_doc->SaveSection(buf, oss.str());
-    } else {
-        m_doc->DeleteSection(buf);
-    }
+    m_doc->SaveOrDeleteSection(buf, oss.str());
     FillMonthlySectionName(buf, 32, m_currentYear);
     auto *stat = doc->GetStat();
     SetPeriodStat(buf, m_currentMonth, stat->income, stat->outlay);
@@ -116,7 +112,7 @@ void HaDataPanel::OnUpdateMenu(wxUpdateUIEvent &event)
     Utils::DelegateEvent(m_grid, event);
 }
 
-void HaDataPanel::OnMenu([[maybe_unused]] wxCommandEvent &event)
+void HaDataPanel::OnMenu(wxCommandEvent &event)
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     Utils::DelegateEvent(m_grid, event);
@@ -213,9 +209,5 @@ void HaDataPanel::SetPeriodStat(const char *sectionName, int period, money_t inc
     set_period_stat(m_period_doc->GetSegments(), period, income, outlay);
     std::ostringstream oss;
     m_period_doc->Write(stream_writer, &oss);
-    if (!oss.str().empty()) {
-        m_doc->SaveSection(sectionName, oss.str());
-    } else {
-        m_doc->DeleteSection(sectionName);
-    }
+    m_doc->SaveOrDeleteSection(sectionName, oss.str());
 }

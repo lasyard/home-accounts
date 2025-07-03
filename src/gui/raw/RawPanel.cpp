@@ -9,24 +9,24 @@
 #include <wx/treebook.h>
 #include <wx/treectrl.h>
 
-#include "HaRawPanel.h"
+#include "RawPanel.h"
 
 #include "NewSectionDialog.h"
 
 #include "../HaDefs.h"
 #include "../HaDocument.h"
 
-IMPLEMENT_DYNAMIC_CLASS(HaRawPanel, HaPanel)
-IMPLEMENT_TM(HaRawPanel)
+IMPLEMENT_DYNAMIC_CLASS(RawPanel, HaPanel)
+IMPLEMENT_TM(RawPanel)
 
-BEGIN_EVENT_TABLE(HaRawPanel, HaPanel)
-EVT_UPDATE_UI(ID_INSERT, HaRawPanel::OnUpdateInsert)
-EVT_MENU(ID_INSERT, HaRawPanel::OnInsert)
-EVT_UPDATE_UI(wxID_DELETE, HaRawPanel::OnUpdateDelete)
-EVT_MENU(wxID_DELETE, HaRawPanel::OnDelete)
+BEGIN_EVENT_TABLE(RawPanel, HaPanel)
+EVT_UPDATE_UI(ID_INSERT, RawPanel::OnUpdateInsert)
+EVT_MENU(ID_INSERT, RawPanel::OnInsert)
+EVT_UPDATE_UI(wxID_DELETE, RawPanel::OnUpdateDelete)
+EVT_MENU(wxID_DELETE, RawPanel::OnDelete)
 END_EVENT_TABLE()
 
-HaRawPanel::HaRawPanel(wxWindow *parent) : HaPanel(parent)
+RawPanel::RawPanel(wxWindow *parent) : HaPanel(parent)
 {
     wxLog::AddTraceMask(TM);
     auto *sizer = new wxBoxSizer(wxVERTICAL);
@@ -40,11 +40,11 @@ HaRawPanel::HaRawPanel(wxWindow *parent) : HaPanel(parent)
     SetSizer(sizer);
 }
 
-HaRawPanel::~HaRawPanel()
+RawPanel::~RawPanel()
 {
 }
 
-void HaRawPanel::OnUpdate()
+void RawPanel::OnUpdate()
 {
     wxASSERT(m_doc != nullptr);
     m_doc->ForEachSection([this](const std::string &name) -> bool {
@@ -63,7 +63,7 @@ void HaRawPanel::OnUpdate()
     FitTreeCtrlAndLayout();
 }
 
-void HaRawPanel::SaveContents()
+void RawPanel::SaveContents()
 {
     for (size_t i = 0; i < m_book->GetPageCount(); ++i) {
         auto *textCtrl = dynamic_cast<wxTextCtrl *>(m_book->GetPage(i));
@@ -73,17 +73,17 @@ void HaRawPanel::SaveContents()
     }
 }
 
-void HaRawPanel::ClearContents()
+void RawPanel::ClearContents()
 {
     m_book->DeleteAllPages();
 }
 
-void HaRawPanel::OnUpdateInsert(wxUpdateUIEvent &event)
+void RawPanel::OnUpdateInsert(wxUpdateUIEvent &event)
 {
     event.Enable(m_book->GetTreeCtrl()->HasFocus() || m_book->GetPageCount() == 0);
 }
 
-void HaRawPanel::OnInsert([[maybe_unused]] wxCommandEvent &event)
+void RawPanel::OnInsert([[maybe_unused]] wxCommandEvent &event)
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     NewSectionDialog dlg(nullptr);
@@ -96,12 +96,12 @@ void HaRawPanel::OnInsert([[maybe_unused]] wxCommandEvent &event)
     }
 }
 
-void HaRawPanel::OnUpdateDelete(wxUpdateUIEvent &event)
+void RawPanel::OnUpdateDelete(wxUpdateUIEvent &event)
 {
     event.Enable(m_book->GetTreeCtrl()->HasFocus() && m_book->GetSelection() != wxNOT_FOUND);
 }
 
-void HaRawPanel::OnDelete([[maybe_unused]] wxCommandEvent &event)
+void RawPanel::OnDelete([[maybe_unused]] wxCommandEvent &event)
 {
     int sel = m_book->GetSelection();
     if (sel != wxNOT_FOUND) {
@@ -123,7 +123,7 @@ void HaRawPanel::OnDelete([[maybe_unused]] wxCommandEvent &event)
     }
 }
 
-wxString HaRawPanel::GetFullName(int sel)
+wxString RawPanel::GetFullName(int sel)
 {
     wxString name = wxEmptyString;
     while (sel != wxNOT_FOUND) {
@@ -136,7 +136,7 @@ wxString HaRawPanel::GetFullName(int sel)
     return name;
 }
 
-wxTextCtrl *HaRawPanel::CreateTextCtrl(wxWindow *parent, const wxString &value)
+wxTextCtrl *RawPanel::CreateTextCtrl(wxWindow *parent, const wxString &value)
 {
     auto *textCtrl = new wxTextCtrl(parent, wxID_ANY, value, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
     wxFont font(16, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
@@ -145,7 +145,7 @@ wxTextCtrl *HaRawPanel::CreateTextCtrl(wxWindow *parent, const wxString &value)
     return textCtrl;
 }
 
-size_t HaRawPanel::InsertOrFindSubPage(int parent, const wxString &text, const wxString &value, bool warnDup)
+size_t RawPanel::InsertOrFindSubPage(int parent, const wxString &text, const wxString &value, bool warnDup)
 {
     size_t start = (parent == wxNOT_FOUND ? 0 : (size_t)(parent + 1));
     bool solved = false;
@@ -184,7 +184,7 @@ size_t HaRawPanel::InsertOrFindSubPage(int parent, const wxString &text, const w
     return i;
 }
 
-void HaRawPanel::FitTreeCtrlAndLayout()
+void RawPanel::FitTreeCtrlAndLayout()
 {
     m_book->GetTreeCtrl()->Fit();
     Layout();

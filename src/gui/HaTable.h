@@ -14,7 +14,7 @@ class HaTable : public wxGridTableBase
 {
 public:
     template <typename T>
-    HaTable(CsvDoc *doc, std::initializer_list<T> colLabels)
+    HaTable(std::initializer_list<T> colLabels, CsvDoc *doc = nullptr)
         : wxGridTableBase()
         , m_doc(doc)
         , m_colLabels(colLabels)

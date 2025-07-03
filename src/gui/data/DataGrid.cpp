@@ -1,19 +1,19 @@
 #include <wx/log.h>
 
-#include "HaDataGrid.h"
+#include "DataGrid.h"
 
-IMPLEMENT_TM(HaDataGrid)
-IMPLEMENT_DYNAMIC_CLASS(HaDataGrid, HaGrid)
+IMPLEMENT_TM(DataGrid)
+IMPLEMENT_DYNAMIC_CLASS(DataGrid, HaGrid)
 
-BEGIN_EVENT_TABLE(HaDataGrid, HaGrid)
+BEGIN_EVENT_TABLE(DataGrid, HaGrid)
 END_EVENT_TABLE()
 
-HaDataGrid::HaDataGrid() : HaGrid()
+DataGrid::DataGrid() : HaGrid()
 {
     wxLog::AddTraceMask(TM);
 }
 
-HaDataGrid::HaDataGrid(
+DataGrid::DataGrid(
     wxWindow *parent,
     wxWindowID id,
     const wxPoint &pos,
@@ -26,19 +26,19 @@ HaDataGrid::HaDataGrid(
     wxLog::AddTraceMask(TM);
 }
 
-HaDataGrid::~HaDataGrid()
+DataGrid::~DataGrid()
 {
 }
 
-DataDoc *HaDataGrid::GetTableDoc()
+DataDoc *DataGrid::GetTableDoc()
 {
-    return GetHaDataTable()->GetDataDoc();
+    return GetDataTable()->GetDataDoc();
 }
 
-HaTable *HaDataGrid::CreateHaTable(CsvDoc *doc)
+HaTable *DataGrid::CreateHaTable(CsvDoc *doc)
 {
     auto *ddoc = dynamic_cast<DataDoc *>(doc);
     wxASSERT(ddoc != nullptr);
-    auto *table = new HaDataTable(ddoc);
+    auto *table = new DataTable(ddoc);
     return table;
 }

@@ -1,16 +1,16 @@
 #include <wx/log.h>
 
-#include "HaDataGridCellAttrProvider.h"
+#include "DataGridCellAttrProvider.h"
 
-#include "HaDataTable.h"
+#include "DataTable.h"
 
 #include "../HaGdi.h"
 
 #include "data/data.h"
 
-IMPLEMENT_TM(HaDataGridCellAttrProvider)
+IMPLEMENT_TM(DataGridCellAttrProvider)
 
-HaDataGridCellAttrProvider::HaDataGridCellAttrProvider(const HaTable *table) : HaGridCellAttrProvider(table)
+DataGridCellAttrProvider::DataGridCellAttrProvider(const HaTable *table) : HaGridCellAttrProvider(table)
 {
     wxLog::AddTraceMask(TM);
 
@@ -21,16 +21,16 @@ HaDataGridCellAttrProvider::HaDataGridCellAttrProvider(const HaTable *table) : H
     m_roDeficitAttr->SetTextColour(HaGdi::DEFICIT_COLOR);
 }
 
-HaDataGridCellAttrProvider::~HaDataGridCellAttrProvider()
+DataGridCellAttrProvider::~DataGridCellAttrProvider()
 {
     m_roMoneyAttr->DecRef();
     m_roDeficitAttr->DecRef();
 }
 
-wxGridCellAttr *HaDataGridCellAttrProvider::GetItemCellAttr(int row, int col) const
+wxGridCellAttr *DataGridCellAttrProvider::GetItemCellAttr(int row, int col) const
 {
-    if (col == HaDataTable::BALANCE_COL) {
-        auto *table = static_cast<const HaDataTable *>(m_table);
+    if (col == DataTable::BALANCE_COL) {
+        auto *table = static_cast<const DataTable *>(m_table);
         struct data *data = table->GetData(row);
         if (data->balance < 0) {
             m_roDeficitAttr->IncRef();

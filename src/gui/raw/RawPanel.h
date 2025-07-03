@@ -1,5 +1,5 @@
-#ifndef _HA_RAW_HA_RAW_PANEL_H_
-#define _HA_RAW_HA_RAW_PANEL_H_
+#ifndef _HA_RAW_RAW_PANEL_H_
+#define _HA_RAW_RAW_PANEL_H_
 
 #include "../HaPanel.h"
 #include "../Utils.h"
@@ -7,7 +7,7 @@
 class wxTextCtrl;
 class wxTreebook;
 
-class HaRawPanel : public HaPanel
+class RawPanel : public HaPanel
 {
     DECLARE_DYNAMIC_CLASS(HaPanel)
     DECLARE_EVENT_TABLE()
@@ -15,8 +15,8 @@ class HaRawPanel : public HaPanel
 public:
     DECLARE_TM()
 
-    HaRawPanel(wxWindow *parent = nullptr);
-    virtual ~HaRawPanel();
+    RawPanel(wxWindow *parent = nullptr);
+    virtual ~RawPanel();
 
     void OnUpdate() override;
     void SaveContents() override;
@@ -38,4 +38,4 @@ private:
     void FitTreeCtrlAndLayout();
 };
 
-#endif /* _HA_RAW_HA_RAW_PANEL_H_ */
+#endif /* _HA_RAW_RAW_PANEL_H_ */

@@ -194,6 +194,13 @@ const char *parse_line(const struct parser_context *ctx, const char *line, void 
         return_null_if_null(p);
         ++p; // Skip the sep
     }
+    if (i == ctx->cols - 1) {
+        // Process empty string
+        if (ctx->types[i] == CT_CSTR || ctx->types[i] == CT_STR) {
+            p = parse_field(ctx, p, data, i);
+            ++i;
+        }
+    }
     if (i < ctx->cols) { // less fields
         return NULL;
     }

@@ -7,32 +7,31 @@
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 
-#include "HaDataPanel.h"
+#include "DataPanel.h"
 
 #include "DataDoc.h"
-#include "HaDataGrid.h"
+#include "DataGrid.h"
 
-#include "../CsvDoc.h"
 #include "../HaDefs.h"
 #include "../HaDocument.h"
 #include "../HaGdi.h"
 
 #include "data/StdStreamAccessor.h"
 
-IMPLEMENT_DYNAMIC_CLASS(HaDataPanel, HaPanel)
-IMPLEMENT_TM(HaDataPanel)
+IMPLEMENT_DYNAMIC_CLASS(DataPanel, HaPanel)
+IMPLEMENT_TM(DataPanel)
 
-BEGIN_EVENT_TABLE(HaDataPanel, HaPanel)
-EVT_UPDATE_UI(ID_INSERT, HaDataPanel::OnUpdateMenu)
-EVT_MENU(ID_INSERT, HaDataPanel::OnMenu)
-EVT_UPDATE_UI(wxID_DELETE, HaDataPanel::OnUpdateMenu)
-EVT_MENU(wxID_DELETE, HaDataPanel::OnMenu)
-EVT_DATE_CHANGED(ID_DATE, HaDataPanel::OnDateChanged)
+BEGIN_EVENT_TABLE(DataPanel, HaPanel)
+EVT_UPDATE_UI(ID_INSERT, DataPanel::OnUpdateMenu)
+EVT_MENU(ID_INSERT, DataPanel::OnMenu)
+EVT_UPDATE_UI(wxID_DELETE, DataPanel::OnUpdateMenu)
+EVT_MENU(wxID_DELETE, DataPanel::OnMenu)
+EVT_DATE_CHANGED(ID_DATE, DataPanel::OnDateChanged)
 END_EVENT_TABLE()
 
-const char *const HaDataPanel::DATA_PREFIX = "data";
+const char *const DataPanel::DATA_PREFIX = "data";
 
-HaDataPanel::HaDataPanel(wxWindow *parent)
+DataPanel::DataPanel(wxWindow *parent)
     : HaPanel(parent)
     , m_currentYear(1970)
     , m_currentMonth(1)
@@ -62,17 +61,17 @@ HaDataPanel::HaDataPanel(wxWindow *parent)
     m_closing = AddLabel(m_header, wxEmptyString, HaGdi::BIG_MONO_FONT, wxRIGHT);
     auto *sizer = new wxBoxSizer(wxVERTICAL);
     sizer->Add(m_header, wxSizerFlags().Expand().Border(wxALL, 0).Proportion(0));
-    m_grid = new HaDataGrid(this, wxID_ANY);
+    m_grid = new DataGrid(this, wxID_ANY);
     sizer->Add(m_grid, wxSizerFlags().Expand().Border(wxALL, 0).Proportion(1));
     SetSizer(sizer);
     m_grid->SetAttributes();
 }
 
-HaDataPanel::~HaDataPanel()
+DataPanel::~DataPanel()
 {
 }
 
-void HaDataPanel::OnUpdate()
+void DataPanel::OnUpdate()
 {
     auto date = m_date->GetValue();
     m_currentYear = date.GetYear();
@@ -80,7 +79,7 @@ void HaDataPanel::OnUpdate()
     ShowDataOfDate(m_currentYear, m_currentMonth);
 }
 
-void HaDataPanel::SaveContents()
+void DataPanel::SaveContents()
 {
     if (m_parseError) {
         return;
@@ -102,23 +101,23 @@ void HaDataPanel::SaveContents()
     SetPeriodStat(buf, m_currentYear, income, outlay);
 }
 
-void HaDataPanel::ClearContents()
+void DataPanel::ClearContents()
 {
     m_grid->ClearGrid();
 }
 
-void HaDataPanel::OnUpdateMenu(wxUpdateUIEvent &event)
+void DataPanel::OnUpdateMenu(wxUpdateUIEvent &event)
 {
     Utils::DelegateEvent(m_grid, event);
 }
 
-void HaDataPanel::OnMenu(wxCommandEvent &event)
+void DataPanel::OnMenu(wxCommandEvent &event)
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     Utils::DelegateEvent(m_grid, event);
 }
 
-void HaDataPanel::OnDateChanged(wxDateEvent &event)
+void DataPanel::OnDateChanged(wxDateEvent &event)
 {
     SaveContents();
     auto &date = event.GetDate();
@@ -127,20 +126,20 @@ void HaDataPanel::OnDateChanged(wxDateEvent &event)
     ShowDataOfDate(m_currentYear, m_currentMonth);
 }
 
-void HaDataPanel::OnUpdateStatistic([[maybe_unused]] wxCommandEvent &event)
+void DataPanel::OnUpdateStatistic([[maybe_unused]] wxCommandEvent &event)
 {
     UpdateStatistic();
 }
 
-void HaDataPanel::DoSetDocument(HaDocument *doc)
+void DataPanel::DoSetDocument(HaDocument *doc)
 {
-    m_grid->Bind(wxEVT_GRID_CELL_CHANGED, &HaDataPanel::OnUpdateStatistic, this);
+    m_grid->Bind(wxEVT_GRID_CELL_CHANGED, &DataPanel::OnUpdateStatistic, this);
     m_grid->Bind(wxEVT_GRID_CELL_CHANGED, &HaDocument::OnChange, doc);
     m_grid->Bind(wxEVT_MENU, &HaDocument::OnChange, doc, ID_INSERT);
     m_grid->Bind(wxEVT_MENU, &HaDocument::OnChange, doc, wxID_DELETE);
 }
 
-void HaDataPanel::ShowDataOfDate(int year, int month)
+void DataPanel::ShowDataOfDate(int year, int month)
 {
     char buf[32];
     FillDataSectionName(buf, 32, year, month);
@@ -152,7 +151,7 @@ void HaDataPanel::ShowDataOfDate(int year, int month)
     UpdateStatistic();
 }
 
-void HaDataPanel::UpdateStatistic()
+void DataPanel::UpdateStatistic()
 {
     auto *doc = m_grid->GetTableDoc();
     auto *stat = doc->GetStat();
@@ -165,7 +164,7 @@ void HaDataPanel::UpdateStatistic()
     m_header->Layout();
 }
 
-money_t HaDataPanel::GetOpening(int year, int month)
+money_t DataPanel::GetOpening(int year, int month)
 {
     char buf[32];
     FillAnnuallySectionName(buf, 32);
@@ -179,7 +178,7 @@ money_t HaDataPanel::GetOpening(int year, int month)
     return opening;
 }
 
-wxStaticText *HaDataPanel::AddLabel(wxSizer *sizer, const wxString &title, const wxFont &font, int borderDirection)
+wxStaticText *DataPanel::AddLabel(wxSizer *sizer, const wxString &title, const wxFont &font, int borderDirection)
 {
     auto *label = new wxStaticText(this, wxID_ANY, title);
     label->SetFont(font);
@@ -187,22 +186,22 @@ wxStaticText *HaDataPanel::AddLabel(wxSizer *sizer, const wxString &title, const
     return label;
 }
 
-void HaDataPanel::FillAnnuallySectionName(char *buf, size_t len)
+void DataPanel::FillAnnuallySectionName(char *buf, size_t len)
 {
     snprintf(buf, len, "%4s", DATA_PREFIX);
 }
 
-void HaDataPanel::FillMonthlySectionName(char *buf, size_t len, int year)
+void DataPanel::FillMonthlySectionName(char *buf, size_t len, int year)
 {
     snprintf(buf, len, "%4s/%04d", DATA_PREFIX, year);
 }
 
-void HaDataPanel::FillDataSectionName(char *buf, size_t len, int year, int month)
+void DataPanel::FillDataSectionName(char *buf, size_t len, int year, int month)
 {
     snprintf(buf, len, "%4s/%04d/%02d", DATA_PREFIX, year, month);
 }
 
-void HaDataPanel::SetPeriodStat(const char *sectionName, int period, money_t income, money_t outlay)
+void DataPanel::SetPeriodStat(const char *sectionName, int period, money_t income, money_t outlay)
 {
     auto &data = m_doc->GetOrCreateSection(sectionName);
     m_period_doc->Read(data);

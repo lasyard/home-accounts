@@ -24,6 +24,7 @@ add_exe(${APP_NAME}
     HaGdi.cpp
     HaGrid.cpp
     HaGridCellAttrProvider.cpp
+    HaImplTable.cpp
     HaMainFrame.cpp
     HaTable.cpp
     HaView.cpp
@@ -103,6 +104,7 @@ foreach(domain IN ITEMS ${APP_NAME} "xrc")
     endforeach()
 endforeach()
 
+add_subdirectory(account)
 add_subdirectory(data)
 add_subdirectory(raw)
 add_subdirectory(res)

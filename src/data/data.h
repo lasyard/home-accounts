@@ -66,7 +66,7 @@ void calc_all_balance_stat(struct list_head *segments, struct data_stat *stat);
 
 date_t get_segment_date(const struct segment *segment);
 
-struct segment *fill_days_of_month(struct list_head *segments, int year, int month);
+const struct segment *fill_days_of_month(struct list_head *segments, int year, int month);
 
 void delete_empty(struct list_head *segments);
 

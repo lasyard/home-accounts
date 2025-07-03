@@ -1,5 +1,5 @@
-#ifndef _HA_DATA_HA_DATA_PANEL_H_
-#define _HA_DATA_HA_DATA_PANEL_H_
+#ifndef _HA_DATA_DATA_PANEL_H_
+#define _HA_DATA_DATA_PANEL_H_
 
 #include "../HaPanel.h"
 #include "../Utils.h"
@@ -11,19 +11,19 @@ class wxDateEvent;
 class wxStaticText;
 class wxBoxSizer;
 
-class HaDataGrid;
 class CsvDoc;
+class DataGrid;
 
-class HaDataPanel : public HaPanel
+class DataPanel : public HaPanel
 {
-    DECLARE_DYNAMIC_CLASS(HaDataPanel)
+    DECLARE_DYNAMIC_CLASS(DataPanel)
     DECLARE_EVENT_TABLE()
 
 public:
     DECLARE_TM()
 
-    HaDataPanel(wxWindow *parent = nullptr);
-    virtual ~HaDataPanel();
+    DataPanel(wxWindow *parent = nullptr);
+    virtual ~DataPanel();
 
     void OnUpdate() override;
     void SaveContents() override;
@@ -44,7 +44,7 @@ private:
     wxStaticText *m_closing;
     wxStaticText *m_income;
     wxStaticText *m_outlay;
-    HaDataGrid *m_grid;
+    DataGrid *m_grid;
 
     int m_currentYear;
     int m_currentMonth;
@@ -57,7 +57,6 @@ private:
     void ShowDataOfDate(int year, int month);
     void UpdateStatistic();
 
-    const std::string *GetOrCreateSection();
     money_t GetOpening(int year, int month);
 
     wxStaticText *
@@ -70,4 +69,4 @@ private:
     void SetPeriodStat(const char *sectionName, int period, money_t income, money_t outlay);
 };
 
-#endif /* _HA_DATA_HA_DATA_PANEL_H_ */
+#endif /* _HA_DATA_DATA_PANEL_H_ */

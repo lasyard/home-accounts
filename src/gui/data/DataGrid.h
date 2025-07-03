@@ -1,21 +1,21 @@
-#ifndef _HA_DATA_HA_DATA_GRID_H_
-#define _HA_DATA_HA_DATA_GRID_H_
+#ifndef _HA_DATA_DATA_GRID_H_
+#define _HA_DATA_DATA_GRID_H_
 
 #include "../HaGrid.h"
 
 #include "DataDoc.h"
-#include "HaDataTable.h"
+#include "DataTable.h"
 
-class HaDataGrid : public HaGrid
+class DataGrid : public HaGrid
 {
-    DECLARE_DYNAMIC_CLASS(HaDataGrid)
+    DECLARE_DYNAMIC_CLASS(DataGrid)
     DECLARE_EVENT_TABLE()
 
 public:
     DECLARE_TM()
 
-    HaDataGrid();
-    HaDataGrid(
+    DataGrid();
+    DataGrid(
         wxWindow *parent,
         wxWindowID id = wxID_ANY,
         const wxPoint &pos = wxDefaultPosition,
@@ -23,7 +23,7 @@ public:
         long style = wxWANTS_CHARS,
         const wxString &name = wxGridNameStr
     );
-    virtual ~HaDataGrid();
+    virtual ~DataGrid();
 
     DataDoc *GetTableDoc() override;
 
@@ -32,13 +32,13 @@ private:
 
     int CursorColOfNewRow() override
     {
-        return HaDataTable::OUTLAY_COL;
+        return DataTable::OUTLAY_COL;
     }
 
-    HaDataTable *GetHaDataTable() const
+    DataTable *GetDataTable() const
     {
-        return static_cast<HaDataTable *>(GetTable());
+        return static_cast<DataTable *>(GetTable());
     }
 };
 
-#endif /* _HA_DATA_HA_DATA_GRID_H_ */
+#endif /* _HA_DATA_DATA_GRID_H_ */

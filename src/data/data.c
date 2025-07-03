@@ -5,6 +5,7 @@
 #include "csv/csv_parser.h"
 #include "csv/str.h"
 
+// TODO: not consistent with the parser
 #define DATE_SEP '-'
 
 const enum column_type data_types[DATA_COLS] = {
@@ -107,11 +108,11 @@ void calc_all_balance_stat(struct list_head *segments, struct data_stat *stat)
     calc_balance_stat(segment, data, stat);
 }
 
-static bool set_segment_comment(struct segment *segment, date_t date)
+static const char *set_segment_comment(struct segment *segment, date_t date)
 {
     char buf[DATE_LEN + 1];
     output_date(buf, date, '-');
-    return set_cstring(&segment->comment, buf, DATE_LEN) != NULL;
+    return set_cstring(&segment->comment, buf, DATE_LEN);
 }
 
 date_t get_segment_date(const struct segment *segment)
@@ -126,32 +127,11 @@ date_t get_segment_date(const struct segment *segment)
     return 0;
 }
 
-struct segment *fill_days_of_month(struct list_head *segments, int year, int month)
+const struct segment *fill_days_of_month(struct list_head *segments, int year, int month)
 {
     date_t start = jdn(year, month, 1);
     date_t end = jdn(year, month, end_day_of_month(year, month));
-    struct list_item **curr_pos = &segments->first;
-    for (date_t day = start; day <= end; ++day) {
-        if (*curr_pos != NULL) {
-            struct segment *segment = get_segment(*curr_pos);
-            date_t date = get_segment_date(segment);
-            if (date < day) {
-                return segment;
-            } else if (date == day) {
-                curr_pos = &(*curr_pos)->next;
-                continue;
-            }
-        }
-        struct segment *ns = new_segment();
-        if (ns == NULL) {
-            break;
-        }
-        set_segment_comment(ns, day);
-        ns->list.next = *curr_pos;
-        *curr_pos = &ns->list;
-        curr_pos = &ns->list.next;
-    }
-    return NULL;
+    return fill_serial(segments, start, end, get_segment_date, set_segment_comment);
 }
 
 static bool is_empty_segment(struct list_item *list, void *context)

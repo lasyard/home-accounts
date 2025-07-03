@@ -30,7 +30,7 @@ void DataDoc::UpdateBalanceStat()
 
 bool DataDoc::AfterRead()
 {
-    struct segment *wrong = fill_days_of_month(&m_segments, m_year, m_month);
+    const struct segment *wrong = fill_days_of_month(&m_segments, m_year, m_month);
     if (wrong != NULL) {
         wxLogWarning(_("Invalid date: %s"), wrong->comment != NULL ? wrong->comment : "");
         return false;

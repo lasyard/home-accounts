@@ -6,6 +6,8 @@
 #define DATE_LEN (4 + 1 + 2 + 1 + 2)
 #define TIME_LEN (2 + 1 + 2 + 1 + 2)
 
+#define UNKNOWN_TIME (-1)
+
 typedef int32_t date_t;
 typedef int32_t dtime_t;
 

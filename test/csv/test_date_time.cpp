@@ -50,7 +50,7 @@ TEST_CASE("parse_time")
     parse_time("11:20:3", &data, '\0');
     CHECK(data == 40803);
     parse_time("", &data, '\0');
-    CHECK(data == 0);
+    CHECK(data == UNKNOWN_TIME);
 }
 
 TEST_CASE("output_date")

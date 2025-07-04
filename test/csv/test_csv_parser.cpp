@@ -5,6 +5,7 @@
 #include <sstream>
 
 #include "csv_parser.h"
+#include "date_time.h"
 #include "money.h"
 #include "segment.h"
 #include "str.h"
@@ -80,6 +81,44 @@ TEST_CASE("parse_line")
         CHECK(r.amount == 678910);
     }
     release_data(&ctx, &r);
+}
+
+TEST_CASE("parse_line_1")
+{
+    SUBCASE("empty cstring at last")
+    {
+        enum column_type types[] { CT_INT32, CT_MONEY, CT_CSTR };
+        struct parser_context ctx;
+        init_parser(&ctx);
+        set_parser_types(&ctx, 3, types);
+        struct common_record_meta *crm = use_common_record(&ctx);
+        void *item = new_item(&ctx);
+        const char *p = parse_line(&ctx, "1, 123.45,\n", item);
+        CHECK(*p == '\n');
+        CHECK(*(int32_t *)common_get_ptr(item, 0, crm) == 1);
+        CHECK(*(money_t *)common_get_ptr(item, 1, crm) == 12345L);
+        CHECK(*(const char **)common_get_ptr(item, 2, crm) == NULL);
+        release_data(&ctx, item);
+        free(item);
+        free(crm);
+    }
+    SUBCASE("empty time at last")
+    {
+        enum column_type types[] { CT_INT32, CT_MONEY, CT_TIME };
+        struct parser_context ctx;
+        init_parser(&ctx);
+        set_parser_types(&ctx, 3, types);
+        struct common_record_meta *crm = use_common_record(&ctx);
+        void *item = new_item(&ctx);
+        const char *p = parse_line(&ctx, "1, 123.45,", item);
+        CHECK(*p == '\0');
+        CHECK(*(int32_t *)common_get_ptr(item, 0, crm) == 1);
+        CHECK(*(money_t *)common_get_ptr(item, 1, crm) == 12345L);
+        CHECK(*(dtime_t *)common_get_ptr(item, 2, crm) == UNKNOWN_TIME);
+        release_data(&ctx, item);
+        free(item);
+        free(crm);
+    }
 }
 
 TEST_CASE("parse_strings")
@@ -178,15 +217,16 @@ TEST_CASE("commond_record")
     init_parser(&ctx);
     set_parser_types(&ctx, 6, types);
     struct common_record_meta *crm = use_common_record(&ctx);
-    void *data = malloc(ctx.data_size);
-    const char *p = parse_line(&ctx, "   abc, def , 10, -100 ,, 123.45\n", data);
+    void *item = new_item(&ctx);
+    const char *p = parse_line(&ctx, "   abc, def , 10, -100 ,, 123.45\n", item);
     CHECK(*p == '\0');
-    CHECK(string_cstrcmp((struct string *)common_get_ptr(data, 0, crm), "abc") == 0);
-    CHECK(string_cstrcmp((struct string *)common_get_ptr(data, 1, crm), "def") == 0);
-    CHECK(*(int32_t *)common_get_ptr(data, 2, crm) == 10);
-    CHECK(*(int64_t *)common_get_ptr(data, 3, crm) == -100L);
-    CHECK(*(int64_t *)common_get_ptr(data, 5, crm) == 12345L);
-    free(data);
+    CHECK(string_cstrcmp((struct string *)common_get_ptr(item, 0, crm), "abc") == 0);
+    CHECK(string_cstrcmp((struct string *)common_get_ptr(item, 1, crm), "def") == 0);
+    CHECK(*(int32_t *)common_get_ptr(item, 2, crm) == 10);
+    CHECK(*(int64_t *)common_get_ptr(item, 3, crm) == -100L);
+    CHECK(*(int64_t *)common_get_ptr(item, 5, crm) == 12345L);
+    release_data(&ctx, item);
+    free(item);
     free(crm);
 }
 

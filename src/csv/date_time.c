@@ -64,7 +64,7 @@ const char *parse_time(const char *buf, dtime_t *data, char sep)
     int32_t hour = 0, min = 0, sec = 0;
     const char *p = skip_space(buf);
     if (*p == sep || is_line_end(*p)) {
-        *data = 0;
+        *data = UNKNOWN_TIME;
         return p;
     }
     p = parse_int32(p, &hour, ':');
@@ -81,14 +81,16 @@ const char *parse_time(const char *buf, dtime_t *data, char sep)
 
 char *output_date(char *buf, date_t data, char date_sep)
 {
-    int year, month, day;
-    jdn_split(data, &year, &month, &day);
     char *p = buf;
-    p = output_int64_len(p, year, 4);
-    *(p++) = date_sep;
-    p = output_int64_len(p, month, 2);
-    *(p++) = date_sep;
-    p = output_int64_len(p, day, 2);
+    if (data > UNKNOWN_TIME) {
+        int year, month, day;
+        jdn_split(data, &year, &month, &day);
+        p = output_int64_len(p, year, 4);
+        *(p++) = date_sep;
+        p = output_int64_len(p, month, 2);
+        *(p++) = date_sep;
+        p = output_int64_len(p, day, 2);
+    }
     return p;
 }
 

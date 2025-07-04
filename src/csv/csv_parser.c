@@ -91,9 +91,7 @@ static char *output_by_type(const struct parser_options *opt, char *buf, enum co
     case CT_DATE:
         return output_date(buf, *(const date_t *)data, opt->date_sep);
     case CT_TIME:
-        if (!opt->empty_zero_time || *(const dtime_t *)data != 0) {
-            return output_time(buf, *(const dtime_t *)data);
-        }
+        return output_time(buf, *(const dtime_t *)data);
         break;
     case CT_IGNORE:
         break;
@@ -127,7 +125,6 @@ void init_options(struct parser_options *opt)
     opt->date_sep = '-';
     opt->comment = '#';
     set_options_money_prec(opt, 2);
-    opt->empty_zero_time = true;
 }
 
 void init_parser(struct parser_context *ctx)
@@ -192,13 +189,25 @@ const char *parse_line(const struct parser_context *ctx, const char *line, void 
     for (i = 0; i < ctx->cols && !is_line_end(*p); ++i) {
         p = parse_field(ctx, p, data, i);
         return_null_if_null(p);
-        ++p; // Skip the sep
+        ++p; // skip the sep
     }
     if (i == ctx->cols - 1) {
-        // Process empty string
-        if (ctx->types[i] == CT_CSTR || ctx->types[i] == CT_STR) {
-            p = parse_field(ctx, p, data, i);
+        // process empty field
+        switch (ctx->types[i]) {
+        case CT_STR:
+            *(struct string *)get_field(ctx, data, i) = (struct string){NULL, 0};
             ++i;
+            break;
+        case CT_CSTR:
+            *(const char **)get_field(ctx, data, i) = NULL;
+            ++i;
+            break;
+        case CT_TIME:
+            *(dtime_t *)get_field(ctx, data, i) = UNKNOWN_TIME;
+            ++i;
+            break;
+        default:
+            break;
         }
     }
     if (i < ctx->cols) { // less fields

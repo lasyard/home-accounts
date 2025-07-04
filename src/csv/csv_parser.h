@@ -9,13 +9,12 @@
 #define LIST_ITEM_INDEX (-1)
 
 struct parser_options {
-    char sep;             // The separator of fields.
-    char num_sep;         // The separator in numbers.
-    char date_sep;        // The separator of y/m/d in date.
-    char comment;         // The leading character of comments.
-    int money_prec;       // The precision of money.
-    int money_scale;      // The scale factor of money.
-    bool empty_zero_time; // Whether to output time 00:00:00 as empty string.
+    char sep;        // The separator of fields.
+    char num_sep;    // The separator in numbers.
+    char date_sep;   // The separator of y/m/d in date.
+    char comment;    // The leading character of comments.
+    int money_prec;  // The precision of money.
+    int money_scale; // The scale factor of money.
 };
 
 #ifdef _MSC_VER

@@ -34,7 +34,7 @@ void *account_get(void *data, int i, const void *context)
     return NULL;
 }
 
-const struct segment *fill_account_types(struct list_head *segments)
+const struct segment *fill_account_types(struct list_head *segments, int32_t *maxId)
 {
     const struct segment *segment =
         fill_serial(segments, ACCOUNT_TYPE_DEBIT, ACCOUNT_TYPE_TRANSFER, get_segment_int, set_segment_int);
@@ -44,6 +44,9 @@ const struct segment *fill_account_types(struct list_head *segments)
             for (struct list_item *q = s->items.first; q != NULL; q = q->next) {
                 struct account *a = get_account(q);
                 a->type = get_segment_int(s);
+                if (a->id > *maxId) {
+                    *maxId = a->id;
+                }
             }
         }
     }

@@ -13,9 +13,6 @@ public:
     virtual ~DataGridCellAttrProvider();
 
 private:
-    mutable wxGridCellAttr *m_roMoneyAttr;
-    mutable wxGridCellAttr *m_roDeficitAttr;
-
     wxGridCellAttr *GetItemCellAttr(int row, int col) const override;
 };
 

@@ -78,7 +78,6 @@ protected:
 
     virtual const wxString GetCellValue(int row, int col);
     virtual const wxString GetItemCellValue(int row, int col);
-    virtual const wxString GetItemCellMoneyValueBySign(int row, int col, bool negative);
     virtual const wxString GetSegmentCellValue(int row);
 
     virtual void SetCellValue(int row, int col, const wxString &value);

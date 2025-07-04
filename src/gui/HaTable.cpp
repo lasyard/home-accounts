@@ -201,11 +201,6 @@ const wxString HaTable::GetItemCellValue(int row, int col)
     return m_doc->GetItemValueString(m_index[row].GetItem(), col);
 }
 
-const wxString HaTable::GetItemCellMoneyValueBySign(int row, int col, bool negative)
-{
-    return m_doc->GetItemMoneyStringBySign(m_index[row].GetItem(), col, negative);
-}
-
 const wxString HaTable::GetSegmentCellValue(int row)
 {
     return m_doc->GetSegmentValueString(m_index[row].GetSegment());

@@ -10,6 +10,7 @@ class DataTable : public HaImplTable
     DECLARE_DYNAMIC_CLASS(DataTable)
 
 public:
+    static const int INCOME_COL = 4;
     static const int OUTLAY_COL = 5;
     static const int BALANCE_COL = 7;
 

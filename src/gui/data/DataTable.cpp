@@ -29,25 +29,33 @@ DataTable::DataTable(DataDoc *doc)
     MapColImpl(m_colImpls[1], DATA_AMOUNT_COL);
     MapColImpl(m_colImpls[2], DATA_ACCOUNT_COL);
     MapColImpl(m_colImpls[3], DATA_DESC_COL);
-    m_colImpls[4] = {
-        .type = m_doc->GetItemValueType(DATA_REAL_AMOUNT_COL),
+    m_colImpls[INCOME_COL] = {
+        .type = CT_MONEY,
         .get = [this](int row) -> wxString {
-            return HaTable::GetItemCellMoneyValueBySign(row, DATA_REAL_AMOUNT_COL, true);
+            money_t m = GetData(row)->amount;
+            if (m < 0) {
+                return m_doc->GetMoneyString(-m);
+            }
+            return wxEmptyString;
         },
         .set = [this](int row, const wxString &value) -> void {
             HaTable::SetItemCellValue(row, DATA_REAL_AMOUNT_COL, "-" + value);
-            CacheCell(row, 5);
+            CacheCell(row, OUTLAY_COL);
             UpdateDocAndCache(row);
         },
     };
     m_colImpls[OUTLAY_COL] = {
-        .type = m_doc->GetItemValueType(DATA_REAL_AMOUNT_COL),
+        .type = CT_MONEY,
         .get = [this](int row) -> wxString {
-            return HaTable::GetItemCellMoneyValueBySign(row, DATA_REAL_AMOUNT_COL, false);
+            money_t m = GetData(row)->amount;
+            if (m > 0) {
+                return m_doc->GetMoneyString(m);
+            }
+            return wxEmptyString;
         },
         .set = [this](int row, const wxString &value) -> void {
             HaTable::SetItemCellValue(row, DATA_REAL_AMOUNT_COL, value);
-            CacheCell(row, 4);
+            CacheCell(row, INCOME_COL);
             UpdateDocAndCache(row);
         },
     };
@@ -71,7 +79,7 @@ DataTable::~DataTable()
 
 void DataTable::Init()
 {
-    HaTable::Init();
+    HaImplTable::Init();
     SetAttrProvider(new DataGridCellAttrProvider(this));
 }
 

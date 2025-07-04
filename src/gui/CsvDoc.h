@@ -26,13 +26,13 @@ public:
         return m_types[i];
     }
 
-    const wxString GetItemValueString(const void *item, int i) const;
-    const wxString GetSegmentValueString(const struct segment *segment) const;
-    const wxString GetItemMoneyStringBySign(const void *item, int i, bool negative);
     const wxString GetMoneyString(money_t val);
 
-    void SetItemValueString(void *item, int i, const wxString &value);
-    void SetSegmentValueString(struct segment *segment, const wxString &value);
+    virtual const wxString GetItemValueString(const void *item, int i) const;
+    virtual const wxString GetSegmentValueString(const struct segment *segment) const;
+
+    virtual void SetItemValueString(void *item, int i, const wxString &value);
+    virtual void SetSegmentValueString(struct segment *segment, const wxString &value);
 
     const struct list_head *GetSegments() const
     {
@@ -69,6 +69,10 @@ protected:
     virtual bool BeforeWrite()
     {
         return true;
+    }
+
+    virtual void SetNewItem([[maybe_unused]] void *item)
+    {
     }
 
 private:

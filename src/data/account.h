@@ -39,7 +39,7 @@ extern const enum column_type account_types[ACCOUNT_COLS];
 
 void *account_get(void *data, int i, const void *context);
 
-const struct segment *fill_account_types(struct list_head *segments);
+const struct segment *fill_account_types(struct list_head *segments, int32_t *maxId);
 
 #ifdef __cplusplus
 }

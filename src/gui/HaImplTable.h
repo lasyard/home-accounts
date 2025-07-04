@@ -16,6 +16,7 @@ public:
 
     virtual ~HaImplTable()
     {
+        delete[] m_colImpls;
     }
 
     enum column_type GetItemFieldType(int col) const override

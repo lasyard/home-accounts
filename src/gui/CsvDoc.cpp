@@ -31,6 +31,14 @@ CsvDoc::~CsvDoc()
     release_segments(&m_ctx, &m_segments);
 }
 
+const wxString CsvDoc::GetMoneyString(money_t val)
+{
+    char buf[MAX_LINE_LENGTH + 1];
+    char *p = output_money(buf, val, m_ctx.options.money_prec, m_ctx.options.money_scale);
+    *p = '\0';
+    return buf;
+}
+
 const wxString CsvDoc::GetItemValueString(const void *item, int i) const
 {
     if (m_types[i] != CT_CSTR) {
@@ -41,30 +49,6 @@ const wxString CsvDoc::GetItemValueString(const void *item, int i) const
     } else {
         return get_cstr_field(&m_ctx, item, i);
     }
-}
-
-const wxString CsvDoc::GetItemMoneyStringBySign(const void *item, int i, bool negative)
-{
-    wxASSERT(m_types[i] == CT_MONEY);
-    const money_t m = *(const money_t *)get_field(&m_ctx, (void *)item, i);
-    if (negative) {
-        if (m < 0) {
-            return GetMoneyString(-m);
-        }
-    } else {
-        if (m > 0) {
-            return GetMoneyString(m);
-        }
-    }
-    return wxEmptyString;
-}
-
-const wxString CsvDoc::GetMoneyString(money_t val)
-{
-    char buf[MAX_LINE_LENGTH + 1];
-    char *p = output_money(buf, val, m_ctx.options.money_prec, m_ctx.options.money_scale);
-    *p = '\0';
-    return buf;
 }
 
 const wxString CsvDoc::GetSegmentValueString(const struct segment *segment) const
@@ -107,6 +91,7 @@ void *CsvDoc::InsertItem(void *pos)
     void *item = new_item(&m_ctx);
     return_null_if_null(item);
     list_ins(get_list_item(&m_ctx, pos), get_list_item(&m_ctx, item));
+    SetNewItem(item);
     return item;
 }
 
@@ -115,6 +100,7 @@ void *CsvDoc::InsertItemHead(struct segment *segment)
     void *item = new_item(&m_ctx);
     return_null_if_null(item);
     list_ins_head(&segment->items, get_list_item(&m_ctx, item));
+    SetNewItem(item);
     return item;
 }
 

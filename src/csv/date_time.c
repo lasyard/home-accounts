@@ -82,26 +82,26 @@ const char *parse_time(const char *buf, dtime_t *data, char sep)
 char *output_date(char *buf, date_t data, char date_sep)
 {
     char *p = buf;
-    if (data > UNKNOWN_TIME) {
-        int year, month, day;
-        jdn_split(data, &year, &month, &day);
-        p = output_int64_len(p, year, 4);
-        *(p++) = date_sep;
-        p = output_int64_len(p, month, 2);
-        *(p++) = date_sep;
-        p = output_int64_len(p, day, 2);
-    }
+    int year, month, day;
+    jdn_split(data, &year, &month, &day);
+    p = output_int64_len(p, year, 4);
+    *(p++) = date_sep;
+    p = output_int64_len(p, month, 2);
+    *(p++) = date_sep;
+    p = output_int64_len(p, day, 2);
     return p;
 }
 
 char *output_time(char *buf, dtime_t data)
 {
     char *p = buf;
-    p = output_int64_len(p, data / 3600, 2);
-    *(p++) = ':';
-    p = output_int64_len(p, (data % 3600) / 60, 2);
-    *(p++) = ':';
-    p = output_int64_len(p, (data % 60), 2);
+    if (data > UNKNOWN_TIME) {
+        p = output_int64_len(p, data / 3600, 2);
+        *(p++) = ':';
+        p = output_int64_len(p, (data % 3600) / 60, 2);
+        *(p++) = ':';
+        p = output_int64_len(p, (data % 60), 2);
+    }
     return p;
 }
 

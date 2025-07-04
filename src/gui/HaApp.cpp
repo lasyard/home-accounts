@@ -6,6 +6,7 @@
 
 #include "HaArtProvider.h"
 #include "HaDocument.h"
+#include "HaGridCellAttrProvider.h"
 #include "HaMainFrame.h"
 #include "HaView.h"
 
@@ -50,12 +51,14 @@ bool HaApp::OnInit()
     frame->Center(wxBOTH);
     frame->Show();
     SetTopWindow(frame);
+    HaGridCellAttrProvider::InitAttr();
     return true;
 }
 
 int HaApp::OnExit()
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
+    HaGridCellAttrProvider::ReleaseAttr();
     delete m_docManager;
     return wxApp::OnExit();
 }

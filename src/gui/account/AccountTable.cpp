@@ -1,6 +1,7 @@
 #include "AccountTable.h"
 
 #include "AccountDoc.h"
+#include "AccountGridCellAttrProvider.h"
 
 #include "../Utils.h"
 
@@ -35,4 +36,10 @@ AccountTable::~AccountTable()
 AccountDoc *AccountTable::GetAccountDoc()
 {
     return static_cast<AccountDoc *>(m_doc);
+}
+
+void AccountTable::Init()
+{
+    HaImplTable::Init();
+    SetAttrProvider(new AccountGridCellAttrProvider(this));
 }

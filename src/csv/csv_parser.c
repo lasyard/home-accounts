@@ -34,7 +34,7 @@ static void init_by_type(enum column_type type, void *data)
         *(money_t *)data = 0LL;
         break;
     case CT_DATE:
-        *(date_t *)data = 0;
+        *(date_t *)data = jdn(1970, 1, 1);
         break;
     case CT_TIME:
         *(dtime_t *)data = 0;

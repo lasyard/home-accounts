@@ -32,7 +32,7 @@ DataTable::DataTable(DataDoc *doc)
     m_colImpls[INCOME_COL] = {
         .type = CT_MONEY,
         .get = [this](int row) -> wxString {
-            money_t m = GetData(row)->amount;
+            money_t m = GetData(row)->real_amount;
             if (m < 0) {
                 return m_doc->GetMoneyString(-m);
             }
@@ -47,7 +47,7 @@ DataTable::DataTable(DataDoc *doc)
     m_colImpls[OUTLAY_COL] = {
         .type = CT_MONEY,
         .get = [this](int row) -> wxString {
-            money_t m = GetData(row)->amount;
+            money_t m = GetData(row)->real_amount;
             if (m > 0) {
                 return m_doc->GetMoneyString(m);
             }

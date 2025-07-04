@@ -7,21 +7,12 @@
 
 IMPLEMENT_TM(HaGridCellAttrProvider)
 
-wxGridCellAttr *HaGridCellAttrProvider::defaultAttr = nullptr;
-wxGridCellAttr *HaGridCellAttrProvider::monoAttr = nullptr;
-wxGridCellAttr *HaGridCellAttrProvider::integerAttr = nullptr;
-wxGridCellAttr *HaGridCellAttrProvider::integerAttrRO = nullptr;
-wxGridCellAttr *HaGridCellAttrProvider::moneyAttr = nullptr;
-wxGridCellAttr *HaGridCellAttrProvider::moneyAttrRO = nullptr;
-wxGridCellAttr *HaGridCellAttrProvider::deficitAttrRO = nullptr;
-wxGridCellAttr *HaGridCellAttrProvider::boolAttr = nullptr;
-
 HaGridCellAttrProvider::HaGridCellAttrProvider(const HaTable *table) : wxGridCellAttrProvider(), m_table(table)
 {
     wxLog::AddTraceMask(TM);
 
-    wxASSERT(defaultAttr != nullptr);
-    m_segmentAttr = defaultAttr->Clone();
+    InitAttr();
+    m_segmentAttr = m_defaultAttr->Clone();
     m_segmentAttr->SetSize(1, m_table->GetColsCount());
     m_segmentAttr->SetBackgroundColour(HaGdi::SEGMENT_COLOR);
     m_segmentAttr->SetFont(HaGdi::DIGI_FONT);
@@ -32,50 +23,51 @@ HaGridCellAttrProvider::HaGridCellAttrProvider(const HaTable *table) : wxGridCel
 HaGridCellAttrProvider::~HaGridCellAttrProvider()
 {
     m_segmentAttr->DecRef();
+    ReleaseAttr();
 }
 
 void HaGridCellAttrProvider::InitAttr()
 {
-    defaultAttr = new wxGridCellAttr();
+    m_defaultAttr = new wxGridCellAttr();
     // Do not use `wxALIGN_CENTER_HORIZONTAL` or `wxALIGN_CENTER_VERTICAL` for `hAlign` and `vAlign`.
-    defaultAttr->SetAlignment(wxALIGN_LEFT, wxALIGN_CENTER);
+    m_defaultAttr->SetAlignment(wxALIGN_LEFT, wxALIGN_CENTER);
 
-    monoAttr = defaultAttr->Clone();
-    monoAttr->SetAlignment(wxALIGN_RIGHT, wxALIGN_CENTER);
-    monoAttr->SetFont(HaGdi::DIGI_FONT);
+    m_monoAttr = m_defaultAttr->Clone();
+    m_monoAttr->SetAlignment(wxALIGN_RIGHT, wxALIGN_CENTER);
+    m_monoAttr->SetFont(HaGdi::DIGI_FONT);
 
-    integerAttr = monoAttr->Clone();
-    integerAttr->SetEditor(new wxGridCellNumberEditor());
+    m_integerAttr = m_monoAttr->Clone();
+    m_integerAttr->SetEditor(new wxGridCellNumberEditor());
 
-    integerAttrRO = integerAttr->Clone();
-    integerAttrRO->SetReadOnly();
+    m_integerAttrRO = m_integerAttr->Clone();
+    m_integerAttrRO->SetReadOnly();
 
-    moneyAttr = monoAttr->Clone();
-    moneyAttr->SetEditor(new wxGridCellFloatEditor(-1, 2));
+    m_moneyAttr = m_monoAttr->Clone();
+    m_moneyAttr->SetEditor(new wxGridCellFloatEditor(-1, 2));
 
-    moneyAttrRO = moneyAttr->Clone();
-    moneyAttrRO->SetReadOnly();
+    m_moneyAttrRO = m_moneyAttr->Clone();
+    m_moneyAttrRO->SetReadOnly();
 
-    deficitAttrRO = moneyAttrRO->Clone();
-    deficitAttrRO->SetTextColour(HaGdi::DEFICIT_COLOR);
+    m_deficitAttrRO = m_moneyAttrRO->Clone();
+    m_deficitAttrRO->SetTextColour(HaGdi::DEFICIT_COLOR);
 
-    boolAttr = defaultAttr->Clone();
-    boolAttr->SetRenderer(new wxGridCellBoolRenderer());
+    m_boolAttr = m_defaultAttr->Clone();
+    m_boolAttr->SetRenderer(new wxGridCellBoolRenderer());
     auto *boolEditor = new wxGridCellBoolEditor();
     boolEditor->UseStringValues("1", "0");
-    boolAttr->SetEditor(boolEditor);
+    m_boolAttr->SetEditor(boolEditor);
 }
 
 void HaGridCellAttrProvider::ReleaseAttr()
 {
-    defaultAttr->DecRef();
-    monoAttr->DecRef();
-    integerAttr->DecRef();
-    integerAttrRO->DecRef();
-    moneyAttr->DecRef();
-    moneyAttrRO->DecRef();
-    deficitAttrRO->DecRef();
-    boolAttr->DecRef();
+    m_defaultAttr->DecRef();
+    m_monoAttr->DecRef();
+    m_integerAttr->DecRef();
+    m_integerAttrRO->DecRef();
+    m_moneyAttr->DecRef();
+    m_moneyAttrRO->DecRef();
+    m_deficitAttrRO->DecRef();
+    m_boolAttr->DecRef();
 }
 
 wxGridCellAttr *HaGridCellAttrProvider::GetAttr(int row, int col, wxGridCellAttr::wxAttrKind kind) const
@@ -96,8 +88,8 @@ wxGridCellAttr *HaGridCellAttrProvider::GetAttr(int row, int col, wxGridCellAttr
             break;
         }
     }
-    defaultAttr->IncRef();
-    return defaultAttr;
+    m_defaultAttr->IncRef();
+    return m_defaultAttr;
 }
 
 wxGridCellAttr *HaGridCellAttrProvider::GetItemCellAttr([[maybe_unused]] int row, int col) const
@@ -105,21 +97,21 @@ wxGridCellAttr *HaGridCellAttrProvider::GetItemCellAttr([[maybe_unused]] int row
     switch (m_table->GetItemFieldType(col)) {
     case CT_INT32:
     case CT_INT64:
-        integerAttr->IncRef();
-        return integerAttr;
+        m_integerAttr->IncRef();
+        return m_integerAttr;
     case CT_MONEY:
-        moneyAttr->IncRef();
-        return moneyAttr;
+        m_moneyAttr->IncRef();
+        return m_moneyAttr;
     case CT_DATE:
     case CT_TIME:
-        monoAttr->IncRef();
-        return monoAttr;
+        m_monoAttr->IncRef();
+        return m_monoAttr;
     case CT_BOOL:
-        boolAttr->IncRef();
-        return boolAttr;
+        m_boolAttr->IncRef();
+        return m_boolAttr;
     default:
         break;
     }
-    defaultAttr->IncRef();
-    return defaultAttr;
+    m_defaultAttr->IncRef();
+    return m_defaultAttr;
 }

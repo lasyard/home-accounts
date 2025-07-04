@@ -18,8 +18,8 @@ AccountGridCellAttrProvider::~AccountGridCellAttrProvider()
 wxGridCellAttr *AccountGridCellAttrProvider::GetItemCellAttr(int row, int col) const
 {
     if (col == AccountTable::ID_COL) {
-        integerAttrRO->IncRef();
-        return integerAttrRO;
+        m_integerAttrRO->IncRef();
+        return m_integerAttrRO;
     }
     return HaGridCellAttrProvider::GetItemCellAttr(row, col);
 }

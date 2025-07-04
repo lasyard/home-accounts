@@ -15,24 +15,23 @@ public:
     HaGridCellAttrProvider(const HaTable *table);
     virtual ~HaGridCellAttrProvider();
 
-    static void InitAttr();
-    static void ReleaseAttr();
-
     wxGridCellAttr *GetAttr(int row, int col, wxGridCellAttr::wxAttrKind kind) const override;
 
 protected:
-    static wxGridCellAttr *defaultAttr;
-    static wxGridCellAttr *monoAttr;
-    static wxGridCellAttr *integerAttr;
-    static wxGridCellAttr *integerAttrRO;
-    static wxGridCellAttr *moneyAttr;
-    static wxGridCellAttr *moneyAttrRO;
-    static wxGridCellAttr *deficitAttrRO;
-    static wxGridCellAttr *boolAttr;
-
+    wxGridCellAttr *m_defaultAttr;
+    wxGridCellAttr *m_monoAttr;
+    wxGridCellAttr *m_integerAttr;
+    wxGridCellAttr *m_integerAttrRO;
+    wxGridCellAttr *m_moneyAttr;
+    wxGridCellAttr *m_moneyAttrRO;
+    wxGridCellAttr *m_deficitAttrRO;
+    wxGridCellAttr *m_boolAttr;
     wxGridCellAttr *m_segmentAttr;
 
     const HaTable *m_table;
+
+    void InitAttr();
+    void ReleaseAttr();
 
     virtual wxGridCellAttr *GetItemCellAttr(int row, int col) const;
 };

@@ -13,8 +13,7 @@
 class HaTable : public wxGridTableBase
 {
 public:
-    template <typename T>
-    HaTable(std::initializer_list<T> colLabels, CsvDoc *doc = nullptr)
+    HaTable(std::initializer_list<const char *> colLabels, CsvDoc *doc = nullptr)
         : wxGridTableBase()
         , m_doc(doc)
         , m_colLabels(colLabels)

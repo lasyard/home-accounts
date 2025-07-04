@@ -23,11 +23,11 @@ wxGridCellAttr *DataGridCellAttrProvider::GetItemCellAttr(int row, int col) cons
         auto *table = static_cast<const DataTable *>(m_table);
         struct data *data = table->GetData(row);
         if (data->balance < 0) {
-            deficitAttrRO->IncRef();
-            return deficitAttrRO;
+            m_deficitAttrRO->IncRef();
+            return m_deficitAttrRO;
         }
-        moneyAttrRO->IncRef();
-        return moneyAttrRO;
+        m_moneyAttrRO->IncRef();
+        return m_moneyAttrRO;
     }
     return HaGridCellAttrProvider::GetItemCellAttr(row, col);
 }

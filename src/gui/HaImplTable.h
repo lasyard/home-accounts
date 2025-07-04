@@ -6,8 +6,7 @@
 class HaImplTable : public HaTable
 {
 public:
-    template <typename T>
-    HaImplTable(int columns, std::initializer_list<T> colLabels, CsvDoc *doc = nullptr)
+    HaImplTable(int columns, std::initializer_list<const char *> colLabels, CsvDoc *doc = nullptr)
         : HaTable(colLabels, doc)
         , m_columns(columns)
     {

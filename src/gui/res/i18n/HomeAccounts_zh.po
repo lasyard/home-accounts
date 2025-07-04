@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HomeAccounts 1.0.0\n"
 "Report-Msgid-Bugs-To: lasyard@yeah.net\n"
-"POT-Creation-Date: 2025-03-04 15:40+0800\n"
+"POT-Creation-Date: 2025-07-04 17:22+0800\n"
 "PO-Revision-Date: 2025-01-10 16:01+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -24,12 +24,12 @@ msgstr "密码错误！"
 msgid "Confirm new password failed!"
 msgstr "确认新密码错误！"
 
-#: CsvDoc.cpp:130
+#: CsvDoc.cpp:119
 #, c-format
 msgid "Parse error at line %d"
 msgstr "第 %d 行解析错误"
 
-#: CsvDoc.cpp:133
+#: CsvDoc.cpp:122
 #, c-format
 msgid "%d lines read"
 msgstr "读取了 %d 行"
@@ -42,9 +42,13 @@ msgstr " 文档"
 msgid " View"
 msgstr " 视"
 
-#: HaDocument.cpp:58
+#: HaDocument.cpp:59
 msgid "Input the password for the file:"
 msgstr "输入文件的密码："
+
+#: HaImplTable.cpp:18
+msgid "not implemented"
+msgstr "未实现"
 
 #: HaMainFrame.cpp:73
 msgid "File"
@@ -54,89 +58,130 @@ msgstr "文件"
 msgid "License"
 msgstr "许可证"
 
-#: HaView.cpp:43
-msgid "Tabular"
-msgstr "表格"
-
 #: HaView.cpp:44
+msgid "Running"
+msgstr "流水"
+
+#: HaView.cpp:45
+msgid "Accounts"
+msgstr "账户"
+
+#: HaView.cpp:46
 msgid "Raw"
 msgstr "源文件"
 
-#: data/DataDoc.cpp:29
+#: account/AccountDoc.cpp:11 account/AccountDoc.cpp:29
+msgid "Invalid"
+msgstr "错误"
+
+#: account/AccountDoc.cpp:12
+msgid "Debit"
+msgstr "借记卡"
+
+#: account/AccountDoc.cpp:13
+msgid "Credit"
+msgstr "信用卡"
+
+#: account/AccountDoc.cpp:14
+msgid "Transfer"
+msgstr "支付账户"
+
+#: account/AccountDoc.cpp:34
+msgid "This value is readonly"
+msgstr "这个值是只读的"
+
+#: account/AccountDoc.cpp:41
 #, c-format
-msgid "Invalid date: %s"
-msgstr "不合理的日期：%s"
+msgid "Invalid type: %s"
+msgstr "错误的类型：%s"
 
-#: data/HaDataPanel.cpp:39
-msgid "Select Date: "
-msgstr "选择日期："
+#: account/AccountTable.cpp:16
+msgid "ID"
+msgstr "ID"
 
-#: data/HaDataPanel.cpp:43
-msgid "Opening: "
-msgstr "期初余额："
+#: account/AccountTable.cpp:17
+msgid "Name"
+msgstr "名称"
 
-#: data/HaDataPanel.cpp:45
-msgid "Total Income: "
-msgstr "总收入："
+#: account/AccountTable.cpp:18
+msgid "Open Date"
+msgstr "开户日"
 
-#: data/HaDataPanel.cpp:48
-msgid "Total Outlay: "
-msgstr "总支出："
+#: account/AccountTable.cpp:19
+msgid "Initial"
+msgstr "初始余额"
 
-#: data/HaDataPanel.cpp:51
-msgid "Closing: "
-msgstr "期末结余："
-
-#: data/HaDataTable.cpp:14
-msgid "Time"
-msgstr "时间"
-
-#: data/HaDataTable.cpp:15
-msgid "Amount"
-msgstr "金额"
-
-#: data/HaDataTable.cpp:16
-msgid "Account"
-msgstr "账户"
-
-#: data/HaDataTable.cpp:17
-msgid "Description"
-msgstr "说明"
-
-#: data/HaDataTable.cpp:18
-msgid "Income"
-msgstr "收入"
-
-#: data/HaDataTable.cpp:19
-msgid "Outlay"
-msgstr "支出"
-
-#: data/HaDataTable.cpp:20
-msgid "Item"
-msgstr "项目"
-
-#: data/HaDataTable.cpp:21
-msgid "Balance"
-msgstr "结余"
-
-#: data/HaDataTable.cpp:22
+#: account/AccountTable.cpp:20 data/DataTable.cpp:22
 msgid "Memo"
 msgstr "备注"
 
-#: data/HaDataTable.cpp:23
+#: data/DataDoc.cpp:35
+#, c-format
+msgid "Invalid date: %s"
+msgstr "错误的日期：%s"
+
+#: data/DataPanel.cpp:48
+msgid "Select Date: "
+msgstr "选择日期："
+
+#: data/DataPanel.cpp:52
+msgid "Opening: "
+msgstr "期初余额："
+
+#: data/DataPanel.cpp:54
+msgid "Total Income: "
+msgstr "总收入："
+
+#: data/DataPanel.cpp:57
+msgid "Total Outlay: "
+msgstr "总支出："
+
+#: data/DataPanel.cpp:60
+msgid "Closing: "
+msgstr "期末结余："
+
+#: data/DataTable.cpp:14
+msgid "Time"
+msgstr "时间"
+
+#: data/DataTable.cpp:15
+msgid "Amount"
+msgstr "金额"
+
+#: data/DataTable.cpp:16
+msgid "Account"
+msgstr "账户"
+
+#: data/DataTable.cpp:17
+msgid "Description"
+msgstr "说明"
+
+#: data/DataTable.cpp:18
+msgid "Income"
+msgstr "收入"
+
+#: data/DataTable.cpp:19
+msgid "Outlay"
+msgstr "支出"
+
+#: data/DataTable.cpp:20
+msgid "Item"
+msgstr "项目"
+
+#: data/DataTable.cpp:21
+msgid "Balance"
+msgstr "结余"
+
+#: data/DataTable.cpp:23
 msgid "Category"
 msgstr "分类"
 
-#: data/HaDataTable.cpp:103
-msgid "not implemented"
-msgstr "未实现"
-
-#: raw/HaRawPanel.cpp:111
+#: raw/RawPanel.cpp:111
 #, c-format
 msgid "Are you sure to delete section \"%s\" and all of its sub section?"
 msgstr "确定要删除段落“%s”及其所有子段落吗？"
 
-#: raw/HaRawPanel.cpp:164
+#: raw/RawPanel.cpp:164
 #, c-format
 msgid "Section \"%s\" already exists."
 msgstr "段落“%s”已存在。"

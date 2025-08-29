@@ -11,16 +11,16 @@ DataTable::DataTable(DataDoc *doc)
     : HaImplTable(
           10,
           {
-              TT("Time"),
-              TT("Amount"),
-              TT("Account"),
-              TT("Description"),
-              TT("Income"),
-              TT("Outlay"),
-              TT("Item"),
-              TT("Balance"),
-              TT("Memo"),
-              TT("Category"),
+              _("Time"),
+              _("Amount"),
+              _("Account"),
+              _("Description"),
+              _("Income"),
+              _("Outlay"),
+              _("Item"),
+              _("Balance"),
+              _("Memo"),
+              _("Category"),
           },
           doc
       )

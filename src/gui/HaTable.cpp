@@ -31,7 +31,7 @@ wxString HaTable::GetValue(int row, int col)
 
 wxString HaTable::GetColLabelValue(int col)
 {
-    return _(m_colLabels[col]);
+    return m_colLabels[col];
 }
 
 wxString HaTable::GetRowLabelValue(int row)

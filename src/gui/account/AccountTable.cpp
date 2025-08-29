@@ -13,11 +13,11 @@ AccountTable::AccountTable(AccountDoc *doc)
     : HaImplTable(
           5,
           {
-              TT("ID"),
-              TT("Name"),
-              TT("Open Date"),
-              TT("Initial"),
-              TT("Memo"),
+              _("ID"),
+              _("Name"),
+              _("Open Date"),
+              _("Initial"),
+              _("Memo"),
           },
           doc
       )

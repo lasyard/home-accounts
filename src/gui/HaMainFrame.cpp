@@ -50,8 +50,8 @@ HaMainFrame::HaMainFrame(
     wxLog::AddTraceMask(TM);
 #ifdef __WXMSW__
     wxIconBundle ib;
-    ib.AddIcon(wxICON(icon16));
-    ib.AddIcon(wxICON(icon32));
+    ib.AddIcon(wxICON(ICON16));
+    ib.AddIcon(wxICON(ICON32));
     SetIcons(ib);
 #endif
     auto *res = wxXmlResource::Get();

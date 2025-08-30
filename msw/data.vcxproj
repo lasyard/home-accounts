@@ -69,10 +69,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\data\account.c" />
     <ClCompile Include="..\src\data\data.c" />
     <ClCompile Include="..\src\data\StdStreamAccessor.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\data\account.h" />
     <ClInclude Include="..\src\data\data.h" />
     <ClInclude Include="..\src\data\StdStreamAccessor.h" />
   </ItemGroup>

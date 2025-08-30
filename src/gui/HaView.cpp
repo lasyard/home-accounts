@@ -52,7 +52,7 @@ bool HaView::OnClose(bool deleteWindow)
 {
     Activate(false);
     auto *frame = static_cast<HaMainFrame *>(GetFrame());
-    frame->SetTitle("");
+    frame->SetTitle(APP_NAME);
     m_book->DeleteAllPages();
     m_book->Show(false);
     return wxView::OnClose(deleteWindow);

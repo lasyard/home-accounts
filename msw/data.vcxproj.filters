@@ -21,12 +21,18 @@
     <ClCompile Include="..\src\data\StdStreamAccessor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\data\account.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\data\data.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\data\StdStreamAccessor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\data\account.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

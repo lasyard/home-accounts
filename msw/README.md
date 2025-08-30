@@ -9,15 +9,15 @@ Some resource files need to be generated mannually.
 Zip `..\src\gui\res\*.xrc` and rename it to the target.
 
 `en\xrc.mo`
-`en\CryptoFileViewer.mo`
+`en\HomeAccounts.mo`
 `zh\xrc.mo`
-`zh\CryptoFileViewer.mo`
+`zh\HomeAccounts.mo`
 
 These language files are generated from files in `..\src\gui\res\i18n\`. You can use [PoEdit](https://poedit.net/).
 
 `logo.png`
 
-Copy for `..\src\gui\res\images\logo.png`.
+Copy from `..\src\gui\res\images\logo.png`.
 
 Where to put these files:
 

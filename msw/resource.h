@@ -2,8 +2,8 @@
 // Microsoft Visual C++ generated include file.
 // Used by HomeAccounts.rc
 //
-#define IDI_ICON16 "icon16"
-#define IDI_ICON32 "icon32"
+#define IDI_ICON16 ICON16
+#define IDI_ICON32 ICON32
 
 // Next default values for new objects
 // 

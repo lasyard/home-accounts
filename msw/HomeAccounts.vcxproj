@@ -24,42 +24,53 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros">
-    <APP_NAME>CryptoFileViewer</APP_NAME>
+    <APP_NAME>HomeAccounts</APP_NAME>
     <APP_VERSION>1.0.0</APP_VERSION>
     <AUTHOR>Yueguang Jiao</AUTHOR>
     <EMAIL>lasyard@yeah.net</EMAIL>
     <XRS_FILE>resource.xrs</XRS_FILE>
   </PropertyGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\gui\account\AccountDoc.cpp" />
+    <ClCompile Include="..\src\gui\account\AccountGrid.cpp" />
+    <ClCompile Include="..\src\gui\account\AccountGridCellAttrProvider.cpp" />
+    <ClCompile Include="..\src\gui\account\AccountPanel.cpp" />
+    <ClCompile Include="..\src\gui\account\AccountTable.cpp" />
     <ClCompile Include="..\src\gui\ChangePassDialog.cpp" />
     <ClCompile Include="..\src\gui\CsvDoc.cpp" />
     <ClCompile Include="..\src\gui\data\DataDoc.cpp" />
-    <ClCompile Include="..\src\gui\data\HaDataGrid.cpp" />
-    <ClCompile Include="..\src\gui\data\HaDataGridCellAttrProvider.cpp" />
-    <ClCompile Include="..\src\gui\data\HaDataPanel.cpp" />
-    <ClCompile Include="..\src\gui\data\HaDataTable.cpp" />
+    <ClCompile Include="..\src\gui\data\DataGrid.cpp" />
+    <ClCompile Include="..\src\gui\data\DataGridCellAttrProvider.cpp" />
+    <ClCompile Include="..\src\gui\data\DataPanel.cpp" />
+    <ClCompile Include="..\src\gui\data\DataTable.cpp" />
     <ClCompile Include="..\src\gui\HaApp.cpp" />
     <ClCompile Include="..\src\gui\HaArtProvider.cpp" />
     <ClCompile Include="..\src\gui\HaDocument.cpp" />
     <ClCompile Include="..\src\gui\HaGdi.cpp" />
     <ClCompile Include="..\src\gui\HaGrid.cpp" />
     <ClCompile Include="..\src\gui\HaGridCellAttrProvider.cpp" />
+    <ClCompile Include="..\src\gui\HaImplTable.cpp" />
     <ClCompile Include="..\src\gui\HaMainFrame.cpp" />
     <ClCompile Include="..\src\gui\HaTable.cpp" />
     <ClCompile Include="..\src\gui\HaView.cpp" />
-    <ClCompile Include="..\src\gui\raw\HaRawPanel.cpp" />
     <ClCompile Include="..\src\gui\raw\NewSectionDialog.cpp" />
+    <ClCompile Include="..\src\gui\raw\RawPanel.cpp" />
     <ClCompile Include="..\src\gui\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\gui\account\AccountDoc.h" />
+    <ClInclude Include="..\src\gui\account\AccountGrid.h" />
+    <ClInclude Include="..\src\gui\account\AccountGridCellAttrProvider.h" />
+    <ClInclude Include="..\src\gui\account\AccountPanel.h" />
+    <ClInclude Include="..\src\gui\account\AccountTable.h" />
     <ClInclude Include="..\src\gui\Algos.h" />
     <ClInclude Include="..\src\gui\ChangePassDialog.h" />
     <ClInclude Include="..\src\gui\CsvDoc.h" />
     <ClInclude Include="..\src\gui\data\DataDoc.h" />
-    <ClInclude Include="..\src\gui\data\HaDataGrid.h" />
-    <ClInclude Include="..\src\gui\data\HaDataGridCellAttrProvider.h" />
-    <ClInclude Include="..\src\gui\data\HaDataPanel.h" />
-    <ClInclude Include="..\src\gui\data\HaDataTable.h" />
+    <ClInclude Include="..\src\gui\data\DataGrid.h" />
+    <ClInclude Include="..\src\gui\data\DataGridCellAttrProvider.h" />
+    <ClInclude Include="..\src\gui\data\DataPanel.h" />
+    <ClInclude Include="..\src\gui\data\DataTable.h" />
     <ClInclude Include="..\src\gui\HaApp.h" />
     <ClInclude Include="..\src\gui\HaArtProvider.h" />
     <ClInclude Include="..\src\gui\HaDefs.h" />
@@ -67,13 +78,14 @@
     <ClInclude Include="..\src\gui\HaGdi.h" />
     <ClInclude Include="..\src\gui\HaGrid.h" />
     <ClInclude Include="..\src\gui\HaGridCellAttrProvider.h" />
+    <ClInclude Include="..\src\gui\HaImplTable.h" />
     <ClInclude Include="..\src\gui\HaMainFrame.h" />
     <ClInclude Include="..\src\gui\HaPanel.h" />
     <ClInclude Include="..\src\gui\HaTable.h" />
     <ClInclude Include="..\src\gui\HaTableIndex.h" />
     <ClInclude Include="..\src\gui\HaView.h" />
-    <ClInclude Include="..\src\gui\raw\HaRawPanel.h" />
     <ClInclude Include="..\src\gui\raw\NewSectionDialog.h" />
+    <ClInclude Include="..\src\gui\raw\RawPanel.h" />
     <ClInclude Include="..\src\gui\Utils.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>

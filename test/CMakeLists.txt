@@ -1,5 +1,7 @@
 set(CMAKE_MACOSX_BUNDLE FALSE)
 
+enable_testing()
+
 add_subdirectory(csv)
 add_subdirectory(data)
 add_subdirectory(file)

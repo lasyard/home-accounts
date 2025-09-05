@@ -1,3 +1,9 @@
 [submodule "doctest"]
 	path = doctest
 	url = git@github.com:doctest/doctest.git
+[submodule "cmm-script"]
+	path = cmm-script
+	url = git@github.com:lasyard/cmm-script.git
+[submodule "cmake-common"]
+	path = cmake-common
+	url = git@github.com:lasyard/cmake-common.git

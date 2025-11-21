@@ -2,12 +2,12 @@
 
 #include <filesystem>
 
+#include "DirectoryStore.h"
 #include "FileStore.h"
 #include "Sqlite3Store.h"
 
-void test_write_read_delete(std::function<Store *()> storeCreator)
+void test_write_read_delete(std::function<Store *()> storeCreator, const std::string &sectionName = "a1b2c3")
 {
-    const std::string sectionName("a1b2c3");
     auto file = storeCreator();
     file->create();
     std::string str("This is a test.");
@@ -125,6 +125,34 @@ TEST_CASE("sqlite3_store_change_pass")
 TEST_CASE("sqlite3_store_operator==")
 {
     test_operator_equal([](const std::string &pass, const std::string &iv) {
-        return new FileStore("test_sqlite3_store_operator_equal.dat", pass, iv);
+        return new Sqlite3Store("test_sqlite3_store_operator_equal.dat", pass, iv);
+    });
+}
+
+TEST_CASE("directory_store_write_read_delete")
+{
+    const std::string fileName("test_directory_store_write_read_delete");
+    test_write_read_delete([&fileName]() { return new DirectoryStore(fileName); });
+    std::filesystem::remove_all(fileName);
+}
+
+TEST_CASE("directory_store_write_read_delete_sub_dir")
+{
+    const std::string fileName("test_directory_store_write_read_delete");
+    test_write_read_delete([&fileName]() { return new DirectoryStore(fileName); }, "a1/b2/c3");
+    std::filesystem::remove_all(fileName);
+}
+
+TEST_CASE("directory_store_massive_write_read")
+{
+    const std::string fileName("test_directory_store_massive_write_read");
+    test_massive_write_read([&fileName]() { return new DirectoryStore(fileName); });
+    std::filesystem::remove_all(fileName);
+}
+
+TEST_CASE("directory_store_operator==")
+{
+    test_operator_equal([](const std::string &, const std::string &) {
+        return new DirectoryStore("test_directory_store_operator_equal");
     });
 }

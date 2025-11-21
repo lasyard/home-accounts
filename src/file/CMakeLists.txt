@@ -4,6 +4,7 @@ add_lib(file
     Cache.cpp
     Crypto.cpp
     CryptoStore.cpp
+    DirectoryStore.cpp
     FileStore.cpp
     SectionRecord.cpp
     Sqlite3Store.cpp

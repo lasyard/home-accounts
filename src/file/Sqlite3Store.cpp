@@ -75,7 +75,7 @@ void Sqlite3Store::deleteSection(const std::string &name)
     sqlite3_bind_text(m_delStmt, 1, name.c_str(), static_cast<int>(name.size()), SQLITE_STATIC);
     auto rc = sqlite3_step(m_delStmt);
     if (rc != SQLITE_DONE) {
-        throw std::runtime_error("sqlite3_step(delStmt) failed: code = " + std::to_string(rc) + ".");
+        throw std::runtime_error("sqlite3_step(delStmt) failed: code = " + std::to_string(rc));
     }
 }
 
@@ -92,7 +92,7 @@ void Sqlite3Store::forEachSection(std::function<bool(const std::string &)> callb
             }
             rc = sqlite3_step(m_enumStmt);
         } else {
-            throw std::runtime_error("sqlite3_step(enumStmt) failed: code = " + std::to_string(rc) + ".");
+            throw std::runtime_error("sqlite3_step(enumStmt) failed: code = " + std::to_string(rc));
         }
     }
 }
@@ -102,7 +102,7 @@ void Sqlite3Store::deleteAllSections()
     prepareSql(m_delAllStmt, std::string("DELETE FROM files WHERE name <> '") + CHECK_STUB + "'");
     auto rc = sqlite3_step(m_delAllStmt);
     if (rc != SQLITE_DONE) {
-        throw std::runtime_error("sqlite3_step(delAllStmt) failed: code = " + std::to_string(rc) + ".");
+        throw std::runtime_error("sqlite3_step(delAllStmt) failed: code = " + std::to_string(rc));
     }
 }
 
@@ -116,7 +116,7 @@ bool Sqlite3Store::contains(const std::string &name) const
     } else if (rc == SQLITE_DONE) {
         return false;
     }
-    throw std::runtime_error("sqlite3_step(getStmt) failed: code = " + std::to_string(rc) + ".");
+    throw std::runtime_error("sqlite3_step(getStmt) failed: code = " + std::to_string(rc));
 }
 
 bool Sqlite3Store::operator==(const Store &obj) const
@@ -136,7 +136,7 @@ void Sqlite3Store::changePass(const std::string &pass)
     setKey(m_key, pass);
     auto rc = sqlite3_step(m_passStmt);
     if (rc != SQLITE_DONE) {
-        throw std::runtime_error("sqlite3_step(passStmt) failed: code = " + std::to_string(rc) + ".");
+        throw std::runtime_error("sqlite3_step(passStmt) failed: code = " + std::to_string(rc));
     }
 }
 
@@ -168,7 +168,7 @@ const byte *Sqlite3Store::readRawSection(
     } else if (rc == SQLITE_DONE) {
         return nullptr;
     } else {
-        throw std::runtime_error("sqlite3_step(getStmt) failed: code = " + std::to_string(rc) + ".");
+        throw std::runtime_error("sqlite3_step(getStmt) failed: code = " + std::to_string(rc));
     }
 }
 
@@ -187,7 +187,7 @@ void Sqlite3Store::writeRawSection(const std::string &name, const std::string &c
     sqlite3_bind_blob(m_putStmt, 3, content.c_str(), static_cast<int>(content.size()), SQLITE_STATIC);
     auto rc = sqlite3_step(m_putStmt);
     if (rc != SQLITE_DONE) {
-        throw std::runtime_error("sqlite3_step(putStmt) failed: code = " + std::to_string(rc) + ".");
+        throw std::runtime_error("sqlite3_step(putStmt) failed: code = " + std::to_string(rc));
     }
 }
 
@@ -209,7 +209,7 @@ void Sqlite3Store::prepareSql(sqlite3_stmt *&stmt, const std::string &sql) const
         if (rc != SQLITE_OK) {
             sqlite3_finalize(stmt);
             stmt = nullptr;
-            throw std::runtime_error("sqlite3_prepare_v2(" + sql + ") failed: code = " + std::to_string(rc) + ".");
+            throw std::runtime_error("sqlite3_prepare_v2(" + sql + ") failed: code = " + std::to_string(rc));
         }
     } else {
         sqlite3_reset(stmt);
@@ -261,6 +261,6 @@ void Sqlite3Store::registerFun()
         NULL
     );
     if (rc != SQLITE_OK) {
-        throw std::runtime_error("slqite3_create_function(RECRYPT) failed: code = " + std::to_string(rc) + ".");
+        throw std::runtime_error("slqite3_create_function(RECRYPT) failed: code = " + std::to_string(rc));
     }
 }

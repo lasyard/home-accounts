@@ -26,6 +26,24 @@ void encrypt(
     StringSource(input, true, new ZlibCompressor(new AuthenticatedEncryptionFilter(gcm, new StringSink(output))));
 }
 
+void encrypt(
+    const byte *inBuf,
+    size_t inLength,
+    std::string &output,
+    const byte key[CRYPTO_KEY_LEN],
+    const byte iv[CRYPTO_IV_LEN]
+)
+{
+    GCM_Final<AES, GCM_2K_Tables, true> gcm;
+    gcm.SetKeyWithIV(key, CRYPTO_KEY_LEN, iv);
+    StringSource(
+        inBuf,
+        inLength,
+        true,
+        new ZlibCompressor(new AuthenticatedEncryptionFilter(gcm, new StringSink(output)))
+    );
+}
+
 void decrypt(
     const byte *buf,
     size_t length,
@@ -41,6 +59,25 @@ void decrypt(
         length,
         true,
         new AuthenticatedDecryptionFilter(gcm, new ZlibDecompressor(new StringSink(output)))
+    );
+}
+
+void decrypt(
+    const byte *buf,
+    size_t length,
+    byte *outBuf,
+    size_t outLength,
+    const byte key[CRYPTO_KEY_LEN],
+    const byte iv[CRYPTO_IV_LEN]
+)
+{
+    GCM_Final<AES, GCM_2K_Tables, false> gcm;
+    gcm.SetKeyWithIV(key, CRYPTO_KEY_LEN, iv);
+    StringSource(
+        buf,
+        length,
+        true,
+        new AuthenticatedDecryptionFilter(gcm, new ZlibDecompressor(new ArraySink(outBuf, outLength)))
     );
 }
 

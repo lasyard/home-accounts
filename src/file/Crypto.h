@@ -23,10 +23,27 @@ void encrypt(
     const byte iv[CRYPTO_IV_LEN]
 );
 
+void encrypt(
+    const byte *inBuf,
+    size_t inLength,
+    std::string &output,
+    const byte key[CRYPTO_KEY_LEN],
+    const byte iv[CRYPTO_IV_LEN]
+);
+
 void decrypt(
     const byte *input,
     size_t size,
     std::string &output,
+    const byte key[CRYPTO_KEY_LEN],
+    const byte iv[CRYPTO_IV_LEN]
+);
+
+void decrypt(
+    const byte *buf,
+    size_t length,
+    byte *outBuf,
+    size_t outLength,
     const byte key[CRYPTO_KEY_LEN],
     const byte iv[CRYPTO_IV_LEN]
 );

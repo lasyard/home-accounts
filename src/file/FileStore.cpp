@@ -99,8 +99,14 @@ void FileStore::changePass(const std::string &pass)
     setKey(m_key, pass);
 }
 
-const byte *FileStore::readRawSection(const std::string &name, size_t &size, byte key[CRYPTO_KEY_LEN])
+const byte *FileStore::readRawSection(
+    const std::string &name,
+    size_t &size,
+    byte key[CRYPTO_KEY_LEN],
+    enum RELEASE_TYPE &releaseType
+)
 {
+    releaseType = RELEASE_DELETE_ARRAY;
     SectionRecord *sr = nullptr;
     try {
         sr = &m_catalog.at(name);

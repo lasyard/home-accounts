@@ -6,6 +6,6 @@ add_lib(file
     CryptoStore.cpp
     FileStore.cpp
     SectionRecord.cpp
+    Sqlite3Store.cpp
+    LIBS libcryptopp.a sqlite3
 )
-
-target_link_libraries(file PUBLIC libcryptopp.a sqlite3)

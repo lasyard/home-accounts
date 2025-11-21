@@ -34,7 +34,9 @@ private:
     std::fstream m_file;
     std::map<std::string, SectionRecord> m_catalog;
 
-    const byte *readRawSection(const std::string &name, size_t &size, byte key[CRYPTO_KEY_LEN]) override;
+    const byte *
+    readRawSection(const std::string &name, size_t &size, byte key[CRYPTO_KEY_LEN], enum RELEASE_TYPE &releaseType)
+        override;
     void writeRawSection(const std::string &name, const std::string &content, const byte key[CRYPTO_KEY_LEN]) override;
 
     void loadCatalog();

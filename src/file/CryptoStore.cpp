@@ -6,16 +6,17 @@ void CryptoStore::readSection(const std::string &name, std::string &content)
     content.clear();
     size_t size;
     byte key[CRYPTO_KEY_LEN];
-    const byte *buf = readRawSection(name, size, key);
+    enum RELEASE_TYPE releaseType;
+    const byte *buf = readRawSection(name, size, key, releaseType);
     if (buf == nullptr) {
         return;
     }
     try {
         decrypt(buf, size, content, key, m_iv);
-        delete[] buf;
+        releaseByType(buf, releaseType);
     } catch (CryptoPP::HashVerificationFilter::HashVerificationFailed &) {
         throw BadPassword();
-        delete[] buf;
+        releaseByType(buf, releaseType);
     }
 }
 

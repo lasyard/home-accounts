@@ -1,8 +1,8 @@
 #include <wx/imaglist.h>
 #include <wx/log.h>
 #include <wx/msgdlg.h>
-#include <wx/osx/statbmp.h>
 #include <wx/sizer.h>
+#include <wx/statbmp.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
 #include <wx/textdlg.h>

@@ -154,17 +154,13 @@ const byte *Sqlite3Store::readRawSection(
     if (rc == SQLITE_ROW) {
         // NOTE: the index of the most left column is 0.
         // NOTE: the result pointer is managed by sqlite, do not free them.
-        try {
-            const byte *encryptedKey = (byte *)sqlite3_column_blob(m_getStmt, 0);
-            int encryptedkeySize = sqlite3_column_bytes(m_getStmt, 0);
-            decrypt(encryptedKey, encryptedkeySize, key, CRYPTO_KEY_LEN, m_key, m_iv);
-            // this is valid before the next `sqlite3_step`, `sqlite3_reset` or `sqlite3_finalize` called.
-            const byte *data = (const byte *)sqlite3_column_blob(m_getStmt, 1);
-            size = sqlite3_column_bytes(m_getStmt, 1);
-            return data;
-        } catch (CryptoPP::HashVerificationFilter::HashVerificationFailed &) {
-            throw BadPassword();
-        }
+        const byte *encryptedKey = (byte *)sqlite3_column_blob(m_getStmt, 0);
+        int encryptedkeySize = sqlite3_column_bytes(m_getStmt, 0);
+        decrypt(encryptedKey, encryptedkeySize, key, CRYPTO_KEY_LEN, m_key, m_iv);
+        // this is valid before the next `sqlite3_step`, `sqlite3_reset` or `sqlite3_finalize` called.
+        const byte *data = (const byte *)sqlite3_column_blob(m_getStmt, 1);
+        size = sqlite3_column_bytes(m_getStmt, 1);
+        return data;
     } else if (rc == SQLITE_DONE) {
         return nullptr;
     } else {

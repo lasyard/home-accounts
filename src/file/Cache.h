@@ -23,6 +23,7 @@ public:
 class Cache
 {
 public:
+    Cache();
     Cache(Store *store);
     virtual ~Cache();
 

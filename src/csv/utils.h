@@ -23,6 +23,22 @@ static inline const char *skip_space(const char *buf)
     return p;
 }
 
+#if defined(_ANSI_SOURCE) || (defined(_POSIX_C_SOURCE) && !defined(_DARWIN_C_SOURCE))
+static inline int digittoint(int c)
+{
+    if (c >= '0' && c <= '9') {
+        return c - '0';
+    }
+    if (c >= 'a' && c <= 'f') {
+        return 10 + (c - 'a');
+    }
+    if (c >= 'A' && c <= 'F') {
+        return 10 + (c - 'A');
+    }
+    return 0;
+}
+#endif
+
 #ifdef __cplusplus
 }
 #endif

@@ -24,3 +24,9 @@ TEST_CASE("is_line_end")
     CHECK(is_line_end('\r'));
     CHECK(is_line_end('\0'));
 }
+
+TEST_CASE("skip_space")
+{
+    const char *buf = "   abc";
+    CHECK(skip_space(buf) == buf + 3);
+}

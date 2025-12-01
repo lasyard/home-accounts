@@ -51,11 +51,6 @@ struct str *own_str(struct str *data)
     return data;
 }
 
-bool str_is_empty(const struct str *str)
-{
-    return str->buf == NULL || str->len == 0;
-}
-
 char *output_str(char *buf, const struct str *data)
 {
     if (str_is_empty(data)) {

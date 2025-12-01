@@ -41,11 +41,14 @@ static inline void set_str(struct str *data, const char *str, size_t len)
     __raw_set_str(data, str, len, false);
 }
 
+static inline bool str_is_empty(const struct str *str)
+{
+    return str->buf == NULL || str->len == 0;
+}
+
 const char *parse_str(const char *buf, struct str *data, char sep);
 
 struct str *own_str(struct str *data);
-
-bool str_is_empty(const struct str *str);
 
 char *output_str(char *buf, const struct str *data);
 

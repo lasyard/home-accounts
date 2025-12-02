@@ -1,5 +1,7 @@
 #include "doctest/doctest.h"
 
+#include <cstring>
+
 #include "csv_parser.h"
 #include "date_time.h"
 #include "money.h"

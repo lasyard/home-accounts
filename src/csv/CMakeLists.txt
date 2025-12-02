@@ -1,4 +1,6 @@
 add_lib(csv
+    column_type.c
+    csv_parser.c
     date_time.c
     int.c
     list.c

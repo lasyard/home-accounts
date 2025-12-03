@@ -108,15 +108,3 @@ void Cache::saveAs(Store *store)
         save();
     }
 }
-
-void Cache::forEach(std::function<bool(const std::string &)> callback) const
-{
-    for (auto it = m_cache.begin(); it != m_cache.end();) {
-        auto name = it->first;
-        // advance first, so the loop iterator is still valid if it is erased
-        ++it;
-        if (!callback(name)) {
-            break;
-        }
-    }
-}

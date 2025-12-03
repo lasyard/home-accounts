@@ -36,7 +36,17 @@ public:
     void save();
     void saveAs(Store *store);
 
-    void forEach(std::function<bool(const std::string &)> callback) const;
+    template <typename F> void forEach(F &&callback) const
+    {
+        for (auto it = m_cache.begin(); it != m_cache.end();) {
+            auto name = it->first;
+            // advance first, so the loop iterator is still valid if it is erased
+            ++it;
+            if (!std::forward<F>(callback)(name)) {
+                break;
+            }
+        }
+    }
 
     Store *getStore() const
     {

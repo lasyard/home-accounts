@@ -64,7 +64,7 @@ void FileStore::deleteSection(const std::string &name)
     m_catalog.erase(name);
 }
 
-void FileStore::forEachSection(std::function<bool(const std::string &)> callback) const
+void FileStore::forEachSection(const std::function<bool(const std::string &)> &callback) const
 {
     for (auto it = m_catalog.begin(); it != m_catalog.end();) {
         auto name = it->first;

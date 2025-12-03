@@ -21,7 +21,7 @@ public:
 
     void deleteSection(const std::string &name) override;
 
-    void forEachSection(std::function<bool(const std::string &)> callback) const override;
+    void forEachSection(const std::function<bool(const std::string &)> &callback) const override;
 
     bool contains(const std::string &name) const override;
     bool operator==(const Store &obj) const override;

@@ -79,7 +79,7 @@ void Sqlite3Store::deleteSection(const std::string &name)
     }
 }
 
-void Sqlite3Store::forEachSection(std::function<bool(const std::string &)> callback) const
+void Sqlite3Store::forEachSection(const std::function<bool(const std::string &)> &callback) const
 {
     prepareSql(m_enumStmt, std::string("SELECT name FROM files where name <> '") + CHECK_STUB + "'");
     auto rc = sqlite3_step(m_enumStmt);

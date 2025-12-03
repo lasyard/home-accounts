@@ -27,7 +27,7 @@ public:
     virtual void writeSection(const std::string &name, const std::string &content) = 0;
     virtual void deleteSection(const std::string &name) = 0;
 
-    virtual void forEachSection(std::function<bool(const std::string &)> callback) const = 0;
+    virtual void forEachSection(const std::function<bool(const std::string &)> &callback) const = 0;
 
     virtual void deleteSectionPrefix(const std::string &prefix)
     {

@@ -72,7 +72,7 @@ void DirectoryStore::deleteSection(const std::string &name)
     } while (path != m_dirName && fs::is_empty(path));
 }
 
-void DirectoryStore::forEachSection(std::function<bool(const std::string &)> callback) const
+void DirectoryStore::forEachSection(const std::function<bool(const std::string &)> &callback) const
 {
     for (auto const &entry : fs::recursive_directory_iterator(m_dirName)) {
         if (!callback(entry.path().string().substr(m_dirName.string().length()))) {

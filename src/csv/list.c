@@ -28,27 +28,28 @@ void list_ins_head(struct list_head *head, struct list_item *item)
     }
 }
 
-void list_del(struct list_head *head, struct list_item *item)
+struct list_item *list_del(struct list_head *head, struct list_item *pos)
 {
-    if (head->first == NULL) {
-        return;
+    struct list_item *item = pos->next;
+    if (item != NULL) {
+        pos->next = item->next;
+        if (head->last == item) {
+            head->last = pos;
+        }
     }
-    if (head->first == item) {
+    return item;
+}
+
+struct list_item *list_del_head(struct list_head *head)
+{
+    struct list_item *item = head->first;
+    if (item != NULL) {
         head->first = item->next;
         if (head->last == item) {
             head->last = head->first;
         }
-        return;
     }
-    for (struct list_item *p = head->first; p->next != NULL; p = p->next) {
-        if (p->next == item) {
-            p->next = item->next;
-            if (head->last == item) {
-                head->last = p;
-            }
-            break;
-        }
-    }
+    return item;
 }
 
 void list_foreach(struct list_head *head, bool (*func)(struct list_item *item, void *context), void *context)

@@ -53,7 +53,15 @@ static inline bool list_is_last(struct list_head *head, const struct list_item *
 void list_add(struct list_head *head, struct list_item *item);
 void list_ins(struct list_head *head, struct list_item *pos, struct list_item *item);
 void list_ins_head(struct list_head *head, struct list_item *item);
-void list_del(struct list_head *head, struct list_item *item);
+
+/**
+ * @brief Delete item at the specified position (that is, the next item of it)
+ *
+ * @param head
+ * @param pos
+ */
+struct list_item *list_del(struct list_head *head, struct list_item *pos);
+struct list_item *list_del_head(struct list_head *head);
 
 void list_foreach(struct list_head *head, bool (*func)(struct list_item *item, void *context), void *context);
 

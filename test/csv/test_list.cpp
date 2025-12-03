@@ -40,7 +40,7 @@ TEST_CASE("test_list_lifecycle")
     CHECK(list_is_last(&head, &node->list));
     CHECK(get_int_node(head.first)->value == 2);
     CHECK(get_int_node(head.last)->value == 1);
-    list_del(&head, &node->list);
+    CHECK(list_del(&head, &node1->list) == &node->list);
     free(node);
     CHECK(!list_is_empty(&head));
     CHECK(list_has_only(&head, &node1->list));
@@ -48,7 +48,7 @@ TEST_CASE("test_list_lifecycle")
     CHECK(list_is_last(&head, &node1->list));
     CHECK(get_int_node(head.first)->value == 2);
     CHECK(get_int_node(head.last)->value == 2);
-    list_del(&head, &node1->list);
+    CHECK(list_del_head(&head) == &node1->list);
     free(node1);
     CHECK(list_is_empty(&head));
 }

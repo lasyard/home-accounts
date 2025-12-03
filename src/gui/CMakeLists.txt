@@ -20,6 +20,7 @@ add_exe(${APP_NAME}
     HaApp.cpp
     HaArtProvider.cpp
     HaDocument.cpp
+    HaGdi.cpp
     HaMainFrame.cpp
     HaView.cpp
     Utils.cpp

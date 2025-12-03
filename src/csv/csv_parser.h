@@ -18,12 +18,14 @@ struct record_meta {
 };
 
 typedef struct record {
-    struct list_item list_item; // for linking in list
+    struct list_item item; // for linking in list
     char data[0];
 } record_t;
 #ifdef _MSC_VER
 #pragma warning(pop)
 #endif
+
+#define get_record(ptr) container_of(ptr, record_t, item)
 
 #ifdef __cplusplus
 extern "C" {
@@ -45,6 +47,11 @@ static inline void *get_field(const struct parser *parser, record_t *record, int
     return record->data + offset;
 }
 
+static inline const void *get_const_field(const struct parser *parser, const record_t *record, int i)
+{
+    return get_field(parser, (record_t *)record, i);
+}
+
 void init_parser(struct parser *parser);
 const struct record_meta *set_parser_types(struct parser *parser, int cols, const enum column_type *types);
 void set_money_prec(struct parser *parser, int money_prec);
@@ -52,6 +59,7 @@ void release_parser(struct parser *parser);
 
 record_t *new_record(const struct parser *parser);
 void free_record(const struct parser *parser, record_t *record);
+void release_records(const struct parser *parser, struct list_head *head);
 
 const char *parse_field(const struct parser *parser, const char *buf, record_t *record, int i);
 const char *parse_line(const struct parser *parser, const char *line, record_t *record);

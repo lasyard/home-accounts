@@ -131,7 +131,7 @@ record_t *new_record(const struct parser *parser)
     for (int i = 0; i < parser->meta->cols; ++i) {
         init_by_type(types[i], get_field(parser, record, i));
     }
-    list_item_init(&record->list_item);
+    list_item_init(&record->item);
     return record;
 }
 
@@ -144,6 +144,19 @@ void free_record(const struct parser *parser, record_t *record)
         }
     }
     free(record);
+}
+
+static bool __release_records_callback(struct list_item *item, void *context)
+{
+    const struct parser *parser = (const struct parser *)context;
+    record_t *record = get_record(item);
+    free_record(parser, record);
+    return true;
+}
+
+void release_records(const struct parser *parser, struct list_head *head)
+{
+    list_foreach(head, __release_records_callback, (void *)parser);
 }
 
 const char *parse_field(const struct parser *parser, const char *buf, record_t *record, int i)

@@ -39,8 +39,12 @@ static void init_by_type(enum column_type type, void *data)
 static const char *parse_by_type(const struct parser *parser, const char *buf, enum column_type type, void *data)
 {
     switch (type) {
-    case CT_STR:
-        return parse_str(buf, (struct str *)data, parser->sep);
+    case CT_STR: {
+        struct str *s = (struct str *)data;
+        const char *p = parse_str(buf, s, parser->sep);
+        own_str(s);
+        return p;
+    }
     case CT_INT:
         return parse_int(buf, (int64_t *)data, parser->sep);
     case CT_BOOL:
@@ -157,6 +161,7 @@ static bool __release_records_callback(struct list_item *item, void *context)
 void release_records(const struct parser *parser, struct list_head *head)
 {
     list_foreach(head, __release_records_callback, (void *)parser);
+    list_head_init(head);
 }
 
 const char *parse_field(const struct parser *parser, const char *buf, record_t *record, int i)

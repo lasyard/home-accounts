@@ -16,6 +16,7 @@ add_compile_definitions("XRS_FILE=\"${XRS_FILE}\"")
 string(TIMESTAMP CURRENT_YEAR "%Y")
 
 add_exe(${APP_NAME}
+    CsvDoc.cpp
     ChangePassDialog.cpp
     HaApp.cpp
     HaArtProvider.cpp
@@ -24,11 +25,11 @@ add_exe(${APP_NAME}
     HaMainFrame.cpp
     HaView.cpp
     Utils.cpp
-)
-
-# order is vital
-target_link_libraries(${APP_NAME}
-    PRIVATE ${wxWidgets_LIBRARIES} file
+    # order is vital
+    LIBS
+    ${wxWidgets_LIBRARIES}
+    file
+    csv
 )
 
 # XRS

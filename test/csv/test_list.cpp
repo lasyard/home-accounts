@@ -30,6 +30,7 @@ TEST_CASE("test_list_lifecycle")
     CHECK(list_has_only(&head, &node->list));
     CHECK(list_is_first(&head, &node->list));
     CHECK(list_is_last(&head, &node->list));
+    CHECK(head.count == 1);
     CHECK(get_int_node(head.first)->value == 1);
     CHECK(get_int_node(head.last)->value == 1);
     struct int_node *node1 = new_node(2);
@@ -38,6 +39,7 @@ TEST_CASE("test_list_lifecycle")
     CHECK(!list_has_only(&head, &node1->list));
     CHECK(list_is_first(&head, &node1->list));
     CHECK(list_is_last(&head, &node->list));
+    CHECK(head.count == 2);
     CHECK(get_int_node(head.first)->value == 2);
     CHECK(get_int_node(head.last)->value == 1);
     CHECK(list_del(&head, &node1->list) == &node->list);
@@ -46,6 +48,7 @@ TEST_CASE("test_list_lifecycle")
     CHECK(list_has_only(&head, &node1->list));
     CHECK(list_is_first(&head, &node1->list));
     CHECK(list_is_last(&head, &node1->list));
+    CHECK(head.count == 1);
     CHECK(get_int_node(head.first)->value == 2);
     CHECK(get_int_node(head.last)->value == 2);
     CHECK(list_del_head(&head) == &node1->list);

@@ -12,6 +12,7 @@ struct list_item {
 struct list_head {
     struct list_item *first;
     struct list_item *last;
+    size_t count;
 };
 
 #define list_entry(ptr, type, member) container_of(ptr, type, member)
@@ -28,11 +29,12 @@ static inline void list_item_init(struct list_item *item)
 static inline void list_head_init(struct list_head *head)
 {
     head->first = head->last = NULL;
+    head->count = 0;
 }
 
 static inline bool list_is_empty(const struct list_head *head)
 {
-    return head->first == NULL;
+    return head->count == 0;
 }
 
 static inline bool list_has_only(const struct list_head *head, const struct list_item *item)

@@ -47,7 +47,7 @@ record_t *CsvDoc::InsertRecord(record_t *pos)
 {
     record_t *record = new_record(&m_parser);
     return_null_if_null(record);
-    list_ins(&m_records, &pos->item, &record->item);
+    list_ins(&m_records, &pos->list, &record->list);
     SetNewRecord(record);
     return record;
 }
@@ -56,14 +56,14 @@ record_t *CsvDoc::InsertRecordHead()
 {
     record_t *record = new_record(&m_parser);
     return_null_if_null(record);
-    list_ins_head(&m_records, &record->item);
+    list_ins_head(&m_records, &record->list);
     SetNewRecord(record);
     return record;
 }
 
 void CsvDoc::DeleteRecord(record_t *pos)
 {
-    auto *item = list_del(&m_records, &pos->item);
+    auto *item = list_del(&m_records, &pos->list);
     if (item != NULL) {
         free_record(&m_parser, get_record(item));
     }
@@ -75,17 +75,6 @@ void CsvDoc::DeleteRecordHead()
     if (item != NULL) {
         free_record(&m_parser, get_record(item));
     }
-}
-
-extern "C" bool __record_callback(struct list_item *item, void *context)
-{
-    auto *func = (std::function<bool(record_t *)> *)context;
-    return (*func)(get_record(item));
-}
-
-void CsvDoc::ForEachRecord(const std::function<bool(record_t *)> &callback)
-{
-    list_foreach(&m_records, __record_callback, (void *)&callback);
 }
 
 bool CsvDoc::Read(std::istream &is)
@@ -105,7 +94,7 @@ bool CsvDoc::Read(std::istream &is)
             throw std::bad_alloc();
         }
         if (parse_line(&m_parser, buf, record) != NULL) {
-            list_add(&m_records, &record->item);
+            list_add(&m_records, &record->list);
         } else {
             free_record(&m_parser, record);
             lines = -lines;
@@ -128,14 +117,15 @@ bool CsvDoc::Write(std::ostream &os)
         wxLogStatus(_("%d lines written"), lines);
         return false;
     }
-    ForEachRecord([this, &os, &lines](record_t *record) {
+    record_t *record;
+    list_for_each_entry(record, &m_records, list)
+    {
         char buf[MAX_LINE_LENGTH + 1];
         const char *p = output_line(&m_parser, buf, record);
         os.write(buf, p - buf);
         os.put('\n');
         ++lines;
-        return true;
-    });
+    }
     wxLogStatus(_("%d lines written"), lines);
     return true;
 }

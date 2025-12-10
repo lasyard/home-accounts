@@ -43,17 +43,17 @@ public:
     void DeleteRecord(record_t *pos);
     void DeleteRecordHead();
 
-    void ForEachRecord(const std::function<bool(record_t *)> &callback);
-
     bool Read(std::istream &is);
     bool Write(std::ostream &os);
 
 protected:
     struct parser m_parser;
     struct list_head m_records;
+    std::vector<record_t *> m_index;
 
     virtual bool AfterRead()
     {
+        CreateIndex();
         return true;
     }
 
@@ -64,6 +64,16 @@ protected:
 
     virtual void SetNewRecord([[maybe_unused]] record_t *record)
     {
+    }
+
+    void CreateIndex()
+    {
+        m_index.clear();
+        record_t *record;
+        list_for_each_entry(record, &m_records, list)
+        {
+            m_index.push_back(record);
+        }
     }
 };
 

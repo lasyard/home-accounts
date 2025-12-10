@@ -56,14 +56,3 @@ struct list_item *list_del_head(struct list_head *head)
     }
     return item;
 }
-
-void list_foreach(struct list_head *head, bool (*func)(struct list_item *item, void *context), void *context)
-{
-    struct list_item *q;
-    for (struct list_item *p = head->first; p != NULL; p = q) {
-        q = p->next;
-        if (!func(p, context)) {
-            break;
-        }
-    }
-}

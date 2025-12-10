@@ -18,14 +18,14 @@ struct record_meta {
 };
 
 typedef struct record {
-    struct list_item item; // for linking in list
+    struct list_item list; // for linking in list
     char data[0];
 } record_t;
 #ifdef _MSC_VER
 #pragma warning(pop)
 #endif
 
-#define get_record(ptr) container_of(ptr, record_t, item)
+#define get_record(ptr) container_of(ptr, record_t, list)
 
 #ifdef __cplusplus
 extern "C" {

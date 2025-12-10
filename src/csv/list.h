@@ -17,6 +17,20 @@ struct list_head {
 
 #define list_entry(ptr, type, member) container_of(ptr, type, member)
 
+#define list_first_entry(head, type, member) list_entry((head)->first, type, member)
+#define list_last_entry(head, type, member)  list_entry((head)->last, type, member)
+
+#define list_next_entry(pos, member) ((pos) != NULL ? list_entry((pos)->member.next, typeof(*(pos)), member) : NULL)
+
+/* forward iteration over list of given type */
+#define list_for_each_entry(pos, head, member) \
+    for (pos = list_first_entry(head, typeof(*pos), member); pos != NULL; pos = list_next_entry(pos, member))
+
+/* safe against removal of the current entry */
+#define list_for_each_entry_safe(pos, n, head, member)                                                      \
+    for (pos = list_first_entry(head, typeof(*pos), member), n = list_next_entry(pos, member); pos != NULL; \
+         pos = n, n = list_next_entry(n, member))
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -64,8 +78,6 @@ void list_ins_head(struct list_head *head, struct list_item *item);
  */
 struct list_item *list_del(struct list_head *head, struct list_item *pos);
 struct list_item *list_del_head(struct list_head *head);
-
-void list_foreach(struct list_head *head, bool (*func)(struct list_item *item, void *context), void *context);
 
 #ifdef __cplusplus
 }

@@ -25,8 +25,15 @@ CsvDoc::~CsvDoc()
     release_parser(&m_parser);
 }
 
-const wxString CsvDoc::GetRecordValueString(const record_t *record, int i) const
+const wxString CsvDoc::GetRecordValueString(int pos, int i) const
 {
+    record_t *record = GetRecord(pos);
+    if (record == nullptr) {
+        return wxEmptyString;
+    }
+    if (i < 0 || i >= m_parser.meta->cols) {
+        return wxEmptyString;
+    }
     if (m_parser.meta->types[i] != CT_STR) {
         char buf[MAX_LINE_LENGTH + 1];
         char *p = output_field(&m_parser, buf, record, i);
@@ -38,43 +45,56 @@ const wxString CsvDoc::GetRecordValueString(const record_t *record, int i) const
     }
 }
 
-void CsvDoc::SetRecordValueString(record_t *record, int i, const wxString &value)
+void CsvDoc::SetRecordValueString(int pos, int i, const wxString &value)
 {
+    record_t *record = GetRecord(pos);
+    if (record == nullptr) {
+        throw std::out_of_range("record position out of range");
+    }
+    if (i < 0 || i >= m_parser.meta->cols) {
+        throw std::out_of_range("column index out of range");
+    }
     parse_field(&m_parser, value.c_str(), record, i);
 }
 
-record_t *CsvDoc::InsertRecord(record_t *pos)
+record_t *CsvDoc::AddRecord()
+{
+    return InsertRecord(-1);
+}
+
+record_t *CsvDoc::InsertRecord(int pos)
 {
     record_t *record = new_record(&m_parser);
     return_null_if_null(record);
-    list_ins(&m_records, &pos->list, &record->list);
+    record_t *p = GetRecord(pos);
+    if (p == nullptr) {
+        list_add(&m_records, &record->list);
+        m_index.push_back(record);
+    } else {
+        list_ins(&m_records, &p->list, &record->list);
+        m_index.insert(std::next(m_index.begin(), pos), record);
+    }
     SetNewRecord(record);
     return record;
 }
 
-record_t *CsvDoc::InsertRecordHead()
+bool CsvDoc::DeleteRecord(int pos)
 {
-    record_t *record = new_record(&m_parser);
-    return_null_if_null(record);
-    list_ins_head(&m_records, &record->list);
-    SetNewRecord(record);
-    return record;
-}
-
-void CsvDoc::DeleteRecord(record_t *pos)
-{
-    auto *item = list_del(&m_records, &pos->list);
-    if (item != NULL) {
-        free_record(&m_parser, get_record(item));
+    struct list_item *list = NULL;
+    if (pos == 0) {
+        list = list_del_head(&m_records);
+    } else {
+        record_t *p = GetRecord(pos - 1);
+        if (p != nullptr) {
+            list = list_del(&m_records, &p->list);
+        }
     }
-}
-
-void CsvDoc::DeleteRecordHead()
-{
-    auto *item = list_del_head(&m_records);
-    if (item != NULL) {
-        free_record(&m_parser, get_record(item));
+    if (list != NULL) {
+        m_index.erase(std::next(m_index.begin(), pos));
+        free_record(&m_parser, get_record(list));
+        return true;
     }
+    return false;
 }
 
 bool CsvDoc::Read(std::istream &is)

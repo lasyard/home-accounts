@@ -22,7 +22,10 @@ add_exe(${APP_NAME}
     HaArtProvider.cpp
     HaDocument.cpp
     HaGdi.cpp
+    HaGrid.cpp
+    HaGridCellAttrProvider.cpp
     HaMainFrame.cpp
+    HaTable.cpp
     HaView.cpp
     Utils.cpp
     # order is vital

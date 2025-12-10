@@ -29,7 +29,7 @@ static inline void set_time(date_t *time, int64_t time_part)
 
 static inline int64_t get_time(date_t time)
 {
-    return (int64_t)((time & TIME_MASK) >> 32);
+    return (int64_t)((date_t)(time & TIME_MASK) >> 32);
 }
 
 int jdn(int year, int month, int day);

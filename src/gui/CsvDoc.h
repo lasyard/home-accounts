@@ -35,13 +35,20 @@ public:
         return m_records.count;
     }
 
-    virtual const wxString GetRecordValueString(const record_t *record, int i) const;
-    virtual void SetRecordValueString(record_t *record, int i, const wxString &value);
+    record_t *GetRecord(int pos) const
+    {
+        if (pos < 0 || (size_t)pos >= m_index.size()) {
+            return nullptr;
+        }
+        return m_index[pos];
+    }
 
-    record_t *InsertRecord(record_t *pos);
-    record_t *InsertRecordHead();
-    void DeleteRecord(record_t *pos);
-    void DeleteRecordHead();
+    virtual const wxString GetRecordValueString(int pos, int i) const;
+    virtual void SetRecordValueString(int pos, int i, const wxString &value);
+
+    record_t *AddRecord();
+    record_t *InsertRecord(int pos);
+    bool DeleteRecord(int pos);
 
     bool Read(std::istream &is);
     bool Write(std::ostream &os);

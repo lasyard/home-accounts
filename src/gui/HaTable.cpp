@@ -8,7 +8,7 @@
 
 void HaTable::Init()
 {
-    int rows = m_doc != nullptr ? m_doc->GetRecordCount() : 0;
+    int rows = m_doc != nullptr ? m_doc->GetRowCount() : 0;
     for (auto i = 0; i < rows; ++i) {
         CacheRow(i);
     }

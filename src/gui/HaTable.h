@@ -17,6 +17,8 @@ public:
         , m_colLabels(colLabels)
         , m_cache(nullptr)
     {
+        m_cols = m_colLabels.size();
+        m_colImpls = new struct ColImpl[m_cols];
     }
 
     virtual ~HaTable()
@@ -27,6 +29,7 @@ public:
         if (m_doc != nullptr) {
             delete m_doc;
         }
+        delete[] m_colImpls;
     }
 
     virtual void Init();
@@ -64,9 +67,9 @@ public:
         return true;
     }
 
-    virtual enum column_type GetItemFieldType(int col) const
+    virtual enum column_type GetColType(int col) const
     {
-        return m_doc->GetColType(col);
+        return col < m_cols ? m_colImpls[col].type : CT_IGNORE;
     }
 
     auto *GetDoc()
@@ -81,9 +84,17 @@ public:
     bool DeleteRows(size_t pos, size_t numRows) override;
 
 protected:
+    struct ColImpl {
+        enum column_type type;
+        std::function<wxString(int)> get;
+        std::function<void(int, const wxString &)> set;
+    };
+
     CsvDoc *m_doc;
+    int m_cols;
     wxArrayString m_colLabels;
     wxVector<wxArrayString> *m_cache;
+    struct ColImpl *m_colImpls;
 
     void CacheCell(int row, int col)
     {
@@ -122,19 +133,45 @@ protected:
         }
     }
 
-    virtual const wxString GetCellValue(int row, int col)
+    void MapColImplToDoc(struct ColImpl &colImpl, int col)
     {
-        return m_doc->GetRecordValueString(row, col);
+        colImpl.type = m_doc->GetColType(col);
+        colImpl.get = [this, col](int row) -> wxString { return m_doc->GetValueString(row, col); };
+        colImpl.set = [this, col](int row, const wxString &value) -> void {
+            m_doc->SetValueString(row, col, value);
+        };
     }
 
-    virtual void SetCellValue(int row, int col, const wxString &value)
+    void MapAllColsToDoc()
     {
-        m_doc->SetRecordValueString(row, col, value);
+        wxASSERT(m_cols == m_doc->GetColCount());
+        for (int i = 0; i < m_cols; ++i) {
+            MapColImplToDoc(m_colImpls[i], i);
+        }
     }
 
     virtual bool InsertRow(size_t pos);
     virtual bool AppendRow();
     virtual bool DeleteRow(size_t pos);
+
+private:
+    const wxString GetCellValue(int row, int col)
+    {
+        if (col < m_cols) {
+            if (m_colImpls[col].get != nullptr) {
+                return m_colImpls[col].get(row);
+            }
+            return _("not implemented");
+        }
+        return wxEmptyString;
+    }
+
+    void SetCellValue(int row, int col, const wxString &value)
+    {
+        if (col < m_cols && m_colImpls[col].set != nullptr) {
+            m_colImpls[col].set(row, value);
+        }
+    }
 };
 
 #endif /* _HA_GUI_HA_TABLE_H_ */

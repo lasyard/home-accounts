@@ -74,7 +74,7 @@ wxGridCellAttr *HaGridCellAttrProvider::GetAttr(int row, int col, wxGridCellAttr
 
 wxGridCellAttr *HaGridCellAttrProvider::GetItemCellAttr([[maybe_unused]] int row, int col) const
 {
-    switch (m_table->GetItemFieldType(col)) {
+    switch (m_table->GetColType(col)) {
     case CT_INT:
         m_integerAttr->IncRef();
         return m_integerAttr;

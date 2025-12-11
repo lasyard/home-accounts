@@ -1,5 +1,6 @@
 #include <istream>
 #include <ostream>
+#include <sstream>
 
 #include <wx/log.h>
 #include <wx/translation.h>
@@ -25,7 +26,7 @@ CsvDoc::~CsvDoc()
     release_parser(&m_parser);
 }
 
-const wxString CsvDoc::GetRecordValueString(int pos, int i) const
+const wxString CsvDoc::GetValueString(int pos, int i) const
 {
     record_t *record = GetRecord(pos);
     if (record == nullptr) {
@@ -45,7 +46,7 @@ const wxString CsvDoc::GetRecordValueString(int pos, int i) const
     }
 }
 
-void CsvDoc::SetRecordValueString(int pos, int i, const wxString &value)
+void CsvDoc::SetValueString(int pos, int i, const wxString &value)
 {
     record_t *record = GetRecord(pos);
     if (record == nullptr) {
@@ -137,9 +138,7 @@ bool CsvDoc::Write(std::ostream &os)
         wxLogStatus(_("%d lines written"), lines);
         return false;
     }
-    record_t *record;
-    list_for_each_entry(record, &m_records, list)
-    {
+    for (record_t *record : m_index) {
         char buf[MAX_LINE_LENGTH + 1];
         const char *p = output_line(&m_parser, buf, record);
         os.write(buf, p - buf);
@@ -147,5 +146,21 @@ bool CsvDoc::Write(std::ostream &os)
         ++lines;
     }
     wxLogStatus(_("%d lines written"), lines);
+    return true;
+}
+
+bool CsvDoc::Read(const std::string &str)
+{
+    std::istringstream is(str);
+    return Read(is);
+}
+
+bool CsvDoc::Write(std::string &str)
+{
+    std::ostringstream os;
+    if (!Write(os)) {
+        return false;
+    }
+    str = os.str();
     return true;
 }

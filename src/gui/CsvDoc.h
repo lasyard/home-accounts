@@ -14,9 +14,14 @@ public:
     CsvDoc(int cols, const enum column_type types[]);
     virtual ~CsvDoc();
 
+    int GetColCount() const
+    {
+        return m_parser.meta->cols;
+    }
+
     enum column_type GetColType(int i) const
     {
-        wxASSERT(i < m_parser.meta->cols);
+        wxASSERT(i < GetColCount());
         return m_parser.meta->types[i];
     }
 
@@ -30,9 +35,9 @@ public:
         return &m_records;
     }
 
-    size_t GetRecordCount() const
+    size_t GetRowCount() const
     {
-        return m_records.count;
+        return m_index.size();
     }
 
     record_t *GetRecord(int pos) const
@@ -43,8 +48,8 @@ public:
         return m_index[pos];
     }
 
-    virtual const wxString GetRecordValueString(int pos, int i) const;
-    virtual void SetRecordValueString(int pos, int i, const wxString &value);
+    virtual const wxString GetValueString(int pos, int i) const;
+    virtual void SetValueString(int pos, int i, const wxString &value);
 
     record_t *AddRecord();
     record_t *InsertRecord(int pos);
@@ -52,6 +57,9 @@ public:
 
     bool Read(std::istream &is);
     bool Write(std::ostream &os);
+
+    bool Read(const std::string &str);
+    bool Write(std::string &str);
 
 protected:
     struct parser m_parser;
@@ -73,7 +81,7 @@ protected:
     {
     }
 
-    void CreateIndex()
+    virtual void CreateIndex()
     {
         m_index.clear();
         record_t *record;

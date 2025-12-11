@@ -8,6 +8,7 @@
 #include "HaMainFrame.h"
 #include "Utils.h"
 
+#include "accounts/AccountsPanel.h"
 #include "raw/RawPanel.h"
 
 IMPLEMENT_DYNAMIC_CLASS(HaView, wxView)
@@ -39,6 +40,7 @@ bool HaView::OnCreate([[maybe_unused]] wxDocument *doc, [[maybe_unused]] long fl
     m_book = frame->GetBook();
     m_book->Show();
     frame->Layout();
+    m_book->AddPage(new AccountsPanel(m_book), _("Accounts"));
     m_book->AddPage(new RawPanel(m_book), _("Raw"));
     Activate(true);
     return true;

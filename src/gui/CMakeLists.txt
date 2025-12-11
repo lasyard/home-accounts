@@ -109,5 +109,6 @@ foreach(domain IN ITEMS ${APP_NAME} "xrc")
     endforeach()
 endforeach()
 
+add_subdirectory(accounts)
 add_subdirectory(raw)
 add_subdirectory(res)

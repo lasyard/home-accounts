@@ -50,6 +50,12 @@ const char *parse_str(const char *buf, struct str *data, char sep);
 
 struct str *own_str(struct str *data);
 
+static inline struct str *copy_str(struct str *dst, const struct str *src)
+{
+    set_str(dst, src->buf, src->len);
+    return own_str(dst);
+}
+
 char *output_str(char *buf, const struct str *data);
 
 /**

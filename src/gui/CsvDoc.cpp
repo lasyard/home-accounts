@@ -1,14 +1,11 @@
-#include <istream>
-#include <ostream>
-#include <sstream>
-
 #include <wx/log.h>
 #include <wx/translation.h>
+
+#include <sstream>
 
 #include "CsvDoc.h"
 
 #include "csv/str.h"
-#include "csv/utils.h"
 
 IMPLEMENT_TM(CsvDoc)
 
@@ -98,30 +95,21 @@ bool CsvDoc::DeleteRecord(int pos)
     return false;
 }
 
+extern "C" int get_line_from_istream(char *buf, size_t len, void *context)
+{
+    std::istream *is = static_cast<std::istream *>(context);
+    if (is->eof()) {
+        return -1;
+    }
+    is->getline(buf, len);
+    return is->gcount();
+}
+
 bool CsvDoc::Read(std::istream &is)
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
-    char buf[MAX_LINE_LENGTH + 1];
-    int lines = 0;
     release_records(&m_parser, &m_records);
-    while (!is.eof()) {
-        is.getline(buf, MAX_LINE_LENGTH);
-        ++lines;
-        if (is_line_end(buf[0])) {
-            continue;
-        }
-        auto *record = new_record(&m_parser);
-        if (record == NULL) {
-            throw std::bad_alloc();
-        }
-        if (parse_line(&m_parser, buf, record) != NULL) {
-            list_add(&m_records, &record->list);
-        } else {
-            free_record(&m_parser, record);
-            lines = -lines;
-            break;
-        }
-    }
+    int lines = read_lines(&m_parser, &m_records, ::get_line_from_istream, static_cast<void *>(&is));
     if (lines < 0) {
         wxLogError(_("Parse error at line %d"), -lines);
         return false;
@@ -130,21 +118,22 @@ bool CsvDoc::Read(std::istream &is)
     return AfterRead();
 }
 
+extern "C" int put_line_to_ostream(const char *buf, size_t len, void *context)
+{
+    std::ostream *os = static_cast<std::ostream *>(context);
+    os->write(buf, len);
+    os->put('\n');
+    return len;
+}
+
 bool CsvDoc::Write(std::ostream &os)
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
-    int lines = 0;
     if (!BeforeWrite()) {
-        wxLogStatus(_("%d lines written"), lines);
+        wxLogStatus(_("%d lines written"), 0);
         return false;
     }
-    for (record_t *record : m_index) {
-        char buf[MAX_LINE_LENGTH + 1];
-        const char *p = output_line(&m_parser, buf, record);
-        os.write(buf, p - buf);
-        os.put('\n');
-        ++lines;
-    }
+    int lines = write_lines(&m_parser, &m_records, ::put_line_to_ostream, static_cast<void *>(&os));
     wxLogStatus(_("%d lines written"), lines);
     return true;
 }

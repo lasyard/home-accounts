@@ -13,11 +13,10 @@ TEST_CASE("parse_line")
     struct parser parser;
     init_parser(&parser);
     set_parser_types(&parser, 6, types);
-    record_t *r = new_record(&parser);
     SUBCASE("sep = ','")
     {
-        const char *p = parse_line(&parser, "   abc, def , 10, -100 ,, 123.45\n", r);
-        CHECK(*p == '\0');
+        record_t *r = parse_line(&parser, "   abc, def , 10, -100 ,, 123.45\n");
+        CHECK(r != NULL);
         struct str *str = (struct str *)get_field(&parser, r, 0);
         CHECK(strncmp(str->buf, "abc", 3) == 0);
         CHECK(str->len == 3);
@@ -32,31 +31,18 @@ TEST_CASE("parse_line")
         CHECK(*i == -100LL);
         money_t *amount = (money_t *)get_field(&parser, r, 5);
         CHECK(*amount == 12345LL);
+        free_record(&parser, r);
     }
     SUBCASE("less fields")
     {
-        const char *p = parse_line(&parser, "   abc, def , 10, -100 , 123.45", r);
-        CHECK(p == NULL);
-        struct str *str = (struct str *)get_field(&parser, r, 0);
-        CHECK(strncmp(str->buf, "abc", 3) == 0);
-        CHECK(str->len == 3);
-        CHECK(str->own);
-        str = (struct str *)get_field(&parser, r, 1);
-        CHECK(strncmp(str->buf, "def", 3) == 0);
-        CHECK(str->len == 3);
-        CHECK(str->own);
-        int64_t *i = (int64_t *)get_field(&parser, r, 2);
-        CHECK(*i == 10LL);
-        i = (int64_t *)get_field(&parser, r, 3);
-        CHECK(*i == -100LL);
-        money_t *amount = (money_t *)get_field(&parser, r, 5);
-        CHECK(*amount == 0LL);
+        record_t *r = parse_line(&parser, "   abc, def , 10, -100 , 123.45");
+        CHECK(r == NULL);
     }
     SUBCASE("sep == '|'")
     {
-        parser.sep = '|';
-        const char *p = parse_line(&parser, "   123| 4567 | -32768| 343 | sdafsfsd| 67 89.10\n", r);
-        CHECK(*p == '\0');
+        parser.options.sep = '|';
+        record_t *r = parse_line(&parser, "   123| 4567 | -32768| 343 | sdafsfsd| 67 89.10\n");
+        CHECK(r != NULL);
         struct str *str = (struct str *)get_field(&parser, r, 0);
         CHECK(strncmp(str->buf, "123", 3) == 0);
         CHECK(str->len == 3);
@@ -71,8 +57,8 @@ TEST_CASE("parse_line")
         CHECK(*i == 343LL);
         money_t *amount = (money_t *)get_field(&parser, r, 5);
         CHECK(*amount == 678910LL);
+        free_record(&parser, r);
     }
-    free_record(&parser, r);
     release_parser(&parser);
 }
 
@@ -84,9 +70,8 @@ TEST_CASE("parse_line_1")
         struct parser parser;
         init_parser(&parser);
         set_parser_types(&parser, 3, types);
-        record_t *r = new_record(&parser);
-        const char *p = parse_line(&parser, "1, 123.45,\n", r);
-        CHECK(*p == '\n');
+        record_t *r = parse_line(&parser, "1, 123.45,\n");
+        CHECK(r != NULL);
         int64_t *i = (int64_t *)get_field(&parser, r, 0);
         CHECK(*i == 1LL);
         money_t *amount = (money_t *)get_field(&parser, r, 1);
@@ -104,9 +89,8 @@ TEST_CASE("parse_line_1")
         struct parser parser;
         init_parser(&parser);
         set_parser_types(&parser, 3, types);
-        record_t *r = new_record(&parser);
-        const char *p = parse_line(&parser, "1, 123.45,\n", r);
-        CHECK(*p == '\n');
+        record_t *r = parse_line(&parser, "1, 123.45,\n");
+        CHECK(r != NULL);
         int64_t *i = (int64_t *)get_field(&parser, r, 0);
         CHECK(*i == 1LL);
         money_t *amount = (money_t *)get_field(&parser, r, 1);
@@ -136,7 +120,7 @@ TEST_CASE("output_line")
     }
     SUBCASE("sep == '|'")
     {
-        parser.sep = '|';
+        parser.options.sep = '|';
         *(int64_t *)get_field(&parser, r, 0) = 10LL;
         *(int64_t *)get_field(&parser, r, 1) = -100LL;
         char *p = output_line(&parser, buf, r);

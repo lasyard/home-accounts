@@ -57,7 +57,6 @@ public:
 
     bool Read(std::istream &is);
     bool Write(std::ostream &os);
-
     bool Read(const std::string &str);
     bool Write(std::string &str);
 

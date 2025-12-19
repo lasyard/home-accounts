@@ -11,7 +11,7 @@ class CsvDoc
 public:
     DECLARE_TM()
 
-    CsvDoc(int cols, const enum column_type types[]);
+    CsvDoc(int cols, const enum column_type types[], int comment_cols = 0);
     virtual ~CsvDoc();
 
     int GetColCount() const

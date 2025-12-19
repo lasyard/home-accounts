@@ -8,7 +8,8 @@
 
 void HaTable::Init()
 {
-    int rows = m_doc != nullptr ? m_doc->GetRowCount() : 0;
+    int rows = (m_doc != nullptr ? m_doc->GetRowCount() : 0);
+    m_cache = new wxVector<wxArrayString>(rows);
     for (auto i = 0; i < rows; ++i) {
         CacheRow(i);
     }

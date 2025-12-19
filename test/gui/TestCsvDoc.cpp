@@ -50,7 +50,7 @@ TEST_CASE("read & write with comments")
     const enum column_type types[] = {CT_INT, CT_STR, CT_MONEY, CT_DATE, CT_TIME};
     std::fstream file("sample1.csv", std::ios::in);
     CHECK(file.is_open());
-    CsvDoc doc(5, types);
+    CsvDoc doc(5, types, 1);
     CHECK(doc.Read(file));
     CHECK(doc.GetRowCount() == 7);
     CHECK(doc.GetValueString(0, 0) == "1");
@@ -84,7 +84,7 @@ TEST_CASE("read & write with comments")
                     "#2\n"
                     "Betty,200.00,2025-12-31,\n"
                     "Betty1,300.05,2026-01-01,10:30:00\n"
-                    "#3,Cindy\n"
-                    "3.00,2039-05-05,01:02:03\n"
+                    "#3\n"
+                    "Cindy,3.00,2039-05-05,01:02:03\n"
     );
 }

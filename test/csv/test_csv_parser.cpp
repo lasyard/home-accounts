@@ -12,7 +12,7 @@ TEST_CASE("parse_line")
     enum column_type types[] { CT_STR, CT_STR, CT_INT, CT_INT, CT_IGNORE, CT_MONEY };
     struct parser parser;
     init_parser(&parser);
-    set_parser_types(&parser, 6, types);
+    set_parser_types(&parser, 6, types, 0);
     SUBCASE("sep = ','")
     {
         record_t *r = parse_line(&parser, "   abc, def , 10, -100 ,, 123.45\n");
@@ -69,7 +69,7 @@ TEST_CASE("parse_line_1")
         enum column_type types[] { CT_INT, CT_MONEY, CT_STR };
         struct parser parser;
         init_parser(&parser);
-        set_parser_types(&parser, 3, types);
+        set_parser_types(&parser, 3, types, 0);
         record_t *r = parse_line(&parser, "1, 123.45,\n");
         CHECK(r != NULL);
         int64_t *i = (int64_t *)get_field(&parser, r, 0);
@@ -88,7 +88,7 @@ TEST_CASE("parse_line_1")
         enum column_type types[] { CT_INT, CT_MONEY, CT_TIME };
         struct parser parser;
         init_parser(&parser);
-        set_parser_types(&parser, 3, types);
+        set_parser_types(&parser, 3, types, 0);
         record_t *r = parse_line(&parser, "1, 123.45,\n");
         CHECK(r != NULL);
         int64_t *i = (int64_t *)get_field(&parser, r, 0);
@@ -107,7 +107,7 @@ TEST_CASE("output_line")
     column_type types[]{CT_INT, CT_INT};
     struct parser parser;
     init_parser(&parser);
-    set_parser_types(&parser, 2, types);
+    set_parser_types(&parser, 2, types, 0);
     record_t *r = new_record(&parser);
     char buf[256];
     SUBCASE("sep == ','")

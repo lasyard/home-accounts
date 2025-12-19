@@ -118,17 +118,20 @@ void init_parser(struct parser *parser)
     parser->options.sep = ',';
     parser->options.num_sep = ' ';
     parser->options.date_sep = '-';
+    parser->comment_cols = 0;
     parser->meta = NULL;
     parser->comment = NULL;
     set_money_prec(parser, 2);
 }
 
-const struct record_meta *set_parser_types(struct parser *parser, int cols, const enum column_type *types)
+const struct record_meta *
+set_parser_types(struct parser *parser, int cols, const enum column_type *types, int comment_cols)
 {
     struct record_meta *meta = (struct record_meta *)malloc(sizeof(struct record_meta) + cols * sizeof(size_t));
     return_null_if_null(meta);
     meta->cols = cols;
     meta->types = types;
+    parser->comment_cols = comment_cols;
     size_t offset = 0;
     for (int i = 0; i < cols; ++i) {
         meta->offsets[i] = offset;
@@ -176,8 +179,8 @@ record_t *new_record(const struct parser *parser)
 {
     record_t *record = raw_new_record(parser);
     return_null_if_null(record);
-    record->comment_cols = 0;
-    for (int i = 0; i < __comment_cols(parser); ++i) {
+    record->flag = RECORD_FLAG_NORMAL;
+    for (int i = 0; i < parser->comment_cols; ++i) {
         if (copy_field(parser, record, parser->comment, i) == NULL) {
             free_record(parser, record);
             return NULL;
@@ -226,7 +229,7 @@ record_t *parse_line(const struct parser *parser, const char *line)
 {
     record_t *record = new_record(parser);
     return_null_if_null(record);
-    const char *p = raw_parse_line(parser, line, record, __comment_cols(parser), parser->meta->cols);
+    const char *p = raw_parse_line(parser, line, record, parser->comment_cols, parser->meta->cols);
     if (p == NULL) {
         free_record(parser, record);
         return NULL;
@@ -238,9 +241,8 @@ record_t *parse_comment(const struct parser *parser, const char *line)
 {
     record_t *comment = raw_new_record(parser);
     return_null_if_null(comment);
-    int cols = parse_count(parser, line);
-    comment->comment_cols = cols;
-    const char *p = raw_parse_line(parser, line, comment, 0, cols);
+    comment->flag = RECORD_FLAG_COMMENT;
+    const char *p = raw_parse_line(parser, line, comment, 0, parser->comment_cols);
     if (p == NULL) {
         free_record(parser, comment);
         return NULL;
@@ -271,11 +273,11 @@ char *output_field(const struct parser *parser, char *buf, const record_t *recor
 char *output_line(const struct parser *parser, char *buf, const record_t *record)
 {
     int start, end;
-    if (record->comment_cols > 0) { // comment
+    if (record->flag == RECORD_FLAG_COMMENT) { // comment
         start = 0;
-        end = record->comment_cols;
+        end = parser->comment_cols;
     } else {
-        start = __comment_cols(parser);
+        start = parser->comment_cols;
         end = parser->meta->cols;
     }
     char *p = buf;
@@ -333,7 +335,7 @@ int write_lines(
     {
         char buf[MAX_LINE_LENGTH + 1];
         const char *p;
-        if (record->comment_cols > 0) {
+        if (record->flag == RECORD_FLAG_COMMENT) {
             buf[0] = '#';
             p = output_line(parser, &buf[1], record);
             parser->comment = record;

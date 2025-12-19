@@ -9,11 +9,11 @@
 
 IMPLEMENT_TM(CsvDoc)
 
-CsvDoc::CsvDoc(int count, const enum column_type types[])
+CsvDoc::CsvDoc(int count, const enum column_type types[], int comment_cols)
 {
     wxLog::AddTraceMask(TM);
     init_parser(&m_parser);
-    set_parser_types(&m_parser, count, types);
+    set_parser_types(&m_parser, count, types, comment_cols);
     list_head_init(&m_records);
 }
 
@@ -26,10 +26,7 @@ CsvDoc::~CsvDoc()
 const wxString CsvDoc::GetValueString(int pos, int i) const
 {
     record_t *record = GetRecord(pos);
-    if (record == nullptr) {
-        return wxEmptyString;
-    }
-    if (i < 0 || i >= m_parser.meta->cols) {
+    if (i < 0 || i >= (record->flag == RECORD_FLAG_COMMENT ? m_parser.comment_cols : m_parser.meta->cols)) {
         return wxEmptyString;
     }
     if (m_parser.meta->types[i] != CT_STR) {
@@ -49,7 +46,7 @@ void CsvDoc::SetValueString(int pos, int i, const wxString &value)
     if (record == nullptr) {
         throw std::out_of_range("record position out of range");
     }
-    if (i < 0 || i >= m_parser.meta->cols) {
+    if (i < 0 || i >= (record->flag == RECORD_FLAG_COMMENT ? m_parser.comment_cols : m_parser.meta->cols)) {
         throw std::out_of_range("column index out of range");
     }
     parse_field(&m_parser, value.c_str(), record, i);

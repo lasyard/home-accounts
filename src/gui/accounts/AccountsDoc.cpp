@@ -20,7 +20,7 @@ const wxArrayString AccountsDoc::ACCOUNT_TYPE_STRINGS = {
     _("Transfer"),
 };
 
-AccountsDoc::AccountsDoc() : CsvDoc(ACCOUNT_COLS, ACCOUNT_COL_TYPES), m_maxId(0)
+AccountsDoc::AccountsDoc() : CsvDoc(ACCOUNT_COLS, ACCOUNT_COL_TYPES, 1), m_maxId(0)
 {
     wxLog::AddTraceMask(TM);
 }

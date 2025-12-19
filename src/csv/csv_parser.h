@@ -19,12 +19,15 @@ struct record_meta {
 
 typedef struct record {
     struct list_item list; // for linking in list
-    int comment_cols;      // used for comment, 0 means normal record
+    char flag;             // record flag
     char data[0];
 } record_t;
 #ifdef _MSC_VER
 #pragma warning(pop)
 #endif
+
+#define RECORD_FLAG_COMMENT 0x02
+#define RECORD_FLAG_NORMAL  0x01
 
 #define get_record(ptr) container_of(ptr, record_t, list)
 
@@ -42,7 +45,8 @@ struct parser_options {
 
 struct parser {
     struct parser_options options;
-    record_t *comment;              // record to hold the first field if read from comment, not owned
+    int comment_cols;               // columns in comment line, 0 means no comment line
+    record_t *comment;              // record to hold the head fields if read from comment, not owned
     const struct record_meta *meta; // the meta of record, owned
 };
 
@@ -59,14 +63,11 @@ static inline const void *get_const_field(const struct parser *parser, const rec
 }
 
 void init_parser(struct parser *parser);
-const struct record_meta *set_parser_types(struct parser *parser, int cols, const enum column_type *types);
 void set_money_prec(struct parser *parser, int money_prec);
 void release_parser(struct parser *parser);
 
-static inline int __comment_cols(const struct parser *parser)
-{
-    return parser->comment != NULL ? parser->comment->comment_cols : 0;
-}
+const struct record_meta *
+set_parser_types(struct parser *parser, int cols, const enum column_type *types, int comment_cols);
 
 record_t *new_record(const struct parser *parser);
 void free_record(const struct parser *parser, record_t *record);

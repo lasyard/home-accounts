@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets">
+    <Import Project="common.props" />
+  </ImportGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{d3c8dba1-90a3-4a33-9a7b-0c47766d5a69}</ProjectGuid>
+    <RootNamespace>HomeAccounts</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros">
+    <APP_NAME>HomeAccounts</APP_NAME>
+    <APP_VERSION>1.0.0</APP_VERSION>
+    <AUTHOR>Yueguang Jiao</AUTHOR>
+    <EMAIL>lasyard@yeah.net</EMAIL>
+    <XRS_FILE>resource.xrs</XRS_FILE>
+  </PropertyGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\gui\accounts\AccountsDoc.cpp" />
+    <ClCompile Include="..\src\gui\accounts\AccountsGrid.cpp" />
+    <ClCompile Include="..\src\gui\accounts\AccountsPanel.cpp" />
+    <ClCompile Include="..\src\gui\accounts\AccountsTable.cpp" />
+    <ClCompile Include="..\src\gui\ChangePassDialog.cpp" />
+    <ClCompile Include="..\src\gui\CsvDoc.cpp" />
+    <ClCompile Include="..\src\gui\HaApp.cpp" />
+    <ClCompile Include="..\src\gui\HaArtProvider.cpp" />
+    <ClCompile Include="..\src\gui\HaDocument.cpp" />
+    <ClCompile Include="..\src\gui\HaGdi.cpp" />
+    <ClCompile Include="..\src\gui\HaGrid.cpp" />
+    <ClCompile Include="..\src\gui\HaGridCellAttrProvider.cpp" />
+    <ClCompile Include="..\src\gui\HaMainFrame.cpp" />
+    <ClCompile Include="..\src\gui\HaTable.cpp" />
+    <ClCompile Include="..\src\gui\HaView.cpp" />
+    <ClCompile Include="..\src\gui\raw\RawPanel.cpp" />
+    <ClCompile Include="..\src\gui\Utils.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\gui\accounts\AccountsDoc.h" />
+    <ClInclude Include="..\src\gui\accounts\AccountsGrid.h" />
+    <ClInclude Include="..\src\gui\accounts\AccountsPanel.h" />
+    <ClInclude Include="..\src\gui\accounts\AccountsTable.h" />
+    <ClInclude Include="..\src\gui\Algos.h" />
+    <ClInclude Include="..\src\gui\ChangePassDialog.h" />
+    <ClInclude Include="..\src\gui\CsvDoc.h" />
+    <ClInclude Include="..\src\gui\HaApp.h" />
+    <ClInclude Include="..\src\gui\HaArtProvider.h" />
+    <ClInclude Include="..\src\gui\HaDefs.h" />
+    <ClInclude Include="..\src\gui\HaDocument.h" />
+    <ClInclude Include="..\src\gui\HaGdi.h" />
+    <ClInclude Include="..\src\gui\HaGrid.h" />
+    <ClInclude Include="..\src\gui\HaGridCellAttrProvider.h" />
+    <ClInclude Include="..\src\gui\HaMainFrame.h" />
+    <ClInclude Include="..\src\gui\HaPanel.h" />
+    <ClInclude Include="..\src\gui\HaTable.h" />
+    <ClInclude Include="..\src\gui\HaView.h" />
+    <ClInclude Include="..\src\gui\raw\RawPanel.h" />
+    <ClInclude Include="..\src\gui\Utils.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="HomeAccounts.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\icon_16x16.ico" />
+    <Image Include="res\icon_32x32.ico" />
+  </ItemGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;APP_NAME="$(APP_NAME)";APP_VERSION="$(APP_VERSION)";AUTHOR="$(AUTHOR)";EMAIL="&lt;$(EMAIL)&gt;";XRS_FILE="$(XRS_FILE)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>csv.lib;file.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;APP_NAME="$(APP_NAME)";APP_VERSION="$(APP_VERSION)";AUTHOR="$(AUTHOR)";EMAIL="&lt;$(EMAIL)&gt;";XRS_FILE="$(XRS_FILE)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>csv.lib;file.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;APP_NAME="$(APP_NAME)";APP_VERSION="$(APP_VERSION)";AUTHOR="$(AUTHOR)";EMAIL="&lt;$(EMAIL)&gt;";XRS_FILE="$(XRS_FILE)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>csv.lib;file.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;APP_NAME="$(APP_NAME)";APP_VERSION="$(APP_VERSION)";AUTHOR="$(AUTHOR)";EMAIL="&lt;$(EMAIL)&gt;";XRS_FILE="$(XRS_FILE)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>csv.lib;file.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

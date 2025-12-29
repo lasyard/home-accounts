@@ -25,7 +25,7 @@ static inline const char *skip_space(const char *buf)
     return p;
 }
 
-#if defined(_ANSI_SOURCE) || (defined(_POSIX_C_SOURCE) && !defined(_DARWIN_C_SOURCE))
+#if defined(_ANSI_SOURCE) || (defined(_POSIX_C_SOURCE) && !defined(_DARWIN_C_SOURCE)) || defined(_MSC_VER)
 static inline int digittoint(int c)
 {
     if (c >= '0' && c <= '9') {

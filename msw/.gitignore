@@ -1,0 +1,26 @@
+# Generated files
+Debug/
+Release/
+*.exe
+*.lib
+*.obj
+*.iobj
+
+# Other generated files
+*.aps
+*.idb
+*.log
+*.pdb
+*.ipdb
+*.recipe
+*.tlog
+data.lastbuildstate
+
+# vcpkg
+vcpkg_installed/
+
+# Resource files
+*.xrs
+*.mo
+*.png
+LICENSE

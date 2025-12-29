@@ -4,7 +4,15 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#define container_of(ptr, type, member) ((type *)((ptr) != 0 ? (char *)(ptr) - (size_t) & ((type *)0)->member : 0))
+#if defined(_MSC_VER) && !defined(typeof)
+#ifdef __cplusplus
+#define typeof(x) std::remove_reference_t<decltype(x)>
+#else
+#define typeof(x) __typeof__(x)
+#endif
+#endif
+
+#define container_of(ptr, type, member) ((type *)((ptr) != 0 ? (char *)(ptr) - (size_t)&((type *)0)->member : 0))
 
 #define return_null_if_null(ptr) \
     do {                         \

@@ -55,7 +55,7 @@ const char *parse_date(const char *buf, date_t *data, char sep, char dateSep)
     ++p;
     p = parse_int(p, &day, sep);
     return_null_if_null(p);
-    *data = jdn(year, month, day);
+    *data = jdn((int)year, (int)month, (int)day);
     return p;
 }
 
@@ -83,7 +83,7 @@ char *output_date(char *buf, date_t data, char date_sep)
 {
     char *p = buf;
     int year, month, day;
-    jdn_split(get_date(data), &year, &month, &day);
+    jdn_split((int)get_date(data), &year, &month, &day);
     p = output_int_len(p, year, 4);
     *(p++) = date_sep;
     p = output_int_len(p, month, 2);

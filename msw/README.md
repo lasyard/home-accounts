@@ -15,9 +15,13 @@ Zip `..\src\gui\res\*.xrc` and rename it to the target.
 
 These language files are generated from files in `..\src\gui\res\i18n\`. You can use [PoEdit](https://poedit.net/).
 
-`logo.png`
+`lasyard_logo.png`
 
-Copy from `..\src\gui\res\images\logo.png`.
+Copy from `..\src\gui\res\images\lasyard_logo.png`.
+
+`app_icon.png`
+
+Copy from `..\src\gui\res\macos.iconset\icon_512x512.png`.
 
 Where to put these files:
 

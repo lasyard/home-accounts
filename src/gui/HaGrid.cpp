@@ -45,7 +45,7 @@ HaGrid::~HaGrid()
 
 void HaGrid::DrawCornerLabel(wxDC &dc)
 {
-    dc.DrawBitmap(wxArtProvider::GetBitmap("logo"), 1, 1);
+    dc.DrawBitmap(wxArtProvider::GetBitmap(LASYARD_LOGO), 1, 1);
 }
 
 void HaGrid::SetAttributes()
@@ -53,7 +53,7 @@ void HaGrid::SetAttributes()
     BeginBatch();
     SetColMinimalAcceptableWidth(80);
     SetRowMinimalAcceptableHeight(ROW_HEIGHT);
-    auto logo = wxArtProvider::GetBitmap("logo");
+    auto logo = wxArtProvider::GetBitmap(LASYARD_LOGO);
     SetRowLabelSize(logo.GetWidth() + 2);
     SetColLabelSize(logo.GetHeight() + 2);
     DisableDragColMove();

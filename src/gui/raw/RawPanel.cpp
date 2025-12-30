@@ -31,7 +31,7 @@ RawPanel::RawPanel(wxWindow *parent) : HaPanel(parent)
     auto *sizer = new wxBoxSizer(wxVERTICAL);
     m_book = new wxTreebook(this, wxID_ANY);
     auto *imageList = new wxImageList(16, 16);
-    auto logo = wxArtProvider::GetBitmap("lasyard_logo");
+    auto logo = wxArtProvider::GetBitmap(LASYARD_LOGO);
     wxBitmap::Rescale(logo, wxSize(16, 16));
     imageList->Add(logo);
     m_book->SetImageList(imageList);
@@ -46,7 +46,7 @@ RawPanel::~RawPanel()
 void RawPanel::OnUpdate()
 {
     wxASSERT(m_doc != nullptr);
-    auto *bmp = new wxStaticBitmap(this, wxID_ANY, wxArtProvider::GetBitmap("app_icon"));
+    auto *bmp = new wxStaticBitmap(this, wxID_ANY, wxArtProvider::GetBitmap(APP_ICON));
     m_book->AddPage(bmp, _("DOC_ROOT"), true, 0);
     m_doc->ForEachSection([this](const std::string &name) -> bool {
         wxStringTokenizer st(s2w(name), "/");

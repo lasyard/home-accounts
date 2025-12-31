@@ -4,4 +4,4 @@
 
 A personal financial data processor.
 
-MIT License: <http://lasy.fwh.is/mit_license>.
+MIT License: <https://lasy.fwh.is/mit_license>.

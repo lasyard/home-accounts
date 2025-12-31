@@ -54,26 +54,32 @@ void CsvDoc::SetValueString(int pos, int i, const wxString &value)
 
 record_t *CsvDoc::AddRecord()
 {
-    return InsertRecord(-1);
+    record_t *record = new_record(&m_parser);
+    return_null_if_null(record);
+    if (m_records.last != NULL) {
+        record = copy_comment_fields(&m_parser, record, get_record(m_records.last));
+        return_null_if_null(record);
+    }
+    list_add(&m_records, &record->list);
+    m_index.push_back(record);
+    return record;
 }
 
 record_t *CsvDoc::InsertRecord(int pos)
 {
     record_t *record = new_record(&m_parser);
     return_null_if_null(record);
-    wxASSERT(pos > 0);
-    record_t *p = GetRecord(pos - 1);
-    if (p == nullptr) {
-        p = get_record(m_records.last);
-        pos = m_index.size() - 1;
+    if (pos == 0) {
+        list_ins_head(&m_records, &record->list);
+        m_index.insert(m_index.begin(), record);
+    } else {
+        record_t *prev = GetRecord(pos - 1);
+        wxASSERT(prev != nullptr);
+        record = copy_comment_fields(&m_parser, record, prev);
+        return_null_if_null(record);
+        list_ins(&m_records, &prev->list, &record->list);
+        m_index.insert(std::next(m_index.begin(), pos), record);
     }
-    record = copy_comment_fields(&m_parser, record, p);
-    if (record == nullptr) {
-        free_record(&m_parser, record);
-        return nullptr;
-    }
-    list_ins(&m_records, &p->list, &record->list);
-    m_index.insert(std::next(m_index.begin(), pos), record);
     SetNewRecord(record);
     return record;
 }

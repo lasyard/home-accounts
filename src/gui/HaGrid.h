@@ -66,6 +66,7 @@ public:
     void OnInsert(wxCommandEvent &event);
     void OnUpdateDelete(wxUpdateUIEvent &event);
     void OnDelete(wxCommandEvent &event);
+    void OnSelectCell(wxGridEvent &event);
 
 protected:
     static const int ROW_HEIGHT = 25;

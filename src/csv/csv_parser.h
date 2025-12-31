@@ -46,7 +46,6 @@ struct parser_options {
 struct parser {
     struct parser_options options;
     int comment_cols;               // columns in comment line, 0 means no comment line
-    record_t *comment;              // record to hold the head fields if read from comment, not owned
     const struct record_meta *meta; // the meta of record, owned
 };
 
@@ -79,6 +78,8 @@ int parse_count(const struct parser *parser, const char *line);
 
 char *output_field(const struct parser *parser, char *buf, const record_t *record, int i);
 char *output_line(const struct parser *parser, char *buf, const record_t *record);
+
+record_t *copy_comment_fields(const struct parser *parser, record_t *dst, const record_t *src);
 
 int read_lines(
     struct parser *parser,

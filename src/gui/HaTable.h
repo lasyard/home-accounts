@@ -11,7 +11,7 @@
 class HaTable : public wxGridTableBase
 {
 public:
-    HaTable(std::initializer_list<const char *> colLabels, CsvDoc *doc = nullptr)
+    HaTable(std::initializer_list<const char *> colLabels, CsvDoc *doc)
         : wxGridTableBase()
         , m_doc(doc)
         , m_colLabels(colLabels)
@@ -42,6 +42,15 @@ public:
     int GetNumberCols() override
     {
         return m_colLabels.size();
+    }
+
+    auto GetRowRecordFlag(int row) const
+    {
+        record_t *record = m_doc->GetRecord(row);
+        if (record != nullptr) {
+            return record->flag;
+        }
+        return (char)0;
     }
 
     wxString GetValue(int row, int col) override
@@ -90,11 +99,17 @@ protected:
         std::function<void(int, const wxString &)> set;
     };
 
+    struct CommentImpl {
+        std::function<wxString(int)> get;
+        std::function<void(int, const wxString &)> set;
+    };
+
     CsvDoc *m_doc;
     int m_cols;
     wxArrayString m_colLabels;
     wxVector<wxArrayString> *m_cache;
     struct ColImpl *m_colImpls;
+    struct CommentImpl m_commentImpl;
 
     void CacheCell(int row, int col)
     {
@@ -133,20 +148,32 @@ protected:
         }
     }
 
-    void MapColImplToDoc(struct ColImpl &colImpl, int col)
+    void MapColImplToDoc(int dst, int col)
     {
+        auto &colImpl = m_colImpls[dst];
         colImpl.type = m_doc->GetColType(col);
         colImpl.get = [this, col](int row) -> wxString { return m_doc->GetValueString(row, col); };
-        colImpl.set = [this, col](int row, const wxString &value) -> void {
-            m_doc->SetValueString(row, col, value);
-        };
+        colImpl.set = [this, col](int row, const wxString &value) -> void { m_doc->SetValueString(row, col, value); };
+    }
+
+    void MapCommentToDoc()
+    {
+        if (m_doc->GetCommentColCount() == 1) {
+            m_commentImpl.get = [this](int row) -> wxString { return m_doc->GetValueString(row, 0); };
+            m_commentImpl.set = [this](int row, const wxString &value) -> void {
+                m_doc->SetValueString(row, 0, value);
+            };
+        } else {
+            m_commentImpl.get = nullptr;
+            m_commentImpl.set = nullptr;
+        }
     }
 
     void MapAllColsToDoc()
     {
-        wxASSERT(m_cols == m_doc->GetColCount());
+        MapCommentToDoc();
         for (int i = 0; i < m_cols; ++i) {
-            MapColImplToDoc(m_colImpls[i], i);
+            MapColImplToDoc(i, i + m_doc->GetCommentColCount());
         }
     }
 
@@ -157,7 +184,12 @@ protected:
 private:
     const wxString GetCellValue(int row, int col)
     {
-        if (col < m_cols) {
+        auto flag = GetRowRecordFlag(row);
+        if (flag == RECORD_FLAG_COMMENT) {
+            if (m_commentImpl.get != nullptr) {
+                return m_commentImpl.get(row);
+            }
+        } else if (col < m_cols) {
             if (m_colImpls[col].get != nullptr) {
                 return m_colImpls[col].get(row);
             }
@@ -168,7 +200,12 @@ private:
 
     void SetCellValue(int row, int col, const wxString &value)
     {
-        if (col < m_cols && m_colImpls[col].set != nullptr) {
+        auto flag = GetRowRecordFlag(row);
+        if (flag == RECORD_FLAG_COMMENT) {
+            if (m_commentImpl.set != nullptr) {
+                m_commentImpl.set(row, value);
+            }
+        } else if (col < m_cols && m_colImpls[col].set != nullptr) {
             m_colImpls[col].set(row, value);
         }
     }

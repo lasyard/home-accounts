@@ -120,7 +120,6 @@ void init_parser(struct parser *parser)
     parser->options.date_sep = '-';
     parser->comment_cols = 0;
     parser->meta = NULL;
-    parser->comment = NULL;
     set_money_prec(parser, 2);
 }
 
@@ -180,12 +179,6 @@ record_t *new_record(const struct parser *parser)
     record_t *record = raw_new_record(parser);
     return_null_if_null(record);
     record->flag = RECORD_FLAG_NORMAL;
-    for (int i = 0; i < parser->comment_cols; ++i) {
-        if (copy_field(parser, record, parser->comment, i) == NULL) {
-            free_record(parser, record);
-            return NULL;
-        }
-    }
     return record;
 }
 
@@ -273,14 +266,15 @@ char *output_field(const struct parser *parser, char *buf, const record_t *recor
 char *output_line(const struct parser *parser, char *buf, const record_t *record)
 {
     int start, end;
+    char *p = buf;
     if (record->flag == RECORD_FLAG_COMMENT) { // comment
+        *(p++) = '#';
         start = 0;
         end = parser->comment_cols;
     } else {
         start = parser->comment_cols;
         end = parser->meta->cols;
     }
-    char *p = buf;
     for (int i = start; i < end; ++i) {
         p = output_field(parser, p, record, i);
         if (i < end - 1) {
@@ -288,6 +282,17 @@ char *output_line(const struct parser *parser, char *buf, const record_t *record
         }
     }
     return p;
+}
+
+record_t *copy_comment_fields(const struct parser *parser, record_t *dst, const record_t *src)
+{
+    for (int i = 0; i < parser->comment_cols; ++i) {
+        if (copy_field(parser, dst, src, i) == NULL) {
+            free_record(parser, dst);
+            return NULL;
+        }
+    }
+    return dst;
 }
 
 int read_lines(
@@ -307,14 +312,15 @@ int read_lines(
         if (buf[0] == '#') {
             record_t *comment = parse_comment(parser, &buf[1]);
             list_add(records, &comment->list);
-            parser->comment = comment;
             continue;
         }
         record_t *record = parse_line(parser, buf);
         if (record != NULL) {
-            list_add(records, &record->list);
+            record = copy_comment_fields(parser, record, get_record(records->last));
+            if (record != NULL) {
+                list_add(records, &record->list);
+            }
         } else {
-            free_record(parser, record);
             lines = -lines;
             break;
         }
@@ -335,13 +341,7 @@ int write_lines(
     {
         char buf[MAX_LINE_LENGTH + 1];
         const char *p;
-        if (record->flag == RECORD_FLAG_COMMENT) {
-            buf[0] = '#';
-            p = output_line(parser, &buf[1], record);
-            parser->comment = record;
-        } else {
-            p = output_line(parser, buf, record);
-        }
+        p = output_line(parser, buf, record);
         if (put_line(buf, p - buf, context) < 0) {
             break;
         }

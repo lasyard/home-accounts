@@ -19,6 +19,11 @@ public:
         return m_parser.meta->cols;
     }
 
+    int GetCommentColCount() const
+    {
+        return m_parser.comment_cols;
+    }
+
     enum column_type GetColType(int i) const
     {
         wxASSERT(i < GetColCount());

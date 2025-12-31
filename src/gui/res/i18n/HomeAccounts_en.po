@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HomeAccounts 1.0.0\n"
 "Report-Msgid-Bugs-To: lasyard@yeah.net\n"
-"POT-Creation-Date: 2025-11-24 16:28+0800\n"
+"POT-Creation-Date: 2025-12-31 16:50+0800\n"
 "PO-Revision-Date: 2025-01-10 16:01+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -25,17 +25,9 @@ msgstr "Wrong password!"
 msgid "Confirm new password failed!"
 msgstr "Confirm new password failed!"
 
-#: HaApp.cpp:43
-msgid " Doc"
-msgstr " Doc"
-
-#: HaApp.cpp:44
-msgid " View"
-msgstr " View"
-
-#: HaDocument.cpp:60
-msgid "Input the password for the file:"
-msgstr "Input the password for the file:"
+#: HaTable.h:196
+msgid "not implemented"
+msgstr "not implemented"
 
 #: HaMainFrame.cpp:73
 msgid "File"
@@ -45,9 +37,76 @@ msgstr "File"
 msgid "License"
 msgstr "License"
 
-#: HaView.cpp:42
+#: accounts/AccountsDoc.cpp:18
+msgid "Invalid"
+msgstr "Invalid"
+
+#: accounts/AccountsDoc.cpp:19
+msgid "Debit"
+msgstr "Debit"
+
+#: accounts/AccountsDoc.cpp:20
+msgid "Credit"
+msgstr "Credit"
+
+#: accounts/AccountsDoc.cpp:21
+msgid "Transfer"
+msgstr "Transfer"
+
+#: accounts/AccountsTable.cpp:10
+msgid "ID"
+msgstr "ID"
+
+#: accounts/AccountsTable.cpp:11
+msgid "Name"
+msgstr "Name"
+
+#: accounts/AccountsTable.cpp:12
+msgid "Open Date"
+msgstr "Open Date"
+
+#: accounts/AccountsTable.cpp:13
+msgid "Initial"
+msgstr "Initial"
+
+#: accounts/AccountsTable.cpp:14
+msgid "Memo"
+msgstr "Memo"
+
+#: HaView.cpp:43
+msgid "Accounts"
+msgstr "Accounts"
+
+#: HaView.cpp:44
 msgid "Raw"
 msgstr "Raw"
+
+#: HaApp.cpp:43
+msgid " Doc"
+msgstr " Doc"
+
+#: HaApp.cpp:44
+msgid " View"
+msgstr " View"
+
+#: CsvDoc.cpp:116
+#, c-format
+msgid "Parse error at line %d"
+msgstr "Parse error at line %d"
+
+#: CsvDoc.cpp:119
+#, c-format
+msgid "%d lines read"
+msgstr "%d lines read"
+
+#: CsvDoc.cpp:135 CsvDoc.cpp:139
+#, c-format
+msgid "%d lines written"
+msgstr "%d lines written"
+
+#: HaDocument.cpp:60
+msgid "Input the password for the file:"
+msgstr "Input the password for the file:"
 
 #: raw/RawPanel.cpp:50
 msgid "DOC_ROOT"

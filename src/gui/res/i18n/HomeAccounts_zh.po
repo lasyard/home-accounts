@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HomeAccounts 1.0.0\n"
 "Report-Msgid-Bugs-To: lasyard@yeah.net\n"
-"POT-Creation-Date: 2025-11-24 16:28+0800\n"
+"POT-Creation-Date: 2025-12-31 16:50+0800\n"
 "PO-Revision-Date: 2025-01-10 16:01+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -24,17 +24,9 @@ msgstr "密码错误！"
 msgid "Confirm new password failed!"
 msgstr "确认新密码错误！"
 
-#: HaApp.cpp:43
-msgid " Doc"
-msgstr " 文档"
-
-#: HaApp.cpp:44
-msgid " View"
-msgstr " 视"
-
-#: HaDocument.cpp:60
-msgid "Input the password for the file:"
-msgstr "输入文件的密码："
+#: HaTable.h:196
+msgid "not implemented"
+msgstr "未实现"
 
 #: HaMainFrame.cpp:73
 msgid "File"
@@ -44,9 +36,76 @@ msgstr "文件"
 msgid "License"
 msgstr "许可证"
 
-#: HaView.cpp:42
+#: accounts/AccountsDoc.cpp:18
+msgid "Invalid"
+msgstr "无效"
+
+#: accounts/AccountsDoc.cpp:19
+msgid "Debit"
+msgstr "借记卡"
+
+#: accounts/AccountsDoc.cpp:20
+msgid "Credit"
+msgstr "信用卡"
+
+#: accounts/AccountsDoc.cpp:21
+msgid "Transfer"
+msgstr "支付账户"
+
+#: accounts/AccountsTable.cpp:10
+msgid "ID"
+msgstr "ID"
+
+#: accounts/AccountsTable.cpp:11
+msgid "Name"
+msgstr "名称"
+
+#: accounts/AccountsTable.cpp:12
+msgid "Open Date"
+msgstr "开户日期"
+
+#: accounts/AccountsTable.cpp:13
+msgid "Initial"
+msgstr "初始余额"
+
+#: accounts/AccountsTable.cpp:14
+msgid "Memo"
+msgstr "备注"
+
+#: HaView.cpp:43
+msgid "Accounts"
+msgstr "账户"
+
+#: HaView.cpp:44
 msgid "Raw"
 msgstr "源文件"
+
+#: HaApp.cpp:43
+msgid " Doc"
+msgstr " 文档"
+
+#: HaApp.cpp:44
+msgid " View"
+msgstr " 视"
+
+#: CsvDoc.cpp:116
+#, c-format
+msgid "Parse error at line %d"
+msgstr "第 %d 行解析错误"
+
+#: CsvDoc.cpp:119
+#, c-format
+msgid "%d lines read"
+msgstr "已读取 %d 行"
+
+#: CsvDoc.cpp:135 CsvDoc.cpp:139
+#, c-format
+msgid "%d lines written"
+msgstr "已写入 %d 行"
+
+#: HaDocument.cpp:60
+msgid "Input the password for the file:"
+msgstr "输入文件的密码："
 
 #: raw/RawPanel.cpp:50
 msgid "DOC_ROOT"

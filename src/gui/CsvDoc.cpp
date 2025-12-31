@@ -61,14 +61,19 @@ record_t *CsvDoc::InsertRecord(int pos)
 {
     record_t *record = new_record(&m_parser);
     return_null_if_null(record);
-    record_t *p = GetRecord(pos);
+    wxASSERT(pos > 0);
+    record_t *p = GetRecord(pos - 1);
     if (p == nullptr) {
-        list_add(&m_records, &record->list);
-        m_index.push_back(record);
-    } else {
-        list_ins(&m_records, &p->list, &record->list);
-        m_index.insert(std::next(m_index.begin(), pos), record);
+        p = get_record(m_records.last);
+        pos = m_index.size() - 1;
     }
+    record = copy_comment_fields(&m_parser, record, p);
+    if (record == nullptr) {
+        free_record(&m_parser, record);
+        return nullptr;
+    }
+    list_ins(&m_records, &p->list, &record->list);
+    m_index.insert(std::next(m_index.begin(), pos), record);
     SetNewRecord(record);
     return record;
 }

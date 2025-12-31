@@ -7,7 +7,7 @@
 
 IMPLEMENT_TM(HaGridCellAttrProvider)
 
-HaGridCellAttrProvider::HaGridCellAttrProvider(const HaTable *table) : wxGridCellAttrProvider(), m_table(table)
+HaGridCellAttrProvider::HaGridCellAttrProvider(HaTable *table) : wxGridCellAttrProvider(), m_table(table)
 {
     wxLog::AddTraceMask(TM);
     InitAttr();
@@ -48,6 +48,13 @@ void HaGridCellAttrProvider::InitAttr()
     auto *boolEditor = new wxGridCellBoolEditor();
     boolEditor->UseStringValues("1", "0");
     m_boolAttr->SetEditor(boolEditor);
+
+    m_commentAttr = m_defaultAttr->Clone();
+    m_commentAttr->SetSize(1, m_table->GetNumberCols());
+    m_commentAttr->SetBackgroundColour(HaGdi::SEGMENT_COLOR);
+    m_commentAttr->SetFont(HaGdi::DIGI_FONT);
+    m_commentAttr->SetAlignment(wxALIGN_CENTER_VERTICAL, wxALIGN_LEFT);
+    m_commentAttr->SetReadOnly();
 }
 
 void HaGridCellAttrProvider::ReleaseAttr()
@@ -60,13 +67,27 @@ void HaGridCellAttrProvider::ReleaseAttr()
     m_moneyAttrRO->DecRef();
     m_deficitAttrRO->DecRef();
     m_boolAttr->DecRef();
+    m_commentAttr->DecRef();
 }
 
 wxGridCellAttr *HaGridCellAttrProvider::GetAttr(int row, int col, wxGridCellAttr::wxAttrKind kind) const
 {
     // looks like `kind` is always `Any`.
     if (kind == wxGridCellAttr::wxAttrKind::Any || kind == wxGridCellAttr::wxAttrKind::Cell) {
-        return GetItemCellAttr(row, col);
+        auto flag = m_table->GetRowRecordFlag(row);
+        switch (flag) {
+        case RECORD_FLAG_COMMENT:
+            // do not return colSpan > 1 for col > 0, or there will be index out of bound problem.
+            if (col == 0) {
+                m_commentAttr->IncRef();
+                return m_commentAttr;
+            }
+            break;
+        case RECORD_FLAG_NORMAL:
+            return GetItemCellAttr(row, col);
+        default:
+            break;
+        }
     }
     m_defaultAttr->IncRef();
     return m_defaultAttr;

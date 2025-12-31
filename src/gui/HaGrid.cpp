@@ -17,6 +17,7 @@ EVT_UPDATE_UI(ID_INSERT, HaGrid::OnUpdateInsert)
 EVT_MENU(ID_INSERT, HaGrid::OnInsert)
 EVT_UPDATE_UI(wxID_DELETE, HaGrid::OnUpdateDelete)
 EVT_MENU(wxID_DELETE, HaGrid::OnDelete)
+EVT_GRID_SELECT_CELL(HaGrid::OnSelectCell)
 END_EVENT_TABLE()
 
 HaGrid::HaGrid() : wxGrid()
@@ -125,6 +126,20 @@ void HaGrid::OnDelete([[maybe_unused]] wxCommandEvent &event)
         SafeClearCell(GetGridCursorCoords());
     }
     EndBatch();
+}
+
+void HaGrid::OnSelectCell(wxGridEvent &event)
+{
+    int row = event.GetRow();
+    int col = event.GetCol();
+    auto *table = GetHaTable();
+    if (table->GetRowRecordFlag(row) == RECORD_FLAG_COMMENT) {
+        if (col > 0) {
+            event.Veto();
+            SetGridCursor(row, 0);
+        }
+    }
+    event.Skip();
 }
 
 bool HaGrid::SelectionIsWholeRow(const wxGridBlocks &blocks)

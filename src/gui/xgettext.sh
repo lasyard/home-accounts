@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 DIR="res/i18n"
 
@@ -14,7 +14,7 @@ OPTIONS="--copyright-holder=Lasy
 --package-version=1.0.0
 --msgid-bugs-address=lasyard@yeah.net"
 
-xgettext --c++ -k -k_ -kTT -f "xgettext.list" -p "${DIR}" -o ${APP_POT_NAME}.pot ${OPTIONS}
+xgettext --c++ -k -k_ -f <(find . -name '*.cpp' -o -name '*.h') -p "${DIR}" -o ${APP_POT_NAME}.pot ${OPTIONS}
 
 wxrc -g res/*.xrc | xgettext --c++ -k -k_ -p "${DIR}" -o ${XRC_POT_NAME}.pot - ${OPTIONS}
 

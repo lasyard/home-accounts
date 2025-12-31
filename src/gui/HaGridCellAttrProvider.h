@@ -12,7 +12,7 @@ class HaGridCellAttrProvider : public wxGridCellAttrProvider
 public:
     DECLARE_TM()
 
-    HaGridCellAttrProvider(const HaTable *table);
+    HaGridCellAttrProvider(HaTable *table);
     virtual ~HaGridCellAttrProvider();
 
     wxGridCellAttr *GetAttr(int row, int col, wxGridCellAttr::wxAttrKind kind) const override;
@@ -26,8 +26,9 @@ protected:
     wxGridCellAttr *m_moneyAttrRO;
     wxGridCellAttr *m_deficitAttrRO;
     wxGridCellAttr *m_boolAttr;
+    wxGridCellAttr *m_commentAttr;
 
-    const HaTable *m_table;
+    HaTable *m_table;
 
     void InitAttr();
     void ReleaseAttr();

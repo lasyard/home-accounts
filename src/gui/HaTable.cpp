@@ -31,7 +31,7 @@ bool HaTable::InsertRows(size_t pos, size_t numRows)
 {
     size_t i;
     for (i = 0; i < numRows; ++i) {
-        if (!InsertRow(pos - 1)) {
+        if (!InsertRow(pos)) {
             break;
         }
         m_cache->insert(std::next(m_cache->begin(), pos), wxArrayString());
@@ -97,8 +97,8 @@ bool HaTable::InsertRow(size_t pos)
 
 bool HaTable::AppendRow()
 {
-    // never append
-    return false;
+    auto *record = m_doc->AddRecord();
+    return record != nullptr;
 }
 
 bool HaTable::DeleteRow(size_t pos)

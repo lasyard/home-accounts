@@ -76,4 +76,5 @@ void AccountsPanel::DoSetDocument(HaDocument *doc)
 {
     m_grid->Bind(wxEVT_MENU, &HaDocument::OnChange, doc, ID_INSERT);
     m_grid->Bind(wxEVT_MENU, &HaDocument::OnChange, doc, wxID_DELETE);
+    m_grid->Bind(wxEVT_GRID_CELL_CHANGED, &HaDocument::OnChange, doc);
 }

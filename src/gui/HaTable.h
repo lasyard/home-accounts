@@ -21,28 +21,17 @@ public:
         m_colImpls = new struct ColImpl[m_cols];
     }
 
-    virtual ~HaTable()
-    {
-        if (m_cache != nullptr) {
-            delete m_cache;
-        }
-        if (m_doc != nullptr) {
-            delete m_doc;
-        }
-        delete[] m_colImpls;
-    }
+    virtual ~HaTable();
 
     virtual void Init();
 
-    int GetNumberRows() override
-    {
-        return m_cache != nullptr ? m_cache->size() : 0;
-    }
+    int GetNumberRows() override;
+    int GetNumberCols() override;
 
-    int GetNumberCols() override
-    {
-        return m_colLabels.size();
-    }
+    wxString GetValue(int row, int col) override;
+    wxString GetColLabelValue(int col) override;
+    wxString GetRowLabelValue(int row) override;
+    bool CanHaveAttributes() override;
 
     auto GetRowRecordFlag(int row) const
     {
@@ -53,37 +42,16 @@ public:
         return (char)0;
     }
 
-    wxString GetValue(int row, int col) override
-    {
-        return (*m_cache)[row][col];
-    }
-
-    wxString GetColLabelValue(int col) override
-    {
-        return m_colLabels[col];
-    }
-
-    wxString GetRowLabelValue(int row) override
-    {
-        if (row < GetNumberRows()) {
-            return wxString::Format("%d", row);
-        }
-        return wxEmptyString;
-    }
-
-    bool CanHaveAttributes() override
-    {
-        return true;
-    }
-
-    virtual enum column_type GetColType(int col) const
-    {
-        return col < m_cols ? m_colImpls[col].type : CT_IGNORE;
-    }
+    virtual enum column_type GetColType(int col) const;
 
     auto *GetDoc()
     {
         return m_doc;
+    }
+
+    bool IsColReadOnly(int col) const
+    {
+        return m_colImpls[col].set == nullptr;
     }
 
     void SetValue(int row, int col, const wxString &value) override;
@@ -99,17 +67,11 @@ protected:
         std::function<void(int, const wxString &)> set;
     };
 
-    struct CommentImpl {
-        std::function<wxString(int)> get;
-        std::function<void(int, const wxString &)> set;
-    };
-
     CsvDoc *m_doc;
     int m_cols;
     wxArrayString m_colLabels;
     wxVector<wxArrayString> *m_cache;
     struct ColImpl *m_colImpls;
-    struct CommentImpl m_commentImpl;
 
     void CacheCell(int row, int col)
     {
@@ -148,34 +110,19 @@ protected:
         }
     }
 
-    void MapColImplToDoc(int dst, int col)
+    void MapColToCol(int dst, int col, bool ro = false)
     {
         auto &colImpl = m_colImpls[dst];
         colImpl.type = m_doc->GetColType(col);
         colImpl.get = [this, col](int row) -> wxString { return m_doc->GetValueString(row, col); };
-        colImpl.set = [this, col](int row, const wxString &value) -> void { m_doc->SetValueString(row, col, value); };
-    }
-
-    void MapCommentToDoc()
-    {
-        if (m_doc->GetCommentColCount() == 1) {
-            m_commentImpl.get = [this](int row) -> wxString { return m_doc->GetValueString(row, 0); };
-            m_commentImpl.set = [this](int row, const wxString &value) -> void {
-                m_doc->SetValueString(row, 0, value);
+        if (!ro) {
+            colImpl.set = [this, col](int row, const wxString &value) -> void {
+                m_doc->SetValueString(row, col, value);
             };
-        } else {
-            m_commentImpl.get = nullptr;
-            m_commentImpl.set = nullptr;
         }
     }
 
-    void MapAllColsToDoc()
-    {
-        MapCommentToDoc();
-        for (int i = 0; i < m_cols; ++i) {
-            MapColImplToDoc(i, i + m_doc->GetCommentColCount());
-        }
-    }
+    virtual wxString GetCommentString(int row);
 
     virtual bool InsertRow(size_t pos);
     virtual bool AppendRow();
@@ -186,8 +133,8 @@ private:
     {
         auto flag = GetRowRecordFlag(row);
         if (flag == RECORD_FLAG_COMMENT) {
-            if (m_commentImpl.get != nullptr) {
-                return m_commentImpl.get(row);
+            if (col == 0) {
+                return GetCommentString(row);
             }
         } else if (col < m_cols) {
             if (m_colImpls[col].get != nullptr) {
@@ -200,12 +147,8 @@ private:
 
     void SetCellValue(int row, int col, const wxString &value)
     {
-        auto flag = GetRowRecordFlag(row);
-        if (flag == RECORD_FLAG_COMMENT) {
-            if (m_commentImpl.set != nullptr) {
-                m_commentImpl.set(row, value);
-            }
-        } else if (col < m_cols && m_colImpls[col].set != nullptr) {
+        wxASSERT(GetRowRecordFlag(row) != RECORD_FLAG_COMMENT);
+        if (col < m_cols && m_colImpls[col].set != nullptr) {
             m_colImpls[col].set(row, value);
         }
     }

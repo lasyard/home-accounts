@@ -70,30 +70,11 @@ protected:
     struct list_head m_records;
     std::vector<record_t *> m_index;
 
-    virtual bool AfterRead()
-    {
-        CreateIndex();
-        return true;
-    }
+    virtual bool AfterRead();
+    virtual bool BeforeWrite();
+    virtual void CreateIndex();
 
-    virtual bool BeforeWrite()
-    {
-        return true;
-    }
-
-    virtual void SetNewRecord([[maybe_unused]] record_t *record)
-    {
-    }
-
-    virtual void CreateIndex()
-    {
-        m_index.clear();
-        record_t *record;
-        list_for_each_entry(record, &m_records, list)
-        {
-            m_index.push_back(record);
-        }
-    }
+    virtual void SetNewRecord(record_t *record);
 };
 
 #endif /* _HA_GUI_CSV_DOC_H_ */

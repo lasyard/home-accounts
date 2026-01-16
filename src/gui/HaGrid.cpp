@@ -44,6 +44,17 @@ HaGrid::~HaGrid()
     CheckEventHandler();
 }
 
+wxPen HaGrid::GetRowGridLinePen([[maybe_unused]] int row)
+{
+    // `wxTRANSPARENT_PEN` is problematic on Windows
+    return *wxLIGHT_GREY_PEN;
+}
+
+wxPen HaGrid::GetColGridLinePen([[maybe_unused]] int col)
+{
+    return *wxLIGHT_GREY_PEN;
+}
+
 void HaGrid::DrawCornerLabel(wxDC &dc)
 {
     dc.DrawBitmap(wxArtProvider::GetBitmap(LASYARD_LOGO), 1, 1);
@@ -176,6 +187,11 @@ void HaGrid::ClearAllCellsInBlocks(const wxGridBlocks &blocks)
             }
         }
     }
+}
+
+int HaGrid::CursorColOfNewRow()
+{
+    return -1;
 }
 
 HaTable *HaGrid::GetHaTable() const

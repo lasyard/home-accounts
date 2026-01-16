@@ -40,16 +40,8 @@ public:
         EndBatch();
     }
 
-    // `wxTRANSPARENT_PEN` is problematic on Windows
-    wxPen GetRowGridLinePen([[maybe_unused]] int row) override
-    {
-        return *wxLIGHT_GREY_PEN;
-    }
-
-    wxPen GetColGridLinePen([[maybe_unused]] int col) override
-    {
-        return *wxLIGHT_GREY_PEN;
-    }
+    wxPen GetRowGridLinePen(int row) override;
+    wxPen GetColGridLinePen(int col) override;
 
     void DrawCornerLabel(wxDC &dc) override;
 
@@ -77,10 +69,7 @@ protected:
 
     virtual HaTable *CreateHaTable(CsvDoc *doc) = 0;
 
-    virtual int CursorColOfNewRow()
-    {
-        return -1;
-    }
+    virtual int CursorColOfNewRow();
 
     void SafeClearCell(wxGridCellCoords coords)
     {

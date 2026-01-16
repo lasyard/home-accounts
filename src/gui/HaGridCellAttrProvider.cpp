@@ -18,58 +18,6 @@ HaGridCellAttrProvider::~HaGridCellAttrProvider()
     ReleaseAttr();
 }
 
-void HaGridCellAttrProvider::InitAttr()
-{
-    m_defaultAttr = new wxGridCellAttr();
-    // Do not use `wxALIGN_CENTER_HORIZONTAL` or `wxALIGN_CENTER_VERTICAL` for `hAlign` and `vAlign`.
-    m_defaultAttr->SetAlignment(wxALIGN_LEFT, wxALIGN_CENTER);
-
-    m_monoAttr = m_defaultAttr->Clone();
-    m_monoAttr->SetAlignment(wxALIGN_RIGHT, wxALIGN_CENTER);
-    m_monoAttr->SetFont(HaGdi::DIGI_FONT);
-
-    m_integerAttr = m_monoAttr->Clone();
-    m_integerAttr->SetEditor(new wxGridCellNumberEditor());
-
-    m_integerAttrRO = m_integerAttr->Clone();
-    m_integerAttrRO->SetReadOnly();
-
-    m_moneyAttr = m_monoAttr->Clone();
-    m_moneyAttr->SetEditor(new wxGridCellFloatEditor(-1, 2));
-
-    m_moneyAttrRO = m_moneyAttr->Clone();
-    m_moneyAttrRO->SetReadOnly();
-
-    m_deficitAttrRO = m_moneyAttrRO->Clone();
-    m_deficitAttrRO->SetTextColour(HaGdi::DEFICIT_COLOR);
-
-    m_boolAttr = m_defaultAttr->Clone();
-    m_boolAttr->SetRenderer(new wxGridCellBoolRenderer());
-    auto *boolEditor = new wxGridCellBoolEditor();
-    boolEditor->UseStringValues("1", "0");
-    m_boolAttr->SetEditor(boolEditor);
-
-    m_commentAttr = m_defaultAttr->Clone();
-    m_commentAttr->SetSize(1, m_table->GetNumberCols());
-    m_commentAttr->SetBackgroundColour(HaGdi::SEGMENT_COLOR);
-    m_commentAttr->SetFont(HaGdi::DIGI_FONT);
-    m_commentAttr->SetAlignment(wxALIGN_CENTER_VERTICAL, wxALIGN_LEFT);
-    m_commentAttr->SetReadOnly();
-}
-
-void HaGridCellAttrProvider::ReleaseAttr()
-{
-    m_defaultAttr->DecRef();
-    m_monoAttr->DecRef();
-    m_integerAttr->DecRef();
-    m_integerAttrRO->DecRef();
-    m_moneyAttr->DecRef();
-    m_moneyAttrRO->DecRef();
-    m_deficitAttrRO->DecRef();
-    m_boolAttr->DecRef();
-    m_commentAttr->DecRef();
-}
-
 wxGridCellAttr *HaGridCellAttrProvider::GetAttr(int row, int col, wxGridCellAttr::wxAttrKind kind) const
 {
     // looks like `kind` is always `Any`.
@@ -79,8 +27,8 @@ wxGridCellAttr *HaGridCellAttrProvider::GetAttr(int row, int col, wxGridCellAttr
         case RECORD_FLAG_COMMENT:
             // do not return colSpan > 1 for col > 0, or there will be index out of bound problem.
             if (col == 0) {
-                m_commentAttr->IncRef();
-                return m_commentAttr;
+                m_commentAttrRO->IncRef();
+                return m_commentAttrRO;
             }
             break;
         case RECORD_FLAG_NORMAL:
@@ -89,29 +37,91 @@ wxGridCellAttr *HaGridCellAttrProvider::GetAttr(int row, int col, wxGridCellAttr
             break;
         }
     }
-    m_defaultAttr->IncRef();
-    return m_defaultAttr;
+    m_defaultAttrRO->IncRef();
+    return m_defaultAttrRO;
+}
+
+void HaGridCellAttrProvider::InitAttr()
+{
+    m_defaultAttr = new wxGridCellAttr();
+    // Do not use `wxALIGN_CENTER_HORIZONTAL` or `wxALIGN_CENTER_VERTICAL` for `hAlign` and `vAlign`.
+    m_defaultAttr->SetAlignment(wxALIGN_LEFT, wxALIGN_CENTER);
+    m_defaultAttrRO = m_defaultAttr->Clone();
+    m_defaultAttrRO->SetReadOnly();
+
+    m_monoAttr = m_defaultAttr->Clone();
+    m_monoAttr->SetAlignment(wxALIGN_RIGHT, wxALIGN_CENTER);
+    m_monoAttr->SetFont(HaGdi::DIGI_FONT);
+    m_monoAttrRO = m_monoAttr->Clone();
+    m_monoAttrRO->SetReadOnly();
+
+    m_integerAttr = m_monoAttr->Clone();
+    m_integerAttr->SetEditor(new wxGridCellNumberEditor());
+    m_integerAttrRO = m_integerAttr->Clone();
+    m_integerAttrRO->SetReadOnly();
+
+    m_moneyAttr = m_monoAttr->Clone();
+    m_moneyAttr->SetEditor(new wxGridCellFloatEditor(-1, 2));
+    m_moneyAttrRO = m_moneyAttr->Clone();
+    m_moneyAttrRO->SetReadOnly();
+    m_deficitAttrRO = m_moneyAttrRO->Clone();
+    m_deficitAttrRO->SetTextColour(HaGdi::DEFICIT_COLOR);
+
+    m_boolAttr = m_defaultAttr->Clone();
+    m_boolAttr->SetRenderer(new wxGridCellBoolRenderer());
+    auto *boolEditor = new wxGridCellBoolEditor();
+    boolEditor->UseStringValues("1", "0");
+    m_boolAttr->SetEditor(boolEditor);
+    m_boolAttrRO = m_boolAttr->Clone();
+    m_boolAttrRO->SetReadOnly();
+
+    m_dateAttr = m_monoAttr->Clone();
+    m_dateAttr->SetRenderer(new wxGridCellDateRenderer(_("%Y-%m-%d")));
+    m_dateAttrRO = m_dateAttr->Clone();
+    m_dateAttrRO->SetReadOnly();
+
+    m_commentAttrRO = m_defaultAttrRO->Clone();
+    m_commentAttrRO->SetSize(1, m_table->GetNumberCols());
+    m_commentAttrRO->SetBackgroundColour(HaGdi::SEGMENT_COLOR);
+    m_commentAttrRO->SetFont(HaGdi::DIGI_FONT);
+    m_commentAttrRO->SetAlignment(wxALIGN_CENTER_VERTICAL, wxALIGN_LEFT);
+    m_commentAttrRO->SetReadOnly();
+}
+
+void HaGridCellAttrProvider::ReleaseAttr()
+{
+    m_defaultAttr->DecRef();
+    m_defaultAttrRO->DecRef();
+    m_monoAttr->DecRef();
+    m_monoAttrRO->DecRef();
+    m_integerAttr->DecRef();
+    m_integerAttrRO->DecRef();
+    m_moneyAttr->DecRef();
+    m_moneyAttrRO->DecRef();
+    m_deficitAttrRO->DecRef();
+    m_boolAttr->DecRef();
+    m_boolAttrRO->DecRef();
+    m_dateAttr->DecRef();
+    m_dateAttrRO->DecRef();
+    m_commentAttrRO->DecRef();
 }
 
 wxGridCellAttr *HaGridCellAttrProvider::GetItemCellAttr([[maybe_unused]] int row, int col) const
 {
+    bool ro = m_table->IsColReadOnly(col);
     switch (m_table->GetColType(col)) {
     case CT_INT:
-        m_integerAttr->IncRef();
-        return m_integerAttr;
+        return SelectAttrRO(ro, m_integerAttrRO, m_integerAttr);
     case CT_MONEY:
-        m_moneyAttr->IncRef();
-        return m_moneyAttr;
+        return SelectAttrRO(ro, m_moneyAttrRO, m_moneyAttr);
     case CT_DATE:
+        return SelectAttrRO(ro, m_dateAttrRO, m_dateAttr);
     case CT_TIME:
-        m_monoAttr->IncRef();
-        return m_monoAttr;
+        return SelectAttrRO(ro, m_monoAttrRO, m_monoAttr);
     case CT_BOOL:
-        m_boolAttr->IncRef();
-        return m_boolAttr;
+        return SelectAttrRO(ro, m_boolAttrRO, m_boolAttr);
     default:
         break;
     }
-    m_defaultAttr->IncRef();
-    return m_defaultAttr;
+    return SelectAttrRO(ro, m_defaultAttrRO, m_defaultAttr);
 }

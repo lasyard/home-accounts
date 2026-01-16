@@ -13,9 +13,7 @@ public:
         setIV(m_iv, iv);
     }
 
-    virtual ~CryptoStore()
-    {
-    }
+    virtual ~CryptoStore();
 
     void readSection(const std::string &name, std::string &content) override;
     void writeSection(const std::string &name, const std::string &content) override;

@@ -9,6 +9,7 @@ const column_type AccountsDoc::ACCOUNT_COL_TYPES[] = {
     CT_INT,
     CT_INT,
     CT_STR,
+    CT_STR,
     CT_DATE,
     CT_MONEY,
     CT_STR,
@@ -63,8 +64,22 @@ void AccountsDoc::SetValueString(int pos, int i, const wxString &value)
         }
         *(int64_t *)get_field(&m_parser, GetRecord(pos), i) = index;
     } else {
-        CsvDoc::GetValueString(pos, i);
+        CsvDoc::SetValueString(pos, i, value);
     }
+}
+
+bool AccountsDoc::AfterRead()
+{
+    m_maxId = 0;
+    record_t *record;
+    list_for_each_entry(record, &m_records, list)
+    {
+        int64_t id = *(int64_t *)get_const_field(&m_parser, record, ACCOUNT_ID_COL);
+        if (id > m_maxId) {
+            m_maxId = id;
+        }
+    }
+    return CsvDoc::AfterRead();
 }
 
 void AccountsDoc::SetNewRecord(record_t *record)

@@ -8,5 +8,6 @@ add_lib(file
     FileStore.cpp
     SectionRecord.cpp
     Sqlite3Store.cpp
+    Store.cpp
     LIBS libcryptopp.a sqlite3
 )

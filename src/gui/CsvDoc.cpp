@@ -161,3 +161,28 @@ bool CsvDoc::Write(std::string &str)
     str = os.str();
     return true;
 }
+
+bool CsvDoc::AfterRead()
+{
+    CreateIndex();
+    return true;
+}
+
+bool CsvDoc::BeforeWrite()
+{
+    return true;
+}
+
+void CsvDoc::CreateIndex()
+{
+    m_index.clear();
+    record_t *record;
+    list_for_each_entry(record, &m_records, list)
+    {
+        m_index.push_back(record);
+    }
+}
+
+void CsvDoc::SetNewRecord([[maybe_unused]] record_t *record)
+{
+}

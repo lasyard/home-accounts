@@ -137,7 +137,7 @@ void HaDocument::ForEachSection(std::function<bool(const std::string &)> callbac
     m_doc->forEach(callback);
 }
 
-void HaDocument::OnChange([[maybe_unused]] wxCommandEvent &event)
+void HaDocument::OnChange(wxCommandEvent &event)
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     Modify(true);

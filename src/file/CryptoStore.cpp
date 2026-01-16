@@ -1,6 +1,10 @@
 #include "CryptoStore.h"
 #include "Exceptions.h"
 
+CryptoStore::~CryptoStore()
+{
+}
+
 void CryptoStore::readSection(const std::string &name, std::string &content)
 {
     content.clear();

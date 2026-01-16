@@ -19,14 +19,19 @@ public:
 
 protected:
     wxGridCellAttr *m_defaultAttr;
+    wxGridCellAttr *m_defaultAttrRO;
     wxGridCellAttr *m_monoAttr;
+    wxGridCellAttr *m_monoAttrRO;
     wxGridCellAttr *m_integerAttr;
     wxGridCellAttr *m_integerAttrRO;
     wxGridCellAttr *m_moneyAttr;
     wxGridCellAttr *m_moneyAttrRO;
     wxGridCellAttr *m_deficitAttrRO;
     wxGridCellAttr *m_boolAttr;
-    wxGridCellAttr *m_commentAttr;
+    wxGridCellAttr *m_boolAttrRO;
+    wxGridCellAttr *m_dateAttr;
+    wxGridCellAttr *m_dateAttrRO;
+    wxGridCellAttr *m_commentAttrRO;
 
     HaTable *m_table;
 
@@ -34,6 +39,18 @@ protected:
     void ReleaseAttr();
 
     virtual wxGridCellAttr *GetItemCellAttr(int row, int col) const;
+
+private:
+    static wxGridCellAttr *SelectAttrRO(bool ro, wxGridCellAttr *attrRO, wxGridCellAttr *attr)
+    {
+        if (ro) {
+            attrRO->IncRef();
+            return attrRO;
+        } else {
+            attr->IncRef();
+            return attr;
+        }
+    }
 };
 
 #endif /* _HA_GUI_HA_GRID_CELL_ATTR_PROVIDER_H_ */

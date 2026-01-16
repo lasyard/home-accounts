@@ -6,6 +6,17 @@
 
 #include "HaGridCellAttrProvider.h"
 
+HaTable::~HaTable()
+{
+    if (m_cache != nullptr) {
+        delete m_cache;
+    }
+    if (m_doc != nullptr) {
+        delete m_doc;
+    }
+    delete[] m_colImpls;
+}
+
 void HaTable::Init()
 {
     int rows = (m_doc != nullptr ? m_doc->GetRowCount() : 0);
@@ -14,6 +25,44 @@ void HaTable::Init()
         CacheRow(i);
     }
     SetAttrProvider(new HaGridCellAttrProvider(this));
+}
+
+int HaTable::GetNumberRows()
+{
+    return m_cache != nullptr ? m_cache->size() : 0;
+}
+
+int HaTable::GetNumberCols()
+{
+    return m_colLabels.size();
+}
+
+wxString HaTable::GetValue(int row, int col)
+{
+    return (*m_cache)[row][col];
+}
+
+wxString HaTable::GetColLabelValue(int col)
+{
+    return m_colLabels[col];
+}
+
+wxString HaTable::GetRowLabelValue(int row)
+{
+    if (row < GetNumberRows()) {
+        return wxString::Format("%d", row);
+    }
+    return wxEmptyString;
+}
+
+bool HaTable::CanHaveAttributes()
+{
+    return true;
+}
+
+enum column_type HaTable::GetColType(int col) const
+{
+    return col < m_cols ? m_colImpls[col].type : CT_IGNORE;
 }
 
 void HaTable::SetValue(int row, int col, const wxString &value)
@@ -87,6 +136,11 @@ bool HaTable::DeleteRows(size_t pos, size_t numRows)
         return true;
     }
     return false;
+}
+
+wxString HaTable::GetCommentString(int row)
+{
+    return m_doc->GetValueString(row, 0);
 }
 
 bool HaTable::InsertRow(size_t pos)

@@ -12,9 +12,21 @@ typedef int32_t timo_t;
 #define UNKNOWN_DATE (date_t)(-1)
 #define UNKNOWN_TIME (timo_t)(-1)
 
+#define TIME_SEP ':'
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+static inline int make_valid(int data, int min, int max)
+{
+    if (data < min) {
+        return min;
+    } else if (data > max) {
+        return max;
+    }
+    return data;
+}
 
 int jdn(int year, int month, int day);
 void jdn_split(int jdn, int *year, int *month, int *day);

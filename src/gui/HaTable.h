@@ -11,16 +11,7 @@
 class HaTable : public wxGridTableBase
 {
 public:
-    HaTable(std::initializer_list<const char *> colLabels, CsvDoc *doc)
-        : wxGridTableBase()
-        , m_doc(doc)
-        , m_colLabels(colLabels)
-        , m_cache(nullptr)
-    {
-        m_cols = m_colLabels.size();
-        m_colImpls = new struct ColImpl[m_cols];
-    }
-
+    HaTable(std::initializer_list<const char *> colLabels, CsvDoc *doc);
     virtual ~HaTable();
 
     virtual void Init();
@@ -31,6 +22,7 @@ public:
     wxString GetValue(int row, int col) override;
     wxString GetColLabelValue(int col) override;
     wxString GetRowLabelValue(int row) override;
+
     bool CanHaveAttributes() override;
 
     auto GetRowRecordFlag(int row) const
@@ -110,17 +102,7 @@ protected:
         }
     }
 
-    void MapColToCol(int dst, int col, bool ro = false)
-    {
-        auto &colImpl = m_colImpls[dst];
-        colImpl.type = m_doc->GetColType(col);
-        colImpl.get = [this, col](int row) -> wxString { return m_doc->GetValueString(row, col); };
-        if (!ro) {
-            colImpl.set = [this, col](int row, const wxString &value) -> void {
-                m_doc->SetValueString(row, col, value);
-            };
-        }
-    }
+    void MapColToCol(int dst, int col, bool ro = false);
 
     virtual wxString GetCommentString(int row);
 
@@ -129,29 +111,8 @@ protected:
     virtual bool DeleteRow(size_t pos);
 
 private:
-    const wxString GetCellValue(int row, int col)
-    {
-        auto flag = GetRowRecordFlag(row);
-        if (flag == RECORD_FLAG_COMMENT) {
-            if (col == 0) {
-                return GetCommentString(row);
-            }
-        } else if (col < m_cols) {
-            if (m_colImpls[col].get != nullptr) {
-                return m_colImpls[col].get(row);
-            }
-            return _("not implemented");
-        }
-        return wxEmptyString;
-    }
-
-    void SetCellValue(int row, int col, const wxString &value)
-    {
-        wxASSERT(GetRowRecordFlag(row) != RECORD_FLAG_COMMENT);
-        if (col < m_cols && m_colImpls[col].set != nullptr) {
-            m_colImpls[col].set(row, value);
-        }
-    }
+    const wxString GetCellValue(int row, int col);
+    void SetCellValue(int row, int col, const wxString &value);
 };
 
 #endif /* _HA_GUI_HA_TABLE_H_ */

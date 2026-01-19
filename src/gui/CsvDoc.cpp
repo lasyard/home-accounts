@@ -26,7 +26,7 @@ CsvDoc::~CsvDoc()
 const wxString CsvDoc::GetValueString(int pos, int i) const
 {
     record_t *record = GetRecord(pos);
-    if (i < 0 || i >= (record->flag == RECORD_FLAG_COMMENT ? m_parser.comment_cols : m_parser.meta->cols)) {
+    if (!is_index_valid(&m_parser, record, i)) {
         return wxEmptyString;
     }
     if (m_parser.meta->types[i] != CT_STR) {
@@ -43,13 +43,11 @@ const wxString CsvDoc::GetValueString(int pos, int i) const
 void CsvDoc::SetValueString(int pos, int i, const wxString &value)
 {
     record_t *record = GetRecord(pos);
-    if (record == nullptr) {
-        throw std::out_of_range("record position out of range");
+    wxASSERT(record != nullptr);
+    wxASSERT(is_index_valid(&m_parser, record, i));
+    if (parse_field(&m_parser, value.c_str(), record, i) == NULL) {
+        wxLogError(_("Invalid value: %s"), value);
     }
-    if (i < 0 || i >= (record->flag == RECORD_FLAG_COMMENT ? m_parser.comment_cols : m_parser.meta->cols)) {
-        throw std::out_of_range("column index out of range");
-    }
-    parse_field(&m_parser, value.c_str(), record, i);
 }
 
 record_t *CsvDoc::AddRecord()

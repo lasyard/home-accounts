@@ -35,12 +35,6 @@ protected:
 
     HaTable *m_table;
 
-    void InitAttr();
-    void ReleaseAttr();
-
-    virtual wxGridCellAttr *GetItemCellAttr(int row, int col) const;
-
-private:
     static wxGridCellAttr *SelectAttrRO(bool ro, wxGridCellAttr *attrRO, wxGridCellAttr *attr)
     {
         if (ro) {
@@ -51,6 +45,9 @@ private:
             return attr;
         }
     }
+
+    virtual wxGridCellAttr *GetCommentCellAttr(int row) const;
+    virtual wxGridCellAttr *GetItemCellAttr(int row, int col) const;
 };
 
 #endif /* _HA_GUI_HA_GRID_CELL_ATTR_PROVIDER_H_ */

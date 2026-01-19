@@ -49,6 +49,11 @@ struct parser {
     const struct record_meta *meta; // the meta of record, owned
 };
 
+static inline bool is_index_valid(const struct parser *parser, const record_t *record, int i)
+{
+    return 0 <= i && i < (record->flag == RECORD_FLAG_COMMENT ? parser->comment_cols : parser->meta->cols);
+}
+
 static inline void *get_field(const struct parser *parser, record_t *record, int i)
 {
     const struct record_meta *rm = parser->meta;

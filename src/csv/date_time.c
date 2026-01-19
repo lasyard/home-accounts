@@ -51,34 +51,52 @@ const char *parse_date(const char *buf, date_t *data, char sep, char dateSep)
         *data = UNKNOWN_DATE;
         return p;
     }
+    month = 1;
+    day = 1;
     p = parse_int(p, &year, dateSep);
     return_null_if_null(p);
-    ++p;
-    p = parse_int(p, &month, dateSep);
-    return_null_if_null(p);
-    ++p;
-    p = parse_int(p, &day, sep);
-    return_null_if_null(p);
+    if (*p == dateSep) {
+        ++p;
+        p = parse_int(p, &month, dateSep);
+        return_null_if_null(p);
+        if (*p == dateSep) {
+            ++p;
+            p = parse_int(p, &day, sep);
+            return_null_if_null(p);
+        }
+    }
+    year = make_valid(year, 1900, 2100);
+    month = make_valid(month, 1, 12);
+    day = make_valid(day, 1, end_day_of_month((int)year, month));
     *data = jdn((int)year, (int)month, (int)day);
     return p;
 }
 
 const char *parse_time(const char *buf, timo_t *data, char sep)
 {
-    int64_t hour = 0, min = 0, sec = 0;
+    int64_t hour, min, sec;
     const char *p = skip_space(buf);
     if (*p == sep || is_line_end(*p)) {
         *data = UNKNOWN_TIME;
         return p;
     }
-    p = parse_int(p, &hour, ':');
+    min = 0;
+    sec = 0;
+    p = parse_int(p, &hour, TIME_SEP);
     return_null_if_null(p);
-    ++p;
-    p = parse_int(p, &min, ':');
-    return_null_if_null(p);
-    ++p;
-    p = parse_int(p, &sec, sep);
-    return_null_if_null(p);
+    if (*p == TIME_SEP) {
+        ++p;
+        p = parse_int(p, &min, ':');
+        return_null_if_null(p);
+        if (*p == TIME_SEP) {
+            ++p;
+            p = parse_int(p, &sec, sep);
+            return_null_if_null(p);
+        }
+    }
+    hour = make_valid(hour, 0, 23);
+    min = make_valid(min, 0, 59);
+    sec = make_valid(sec, 0, 59);
     *data = (hour * 60 + min) * 60 + sec;
     return p;
 }

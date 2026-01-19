@@ -6,6 +6,17 @@
 
 #include "HaGridCellAttrProvider.h"
 
+HaTable::HaTable(std::initializer_list<const char *> colLabels, CsvDoc *doc)
+    : wxGridTableBase()
+    , m_doc(doc)
+    , m_colLabels(colLabels)
+    , m_cache(nullptr)
+{
+    m_cols = m_colLabels.size();
+    m_colImpls = new struct ColImpl[m_cols];
+    SetAttrProvider(new HaGridCellAttrProvider(this));
+}
+
 HaTable::~HaTable()
 {
     if (m_cache != nullptr) {
@@ -24,7 +35,6 @@ void HaTable::Init()
     for (auto i = 0; i < rows; ++i) {
         CacheRow(i);
     }
-    SetAttrProvider(new HaGridCellAttrProvider(this));
 }
 
 int HaTable::GetNumberRows()
@@ -138,6 +148,16 @@ bool HaTable::DeleteRows(size_t pos, size_t numRows)
     return false;
 }
 
+void HaTable::MapColToCol(int dst, int col, bool ro)
+{
+    auto &colImpl = m_colImpls[dst];
+    colImpl.type = m_doc->GetColType(col);
+    colImpl.get = [this, col](int row) -> wxString { return m_doc->GetValueString(row, col); };
+    if (!ro) {
+        colImpl.set = [this, col](int row, const wxString &value) -> void { m_doc->SetValueString(row, col, value); };
+    }
+}
+
 wxString HaTable::GetCommentString(int row)
 {
     return m_doc->GetValueString(row, 0);
@@ -158,4 +178,28 @@ bool HaTable::AppendRow()
 bool HaTable::DeleteRow(size_t pos)
 {
     return m_doc->DeleteRecord(pos);
+}
+
+const wxString HaTable::GetCellValue(int row, int col)
+{
+    auto flag = GetRowRecordFlag(row);
+    if (flag == RECORD_FLAG_COMMENT) {
+        if (col == 0) {
+            return GetCommentString(row);
+        }
+    } else if (col < m_cols) {
+        if (m_colImpls[col].get != nullptr) {
+            return m_colImpls[col].get(row);
+        }
+        return _("not implemented");
+    }
+    return wxEmptyString;
+}
+
+void HaTable::SetCellValue(int row, int col, const wxString &value)
+{
+    wxASSERT(GetRowRecordFlag(row) != RECORD_FLAG_COMMENT);
+    if (col < m_cols && m_colImpls[col].set != nullptr) {
+        m_colImpls[col].set(row, value);
+    }
 }

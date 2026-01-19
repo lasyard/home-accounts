@@ -10,39 +10,7 @@ IMPLEMENT_TM(HaGridCellAttrProvider)
 HaGridCellAttrProvider::HaGridCellAttrProvider(HaTable *table) : wxGridCellAttrProvider(), m_table(table)
 {
     wxLog::AddTraceMask(TM);
-    InitAttr();
-}
 
-HaGridCellAttrProvider::~HaGridCellAttrProvider()
-{
-    ReleaseAttr();
-}
-
-wxGridCellAttr *HaGridCellAttrProvider::GetAttr(int row, int col, wxGridCellAttr::wxAttrKind kind) const
-{
-    // looks like `kind` is always `Any`.
-    if (kind == wxGridCellAttr::wxAttrKind::Any || kind == wxGridCellAttr::wxAttrKind::Cell) {
-        auto flag = m_table->GetRowRecordFlag(row);
-        switch (flag) {
-        case RECORD_FLAG_COMMENT:
-            // do not return colSpan > 1 for col > 0, or there will be index out of bound problem.
-            if (col == 0) {
-                m_commentAttrRO->IncRef();
-                return m_commentAttrRO;
-            }
-            break;
-        case RECORD_FLAG_NORMAL:
-            return GetItemCellAttr(row, col);
-        default:
-            break;
-        }
-    }
-    m_defaultAttrRO->IncRef();
-    return m_defaultAttrRO;
-}
-
-void HaGridCellAttrProvider::InitAttr()
-{
     m_defaultAttr = new wxGridCellAttr();
     // Do not use `wxALIGN_CENTER_HORIZONTAL` or `wxALIGN_CENTER_VERTICAL` for `hAlign` and `vAlign`.
     m_defaultAttr->SetAlignment(wxALIGN_LEFT, wxALIGN_CENTER);
@@ -88,7 +56,7 @@ void HaGridCellAttrProvider::InitAttr()
     m_commentAttrRO->SetReadOnly();
 }
 
-void HaGridCellAttrProvider::ReleaseAttr()
+HaGridCellAttrProvider::~HaGridCellAttrProvider()
 {
     m_defaultAttr->DecRef();
     m_defaultAttrRO->DecRef();
@@ -104,6 +72,34 @@ void HaGridCellAttrProvider::ReleaseAttr()
     m_dateAttr->DecRef();
     m_dateAttrRO->DecRef();
     m_commentAttrRO->DecRef();
+}
+
+wxGridCellAttr *HaGridCellAttrProvider::GetAttr(int row, int col, wxGridCellAttr::wxAttrKind kind) const
+{
+    // looks like `kind` is always `Any`.
+    if (kind == wxGridCellAttr::wxAttrKind::Any || kind == wxGridCellAttr::wxAttrKind::Cell) {
+        auto flag = m_table->GetRowRecordFlag(row);
+        switch (flag) {
+        case RECORD_FLAG_COMMENT:
+            // do not return colSpan > 1 for col > 0, or there will be index out of bound problem.
+            if (col == 0) {
+                return GetCommentCellAttr(row);
+            }
+            break;
+        case RECORD_FLAG_NORMAL:
+            return GetItemCellAttr(row, col);
+        default:
+            break;
+        }
+    }
+    m_defaultAttrRO->IncRef();
+    return m_defaultAttrRO;
+}
+
+wxGridCellAttr *HaGridCellAttrProvider::GetCommentCellAttr([[maybe_unused]] int row) const
+{
+    m_commentAttrRO->IncRef();
+    return m_commentAttrRO;
 }
 
 wxGridCellAttr *HaGridCellAttrProvider::GetItemCellAttr([[maybe_unused]] int row, int col) const

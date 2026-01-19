@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HomeAccounts 1.0.0\n"
 "Report-Msgid-Bugs-To: lasyard@yeah.net\n"
-"POT-Creation-Date: 2025-12-31 16:50+0800\n"
+"POT-Creation-Date: 2026-01-19 17:03+0800\n"
 "PO-Revision-Date: 2025-01-10 16:01+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -25,10 +25,6 @@ msgstr "Wrong password!"
 msgid "Confirm new password failed!"
 msgstr "Confirm new password failed!"
 
-#: HaTable.h:196
-msgid "not implemented"
-msgstr "not implemented"
-
 #: HaMainFrame.cpp:73
 msgid "File"
 msgstr "File"
@@ -37,19 +33,19 @@ msgstr "File"
 msgid "License"
 msgstr "License"
 
-#: accounts/AccountsDoc.cpp:18
+#: accounts/AccountsDoc.cpp:22
 msgid "Invalid"
 msgstr "Invalid"
 
-#: accounts/AccountsDoc.cpp:19
+#: accounts/AccountsDoc.cpp:23
 msgid "Debit"
 msgstr "Debit"
 
-#: accounts/AccountsDoc.cpp:20
+#: accounts/AccountsDoc.cpp:24
 msgid "Credit"
 msgstr "Credit"
 
-#: accounts/AccountsDoc.cpp:21
+#: accounts/AccountsDoc.cpp:25
 msgid "Transfer"
 msgstr "Transfer"
 
@@ -62,14 +58,18 @@ msgid "Name"
 msgstr "Name"
 
 #: accounts/AccountsTable.cpp:12
+msgid "Bank"
+msgstr "Bank"
+
+#: accounts/AccountsTable.cpp:13
 msgid "Open Date"
 msgstr "Open Date"
 
-#: accounts/AccountsTable.cpp:13
+#: accounts/AccountsTable.cpp:14
 msgid "Initial"
 msgstr "Initial"
 
-#: accounts/AccountsTable.cpp:14
+#: accounts/AccountsTable.cpp:15
 msgid "Memo"
 msgstr "Memo"
 
@@ -89,17 +89,22 @@ msgstr " Doc"
 msgid " View"
 msgstr " View"
 
-#: CsvDoc.cpp:116
+#: CsvDoc.cpp:49
+#, c-format
+msgid "Invalid value: %s"
+msgstr "Invalid value: %s"
+
+#: CsvDoc.cpp:120
 #, c-format
 msgid "Parse error at line %d"
 msgstr "Parse error at line %d"
 
-#: CsvDoc.cpp:119
+#: CsvDoc.cpp:123
 #, c-format
 msgid "%d lines read"
 msgstr "%d lines read"
 
-#: CsvDoc.cpp:135 CsvDoc.cpp:139
+#: CsvDoc.cpp:139 CsvDoc.cpp:143
 #, c-format
 msgid "%d lines written"
 msgstr "%d lines written"
@@ -125,3 +130,11 @@ msgstr "Are you sure to delete section \"%s\" and all of its sub section?"
 #, c-format
 msgid "Section \"%s\" already exists."
 msgstr "Section \"%s\" already exists."
+
+#: HaGridCellAttrProvider.cpp:47
+msgid "%Y-%m-%d"
+msgstr "%Y-%m-%d"
+
+#: HaTable.cpp:194
+msgid "not implemented"
+msgstr "not implemented"

@@ -95,8 +95,8 @@ TEST_CASE("parse_line_1")
         CHECK(*i == 1LL);
         money_t *amount = (money_t *)get_field(&parser, r, 1);
         CHECK(*amount == 12345LL);
-        date_t *tm = (date_t *)get_field(&parser, r, 2);
-        CHECK(*tm == (UNKNOWN_TIME << 32));
+        timo_t *timo = (timo_t *)get_field(&parser, r, 2);
+        CHECK(*timo == UNKNOWN_TIME);
         free_record(&parser, r);
         release_parser(&parser);
     }

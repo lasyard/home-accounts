@@ -44,13 +44,13 @@ TEST_CASE("parse_date")
 
 TEST_CASE("parse_time")
 {
-    date_t data = 1;
+    timo_t data = 1;
     parse_time("00:10:05", &data, '\0');
-    CHECK(data == (((int64_t)605 << 32) | 1));
+    CHECK(data == 605);
     parse_time("11:20:3", &data, '\0');
-    CHECK(data == (((int64_t)40803 << 32) | 1));
+    CHECK(data == 40803);
     parse_time("", &data, '\0');
-    CHECK(data == ((UNKNOWN_TIME << 32) | 1));
+    CHECK(data == UNKNOWN_TIME);
 }
 
 TEST_CASE("output_date")
@@ -67,10 +67,10 @@ TEST_CASE("output_date")
 TEST_CASE("output_time")
 {
     char buf[9];
-    char *p = output_time(buf, ((int64_t)605 << 32) | 1);
+    char *p = output_time(buf, 605);
     *p = '\0';
     CHECK(strcmp(buf, "00:10:05") == 0);
-    p = output_time(buf, ((int64_t)40803 << 32) | 2);
+    p = output_time(buf, 40803);
     *p = '\0';
     CHECK(strcmp(buf, "11:20:03") == 0);
 }

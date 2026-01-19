@@ -25,11 +25,10 @@ static void init_by_type(enum column_type type, void *data)
         *(money_t *)data = 0LL;
         break;
     case CT_DATE:
-        *(date_t *)data = jdn(1970, 1, 1);
+        *(date_t *)data = UNKNOWN_DATE;
         break;
     case CT_TIME:
-        *(date_t *)data = 0;
-        set_time((date_t *)data, UNKNOWN_TIME);
+        *(timo_t *)data = UNKNOWN_TIME;
         break;
     default:
         break;

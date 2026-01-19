@@ -46,7 +46,11 @@ void jdn_split(int jdn, int *year, int *month, int *day)
 const char *parse_date(const char *buf, date_t *data, char sep, char dateSep)
 {
     int64_t year, month, day;
-    const char *p = buf;
+    const char *p = skip_space(buf);
+    if (*p == sep || is_line_end(*p)) {
+        *data = UNKNOWN_DATE;
+        return p;
+    }
     p = parse_int(p, &year, dateSep);
     return_null_if_null(p);
     ++p;
@@ -59,12 +63,12 @@ const char *parse_date(const char *buf, date_t *data, char sep, char dateSep)
     return p;
 }
 
-const char *parse_time(const char *buf, date_t *data, char sep)
+const char *parse_time(const char *buf, timo_t *data, char sep)
 {
     int64_t hour = 0, min = 0, sec = 0;
     const char *p = skip_space(buf);
     if (*p == sep || is_line_end(*p)) {
-        set_time(data, UNKNOWN_TIME);
+        *data = UNKNOWN_TIME;
         return p;
     }
     p = parse_int(p, &hour, ':');
@@ -75,33 +79,34 @@ const char *parse_time(const char *buf, date_t *data, char sep)
     ++p;
     p = parse_int(p, &sec, sep);
     return_null_if_null(p);
-    set_time(data, (hour * 60 + min) * 60 + sec);
+    *data = (hour * 60 + min) * 60 + sec;
     return p;
 }
 
 char *output_date(char *buf, date_t data, char date_sep)
 {
     char *p = buf;
-    int year, month, day;
-    jdn_split((int)get_date(data), &year, &month, &day);
-    p = output_int_len(p, year, 4);
-    *(p++) = date_sep;
-    p = output_int_len(p, month, 2);
-    *(p++) = date_sep;
-    p = output_int_len(p, day, 2);
+    if (data > UNKNOWN_DATE) {
+        int year, month, day;
+        jdn_split((int)data, &year, &month, &day);
+        p = output_int_len(p, year, 4);
+        *(p++) = date_sep;
+        p = output_int_len(p, month, 2);
+        *(p++) = date_sep;
+        p = output_int_len(p, day, 2);
+    }
     return p;
 }
 
-char *output_time(char *buf, date_t data)
+char *output_time(char *buf, timo_t data)
 {
     char *p = buf;
-    int64_t t = get_time(data);
-    if (t > UNKNOWN_TIME) {
-        p = output_int_len(p, t / 3600, 2);
+    if (data > UNKNOWN_TIME) {
+        p = output_int_len(p, data / 3600, 2);
         *(p++) = ':';
-        p = output_int_len(p, (t % 3600) / 60, 2);
+        p = output_int_len(p, (data % 3600) / 60, 2);
         *(p++) = ':';
-        p = output_int_len(p, (t % 60), 2);
+        p = output_int_len(p, (data % 60), 2);
     }
     return p;
 }

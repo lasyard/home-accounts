@@ -43,11 +43,18 @@ const wxString CsvDoc::GetValueString(int pos, int i) const
 void CsvDoc::SetValueString(int pos, int i, const wxString &value)
 {
     record_t *record = GetRecord(pos);
-    wxASSERT(record != nullptr);
     wxASSERT(is_index_valid(&m_parser, record, i));
     if (parse_field(&m_parser, value.c_str(), record, i) == NULL) {
         wxLogError(_("Invalid value: %s"), value);
     }
+}
+
+wxString CsvDoc::GetMoneyString(money_t m) const
+{
+    char buf[MAX_LINE_LENGTH + 1];
+    char *p = output_money(buf, m, m_parser.options.money_prec, m_parser.options.money_scale);
+    *p = '\0';
+    return wxString(buf);
 }
 
 record_t *CsvDoc::AddRecord()
@@ -68,14 +75,13 @@ record_t *CsvDoc::InsertRecord(int pos)
     record_t *record = new_record(&m_parser);
     return_null_if_null(record);
     if (pos == 0) {
-        list_ins_head(&m_records, &record->list);
+        list_ins_first(&m_records, &record->list);
         m_index.insert(m_index.begin(), record);
     } else {
         record_t *prev = GetRecord(pos - 1);
-        wxASSERT(prev != nullptr);
         record = copy_comment_fields(&m_parser, record, prev);
         return_null_if_null(record);
-        list_ins(&m_records, &prev->list, &record->list);
+        list_ins(&m_records, &prev->list.next, &record->list);
         m_index.insert(std::next(m_index.begin(), pos), record);
     }
     SetNewRecord(record);
@@ -84,18 +90,16 @@ record_t *CsvDoc::InsertRecord(int pos)
 
 bool CsvDoc::DeleteRecord(int pos)
 {
-    struct list_item *list = NULL;
+    struct list_item *item = NULL;
     if (pos == 0) {
-        list = list_del_head(&m_records);
+        item = list_del_first(&m_records);
     } else {
         record_t *p = GetRecord(pos - 1);
-        if (p != nullptr) {
-            list = list_del(&m_records, &p->list);
-        }
+        item = list_del(&m_records, &p->list.next);
     }
-    if (list != NULL) {
+    if (item != NULL) {
         m_index.erase(std::next(m_index.begin(), pos));
-        free_record(&m_parser, get_record(list));
+        free_record(&m_parser, get_record(item));
         return true;
     }
     return false;
@@ -160,6 +164,15 @@ bool CsvDoc::Write(std::string &str)
     return true;
 }
 
+void CsvDoc::CreateIndex()
+{
+    m_index.clear();
+    for (struct list_item *pos = m_records.first; pos != NULL; pos = pos->next) {
+        record_t *record = get_record(pos);
+        m_index.push_back(record);
+    }
+}
+
 bool CsvDoc::AfterRead()
 {
     CreateIndex();
@@ -168,19 +181,24 @@ bool CsvDoc::AfterRead()
 
 bool CsvDoc::BeforeWrite()
 {
-    return true;
-}
-
-void CsvDoc::CreateIndex()
-{
-    m_index.clear();
-    record_t *record;
-    list_for_each_entry(record, &m_records, list)
-    {
-        m_index.push_back(record);
+    struct list_item **pos = &m_records.first;
+    while (*pos != NULL) {
+        record_t *record = get_record(*pos);
+        if (IsRecordEmpty(record)) {
+            list_del(&m_records, pos);
+            free_record(&m_parser, record);
+        } else {
+            pos = &(*pos)->next;
+        }
     }
+    return true;
 }
 
 void CsvDoc::SetNewRecord([[maybe_unused]] record_t *record)
 {
+}
+
+bool CsvDoc::IsRecordEmpty([[maybe_unused]] record_t *record)
+{
+    return false;
 }

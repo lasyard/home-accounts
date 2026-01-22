@@ -8,7 +8,7 @@ class HaGdi
 {
 public:
     // color
-    static const wxColour SEGMENT_COLOR;
+    static const wxColour COMMENT_BACK_COLOR;
     static const wxColour DEFICIT_COLOR;
     static const wxColour SURPLUS_COLOR;
 

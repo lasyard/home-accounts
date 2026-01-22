@@ -60,7 +60,7 @@ wxString HaTable::GetColLabelValue(int col)
 wxString HaTable::GetRowLabelValue(int row)
 {
     if (row < GetNumberRows()) {
-        return wxString::Format("%d", row);
+        return wxString::Format("%d", row + 1);
     }
     return wxEmptyString;
 }
@@ -180,6 +180,10 @@ bool HaTable::DeleteRow(size_t pos)
     return m_doc->DeleteRecord(pos);
 }
 
+void HaTable::OnNewRow([[maybe_unused]] size_t pos)
+{
+}
+
 const wxString HaTable::GetCellValue(int row, int col)
 {
     auto flag = GetRowRecordFlag(row);
@@ -198,7 +202,7 @@ const wxString HaTable::GetCellValue(int row, int col)
 
 void HaTable::SetCellValue(int row, int col, const wxString &value)
 {
-    wxASSERT(GetRowRecordFlag(row) != RECORD_FLAG_COMMENT);
+    wxASSERT(GetRowRecordFlag(row) == RECORD_FLAG_NORMAL);
     if (col < m_cols && m_colImpls[col].set != nullptr) {
         m_colImpls[col].set(row, value);
     }

@@ -1,6 +1,6 @@
 #include "HaGdi.h"
 
-const wxColour HaGdi::SEGMENT_COLOR(0xDD, 0xEE, 0xFF);
+const wxColour HaGdi::COMMENT_BACK_COLOR(0xDD, 0xEE, 0xFF);
 const wxColour HaGdi::DEFICIT_COLOR(255, 0, 0);
 const wxColour HaGdi::SURPLUS_COLOR(0, 255, 0);
 

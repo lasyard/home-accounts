@@ -110,6 +110,8 @@ protected:
     virtual bool AppendRow();
     virtual bool DeleteRow(size_t pos);
 
+    virtual void OnNewRow(size_t pos);
+
 private:
     const wxString GetCellValue(int row, int col);
     void SetCellValue(int row, int col, const wxString &value);

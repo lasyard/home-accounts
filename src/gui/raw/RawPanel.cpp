@@ -146,6 +146,9 @@ wxTextCtrl *RawPanel::CreateTextCtrl(wxWindow *parent, const wxString &value)
 
 size_t RawPanel::InsertOrFindSubPage(int parent, const wxString &text, const wxString &value, bool warnDup)
 {
+    if (text.IsEmpty()) {
+        wxLogWarning(_("Section name cannot be empty."));
+    }
     size_t start = (parent == wxNOT_FOUND ? 0 : (size_t)(parent + 1));
     bool solved = false;
     size_t i;

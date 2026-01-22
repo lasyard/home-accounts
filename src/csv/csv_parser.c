@@ -112,6 +112,42 @@ static char *output_by_type(const struct parser_options *options, char *buf, enu
     return buf;
 }
 
+int get_int_field(const struct parser *parser, const record_t *record, int i)
+{
+    switch (parser->meta->types[i]) {
+    case CT_INT:
+    case CT_MONEY:
+        return (int)*(int64_t *)get_const_field(parser, record, i);
+    case CT_BOOL:
+        return (int)*(bool *)get_const_field(parser, record, i);
+    case CT_DATE:
+    case CT_TIME:
+        return (int)*(int32_t *)get_const_field(parser, record, i);
+    default:
+        break;
+    }
+    return 0;
+}
+
+void set_int_field(const struct parser *parser, record_t *record, int i, int value)
+{
+    switch (parser->meta->types[i]) {
+    case CT_INT:
+    case CT_MONEY:
+        *(int64_t *)get_field(parser, record, i) = (int64_t)value;
+        break;
+    case CT_BOOL:
+        *(bool *)get_field(parser, record, i) = (value != 0);
+        break;
+    case CT_DATE:
+    case CT_TIME:
+        *(int32_t *)get_field(parser, record, i) = (int32_t)value;
+        break;
+    default:
+        break;
+    }
+}
+
 void init_parser(struct parser *parser)
 {
     parser->options.sep = ',';
@@ -165,6 +201,7 @@ static record_t *raw_new_record(const struct parser *parser)
 {
     record_t *record = malloc(sizeof(record_t) + parser->meta->size);
     return_null_if_null(record);
+    record->udata = NULL;
     const enum column_type *types = parser->meta->types;
     for (int i = 0; i < parser->meta->cols; ++i) {
         init_by_type(types[i], get_field(parser, record, i));
@@ -188,6 +225,9 @@ void free_record(const struct parser *parser, record_t *record)
         if (types[i] == CT_STR) {
             free_str(get_field(parser, record, i));
         }
+    }
+    if (record->udata != NULL) {
+        free(record->udata);
     }
     free(record);
 }
@@ -335,9 +375,8 @@ int write_lines(
 )
 {
     int lines = 0;
-    record_t *record;
-    list_for_each_entry(record, records, list)
-    {
+    for (struct list_item *pos = records->first; pos != NULL; pos = pos->next) {
+        record_t *record = get_record(pos);
         char buf[MAX_LINE_LENGTH + 1];
         const char *p;
         p = output_line(parser, buf, record);
@@ -351,10 +390,66 @@ int write_lines(
 
 void release_records(const struct parser *parser, struct list_head *records)
 {
-    record_t *pos, *n;
-    list_for_each_entry_safe(pos, n, records, list)
-    {
-        free_record(parser, pos);
+    struct list_item *n;
+    for (struct list_item *pos = records->first; pos != NULL; pos = n) {
+        n = pos->next;
+        free_record(parser, get_record(pos));
     }
     list_head_init(records);
+}
+
+static record_t *new_comment_of_serial(const struct parser *parser, int expected)
+{
+    record_t *elem = new_record(parser);
+    return_null_if_null(elem);
+    set_int_field(parser, elem, 0, expected);
+    elem->flag = RECORD_FLAG_COMMENT;
+    return elem;
+}
+
+/**
+ * @brief Insert missing serial numbers in comment into the list of records. The serial column must be the first column.
+ *
+ * @param parser
+ * @param records
+ * @param start
+ * @param end
+ * @return int
+ */
+int fill_serial(const struct parser *parser, struct list_head *records, int start, int end)
+{
+    struct list_item **p = &records->first;
+    int expected = start;
+    while (*p != NULL && expected <= end) {
+        record_t *record = get_record(*p);
+        if (record->flag != RECORD_FLAG_COMMENT) {
+            p = &(*p)->next;
+            continue;
+        }
+        int val = get_int_field(parser, record, 0);
+        if (val < expected) {
+            return val;
+        }
+        if (val > end) {
+            return val;
+        }
+        if (val > expected) {
+            record_t *elem = new_comment_of_serial(parser, expected);
+            if (elem == NULL) {
+                return -1;
+            }
+            list_ins(records, p, &elem->list);
+        }
+        p = &(*p)->next;
+        ++expected;
+    }
+    while (expected <= end) {
+        record_t *elem = new_comment_of_serial(parser, expected);
+        if (elem == NULL) {
+            return -1;
+        }
+        list_add(records, &elem->list);
+        ++expected;
+    }
+    return 0;
 }

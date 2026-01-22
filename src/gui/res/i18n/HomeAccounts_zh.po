@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HomeAccounts 1.0.0\n"
 "Report-Msgid-Bugs-To: lasyard@yeah.net\n"
-"POT-Creation-Date: 2026-01-19 17:03+0800\n"
+"POT-Creation-Date: 2026-01-22 18:53+0800\n"
 "PO-Revision-Date: 2025-01-10 16:01+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -32,19 +32,19 @@ msgstr "文件"
 msgid "License"
 msgstr "许可证"
 
-#: accounts/AccountsDoc.cpp:22
+#: accounts/AccountsDoc.cpp:24
 msgid "Invalid"
 msgstr "无效"
 
-#: accounts/AccountsDoc.cpp:23
+#: accounts/AccountsDoc.cpp:25
 msgid "Debit"
 msgstr "借记卡"
 
-#: accounts/AccountsDoc.cpp:24
+#: accounts/AccountsDoc.cpp:26
 msgid "Credit"
 msgstr "信用卡"
 
-#: accounts/AccountsDoc.cpp:25
+#: accounts/AccountsDoc.cpp:27
 msgid "Transfer"
 msgstr "支付账户"
 
@@ -68,15 +68,19 @@ msgstr "开户日期"
 msgid "Initial"
 msgstr "初始余额"
 
-#: accounts/AccountsTable.cpp:15
+#: accounts/AccountsTable.cpp:15 data/DataTable.cpp:20
 msgid "Memo"
 msgstr "备注"
 
-#: HaView.cpp:43
+#: HaView.cpp:44
+msgid "Data"
+msgstr "数据"
+
+#: HaView.cpp:45
 msgid "Accounts"
 msgstr "账户"
 
-#: HaView.cpp:44
+#: HaView.cpp:46
 msgid "Raw"
 msgstr "源文件"
 
@@ -88,22 +92,22 @@ msgstr " 文档"
 msgid " View"
 msgstr " 视"
 
-#: CsvDoc.cpp:49
+#: CsvDoc.cpp:48
 #, c-format
 msgid "Invalid value: %s"
 msgstr "无效值：%s"
 
-#: CsvDoc.cpp:120
+#: CsvDoc.cpp:124
 #, c-format
 msgid "Parse error at line %d"
 msgstr "第 %d 行解析错误"
 
-#: CsvDoc.cpp:123
+#: CsvDoc.cpp:127
 #, c-format
 msgid "%d lines read"
 msgstr "已读取 %d 行"
 
-#: CsvDoc.cpp:139 CsvDoc.cpp:143
+#: CsvDoc.cpp:143 CsvDoc.cpp:147
 #, c-format
 msgid "%d lines written"
 msgstr "已写入 %d 行"
@@ -111,6 +115,62 @@ msgstr "已写入 %d 行"
 #: HaDocument.cpp:60
 msgid "Input the password for the file:"
 msgstr "输入文件的密码："
+
+#: data/DataPanel.cpp:33
+msgid "Select Date:"
+msgstr "选择日期："
+
+#: data/DataPanel.cpp:37
+msgid "Opening:"
+msgstr "期初余额："
+
+#: data/DataPanel.cpp:39
+msgid "Total Income:"
+msgstr "总收入："
+
+#: data/DataPanel.cpp:42
+msgid "Total Outlay:"
+msgstr "总支出："
+
+#: data/DataPanel.cpp:45
+msgid "Closing:"
+msgstr "期末余额："
+
+#: data/DataTable.cpp:12
+msgid "Time"
+msgstr "时间"
+
+#: data/DataTable.cpp:13
+msgid "Amount"
+msgstr "金额"
+
+#: data/DataTable.cpp:14
+msgid "Account"
+msgstr "账户"
+
+#: data/DataTable.cpp:15
+msgid "Description"
+msgstr "说明"
+
+#: data/DataTable.cpp:16
+msgid "Income"
+msgstr "收入"
+
+#: data/DataTable.cpp:17
+msgid "Outlay"
+msgstr "支出"
+
+#: data/DataTable.cpp:18
+msgid "Item"
+msgstr "项目"
+
+#: data/DataTable.cpp:19
+msgid "Balance"
+msgstr "余额"
+
+#: data/DataTable.cpp:21
+msgid "Category"
+msgstr "类别"
 
 #: raw/RawPanel.cpp:50
 msgid "DOC_ROOT"
@@ -125,7 +185,11 @@ msgstr "输入新段落名称："
 msgid "Are you sure to delete section \"%s\" and all of its sub section?"
 msgstr "确定要删除段落“%s”及其所有子段落吗？"
 
-#: raw/RawPanel.cpp:163
+#: raw/RawPanel.cpp:150
+msgid "Section name cannot be empty."
+msgstr "段落名称不能为空。"
+
+#: raw/RawPanel.cpp:166
 #, c-format
 msgid "Section \"%s\" already exists."
 msgstr "段落“%s”已存在。"
@@ -134,6 +198,6 @@ msgstr "段落“%s”已存在。"
 msgid "%Y-%m-%d"
 msgstr "%Y 年 %m 月 %d 日"
 
-#: HaTable.cpp:194
+#: HaTable.cpp:198
 msgid "not implemented"
 msgstr "未实现"

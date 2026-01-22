@@ -28,7 +28,7 @@ public:
 protected:
     HaDocument *m_doc;
 
-    virtual void DoSetDocument(HaDocument *doc);
+    virtual void SettingDocument(HaDocument *doc);
 };
 
 #endif /* _HA_GUI_HA_PANEL_H_ */

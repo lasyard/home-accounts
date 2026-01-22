@@ -8,51 +8,35 @@ void list_add(struct list_head *head, struct list_item *item)
         head->last->next = item;
         head->last = item;
     }
-    ++head->count;
 }
 
-void list_ins(struct list_head *head, struct list_item *pos, struct list_item *item)
+void list_ins(struct list_head *head, struct list_item **pos, struct list_item *item)
 {
-    item->next = pos->next;
-    pos->next = item;
-    if (head->last == pos) {
+    item->next = *pos;
+    *pos = item;
+    if (*pos == NULL) {
         head->last = item;
     }
-    ++head->count;
 }
 
-void list_ins_head(struct list_head *head, struct list_item *item)
+void list_ins_first(struct list_head *head, struct list_item *item)
 {
-    item->next = head->first;
-    head->first = item;
-    if (head->last == NULL) {
-        head->last = item;
-    }
-    ++head->count;
+    list_ins(head, &head->first, item);
 }
 
-struct list_item *list_del(struct list_head *head, struct list_item *pos)
+struct list_item *list_del(struct list_head *head, struct list_item **pos)
 {
-    struct list_item *item = pos->next;
+    struct list_item *item = *pos;
     if (item != NULL) {
-        pos->next = item->next;
+        *pos = item->next;
         if (head->last == item) {
-            head->last = pos;
+            head->last = container_of(pos, struct list_item, next);
         }
-        --head->count;
     }
     return item;
 }
 
-struct list_item *list_del_head(struct list_head *head)
+struct list_item *list_del_first(struct list_head *head)
 {
-    struct list_item *item = head->first;
-    if (item != NULL) {
-        head->first = item->next;
-        if (head->last == item) {
-            head->last = head->first;
-        }
-        --head->count;
-    }
-    return item;
+    return list_del(head, &head->first);
 }

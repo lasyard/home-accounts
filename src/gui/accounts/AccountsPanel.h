@@ -32,7 +32,7 @@ private:
 
     bool m_error;
 
-    void DoSetDocument(HaDocument *doc) override;
+    void SettingDocument(HaDocument *doc) override;
 
     const std::string *GetOrCreateSection();
 };

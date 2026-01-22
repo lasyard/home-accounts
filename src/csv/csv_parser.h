@@ -20,6 +20,7 @@ struct record_meta {
 typedef struct record {
     struct list_item list; // for linking in list
     char flag;             // record flag
+    void *udata;           // user data
     char data[0];
 } record_t;
 #ifdef _MSC_VER
@@ -66,6 +67,9 @@ static inline const void *get_const_field(const struct parser *parser, const rec
     return get_field(parser, (record_t *)record, i);
 }
 
+int get_int_field(const struct parser *parser, const record_t *record, int i);
+void set_int_field(const struct parser *parser, record_t *record, int i, int value);
+
 void init_parser(struct parser *parser);
 void set_money_prec(struct parser *parser, int money_prec);
 void release_parser(struct parser *parser);
@@ -98,7 +102,10 @@ int write_lines(
     int (*put_line)(const char *buf, size_t len, void *context),
     void *context
 );
+
 void release_records(const struct parser *parser, struct list_head *records);
+
+int fill_serial(const struct parser *parser, struct list_head *records, int start, int end);
 
 #ifdef __cplusplus
 }

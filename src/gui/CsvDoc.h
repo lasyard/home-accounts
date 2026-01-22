@@ -5,6 +5,7 @@
 
 #include "csv/csv_parser.h"
 #include "csv/list.h"
+#include "csv/money.h"
 
 class CsvDoc
 {
@@ -47,14 +48,14 @@ public:
 
     record_t *GetRecord(int pos) const
     {
-        if (pos < 0 || (size_t)pos >= m_index.size()) {
-            return nullptr;
-        }
+        wxASSERT(0 <= pos && (size_t)pos < m_index.size());
         return m_index[pos];
     }
 
     virtual const wxString GetValueString(int pos, int i) const;
     virtual void SetValueString(int pos, int i, const wxString &value);
+
+    wxString GetMoneyString(money_t m) const;
 
     record_t *AddRecord();
     record_t *InsertRecord(int pos);
@@ -70,11 +71,13 @@ protected:
     struct list_head m_records;
     std::vector<record_t *> m_index;
 
+    void CreateIndex();
+
     virtual bool AfterRead();
     virtual bool BeforeWrite();
-    virtual void CreateIndex();
 
     virtual void SetNewRecord(record_t *record);
+    virtual bool IsRecordEmpty(record_t *record);
 };
 
 #endif /* _HA_GUI_CSV_DOC_H_ */

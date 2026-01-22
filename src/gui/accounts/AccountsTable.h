@@ -11,6 +11,7 @@ class AccountsTable : public HaTable
 
 public:
     static const int ID_COL = 0;
+    static const int NAME_COL = 1;
 
     AccountsTable(AccountsDoc *doc = nullptr);
     virtual ~AccountsTable();

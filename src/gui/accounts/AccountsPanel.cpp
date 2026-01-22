@@ -72,7 +72,7 @@ void AccountsPanel::OnMenu(wxCommandEvent &event)
     Utils::DelegateEvent(m_grid, event);
 }
 
-void AccountsPanel::DoSetDocument(HaDocument *doc)
+void AccountsPanel::SettingDocument(HaDocument *doc)
 {
     m_grid->Bind(wxEVT_MENU, &HaDocument::OnChange, doc, ID_INSERT);
     m_grid->Bind(wxEVT_MENU, &HaDocument::OnChange, doc, wxID_DELETE);

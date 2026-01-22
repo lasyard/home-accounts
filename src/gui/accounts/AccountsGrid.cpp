@@ -42,3 +42,8 @@ HaTable *AccountsGrid::CreateHaTable(CsvDoc *doc)
     auto *table = new AccountsTable(d);
     return table;
 }
+
+int AccountsGrid::CursorColOfNewRow()
+{
+    return AccountsTable::NAME_COL;
+}

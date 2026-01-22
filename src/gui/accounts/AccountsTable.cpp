@@ -17,12 +17,12 @@ AccountsTable::AccountsTable(AccountsDoc *doc)
           doc
       )
 {
-    MapColToCol(0, AccountsDoc::ACCOUNT_ID_COL, true);
-    MapColToCol(1, AccountsDoc::ACCOUNT_NAME_COL);
-    MapColToCol(2, AccountsDoc::ACCOUNT_BANK_COL);
-    MapColToCol(3, AccountsDoc::ACCOUNT_OPEN_COL);
-    MapColToCol(4, AccountsDoc::ACCOUNT_INITIAL_COL);
-    MapColToCol(5, AccountsDoc::ACCOUNT_MEMO_COL);
+    MapColToCol(ID_COL, AccountsDoc::ID_COL, true);
+    MapColToCol(NAME_COL, AccountsDoc::NAME_COL);
+    MapColToCol(2, AccountsDoc::BANK_COL);
+    MapColToCol(3, AccountsDoc::OPEN_DATE_COL);
+    MapColToCol(4, AccountsDoc::INITIAL_COL);
+    MapColToCol(5, AccountsDoc::MEMO_COL);
 }
 
 AccountsTable::~AccountsTable()

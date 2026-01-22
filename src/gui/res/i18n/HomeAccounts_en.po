@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HomeAccounts 1.0.0\n"
 "Report-Msgid-Bugs-To: lasyard@yeah.net\n"
-"POT-Creation-Date: 2026-01-19 17:03+0800\n"
+"POT-Creation-Date: 2026-01-22 18:53+0800\n"
 "PO-Revision-Date: 2025-01-10 16:01+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -33,19 +33,19 @@ msgstr "File"
 msgid "License"
 msgstr "License"
 
-#: accounts/AccountsDoc.cpp:22
+#: accounts/AccountsDoc.cpp:24
 msgid "Invalid"
 msgstr "Invalid"
 
-#: accounts/AccountsDoc.cpp:23
+#: accounts/AccountsDoc.cpp:25
 msgid "Debit"
 msgstr "Debit"
 
-#: accounts/AccountsDoc.cpp:24
+#: accounts/AccountsDoc.cpp:26
 msgid "Credit"
 msgstr "Credit"
 
-#: accounts/AccountsDoc.cpp:25
+#: accounts/AccountsDoc.cpp:27
 msgid "Transfer"
 msgstr "Transfer"
 
@@ -69,15 +69,19 @@ msgstr "Open Date"
 msgid "Initial"
 msgstr "Initial"
 
-#: accounts/AccountsTable.cpp:15
+#: accounts/AccountsTable.cpp:15 data/DataTable.cpp:20
 msgid "Memo"
 msgstr "Memo"
 
-#: HaView.cpp:43
+#: HaView.cpp:44
+msgid "Data"
+msgstr "Data"
+
+#: HaView.cpp:45
 msgid "Accounts"
 msgstr "Accounts"
 
-#: HaView.cpp:44
+#: HaView.cpp:46
 msgid "Raw"
 msgstr "Raw"
 
@@ -89,22 +93,22 @@ msgstr " Doc"
 msgid " View"
 msgstr " View"
 
-#: CsvDoc.cpp:49
+#: CsvDoc.cpp:48
 #, c-format
 msgid "Invalid value: %s"
 msgstr "Invalid value: %s"
 
-#: CsvDoc.cpp:120
+#: CsvDoc.cpp:124
 #, c-format
 msgid "Parse error at line %d"
 msgstr "Parse error at line %d"
 
-#: CsvDoc.cpp:123
+#: CsvDoc.cpp:127
 #, c-format
 msgid "%d lines read"
 msgstr "%d lines read"
 
-#: CsvDoc.cpp:139 CsvDoc.cpp:143
+#: CsvDoc.cpp:143 CsvDoc.cpp:147
 #, c-format
 msgid "%d lines written"
 msgstr "%d lines written"
@@ -112,6 +116,62 @@ msgstr "%d lines written"
 #: HaDocument.cpp:60
 msgid "Input the password for the file:"
 msgstr "Input the password for the file:"
+
+#: data/DataPanel.cpp:33
+msgid "Select Date:"
+msgstr "Select Date:"
+
+#: data/DataPanel.cpp:37
+msgid "Opening:"
+msgstr "Opening:"
+
+#: data/DataPanel.cpp:39
+msgid "Total Income:"
+msgstr "Total Income:"
+
+#: data/DataPanel.cpp:42
+msgid "Total Outlay:"
+msgstr "Total Outlay:"
+
+#: data/DataPanel.cpp:45
+msgid "Closing:"
+msgstr "Closing:"
+
+#: data/DataTable.cpp:12
+msgid "Time"
+msgstr "Time"
+
+#: data/DataTable.cpp:13
+msgid "Amount"
+msgstr "Amount"
+
+#: data/DataTable.cpp:14
+msgid "Account"
+msgstr "Accounts"
+
+#: data/DataTable.cpp:15
+msgid "Description"
+msgstr "Description"
+
+#: data/DataTable.cpp:16
+msgid "Income"
+msgstr "Income"
+
+#: data/DataTable.cpp:17
+msgid "Outlay"
+msgstr "Outlay"
+
+#: data/DataTable.cpp:18
+msgid "Item"
+msgstr "Item"
+
+#: data/DataTable.cpp:19
+msgid "Balance"
+msgstr "Balance"
+
+#: data/DataTable.cpp:21
+msgid "Category"
+msgstr "Category"
 
 #: raw/RawPanel.cpp:50
 msgid "DOC_ROOT"
@@ -126,7 +186,11 @@ msgstr "Enter new section name:"
 msgid "Are you sure to delete section \"%s\" and all of its sub section?"
 msgstr "Are you sure to delete section \"%s\" and all of its sub section?"
 
-#: raw/RawPanel.cpp:163
+#: raw/RawPanel.cpp:150
+msgid "Section name cannot be empty."
+msgstr "Section name cannot be empty."
+
+#: raw/RawPanel.cpp:166
 #, c-format
 msgid "Section \"%s\" already exists."
 msgstr "Section \"%s\" already exists."
@@ -135,6 +199,6 @@ msgstr "Section \"%s\" already exists."
 msgid "%Y-%m-%d"
 msgstr "%Y-%m-%d"
 
-#: HaTable.cpp:194
+#: HaTable.cpp:198
 msgid "not implemented"
 msgstr "not implemented"

@@ -50,7 +50,7 @@ HaGridCellAttrProvider::HaGridCellAttrProvider(HaTable *table) : wxGridCellAttrP
 
     m_commentAttrRO = m_defaultAttrRO->Clone();
     m_commentAttrRO->SetSize(1, m_table->GetNumberCols());
-    m_commentAttrRO->SetBackgroundColour(HaGdi::SEGMENT_COLOR);
+    m_commentAttrRO->SetBackgroundColour(HaGdi::COMMENT_BACK_COLOR);
     m_commentAttrRO->SetFont(HaGdi::DIGI_FONT);
     m_commentAttrRO->SetAlignment(wxALIGN_CENTER_VERTICAL, wxALIGN_LEFT);
     m_commentAttrRO->SetReadOnly();

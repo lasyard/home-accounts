@@ -1,6 +1,8 @@
 #ifndef _HA_GUI_UTILS_H_
 #define _HA_GUI_UTILS_H_
 
+#include <regex>
+
 #include <wx/strconv.h>
 #include <wx/string.h>
 
@@ -20,6 +22,11 @@ inline std::string w2s(const wxString &str)
 inline wxString s2w(const std::string &str)
 {
     return wxString::FromUTF8(str);
+}
+
+inline std::string EscapeRegex(const std::string &str)
+{
+    return std::regex_replace(str, std::regex(R"([.^$|()\[\]{}*+?\\])"), "\\$&");
 }
 
 namespace Utils

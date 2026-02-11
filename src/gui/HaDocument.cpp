@@ -1,3 +1,11 @@
+#include <algorithm>
+#include <cstdlib>
+#include <filesystem>
+#include <regex>
+#include <vector>
+
+#include <wx/datetime.h>
+#include <wx/filename.h>
 #include <wx/log.h>
 #include <wx/msgdlg.h>
 #include <wx/textdlg.h>
@@ -77,6 +85,7 @@ bool HaDocument::DoSaveDocument(const wxString &fileName)
     if (view != nullptr) {
         view->SaveContents();
     }
+    CreateBackupIfNeeded(fileName);
     auto *store = new Sqlite3Store(w2s(fileName), w2s(m_pass), IV);
     m_doc->saveAs(store);
     return true;
@@ -167,4 +176,64 @@ void HaDocument::OnChangePass([[maybe_unused]] wxCommandEvent &event)
 HaView *HaDocument::GetView() const
 {
     return dynamic_cast<HaView *>(this->GetFirstView());
+}
+
+bool HaDocument::CreateBackupIfNeeded(const wxString &fileName)
+{
+    auto fn = wxFileName(fileName);
+    if (!fn.FileExists()) {
+        return false;
+    }
+    // prepare matching regex for backup files: stem_YYYY-MM-DD_hhmmss(.ext)?
+    std::string stem = w2s(fn.GetName());
+    std::string ext = w2s(fn.GetExt());
+    std::string pattern = "^" + EscapeRegex(stem) + "_[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9]{6}";
+    if (!ext.empty()) {
+        pattern += "\\." + EscapeRegex(ext);
+    }
+    pattern += "$";
+    std::regex rx(pattern);
+    // collect existing backups in the same directory
+    std::vector<std::pair<std::filesystem::path, std::filesystem::file_time_type>> backs;
+    std::filesystem::path dir = w2s(fn.GetPath());
+    if (std::filesystem::exists(dir) && std::filesystem::is_directory(dir)) {
+        for (auto &entry : std::filesystem::directory_iterator(dir)) {
+            if (!entry.is_regular_file())
+                continue;
+            auto name = entry.path().filename().string();
+            if (std::regex_match(name, rx)) {
+                try {
+                    backs.emplace_back(entry.path(), std::filesystem::last_write_time(entry.path()));
+                } catch (...) {
+                    backs.emplace_back(entry.path(), std::filesystem::file_time_type::min());
+                }
+            }
+        }
+    }
+    // sort by time ascending (oldest first)
+    std::sort(backs.begin(), backs.end(), [](auto &a, auto &b) { return a.second < b.second; });
+    // remove oldest until we have space for the new backup (ensure current count < maxBackups)
+    while (backs.size() >= MAX_BACKUPS) {
+        try {
+            std::filesystem::remove(backs.front().first);
+        } catch (...) {
+            // ignore remove errors
+        }
+        backs.erase(backs.begin());
+    }
+    // create timestamped backup filename
+    auto now = wxDateTime::Now();
+    wxString date = now.FormatISODate();  // YYYY-MM-DD
+    wxString time = now.Format("%H%M%S"); // hhmmss
+    wxString backupName = fn.GetName() + "_" + date + "_" + time;
+    if (!fn.GetExt().IsEmpty()) {
+        backupName += "." + fn.GetExt();
+    }
+    wxFileName backupFn(fn.GetPath(), backupName);
+    // perform rename
+    if (!wxRenameFile(fn.GetFullPath(), backupFn.GetFullPath())) {
+        wxLogError(_("Failed to create backup file \"%s\"."), backupFn.GetFullPath());
+        return false;
+    }
+    return true;
 }

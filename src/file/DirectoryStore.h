@@ -22,7 +22,6 @@ public:
     void forEachSection(const std::function<bool(const std::string &)> &callback) const override;
 
     bool contains(const std::string &name) const override;
-    bool operator==(const Store &obj) const override;
 
 private:
     std::filesystem::path m_dirName;

@@ -119,16 +119,6 @@ bool Sqlite3Store::contains(const std::string &name) const
     throw std::runtime_error("sqlite3_step(getStmt) failed: code = " + std::to_string(rc));
 }
 
-bool Sqlite3Store::operator==(const Store &obj) const
-{
-    try {
-        const Sqlite3Store &file = dynamic_cast<const Sqlite3Store &>(obj);
-        return file.m_fileName == m_fileName;
-    } catch ([[maybe_unused]] std::bad_cast &e) {
-        return false;
-    }
-}
-
 void Sqlite3Store::changePass(const std::string &pass)
 {
     prepareSql(m_passStmt, "UPDATE files SET key = RECRYPT(key)");

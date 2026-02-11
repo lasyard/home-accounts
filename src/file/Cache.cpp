@@ -17,7 +17,6 @@ Cache::Cache(Store *store) : m_cache(), m_store(store)
 
 Cache::~Cache()
 {
-    save();
     if (m_store != nullptr) {
         delete m_store;
     }
@@ -92,19 +91,19 @@ void Cache::saveAs(Store *store)
     if (store == nullptr) {
         return;
     }
-    if (m_store == nullptr || *m_store != *store) {
+    if (m_store != nullptr) {
         for (auto &[name, section] : m_cache) {
             if (section.readDirty) {
                 m_store->readSection(name, section.content);
             }
         }
-        try {
-            store->create();
-            delete m_store;
-            m_store = store;
-        } catch (FileOpen &e) {
-            throw e;
-        }
-        save();
     }
+    try {
+        store->create();
+        delete m_store;
+        m_store = store;
+    } catch (FileOpen &e) {
+        throw e;
+    }
+    save();
 }

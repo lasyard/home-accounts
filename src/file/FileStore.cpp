@@ -84,16 +84,6 @@ bool FileStore::contains(const std::string &name) const
     return m_catalog.find(name) != m_catalog.end();
 }
 
-bool FileStore::operator==(const Store &obj) const
-{
-    try {
-        const FileStore &file = dynamic_cast<const FileStore &>(obj);
-        return file.m_fileName == m_fileName;
-    } catch ([[maybe_unused]] std::bad_cast &e) {
-        return false;
-    }
-}
-
 void FileStore::changePass(const std::string &pass)
 {
     setKey(m_key, pass);

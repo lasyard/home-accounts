@@ -27,7 +27,6 @@ public:
     void deleteAllSections() override;
 
     bool contains(const std::string &name) const override;
-    bool operator==(const Store &obj) const override;
 
     void changePass(const std::string &pass) override;
 

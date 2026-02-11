@@ -85,13 +85,3 @@ bool DirectoryStore::contains(const std::string &name) const
 {
     return is_regular_file(m_dirName / name);
 }
-
-bool DirectoryStore::operator==(const Store &obj) const
-{
-    try {
-        const DirectoryStore &dir = dynamic_cast<const DirectoryStore &>(obj);
-        return dir.m_dirName == m_dirName;
-    } catch (std::bad_cast &) {
-        return false;
-    }
-}

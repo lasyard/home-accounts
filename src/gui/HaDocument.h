@@ -44,11 +44,15 @@ public:
 
 private:
     static const char *const IV;
+    static const int MAX_BACKUPS = 5;
 
     Cache *m_doc;
     wxString m_pass;
 
     HaView *GetView() const;
+
+    // create a timestamped backup for fileName if needed; returns true if backup created
+    bool CreateBackupIfNeeded(const wxString &fileName);
 };
 
 #endif /* _HA_GUI_HA_DOCUMENT_H_ */

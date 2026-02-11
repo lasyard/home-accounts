@@ -15,14 +15,12 @@ public:
     virtual ~HaPanel();
 
     virtual void OnUpdate() = 0;
-    virtual void SaveContents() = 0;
 
+    virtual void SaveContents() = 0;
     virtual void ClearContents();
 
     virtual void SetDocument(HaDocument *doc);
-
     virtual void ShowDocument(HaDocument *doc);
-
     virtual void HideDocument();
 
 protected:

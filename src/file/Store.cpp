@@ -25,8 +25,3 @@ void Store::deleteAllSections()
         return true;
     });
 }
-
-bool Store::operator!=(const Store &obj) const
-{
-    return !operator==(obj);
-}

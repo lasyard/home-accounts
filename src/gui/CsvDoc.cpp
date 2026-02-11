@@ -145,6 +145,8 @@ bool CsvDoc::Write(std::ostream &os)
     }
     int lines = write_lines(&m_parser, &m_records, ::put_line_to_ostream, static_cast<void *>(&os));
     wxLogStatus(_("%d lines written"), lines);
+    // rebuild the contents because `BeforeWrite` may have changed the data
+    AfterRead();
     return true;
 }
 

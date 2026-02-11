@@ -15,6 +15,7 @@ static void doCreate(const std::string &str, Store *store)
     file->put("a1", str);
     file->put("b2", "second");
     file->put("c3", "third");
+    file->save();
     delete file;
 }
 

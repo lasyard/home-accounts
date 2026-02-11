@@ -30,10 +30,6 @@ public:
     virtual void deleteAllSections();
 
     virtual bool contains(const std::string &name) const = 0;
-    virtual bool operator==(const Store &obj) const = 0;
-
-    // GCC 9.4 cannot induce this method
-    virtual bool operator!=(const Store &obj) const;
 };
 
 #endif /* _HA_FILE_STORE_H_ */

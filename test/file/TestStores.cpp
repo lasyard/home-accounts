@@ -64,15 +64,6 @@ void test_change_pass(std::function<CryptoStore *(const std::string &pass)> stor
     CHECK(str1 == str);
 }
 
-void test_operator_equal(std::function<Store *(const std::string &pass, const std::string &iv)> storeCreator)
-{
-    auto file = storeCreator("123", "ABC");
-    auto file1 = storeCreator("456", "DEF");
-    CHECK(*file == *file1);
-    delete file;
-    delete file1;
-}
-
 TEST_CASE("file_store_write_read_delete")
 {
     const std::string fileName("test_file_store_write_read_delete.dat");
@@ -92,13 +83,6 @@ TEST_CASE("file_store_change_pass")
     const std::string fileName("test_file_store_change_pass.dat");
     test_change_pass([&fileName](const std::string &pass) { return new FileStore(fileName, pass, "ABC"); });
     std::filesystem::remove(fileName);
-}
-
-TEST_CASE("file_store_operator==")
-{
-    test_operator_equal([](const std::string &pass, const std::string &iv) {
-        return new FileStore("test_file_store_operator_equal.dat", pass, iv);
-    });
 }
 
 TEST_CASE("sqlite3_store_write_read_delete")
@@ -122,13 +106,6 @@ TEST_CASE("sqlite3_store_change_pass")
     std::filesystem::remove(fileName);
 }
 
-TEST_CASE("sqlite3_store_operator==")
-{
-    test_operator_equal([](const std::string &pass, const std::string &iv) {
-        return new Sqlite3Store("test_sqlite3_store_operator_equal.dat", pass, iv);
-    });
-}
-
 TEST_CASE("directory_store_write_read_delete")
 {
     const std::string fileName("test_directory_store_write_read_delete");
@@ -148,11 +125,4 @@ TEST_CASE("directory_store_massive_write_read")
     const std::string fileName("test_directory_store_massive_write_read");
     test_massive_write_read([&fileName]() { return new DirectoryStore(fileName); });
     std::filesystem::remove_all(fileName);
-}
-
-TEST_CASE("directory_store_operator==")
-{
-    test_operator_equal([](const std::string &, const std::string &) {
-        return new DirectoryStore("test_directory_store_operator_equal");
-    });
 }

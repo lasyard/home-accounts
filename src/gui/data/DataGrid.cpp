@@ -42,6 +42,14 @@ DataDoc *DataGrid::GetTableDoc()
     return GetDataTable()->GetDataDoc();
 }
 
+void DataGrid::MakeDateVisible(const wxDateTime &date)
+{
+    int row = GetTableDoc()->FindDateRow(date.GetYear(), date.GetMonth() + 1, date.GetDay());
+    if (row > 0) {
+        MakeCellVisible(row, 0);
+    }
+}
+
 HaTable *DataGrid::CreateHaTable(CsvDoc *doc)
 {
     auto *ddoc = dynamic_cast<DataDoc *>(doc);

@@ -72,7 +72,7 @@ void DataPanel::SaveContents()
     wxASSERT(doc != nullptr);
     std::string str;
     doc->Write(str);
-    m_doc->SaveOrDeleteSection(w2s(m_currentSectionName), str);
+    m_doc->SaveOrDeleteSection(sectionNameOfYear(m_currentYear), str);
 }
 
 void DataPanel::ClearContents()
@@ -94,9 +94,13 @@ void DataPanel::OnMenu(wxCommandEvent &event)
 void DataPanel::OnDateChanged(wxDateEvent &event)
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
-    SaveContents();
     auto tm = event.GetDate();
-    ShowDataOfYear(tm.GetYear());
+    auto year = tm.GetYear();
+    if (year != m_currentYear) {
+        SaveContents();
+        ShowDataOfYear(year);
+    }
+    m_grid->MakeDateVisible(tm);
 }
 
 void DataPanel::OnUpdateStatistic([[maybe_unused]] wxCommandEvent &event)
@@ -118,8 +122,8 @@ void DataPanel::SettingDocument(HaDocument *doc)
 
 void DataPanel::ShowDataOfYear(int year)
 {
-    m_currentSectionName = wxString::Format(DATA_SECTION_NAME_FORMAT, year);
-    auto &data = m_doc->GetOrCreateSection(w2s(m_currentSectionName));
+    m_currentYear = year;
+    auto &data = m_doc->GetOrCreateSection(sectionNameOfYear(year));
     auto *csv = new DataDoc(year);
     m_error = !csv->Read(data);
     m_grid->InitTable(csv);

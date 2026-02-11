@@ -30,6 +30,8 @@ public:
 
     DataDoc *GetTableDoc() override;
 
+    void MakeDateVisible(const wxDateTime &date);
+
 protected:
     HaTable *CreateHaTable(CsvDoc *doc) override;
 

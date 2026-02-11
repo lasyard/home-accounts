@@ -124,7 +124,7 @@ bool CsvDoc::Read(std::istream &is)
         wxLogError(_("Parse error at line %d"), -lines);
         return false;
     }
-    wxLogStatus(_("%d lines read"));
+    wxLogStatus(_("%d lines read"), lines);
     return AfterRead();
 }
 

@@ -98,6 +98,8 @@ public:
     void SetOpening(money_t opening);
     void UpdateBalanceStat();
 
+    int FindDateRow(int year, int month, int day);
+
 protected:
     bool AfterRead() override;
 

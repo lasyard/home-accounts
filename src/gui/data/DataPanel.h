@@ -44,11 +44,15 @@ private:
     wxStaticText *m_outlay;
     DataGrid *m_grid;
 
-    wxString m_currentSectionName;
-
+    int m_currentYear;
     bool m_error;
 
     void SettingDocument(HaDocument *doc) override;
+
+    const std::string sectionNameOfYear(int year) const
+    {
+        return w2s(wxString::Format(DATA_SECTION_NAME_FORMAT, year));
+    }
 
     void ShowDataOfYear(int year);
 

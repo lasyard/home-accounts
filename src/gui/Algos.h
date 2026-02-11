@@ -24,6 +24,28 @@ template <typename T> void MergeRange(std::vector<std::pair<T, T>> &input, std::
     }
 }
 
+template <typename T, typename Compare> int BinSearch(const std::vector<T> &arr, int target, Compare cmp)
+{
+    if (arr.empty()) {
+        return -1;
+    }
+    int lo = 0;
+    int hi = static_cast<int>(arr.size()) - 1;
+    while (lo <= hi) {
+        int mid = lo + ((hi - lo) >> 1);
+        int c = cmp(arr[mid], target);
+        if (c == 0) {
+            return mid;
+        }
+        if (c < 0) {
+            lo = mid + 1;
+        } else {
+            hi = mid - 1;
+        }
+    }
+    return -1;
+}
+
 } // namespace Algos
 
 #endif /* _HA_GUI_ALGOS_H_ */

@@ -3,6 +3,8 @@
 
 #include "DataDoc.h"
 
+#include "../Algos.h"
+
 #include "csv/date_time.h"
 
 IMPLEMENT_TM(DataDoc)
@@ -50,6 +52,20 @@ void DataDoc::UpdateBalanceStat()
         SetRecordBalance(record, balance = balance - amount);
     }
     m_stat.closing = balance;
+}
+
+int DataDoc::FindDateRow(int year, int month, int day)
+{
+    int target_jdn = jdn(year, month, day);
+    return Algos::BinSearch(m_index, target_jdn, [this](const record_t *record, int jdn) {
+        int record_jdn = *(date_t *)get_const_field(&m_parser, record, DATE_COL);
+        if (record_jdn == jdn) {
+            if (record->flag == RECORD_FLAG_NORMAL) {
+                return 1;
+            }
+        }
+        return (record_jdn > jdn) - (record_jdn < jdn);
+    });
 }
 
 bool DataDoc::AfterRead()

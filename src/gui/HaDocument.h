@@ -39,8 +39,9 @@ public:
 
     void OnChange(wxCommandEvent &event);
 
-    void OnUpdateChangePass(wxUpdateUIEvent &event);
+    void OnUpdateMenu(wxUpdateUIEvent &event);
     void OnChangePass(wxCommandEvent &event);
+    void OnImport(wxCommandEvent &event);
 
 private:
     static const char *const IV;

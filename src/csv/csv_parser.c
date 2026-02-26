@@ -240,16 +240,15 @@ const char *parse_field(const struct parser *parser, const char *buf, record_t *
 const char *raw_parse_line(const struct parser *parser, const char *line, record_t *record, int start, int end)
 {
     const char *p = line;
-    int i;
-    const enum column_type *types = parser->meta->types;
-    for (i = start; i < end && !is_line_end(*p); ++i) {
+    int i = start;
+    while (i < end) {
         p = parse_field(parser, p, record, i);
         return_null_if_null(p);
+        ++i;
+        if (is_line_end(*p)) {
+            break;
+        }
         ++p; // skip the sep
-    }
-    if (i == end - 1) {
-        init_by_type(types[i], get_field(parser, record, i));
-        return p;
     }
     if (i < end) { // less fields
         return NULL;
@@ -282,7 +281,7 @@ record_t *parse_comment(const struct parser *parser, const char *line)
     return comment;
 }
 
-int parse_count(const struct parser *parser, const char *line)
+int parse_count(const char *line, char sep)
 {
     const char *p = skip_space(line);
     if (is_line_end(*p)) {
@@ -290,11 +289,28 @@ int parse_count(const struct parser *parser, const char *line)
     }
     int count = 1;
     for (; !is_line_end(*p); ++p) {
-        if (*p == parser->options.sep) {
+        if (*p == sep) {
             ++count;
         }
     }
     return count;
+}
+
+int parse_types(const char *line, char sep, enum column_type *types, int max_cols)
+{
+    int n = 0;
+    const char *p = line;
+    while (n < max_cols) {
+        struct str s;
+        p = parse_str(p, &s, sep);
+        types[n] = value_of(&s);
+        ++n;
+        if (is_line_end(*p)) {
+            break;
+        }
+        ++p; // skip the sep
+    }
+    return n;
 }
 
 char *output_field(const struct parser *parser, char *buf, const record_t *record, int i)
@@ -354,15 +370,19 @@ int read_lines(
             continue;
         }
         record_t *record = parse_line(parser, buf);
-        if (record != NULL) {
-            record = copy_comment_fields(parser, record, get_record(records->last));
-            if (record != NULL) {
-                list_add(records, &record->list);
-            }
-        } else {
+        if (record == NULL) {
             lines = -lines;
             break;
         }
+        record_t *last = get_record(records->last);
+        if (last != NULL) {
+            record = copy_comment_fields(parser, record, last);
+            if (record == NULL) {
+                lines = -lines;
+                break;
+            }
+        }
+        list_add(records, &record->list);
     }
     return lines;
 }

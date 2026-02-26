@@ -50,7 +50,7 @@
         <help></help>
       </object>
       <object class="separator"/>
-      <object class="wxMenuItem" name="ID_IMPORT">
+      <object class="wxMenuItem" name="import">
         <label>Import</label>
         <help></help>
       </object>

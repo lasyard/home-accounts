@@ -83,7 +83,8 @@ void free_record(const struct parser *parser, record_t *record);
 const char *parse_field(const struct parser *parser, const char *buf, record_t *record, int i);
 record_t *parse_line(const struct parser *parser, const char *line);
 record_t *parse_comment(const struct parser *parser, const char *line);
-int parse_count(const struct parser *parser, const char *line);
+int parse_count(const char *line, char sep);
+int parse_types(const char *line, char sep, enum column_type *types, int max_cols);
 
 char *output_field(const struct parser *parser, char *buf, const record_t *record, int i);
 char *output_line(const struct parser *parser, char *buf, const record_t *record);

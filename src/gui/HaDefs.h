@@ -6,6 +6,7 @@
 // menus
 #define ID_CHANGE_PASS XRCID("changePass")
 #define ID_INSERT      XRCID("insert")
+#define ID_IMPORT      XRCID("import")
 #define ID_ABOUT       XRCID("about")
 #define ID_LICENSE     XRCID("license")
 #define ID_WX_INFO     XRCID("wxInfo")

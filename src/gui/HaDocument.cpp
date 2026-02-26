@@ -24,8 +24,10 @@ IMPLEMENT_DYNAMIC_CLASS(HaDocument, wxDocument)
 IMPLEMENT_TM(HaDocument)
 
 BEGIN_EVENT_TABLE(HaDocument, wxDocument)
-EVT_UPDATE_UI(ID_CHANGE_PASS, HaDocument::OnUpdateChangePass)
+EVT_UPDATE_UI(ID_CHANGE_PASS, HaDocument::OnUpdateMenu)
 EVT_MENU(ID_CHANGE_PASS, HaDocument::OnChangePass)
+EVT_UPDATE_UI(ID_IMPORT, HaDocument::OnUpdateMenu)
+EVT_MENU(ID_IMPORT, HaDocument::OnImport)
 END_EVENT_TABLE()
 
 const char *const HaDocument::IV = APP_NAME;
@@ -154,7 +156,7 @@ void HaDocument::OnChange(wxCommandEvent &event)
     event.Skip();
 }
 
-void HaDocument::OnUpdateChangePass(wxUpdateUIEvent &event)
+void HaDocument::OnUpdateMenu(wxUpdateUIEvent &event)
 {
     event.Enable(true);
 }
@@ -171,6 +173,10 @@ void HaDocument::OnChangePass([[maybe_unused]] wxCommandEvent &event)
         }
         m_pass = pass;
     }
+}
+
+void HaDocument::OnImport([[maybe_unused]] wxCommandEvent &event)
+{
 }
 
 HaView *HaDocument::GetView() const

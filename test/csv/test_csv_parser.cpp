@@ -102,6 +102,30 @@ TEST_CASE("parse_line_1")
     }
 }
 
+TEST_CASE("parse_count")
+{
+    CHECK(parse_count("", ',') == 0);
+    CHECK(parse_count("\n", ',') == 0);
+    CHECK(parse_count("   \n", ',') == 0);
+    CHECK(parse_count("a,b,c\n", ',') == 3);
+    CHECK(parse_count("  a , b ,c", ',') == 3);
+    CHECK(parse_count(",a,b", ',') == 3);
+    CHECK(parse_count("a,,c", ',') == 3);
+    CHECK(parse_count("a|b|c", '|') == 3);
+}
+
+TEST_CASE("parse_types")
+{
+    enum column_type types[10];
+    CHECK(parse_types("STR,INT,BOOL,MONEY,DATE,TIME", ',', types, 10) == 6);
+    CHECK(types[0] == CT_STR);
+    CHECK(types[1] == CT_INT);
+    CHECK(types[2] == CT_BOOL);
+    CHECK(types[3] == CT_MONEY);
+    CHECK(types[4] == CT_DATE);
+    CHECK(types[5] == CT_TIME);
+}
+
 TEST_CASE("output_line")
 {
     column_type types[]{CT_INT, CT_INT};

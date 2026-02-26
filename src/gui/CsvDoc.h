@@ -55,8 +55,6 @@ public:
     virtual const wxString GetValueString(int pos, int i) const;
     virtual void SetValueString(int pos, int i, const wxString &value);
 
-    wxString GetMoneyString(money_t m) const;
-
     record_t *AddRecord();
     record_t *InsertRecord(int pos);
     bool DeleteRecord(int pos);
@@ -67,9 +65,19 @@ public:
     bool Write(std::string &str);
 
 protected:
+    struct Accessor {
+        const wxString (*get)(const struct parser *parser, const record_t *record, int i);
+        void (*set)(const struct parser *parser, record_t *record, int i, const wxString &value);
+    } *m_accessors;
+
     struct parser m_parser;
     struct list_head m_records;
     std::vector<record_t *> m_index;
+
+    static const wxString DefaultGetter(const struct parser *parser, const record_t *record, int i);
+    static const wxString StrGetter(const struct parser *parser, const record_t *record, int i);
+
+    static void DefaultSetter(const struct parser *parser, record_t *record, int i, const wxString &value);
 
     void CreateIndex();
 
@@ -78,6 +86,8 @@ protected:
 
     virtual void SetNewRecord(record_t *record);
     virtual bool IsRecordEmpty(record_t *record);
+
+    wxString GetMoneyString(money_t m) const;
 };
 
 #endif /* _HA_GUI_CSV_DOC_H_ */

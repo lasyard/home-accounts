@@ -17,57 +17,41 @@ const column_type AccountsDoc::COL_TYPES[] = {
     CT_STR,
 };
 
-const wxArrayString &AccountsDoc::GetAccountTypeStrings()
-{
-    static wxArrayString s;
-    if (s.IsEmpty()) {
-        s.Add(_("Invalid"));
-        s.Add(_("Debit"));
-        s.Add(_("Credit"));
-        s.Add(_("Transfer"));
-    }
-    return s;
-}
-
 AccountsDoc::AccountsDoc() : CsvDoc(COLS, COL_TYPES, 1), m_maxId(0)
 {
     wxLog::AddTraceMask(TM);
+    m_accessors[TYPE_COL].get = &AccountsDoc::TypeGetter;
+    m_accessors[TYPE_COL].set = &AccountsDoc::TypeSetter;
 }
 
 AccountsDoc::~AccountsDoc()
 {
 }
 
-const wxString AccountsDoc::GetValueString(int pos, int i) const
+const wxString AccountsDoc::TypeGetter(const struct parser *parser, const record_t *record, int i)
 {
-    if (i == TYPE_COL) {
-        int64_t type = GetRecordType(pos);
-        const wxArrayString &types = GetAccountTypeStrings();
-        if (type < 0 || type >= (int64_t)types.size()) {
-            type = 0;
-        }
-        return types[type];
+    auto type = *(int64_t *)get_const_field(parser, record, i);
+    const wxArrayString &types = GetAccountTypeStrings();
+    if (type < 0 || type >= (int64_t)types.size()) {
+        type = 0;
     }
-    return CsvDoc::GetValueString(pos, i);
+    return types[type];
 }
 
-void AccountsDoc::SetValueString(int pos, int i, const wxString &value)
+void AccountsDoc::TypeSetter(const struct parser *parser, record_t *record, int i, const wxString &value)
 {
-    if (i == TYPE_COL) {
-        int64_t index;
-        const wxArrayString &types = GetAccountTypeStrings();
-        for (index = 0; index < (int64_t)types.size(); ++index) {
-            if (types[index] == value) {
-                break;
-            }
+    wxASSERT(i == TYPE_COL);
+    int64_t index;
+    const wxArrayString &types = GetAccountTypeStrings();
+    for (index = 0; index < (int64_t)types.size(); ++index) {
+        if (types[index] == value) {
+            break;
         }
-        if (index == (int64_t)types.size()) {
-            index = 0;
-        }
-        SetRecordType(pos, index);
-    } else {
-        CsvDoc::SetValueString(pos, i, value);
     }
+    if (index == (int64_t)types.size()) {
+        index = 0;
+    }
+    *(int64_t *)get_field(parser, record, i) = index;
 }
 
 bool AccountsDoc::AfterRead()
@@ -94,4 +78,16 @@ void AccountsDoc::SetNewRecord(record_t *record)
 bool AccountsDoc::IsRecordEmpty(record_t *record)
 {
     return record->flag == RECORD_FLAG_NORMAL && str_is_empty(GetRecordName(record));
+}
+
+const wxArrayString &AccountsDoc::GetAccountTypeStrings()
+{
+    static wxArrayString s;
+    if (s.IsEmpty()) {
+        s.Add(_("Invalid"));
+        s.Add(_("Debit"));
+        s.Add(_("Credit"));
+        s.Add(_("Transfer"));
+    }
+    return s;
 }

@@ -17,25 +17,10 @@ public:
     static const int INITIAL_COL = 5;
     static const int MEMO_COL = 6;
 
-    int GetRecordType(const record_t *record) const
-    {
-        return *(int64_t *)get_const_field(&m_parser, record, TYPE_COL);
-    }
+    DECLARE_TM()
 
-    int GetRecordType(int i) const
-    {
-        return GetRecordType(GetRecord(i));
-    }
-
-    void SetRecordType(record_t *record, int type) const
-    {
-        *(int64_t *)get_field(&m_parser, record, TYPE_COL) = type;
-    }
-
-    void SetRecordType(int i, int type) const
-    {
-        SetRecordType(GetRecord(i), type);
-    }
+    AccountsDoc();
+    virtual ~AccountsDoc();
 
     int GetRecordId(const record_t *record) const
     {
@@ -52,15 +37,10 @@ public:
         return (struct str *)get_const_field(&m_parser, record, NAME_COL);
     }
 
-    DECLARE_TM()
-
-    AccountsDoc();
-    virtual ~AccountsDoc();
-
-    const wxString GetValueString(int pos, int i) const override;
-    void SetValueString(int pos, int i, const wxString &value) override;
-
 protected:
+    static const wxString TypeGetter(const struct parser *parser, const record_t *record, int i);
+    static void TypeSetter(const struct parser *parser, record_t *record, int i, const wxString &value);
+
     bool AfterRead() override;
 
     void SetNewRecord(record_t *record) override;
@@ -69,9 +49,9 @@ protected:
 private:
     static const column_type COL_TYPES[COLS];
 
-    static const wxArrayString &GetAccountTypeStrings();
-
     mutable int m_maxId;
+
+    static const wxArrayString &GetAccountTypeStrings();
 };
 
 #endif /* _HA_ACCOUNTS_ACCOUNTS_DOC_H_ */

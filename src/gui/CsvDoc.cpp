@@ -15,10 +15,20 @@ CsvDoc::CsvDoc(int count, const enum column_type types[], int comment_cols)
     init_parser(&m_parser);
     set_parser_types(&m_parser, count, types, comment_cols);
     list_head_init(&m_records);
+    m_accessors = new struct Accessor[count];
+    for (int i = 0; i < count; ++i) {
+        if (m_parser.meta->types[i] != CT_STR) {
+            m_accessors[i].get = &CsvDoc::DefaultGetter;
+        } else {
+            m_accessors[i].get = &CsvDoc::StrGetter;
+        }
+        m_accessors[i].set = &CsvDoc::DefaultSetter;
+    }
 }
 
 CsvDoc::~CsvDoc()
 {
+    delete[] m_accessors;
     release_records(&m_parser, &m_records);
     release_parser(&m_parser);
 }
@@ -29,24 +39,14 @@ const wxString CsvDoc::GetValueString(int pos, int i) const
     if (!is_index_valid(&m_parser, record, i)) {
         return wxEmptyString;
     }
-    if (m_parser.meta->types[i] != CT_STR) {
-        char buf[MAX_LINE_LENGTH + 1];
-        char *p = output_field(&m_parser, buf, record, i);
-        *p = '\0';
-        return wxString(buf);
-    } else {
-        auto *s = (struct str *)get_const_field(&m_parser, record, i);
-        return wxString(!str_is_empty(s) ? wxString(s->buf, s->len) : wxString(wxEmptyString));
-    }
+    return m_accessors[i].get(&m_parser, record, i);
 }
 
 void CsvDoc::SetValueString(int pos, int i, const wxString &value)
 {
     record_t *record = GetRecord(pos);
     wxASSERT(is_index_valid(&m_parser, record, i));
-    if (parse_field(&m_parser, value.c_str(), record, i) == NULL) {
-        wxLogError(_("Invalid value: %s"), value);
-    }
+    m_accessors[i].set(&m_parser, record, i, value);
 }
 
 wxString CsvDoc::GetMoneyString(money_t m) const
@@ -164,6 +164,30 @@ bool CsvDoc::Write(std::string &str)
     }
     str = os.str();
     return true;
+}
+
+const wxString CsvDoc::DefaultGetter(const struct parser *parser, const record_t *record, int i)
+{
+    char buf[MAX_LINE_LENGTH + 1];
+    char *p = output_field(parser, buf, record, i);
+    *p = '\0';
+    return wxString(buf);
+}
+
+const wxString CsvDoc::StrGetter(const struct parser *parser, const record_t *record, int i)
+{
+    auto *s = (struct str *)get_const_field(parser, record, i);
+    if (!str_is_empty(s)) {
+        return wxString(s->buf, s->len);
+    }
+    return wxEmptyString;
+}
+
+void CsvDoc::DefaultSetter(const struct parser *parser, record_t *record, int i, const wxString &value)
+{
+    if (parse_field(parser, value.c_str(), record, i) == NULL) {
+        wxLogError(_("Invalid value: %s"), value);
+    }
 }
 
 void CsvDoc::CreateIndex()

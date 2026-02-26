@@ -12,6 +12,10 @@ class AccountsTable : public HaTable
 public:
     static const int ID_COL = 0;
     static const int NAME_COL = 1;
+    static const int BANK_COL = 2;
+    static const int OPEN_DATE_COL = 3;
+    static const int INITIAL_COL = 4;
+    static const int MEMO_COL = 5;
 
     AccountsTable(AccountsDoc *doc = nullptr);
     virtual ~AccountsTable();

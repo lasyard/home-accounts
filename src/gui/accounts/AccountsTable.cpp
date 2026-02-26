@@ -19,10 +19,10 @@ AccountsTable::AccountsTable(AccountsDoc *doc)
 {
     MapColToCol(ID_COL, AccountsDoc::ID_COL, true);
     MapColToCol(NAME_COL, AccountsDoc::NAME_COL);
-    MapColToCol(2, AccountsDoc::BANK_COL);
-    MapColToCol(3, AccountsDoc::OPEN_DATE_COL);
-    MapColToCol(4, AccountsDoc::INITIAL_COL);
-    MapColToCol(5, AccountsDoc::MEMO_COL);
+    MapColToCol(BANK_COL, AccountsDoc::BANK_COL);
+    MapColToCol(OPEN_DATE_COL, AccountsDoc::OPEN_DATE_COL);
+    MapColToCol(INITIAL_COL, AccountsDoc::INITIAL_COL);
+    MapColToCol(MEMO_COL, AccountsDoc::MEMO_COL);
 }
 
 AccountsTable::~AccountsTable()

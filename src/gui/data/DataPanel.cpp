@@ -133,11 +133,10 @@ void DataPanel::ShowDataOfYear(int year)
 void DataPanel::UpdateStatistic()
 {
     auto *doc = m_grid->GetTableDoc();
-    auto *stat = doc->GetStat();
-    m_opening->SetLabel(doc->GetMoneyString(stat->opening));
-    m_income->SetLabel(doc->GetMoneyString(stat->income));
-    m_outlay->SetLabel(doc->GetMoneyString(stat->outlay));
-    m_closing->SetLabel(doc->GetMoneyString(stat->closing));
+    m_opening->SetLabel(doc->GetStatOpeningString());
+    m_income->SetLabel(doc->GetStatIncomeString());
+    m_outlay->SetLabel(doc->GetStatOutlayString());
+    m_closing->SetLabel(doc->GetStatClosingString());
 }
 
 wxStaticText *DataPanel::AddHeaderLabel(const wxString &title, const wxFont &font, bool alignRight)

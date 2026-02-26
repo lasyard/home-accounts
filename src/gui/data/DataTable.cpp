@@ -25,10 +25,10 @@ DataTable::DataTable(DataDoc *doc)
       )
 {
     SetAttrProvider(new DataGridCellAttrProvider(this));
-    MapColToCol(0, DataDoc::TIME_COL);
-    MapColToCol(1, DataDoc::AMOUNT_COL);
-    MapColToCol(2, DataDoc::ACCOUNT_COL);
-    MapColToCol(3, DataDoc::DESC_COL);
+    MapColToCol(TIME_COL, DataDoc::TIME_COL);
+    MapColToCol(AMOUNT_COL, DataDoc::AMOUNT_COL);
+    MapColToCol(ACCOUNT_COL, DataDoc::ACCOUNT_COL);
+    MapColToCol(DESC_COL, DataDoc::DESC_COL);
     m_colImpls[INCOME_COL] = {
         .type = CT_MONEY,
         .get = [this](int row) -> wxString { return GetDataDoc()->GetIncomeString(row); },
@@ -47,14 +47,14 @@ DataTable::DataTable(DataDoc *doc)
             UpdateDocAndCache(row);
         },
     };
-    MapColToCol(6, DataDoc::REAL_DESC_COL);
+    MapColToCol(REAL_DESC_COL, DataDoc::REAL_DESC_COL);
     m_colImpls[BALANCE_COL] = {
         .type = CT_MONEY,
         .get = [this](int row) -> wxString { return GetDataDoc()->GetBalanceString(row); },
         .set = nullptr,
     };
-    MapColToCol(8, DataDoc::MEMO_COL);
-    m_colImpls[9] = {
+    MapColToCol(MEMO_COL, DataDoc::MEMO_COL);
+    m_colImpls[CATEGORY_COL] = {
         .type = CT_IGNORE,
         .get = nullptr,
         .set = nullptr,

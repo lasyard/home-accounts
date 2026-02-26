@@ -11,7 +11,7 @@
 class HaTable : public wxGridTableBase
 {
 public:
-    HaTable(std::initializer_list<const char *> colLabels, CsvDoc *doc);
+    HaTable(CsvDoc *doc);
     virtual ~HaTable();
 
     virtual void Init();
@@ -60,7 +60,6 @@ protected:
     };
 
     CsvDoc *m_doc;
-    int m_cols;
     wxArrayString m_colLabels;
     wxVector<wxArrayString> *m_cache;
     struct ColImpl *m_colImpls;
@@ -104,7 +103,7 @@ protected:
 
     void MapColToCol(int dst, int col, bool ro = false);
 
-    virtual wxString GetCommentString(int row);
+    virtual wxString GetCommentString(int row) const;
 
     virtual bool InsertRow(size_t pos);
     virtual bool AppendRow();
@@ -113,7 +112,7 @@ protected:
     virtual void OnNewRow(size_t pos);
 
 private:
-    const wxString GetCellValue(int row, int col);
+    const wxString GetCellValue(int row, int col) const;
     void SetCellValue(int row, int col, const wxString &value);
 };
 

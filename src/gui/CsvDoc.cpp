@@ -9,21 +9,11 @@
 
 IMPLEMENT_TM(CsvDoc)
 
-CsvDoc::CsvDoc(int count, const enum column_type types[], int comment_cols)
+CsvDoc::CsvDoc() : m_accessors(nullptr)
 {
     wxLog::AddTraceMask(TM);
     init_parser(&m_parser);
-    set_parser_types(&m_parser, count, types, comment_cols);
     list_head_init(&m_records);
-    m_accessors = new struct Accessor[count];
-    for (int i = 0; i < count; ++i) {
-        if (m_parser.meta->types[i] != CT_STR) {
-            m_accessors[i].get = &CsvDoc::DefaultGetter;
-        } else {
-            m_accessors[i].get = &CsvDoc::StrGetter;
-        }
-        m_accessors[i].set = &CsvDoc::DefaultSetter;
-    }
 }
 
 CsvDoc::~CsvDoc()
@@ -35,18 +25,25 @@ CsvDoc::~CsvDoc()
 
 const wxString CsvDoc::GetValueString(int pos, int i) const
 {
+    wxASSERT(m_accessors != nullptr);
     record_t *record = GetRecord(pos);
-    if (!is_index_valid(&m_parser, record, i)) {
-        return wxEmptyString;
+    wxASSERT(is_index_valid(&m_parser, record, i));
+    auto *getter = m_accessors[i].get;
+    if (getter != nullptr) {
+        return getter(&m_parser, record, i);
     }
-    return m_accessors[i].get(&m_parser, record, i);
+    return wxEmptyString;
 }
 
 void CsvDoc::SetValueString(int pos, int i, const wxString &value)
 {
+    wxASSERT(m_accessors != nullptr);
     record_t *record = GetRecord(pos);
     wxASSERT(is_index_valid(&m_parser, record, i));
-    m_accessors[i].set(&m_parser, record, i, value);
+    auto *setter = m_accessors[i].set;
+    if (setter != nullptr) {
+        setter(&m_parser, record, i, value);
+    }
 }
 
 wxString CsvDoc::GetMoneyString(money_t m) const
@@ -105,6 +102,21 @@ bool CsvDoc::DeleteRecord(int pos)
     return false;
 }
 
+void CsvDoc::SetParser(int cols, const enum column_type types[], int comment_cols)
+{
+    set_parser_types(&m_parser, cols, types, comment_cols);
+    list_head_init(&m_records);
+    m_accessors = new struct Accessor[cols];
+    for (int i = 0; i < cols; ++i) {
+        if (m_parser.meta->types[i] != CT_STR) {
+            m_accessors[i].get = &CsvDoc::DefaultGetter;
+        } else {
+            m_accessors[i].get = &CsvDoc::StrGetter;
+        }
+        m_accessors[i].set = &CsvDoc::DefaultSetter;
+    }
+}
+
 extern "C" int get_line_from_istream(char *buf, size_t len, void *context)
 {
     std::istream *is = static_cast<std::istream *>(context);
@@ -115,7 +127,7 @@ extern "C" int get_line_from_istream(char *buf, size_t len, void *context)
     return is->gcount();
 }
 
-bool CsvDoc::Read(std::istream &is)
+bool CsvDoc::ReadStream(std::istream &is)
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     release_records(&m_parser, &m_records);
@@ -136,7 +148,7 @@ extern "C" int put_line_to_ostream(const char *buf, size_t len, void *context)
     return len;
 }
 
-bool CsvDoc::Write(std::ostream &os)
+bool CsvDoc::WriteStream(std::ostream &os)
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     if (!BeforeWrite()) {
@@ -153,13 +165,13 @@ bool CsvDoc::Write(std::ostream &os)
 bool CsvDoc::Read(const std::string &str)
 {
     std::istringstream is(str);
-    return Read(is);
+    return ReadStream(is);
 }
 
 bool CsvDoc::Write(std::string &str)
 {
     std::ostringstream os;
-    if (!Write(os)) {
+    if (!WriteStream(os)) {
         return false;
     }
     str = os.str();

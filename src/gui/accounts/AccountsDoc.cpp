@@ -17,9 +17,10 @@ const column_type AccountsDoc::COL_TYPES[] = {
     CT_STR,
 };
 
-AccountsDoc::AccountsDoc() : CsvDoc(COLS, COL_TYPES, 1), m_maxId(0)
+AccountsDoc::AccountsDoc() : CsvDoc(), m_maxId(0)
 {
     wxLog::AddTraceMask(TM);
+    SetParser(COLS, COL_TYPES, 1);
     m_accessors[TYPE_COL].get = &AccountsDoc::TypeGetter;
     m_accessors[TYPE_COL].set = &AccountsDoc::TypeSetter;
 }

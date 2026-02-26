@@ -37,10 +37,7 @@ AccountsGrid::~AccountsGrid()
 
 HaTable *AccountsGrid::CreateHaTable(CsvDoc *doc)
 {
-    auto *d = dynamic_cast<AccountsDoc *>(doc);
-    wxASSERT(d != nullptr);
-    auto *table = new AccountsTable(d);
-    return table;
+    return Utils::CreateHaTable<AccountsTable, AccountsDoc>(doc);
 }
 
 int AccountsGrid::CursorColOfNewRow()

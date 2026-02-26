@@ -12,7 +12,7 @@ class CsvDoc
 public:
     DECLARE_TM()
 
-    CsvDoc(int cols, const enum column_type types[], int comment_cols = 0);
+    CsvDoc();
     virtual ~CsvDoc();
 
     int GetColCount() const
@@ -59,8 +59,11 @@ public:
     record_t *InsertRecord(int pos);
     bool DeleteRecord(int pos);
 
-    bool Read(std::istream &is);
-    bool Write(std::ostream &os);
+    void SetParser(int cols, const enum column_type types[], int comment_cols);
+
+    virtual bool ReadStream(std::istream &is);
+    virtual bool WriteStream(std::ostream &os);
+
     bool Read(const std::string &str);
     bool Write(std::string &str);
 

@@ -24,11 +24,7 @@ const char *const AccountsPanel::ACCOUNT_SECTION_NAME = "accounts";
 AccountsPanel::AccountsPanel(wxWindow *parent) : HaPanel(parent), m_error(false)
 {
     wxLog::AddTraceMask(TM);
-    auto *sizer = new wxBoxSizer(wxVERTICAL);
-    m_grid = new AccountsGrid(this, wxID_ANY);
-    sizer->Add(m_grid, wxSizerFlags().Expand().Border(wxALL, 0).Proportion(1));
-    SetSizer(sizer);
-    m_grid->SetAttributes();
+    m_grid = Utils::AddSoleGrid<AccountsGrid>(this);
 }
 
 AccountsPanel::~AccountsPanel()

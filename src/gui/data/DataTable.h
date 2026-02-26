@@ -24,9 +24,9 @@ public:
     DataTable(DataDoc *doc = nullptr);
     virtual ~DataTable();
 
-    DataDoc *GetDataDoc();
+    void Init() override;
 
-    struct data *GetData(int row) const;
+    DataDoc *GetDataDoc();
 
 protected:
     void OnNewRow(size_t pos) override;

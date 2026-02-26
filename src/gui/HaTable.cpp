@@ -6,15 +6,8 @@
 
 #include "HaGridCellAttrProvider.h"
 
-HaTable::HaTable(std::initializer_list<const char *> colLabels, CsvDoc *doc)
-    : wxGridTableBase()
-    , m_doc(doc)
-    , m_colLabels(colLabels)
-    , m_cache(nullptr)
+HaTable::HaTable(CsvDoc *doc) : wxGridTableBase(), m_doc(doc), m_colLabels(), m_cache(nullptr), m_colImpls(nullptr)
 {
-    m_cols = m_colLabels.size();
-    m_colImpls = new struct ColImpl[m_cols];
-    SetAttrProvider(new HaGridCellAttrProvider(this));
 }
 
 HaTable::~HaTable()
@@ -34,6 +27,9 @@ void HaTable::Init()
     m_cache = new wxVector<wxArrayString>(rows);
     for (auto i = 0; i < rows; ++i) {
         CacheRow(i);
+    }
+    if (GetAttrProvider() == nullptr) {
+        SetAttrProvider(new HaGridCellAttrProvider(this));
     }
 }
 
@@ -72,7 +68,7 @@ bool HaTable::CanHaveAttributes()
 
 enum column_type HaTable::GetColType(int col) const
 {
-    return col < m_cols ? m_colImpls[col].type : CT_IGNORE;
+    return col < GetColsCount() ? m_colImpls[col].type : CT_IGNORE;
 }
 
 void HaTable::SetValue(int row, int col, const wxString &value)
@@ -158,7 +154,7 @@ void HaTable::MapColToCol(int dst, int col, bool ro)
     }
 }
 
-wxString HaTable::GetCommentString(int row)
+wxString HaTable::GetCommentString(int row) const
 {
     return m_doc->GetValueString(row, 0);
 }
@@ -184,14 +180,14 @@ void HaTable::OnNewRow([[maybe_unused]] size_t pos)
 {
 }
 
-const wxString HaTable::GetCellValue(int row, int col)
+const wxString HaTable::GetCellValue(int row, int col) const
 {
     auto flag = GetRowRecordFlag(row);
     if (flag == RECORD_FLAG_COMMENT) {
         if (col == 0) {
             return GetCommentString(row);
         }
-    } else if (col < m_cols) {
+    } else if (col < GetColsCount()) {
         if (m_colImpls[col].get != nullptr) {
             return m_colImpls[col].get(row);
         }
@@ -203,7 +199,7 @@ const wxString HaTable::GetCellValue(int row, int col)
 void HaTable::SetCellValue(int row, int col, const wxString &value)
 {
     wxASSERT(GetRowRecordFlag(row) == RECORD_FLAG_NORMAL);
-    if (col < m_cols && m_colImpls[col].set != nullptr) {
+    if (col < GetColsCount() && m_colImpls[col].set != nullptr) {
         m_colImpls[col].set(row, value);
     }
 }

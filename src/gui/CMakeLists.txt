@@ -112,6 +112,7 @@ endforeach()
 
 add_subdirectory(accounts)
 add_subdirectory(data)
+add_subdirectory(import)
 add_subdirectory(raw)
 #add_subdirectory(import)
 add_subdirectory(res)

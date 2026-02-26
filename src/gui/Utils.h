@@ -3,6 +3,7 @@
 
 #include <regex>
 
+#include <wx/sizer.h>
 #include <wx/strconv.h>
 #include <wx/string.h>
 
@@ -13,6 +14,9 @@
 class wxEvent;
 class wxString;
 class wxWindow;
+
+class HaTable;
+class CsvDoc;
 
 inline std::string w2s(const wxString &str)
 {
@@ -51,6 +55,24 @@ void ShowTextBox(const wxString &title, const wxString &text);
  * @param id
  */
 void SetXrcDefaultButton(const wxWindow *win, const char *id);
+
+template <typename G> G *AddSoleGrid(wxWindow *parent)
+{
+    auto *grid = new G(parent, wxID_ANY);
+    grid->SetAttributes();
+    auto *sizer = new wxBoxSizer(wxVERTICAL);
+    sizer->Add(grid, wxSizerFlags().Expand().Border(wxALL, 0).Proportion(1));
+    parent->SetSizer(sizer);
+    return grid;
+}
+
+template <typename T, typename D> HaTable *CreateHaTable(CsvDoc *doc)
+{
+    auto *d = dynamic_cast<D *>(doc);
+    wxASSERT(d != nullptr);
+    auto *table = new T(d);
+    return table;
+}
 
 } // namespace Utils
 

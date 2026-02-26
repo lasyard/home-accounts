@@ -52,10 +52,7 @@ void DataGrid::MakeDateVisible(const wxDateTime &date)
 
 HaTable *DataGrid::CreateHaTable(CsvDoc *doc)
 {
-    auto *ddoc = dynamic_cast<DataDoc *>(doc);
-    wxASSERT(ddoc != nullptr);
-    auto *table = new DataTable(ddoc);
-    return table;
+    return Utils::CreateHaTable<DataTable, DataDoc>(doc);
 }
 
 int DataGrid::CursorColOfNewRow()

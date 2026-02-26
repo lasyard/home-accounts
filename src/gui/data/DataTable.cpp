@@ -7,24 +7,29 @@
 
 IMPLEMENT_DYNAMIC_CLASS(DataTable, HaTable)
 
-DataTable::DataTable(DataDoc *doc)
-    : HaTable(
-          {
-              _("Time"),
-              _("Amount"),
-              _("Account"),
-              _("Description"),
-              _("Income"),
-              _("Outlay"),
-              _("Item"),
-              _("Balance"),
-              _("Memo"),
-              _("Category"),
-          },
-          doc
-      )
+DataTable::DataTable(DataDoc *doc) : HaTable(doc)
 {
-    SetAttrProvider(new DataGridCellAttrProvider(this));
+}
+
+DataTable::~DataTable()
+{
+}
+
+void DataTable::Init()
+{
+    m_colLabels = {
+        _("Time"),
+        _("Amount"),
+        _("Account"),
+        _("Description"),
+        _("Income"),
+        _("Outlay"),
+        _("Item"),
+        _("Balance"),
+        _("Memo"),
+        _("Category"),
+    };
+    m_colImpls = new struct ColImpl[m_colLabels.size()];
     MapColToCol(TIME_COL, DataDoc::TIME_COL);
     MapColToCol(AMOUNT_COL, DataDoc::AMOUNT_COL);
     MapColToCol(ACCOUNT_COL, DataDoc::ACCOUNT_COL);
@@ -59,10 +64,8 @@ DataTable::DataTable(DataDoc *doc)
         .get = nullptr,
         .set = nullptr,
     };
-}
-
-DataTable::~DataTable()
-{
+    SetAttrProvider(new DataGridCellAttrProvider(this));
+    HaTable::Init();
 }
 
 DataDoc *DataTable::GetDataDoc()

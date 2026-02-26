@@ -7,7 +7,7 @@ class AccountsDoc;
 
 class AccountsTable : public HaTable
 {
-    DECLARE_DYNAMIC_CLASS(AccountTable)
+    DECLARE_DYNAMIC_CLASS(AccountsTable)
 
 public:
     static const int ID_COL = 0;
@@ -20,7 +20,7 @@ public:
     AccountsTable(AccountsDoc *doc = nullptr);
     virtual ~AccountsTable();
 
-    AccountsDoc *GetAccountDoc();
+    void Init() override;
 };
 
 #endif /* _HA_ACCOUNTS_ACCOUNTS_TABLE_H_ */

@@ -10,8 +10,9 @@ TEST_CASE("read")
     const enum column_type types[] = {CT_INT, CT_STR, CT_MONEY, CT_DATE, CT_TIME};
     std::fstream file("sample.csv", std::ios::in);
     CHECK(file.is_open());
-    CsvDoc doc(5, types);
-    CHECK(doc.Read(file));
+    CsvDoc doc;
+    doc.SetParser(5, types, 0);
+    CHECK(doc.ReadStream(file));
     CHECK(doc.GetRowCount() == 3);
     CHECK(doc.GetValueString(0, 0) == "1");
     CHECK(doc.GetValueString(0, 1) == "Alice");
@@ -33,7 +34,8 @@ TEST_CASE("read")
 TEST_CASE("write")
 {
     const enum column_type types[] = {CT_INT, CT_STR, CT_MONEY, CT_DATE, CT_TIME};
-    CsvDoc doc(5, types);
+    CsvDoc doc;
+    doc.SetParser(5, types, 0);
     doc.AddRecord();
     doc.SetValueString(0, 0, "1");
     doc.SetValueString(0, 1, "Alice");
@@ -41,7 +43,7 @@ TEST_CASE("write")
     doc.SetValueString(0, 3, "2000-1-1");
     doc.SetValueString(0, 4, "12:34:56");
     std::ostringstream os;
-    CHECK(doc.Write(os));
+    CHECK(doc.WriteStream(os));
     CHECK(os.str() == "1,Alice,100.00,2000-01-01,12:34:56\n");
 }
 
@@ -50,8 +52,9 @@ TEST_CASE("read & write with comments")
     const enum column_type types[] = {CT_INT, CT_STR, CT_MONEY, CT_DATE, CT_TIME};
     std::fstream file("sample1.csv", std::ios::in);
     CHECK(file.is_open());
-    CsvDoc doc(5, types, 1);
-    CHECK(doc.Read(file));
+    CsvDoc doc;
+    doc.SetParser(5, types, 1);
+    CHECK(doc.ReadStream(file));
     CHECK(doc.GetRowCount() == 7);
     CHECK(doc.GetValueString(0, 0) == "1");
     CHECK(doc.GetValueString(1, 0) == "1");
@@ -77,7 +80,7 @@ TEST_CASE("read & write with comments")
     CHECK(doc.GetValueString(6, 3) == "2039-05-05");
     CHECK(doc.GetValueString(6, 4) == "01:02:03");
     std::ostringstream os;
-    CHECK(doc.Write(os));
+    CHECK(doc.WriteStream(os));
     CHECK(
         os.str() == "#1\n"
                     "Alice,100.01,2000-01-01,12:34:56\n"

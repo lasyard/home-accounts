@@ -21,9 +21,10 @@ const column_type DataDoc::COL_TYPES[] = {
     CT_BOOL,
 };
 
-DataDoc::DataDoc(int year) : CsvDoc(COLS, COL_TYPES, 1), m_year(year)
+DataDoc::DataDoc(int year) : CsvDoc(), m_year(year)
 {
     wxLog::AddTraceMask(TM);
+    SetParser(COLS, COL_TYPES, 1);
 }
 
 DataDoc::~DataDoc()

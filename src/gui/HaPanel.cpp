@@ -1,5 +1,9 @@
 #include "HaPanel.h"
 
+HaPanel::HaPanel(wxWindow *parent) : wxPanel(parent), m_doc(nullptr), m_ok(true)
+{
+}
+
 HaPanel::~HaPanel()
 {
     ClearContents();
@@ -25,7 +29,7 @@ void HaPanel::ShowDocument(HaDocument *doc)
 
 void HaPanel::HideDocument()
 {
-    SaveContents();
+    TrySaveContents();
     ClearContents();
 }
 

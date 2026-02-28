@@ -117,16 +117,6 @@ void CsvDoc::SetParser(int cols, const enum column_type types[], int comment_col
     }
 }
 
-extern "C" int get_line_from_istream(char *buf, size_t len, void *context)
-{
-    std::istream *is = static_cast<std::istream *>(context);
-    if (is->eof()) {
-        return -1;
-    }
-    is->getline(buf, len);
-    return is->gcount();
-}
-
 bool CsvDoc::ReadStream(std::istream &is)
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
@@ -138,14 +128,6 @@ bool CsvDoc::ReadStream(std::istream &is)
     }
     wxLogStatus(_("%d lines read"), lines);
     return AfterRead();
-}
-
-extern "C" int put_line_to_ostream(const char *buf, size_t len, void *context)
-{
-    std::ostream *os = static_cast<std::ostream *>(context);
-    os->write(buf, len);
-    os->put('\n');
-    return len;
 }
 
 bool CsvDoc::WriteStream(std::ostream &os)

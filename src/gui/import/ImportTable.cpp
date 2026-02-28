@@ -14,10 +14,14 @@ ImportTable::~ImportTable()
 
 void ImportTable::Init()
 {
-    int cols = m_doc != nullptr ? m_doc->GetColCount() : 0;
-    m_colLabels.clear();
+    wxASSERT(m_doc != nullptr);
+    int cols = m_doc->GetColCount();
     for (int i = 0; i < cols; ++i) {
-        m_colLabels.Add(wxString::Format("Col%d", i + 1));
+        m_colLabels.Add(wxString::Format("%d", i + 1));
+    }
+    m_colImpls = new struct ColImpl[m_colLabels.size()];
+    for (int i = 0; i < cols; ++i) {
+        MapColToCol(i, i);
     }
     HaTable::Init();
 }

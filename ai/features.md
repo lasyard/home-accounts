@@ -26,10 +26,13 @@ CSV 文件的格式：
 要求：
 
 1. 当前有文档打开时生效
-2. 由菜单“edit::import”触发，弹出一个文件对话框以便用户选择一个 CSV 文件
-3. 用户选择 CSV 文件并点击确定后，将 CSV 文件的内容读入（使用 `CsvDoc`）
-4. 在主视图中增加一个 `HaPanel`, 将读入的内容显示为表格（使用 `HaTable` 和 `HaGrid`）
-5. 将导入的文件保存到 Section `import/{{fileName}}` 中（`{{fileName}}` 为不包含目录和扩展名的文件名）并设置当前文档为“已修改”
+2. 由菜单“edit::import”触发
+3. 只能修改 `HaDocument::OnImport` 这个函数和 `gui/import` 目录下的文件
+
+执行的动作：
+
+1. 如果当前文档包含名为 `ImportPanel::IMPORT_SECTION_NAME` 的 Section, 则读取这个 Section, 否则弹出一个文件对话框让用户选择一个 CSV 文件并读取这个文件（用 `ImportDoc::ReadStream` 实现）
+2. 添加/切换到 `ImportPanel`, 以表格方式显示读到的内容
 
 如何读文件：
 

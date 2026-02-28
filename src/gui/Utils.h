@@ -33,6 +33,11 @@ inline std::string EscapeRegex(const std::string &str)
     return std::regex_replace(str, std::regex(R"([.^$|()\[\]{}*+?\\])"), "\\$&");
 }
 
+extern "C" {
+int get_line_from_istream(char *buf, size_t len, void *context);
+int put_line_to_ostream(const char *buf, size_t len, void *context);
+}
+
 namespace Utils
 {
 

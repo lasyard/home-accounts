@@ -25,8 +25,6 @@ private:
     static const char *const IMPORT_SECTION_NAME;
 
     ImportGrid *m_grid;
-
-    bool m_error;
 };
 
 #endif /* _HA_IMPORT_IMPORT_PANEL_H_ */

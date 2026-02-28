@@ -21,7 +21,7 @@ END_EVENT_TABLE()
 
 const char *const AccountsPanel::ACCOUNT_SECTION_NAME = "accounts";
 
-AccountsPanel::AccountsPanel(wxWindow *parent) : HaPanel(parent), m_error(false)
+AccountsPanel::AccountsPanel(wxWindow *parent) : HaPanel(parent)
 {
     wxLog::AddTraceMask(TM);
     m_grid = Utils::AddSoleGrid<AccountsGrid>(this);
@@ -35,15 +35,12 @@ void AccountsPanel::OnUpdate()
 {
     auto &data = m_doc->GetOrCreateSection(ACCOUNT_SECTION_NAME);
     auto *csv = new AccountsDoc();
-    m_error = !csv->Read(data);
+    m_ok = csv->Read(data);
     m_grid->InitTable(csv);
 }
 
 void AccountsPanel::SaveContents()
 {
-    if (m_error) {
-        return;
-    }
     m_grid->SaveEditControlValue();
     CsvDoc *doc = m_grid->GetTableDoc();
     wxASSERT(doc != nullptr);

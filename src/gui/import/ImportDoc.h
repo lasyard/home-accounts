@@ -12,6 +12,9 @@ public:
     virtual ~ImportDoc();
 
     bool ReadStream(std::istream &is) override;
+
+private:
+    enum column_type *m_types;
 };
 
 #endif /* _HA_IMPORT_IMPORT_DOC_H_ */

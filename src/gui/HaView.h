@@ -31,8 +31,7 @@ public:
 
     void OnUpdateMenu(wxUpdateUIEvent &event);
     void OnMenu(wxCommandEvent &event);
-    void OnUpdateRawMode(wxUpdateUIEvent &event);
-    void OnRawMode(wxCommandEvent &event);
+    void OnImport(wxCommandEvent &event);
     void OnPageChanging(wxBookCtrlEvent &event);
     void OnPageChanged(wxBookCtrlEvent &event);
 
@@ -40,6 +39,7 @@ public:
 
 private:
     wxNotebook *m_book;
+    HaPanel *m_importPanel;
 
     HaDocument *GetHaDocument() const;
     HaPanel *GetHaPanel(int sel) const;

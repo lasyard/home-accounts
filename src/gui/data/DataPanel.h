@@ -45,7 +45,6 @@ private:
     DataGrid *m_grid;
 
     int m_currentYear;
-    bool m_error;
 
     void SettingDocument(HaDocument *doc) override;
 

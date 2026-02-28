@@ -64,9 +64,6 @@ void DataPanel::OnUpdate()
 
 void DataPanel::SaveContents()
 {
-    if (m_error) {
-        return;
-    }
     m_grid->SaveEditControlValue();
     CsvDoc *doc = m_grid->GetTableDoc();
     wxASSERT(doc != nullptr);
@@ -125,7 +122,7 @@ void DataPanel::ShowDataOfYear(int year)
     m_currentYear = year;
     auto &data = m_doc->GetOrCreateSection(sectionNameOfYear(year));
     auto *csv = new DataDoc(year);
-    m_error = !csv->Read(data);
+    m_ok = csv->Read(data);
     m_grid->InitTable(csv);
     UpdateStatistic();
 }

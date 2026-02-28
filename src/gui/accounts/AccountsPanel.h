@@ -30,8 +30,6 @@ private:
 
     AccountsGrid *m_grid;
 
-    bool m_error;
-
     void SettingDocument(HaDocument *doc) override;
 
     const std::string *GetOrCreateSection();

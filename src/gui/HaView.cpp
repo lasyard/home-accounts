@@ -10,6 +10,7 @@
 
 #include "accounts/AccountsPanel.h"
 #include "data/DataPanel.h"
+#include "import/ImportPanel.h"
 #include "raw/RawPanel.h"
 
 IMPLEMENT_DYNAMIC_CLASS(HaView, wxView)
@@ -20,6 +21,7 @@ EVT_UPDATE_UI(ID_INSERT, HaView::OnUpdateMenu)
 EVT_MENU(ID_INSERT, HaView::OnMenu)
 EVT_UPDATE_UI(wxID_DELETE, HaView::OnUpdateMenu)
 EVT_MENU(wxID_DELETE, HaView::OnMenu)
+EVT_MENU(ID_IMPORT, HaView::OnImport)
 EVT_NOTEBOOK_PAGE_CHANGING(ID_BOOK, HaView::OnPageChanging)
 EVT_NOTEBOOK_PAGE_CHANGED(ID_BOOK, HaView::OnPageChanged)
 END_EVENT_TABLE()
@@ -45,6 +47,7 @@ bool HaView::OnCreate([[maybe_unused]] wxDocument *doc, [[maybe_unused]] long fl
     m_book->AddPage(new AccountsPanel(m_book), _("Accounts"));
     m_book->AddPage(new RawPanel(m_book), _("Raw"));
     Activate(true);
+    m_importPanel = nullptr;
     return true;
 }
 
@@ -84,6 +87,16 @@ void HaView::OnMenu(wxCommandEvent &event)
     Utils::DelegateEvent(GetCurrentHaPanel(), event);
 }
 
+void HaView::OnImport([[maybe_unused]] wxCommandEvent &event)
+{
+    wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
+    if (m_importPanel == nullptr) {
+        m_importPanel = new ImportPanel(m_book);
+        m_book->AddPage(m_importPanel, _("Import"));
+    }
+    m_book->SetSelection(m_book->FindPage(m_importPanel));
+}
+
 void HaView::OnPageChanging(wxBookCtrlEvent &event)
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
@@ -106,7 +119,7 @@ void HaView::OnPageChanged(wxBookCtrlEvent &event)
 
 void HaView::SaveContents()
 {
-    GetCurrentHaPanel()->SaveContents();
+    GetCurrentHaPanel()->TrySaveContents();
 }
 
 HaDocument *HaView::GetHaDocument() const

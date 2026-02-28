@@ -21,6 +21,7 @@ EVT_CLOSE(HaMainFrame::OnClose)
 EVT_UPDATE_UI(ID_CHANGE_PASS, HaMainFrame::OnUpdateMenu)
 EVT_UPDATE_UI(ID_INSERT, HaMainFrame::OnUpdateMenu)
 EVT_UPDATE_UI(wxID_DELETE, HaMainFrame::OnUpdateMenu)
+EVT_UPDATE_UI(ID_IMPORT, HaMainFrame::OnUpdateMenu)
 // Don't know why this ID cannot be wxID_ABOUT.
 EVT_MENU(ID_ABOUT, HaMainFrame::OnAbout)
 EVT_MENU(ID_LICENSE, HaMainFrame::OnLicense)

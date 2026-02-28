@@ -27,7 +27,6 @@ BEGIN_EVENT_TABLE(HaDocument, wxDocument)
 EVT_UPDATE_UI(ID_CHANGE_PASS, HaDocument::OnUpdateMenu)
 EVT_MENU(ID_CHANGE_PASS, HaDocument::OnChangePass)
 EVT_UPDATE_UI(ID_IMPORT, HaDocument::OnUpdateMenu)
-EVT_MENU(ID_IMPORT, HaDocument::OnImport)
 END_EVENT_TABLE()
 
 const char *const HaDocument::IV = APP_NAME;
@@ -153,7 +152,7 @@ void HaDocument::OnChange(wxCommandEvent &event)
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     Modify(true);
     // skip to allow the original operation
-    event.Skip();
+    event.Skip(true);
 }
 
 void HaDocument::OnUpdateMenu(wxUpdateUIEvent &event)
@@ -173,10 +172,6 @@ void HaDocument::OnChangePass([[maybe_unused]] wxCommandEvent &event)
         }
         m_pass = pass;
     }
-}
-
-void HaDocument::OnImport([[maybe_unused]] wxCommandEvent &event)
-{
 }
 
 HaView *HaDocument::GetView() const

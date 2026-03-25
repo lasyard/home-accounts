@@ -7,7 +7,6 @@
 
 #include "../HaTable.h"
 
-IMPLEMENT_TM(ImportGrid)
 IMPLEMENT_DYNAMIC_CLASS(ImportGrid, HaGrid)
 
 BEGIN_EVENT_TABLE(ImportGrid, HaGrid)

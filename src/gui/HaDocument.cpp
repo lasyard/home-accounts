@@ -21,15 +21,12 @@
 #include "file/Sqlite3Store.h"
 
 IMPLEMENT_DYNAMIC_CLASS(HaDocument, wxDocument)
-IMPLEMENT_TM(HaDocument)
 
 BEGIN_EVENT_TABLE(HaDocument, wxDocument)
 EVT_UPDATE_UI(ID_CHANGE_PASS, HaDocument::OnUpdateMenu)
 EVT_MENU(ID_CHANGE_PASS, HaDocument::OnChangePass)
 EVT_UPDATE_UI(ID_IMPORT, HaDocument::OnUpdateMenu)
 END_EVENT_TABLE()
-
-const char *const HaDocument::IV = APP_NAME;
 
 HaDocument::HaDocument() : wxDocument(), m_doc(nullptr), m_pass()
 {

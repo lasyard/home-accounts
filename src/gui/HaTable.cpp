@@ -71,6 +71,11 @@ enum column_type HaTable::GetColType(int col) const
     return col < GetColsCount() ? m_colImpls[col].type : CT_IGNORE;
 }
 
+record_t *HaTable::GetRowRecord(int row) const
+{
+    return m_doc->GetRecord(row);
+}
+
 void HaTable::SetValue(int row, int col, const wxString &value)
 {
     try {

@@ -3,8 +3,6 @@
 #include "Exceptions.h"
 #include "FileStore.h"
 
-const char *const FileStore::CATALOG_NAME = "__catalog__";
-
 FileStore::FileStore(const std::string &fileName, const std::string &pass, const std::string &iv)
     : CryptoStore(iv)
     , m_fileName(fileName)

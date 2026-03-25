@@ -26,12 +26,12 @@ protected:
     wxGridCellAttr *m_integerAttrRO;
     wxGridCellAttr *m_moneyAttr;
     wxGridCellAttr *m_moneyAttrRO;
-    wxGridCellAttr *m_deficitAttrRO;
     wxGridCellAttr *m_boolAttr;
     wxGridCellAttr *m_boolAttrRO;
     wxGridCellAttr *m_dateAttr;
     wxGridCellAttr *m_dateAttrRO;
     wxGridCellAttr *m_commentAttrRO;
+    wxGridCellAttr *m_greyOutAttrRO;
 
     HaTable *m_table;
 
@@ -48,6 +48,7 @@ protected:
 
     virtual wxGridCellAttr *GetCommentCellAttr(int row) const;
     virtual wxGridCellAttr *GetItemCellAttr(int row, int col) const;
+    virtual wxGridCellAttr *GetOtherCellAttr(int row, int col) const;
 };
 
 #endif /* _HA_GUI_HA_GRID_CELL_ATTR_PROVIDER_H_ */

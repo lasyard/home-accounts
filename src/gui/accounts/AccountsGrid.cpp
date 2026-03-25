@@ -7,7 +7,6 @@
 
 #include "../HaTable.h"
 
-IMPLEMENT_TM(AccountsGrid)
 IMPLEMENT_DYNAMIC_CLASS(AccountsGrid, HaGrid)
 
 BEGIN_EVENT_TABLE(AccountsGrid, HaGrid)

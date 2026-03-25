@@ -9,7 +9,7 @@
 class FileStore : public CryptoStore
 {
 public:
-    static const char *const CATALOG_NAME;
+    static constexpr char CATALOG_NAME[] = "__catalog__";
 
     FileStore(const std::string &fileName, const std::string &pass, const std::string &iv);
     virtual ~FileStore();

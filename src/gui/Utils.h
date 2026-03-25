@@ -7,9 +7,7 @@
 #include <wx/strconv.h>
 #include <wx/string.h>
 
-#define DECLARE_TM() static const wxString TM;
-
-#define IMPLEMENT_TM(class) const wxString class ::TM = #class;
+#define DECLARE_TM(class) static constexpr wxChar TM[] = wxS(#class);
 
 class wxEvent;
 class wxString;
@@ -31,6 +29,14 @@ inline wxString s2w(const std::string &str)
 inline std::string EscapeRegex(const std::string &str)
 {
     return std::regex_replace(str, std::regex(R"([.^$|()\[\]{}*+?\\])"), "\\$&");
+}
+
+inline wxString Trim(const wxString &str)
+{
+    wxString s = str;
+    s.Trim(true);
+    s.Trim(false);
+    return s;
 }
 
 extern "C" {

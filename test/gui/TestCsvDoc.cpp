@@ -43,7 +43,7 @@ TEST_CASE("write")
     doc.SetValueString(0, 3, "2000-1-1");
     doc.SetValueString(0, 4, "12:34:56");
     std::ostringstream os;
-    CHECK(doc.WriteStream(os));
+    doc.WriteStream(os);
     CHECK(os.str() == "1,Alice,100.00,2000-01-01,12:34:56\n");
 }
 
@@ -80,7 +80,7 @@ TEST_CASE("read & write with comments")
     CHECK(doc.GetValueString(6, 3) == "2039-05-05");
     CHECK(doc.GetValueString(6, 4) == "01:02:03");
     std::ostringstream os;
-    CHECK(doc.WriteStream(os));
+    doc.WriteStream(os);
     CHECK(
         os.str() == "#1\n"
                     "Alice,100.01,2000-01-01,12:34:56\n"

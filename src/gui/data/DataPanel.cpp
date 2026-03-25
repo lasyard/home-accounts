@@ -14,7 +14,6 @@
 #include "../HaGdi.h"
 
 IMPLEMENT_DYNAMIC_CLASS(DataPanel, HaPanel)
-IMPLEMENT_TM(DataPanel)
 
 BEGIN_EVENT_TABLE(DataPanel, HaPanel)
 EVT_UPDATE_UI(ID_INSERT, DataPanel::OnUpdateMenu)
@@ -24,26 +23,24 @@ EVT_MENU(wxID_DELETE, DataPanel::OnMenu)
 EVT_DATE_CHANGED(ID_DATE, DataPanel::OnDateChanged)
 END_EVENT_TABLE()
 
-const char *const DataPanel::DATA_SECTION_NAME_FORMAT = "data/%04d";
-
 DataPanel::DataPanel(wxWindow *parent) : HaPanel(parent)
 {
     wxLog::AddTraceMask(TM);
     m_header = new wxBoxSizer(wxHORIZONTAL);
-    AddHeaderLabel(_("Select Date:"), HaGdi::BIG_FONT, true);
+    AddHeaderLabel(_("Select Date:"), HaGdi::BIG_TEXT_FONT, true);
     m_date = new wxDatePickerCtrl(this, ID_DATE);
-    m_date->SetFont(HaGdi::BIG_MONO_FONT);
+    m_date->SetFont(HaGdi::BIG_DIGI_FONT);
     m_header->Add(m_date, wxSizerFlags().Border(wxRIGHT, 9).Proportion(0));
-    AddHeaderLabel(_("Opening:"), HaGdi::BIG_FONT, true);
-    m_opening = AddHeaderLabel(wxEmptyString, HaGdi::BIG_MONO_FONT, false);
-    AddHeaderLabel(_("Total Income:"), HaGdi::BIG_FONT, true);
-    m_income = AddHeaderLabel(wxEmptyString, HaGdi::BIG_MONO_FONT, false);
+    AddHeaderLabel(_("Opening:"), HaGdi::BIG_TEXT_FONT, true);
+    m_opening = AddHeaderLabel(wxEmptyString, HaGdi::BIG_DIGI_FONT, false);
+    AddHeaderLabel(_("Total Income:"), HaGdi::BIG_TEXT_FONT, true);
+    m_income = AddHeaderLabel(wxEmptyString, HaGdi::BIG_DIGI_FONT, false);
     m_income->SetBackgroundColour(HaGdi::SURPLUS_COLOR);
-    AddHeaderLabel(_("Total Outlay:"), HaGdi::BIG_FONT, true);
-    m_outlay = AddHeaderLabel(wxEmptyString, HaGdi::BIG_MONO_FONT, false);
+    AddHeaderLabel(_("Total Outlay:"), HaGdi::BIG_TEXT_FONT, true);
+    m_outlay = AddHeaderLabel(wxEmptyString, HaGdi::BIG_DIGI_FONT, false);
     m_outlay->SetBackgroundColour(HaGdi::DEFICIT_COLOR);
-    AddHeaderLabel(_("Closing:"), HaGdi::BIG_FONT, true);
-    m_closing = AddHeaderLabel(wxEmptyString, HaGdi::BIG_MONO_FONT, false);
+    AddHeaderLabel(_("Closing:"), HaGdi::BIG_TEXT_FONT, true);
+    m_closing = AddHeaderLabel(wxEmptyString, HaGdi::BIG_DIGI_FONT, false);
     auto *sizer = new wxBoxSizer(wxVERTICAL);
     sizer->Add(m_header, wxSizerFlags().Expand().Border(wxALL, 0).Proportion(0));
     m_grid = new DataGrid(this, wxID_ANY);

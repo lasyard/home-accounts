@@ -6,7 +6,7 @@
 #include "Cache.h"
 #include "FileStore.h"
 
-static const char *fileName = "cache-test.dat";
+static constexpr char fileName[] = "cache-test.dat";
 
 static void doCreate(const std::string &str, Store *store)
 {

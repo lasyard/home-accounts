@@ -5,8 +5,6 @@
 #include "HaGdi.h"
 #include "HaTable.h"
 
-IMPLEMENT_TM(HaGridCellAttrProvider)
-
 HaGridCellAttrProvider::HaGridCellAttrProvider(HaTable *table) : wxGridCellAttrProvider(), m_table(table)
 {
     wxLog::AddTraceMask(TM);
@@ -14,6 +12,7 @@ HaGridCellAttrProvider::HaGridCellAttrProvider(HaTable *table) : wxGridCellAttrP
     m_defaultAttr = new wxGridCellAttr();
     // Do not use `wxALIGN_CENTER_HORIZONTAL` or `wxALIGN_CENTER_VERTICAL` for `hAlign` and `vAlign`.
     m_defaultAttr->SetAlignment(wxALIGN_LEFT, wxALIGN_CENTER);
+    m_defaultAttr->SetFont(HaGdi::TEXT_FONT);
     m_defaultAttrRO = m_defaultAttr->Clone();
     m_defaultAttrRO->SetReadOnly();
 
@@ -32,8 +31,6 @@ HaGridCellAttrProvider::HaGridCellAttrProvider(HaTable *table) : wxGridCellAttrP
     m_moneyAttr->SetEditor(new wxGridCellFloatEditor(-1, 2));
     m_moneyAttrRO = m_moneyAttr->Clone();
     m_moneyAttrRO->SetReadOnly();
-    m_deficitAttrRO = m_moneyAttrRO->Clone();
-    m_deficitAttrRO->SetTextColour(HaGdi::DEFICIT_COLOR);
 
     m_boolAttr = m_defaultAttr->Clone();
     m_boolAttr->SetRenderer(new wxGridCellBoolRenderer());
@@ -51,9 +48,12 @@ HaGridCellAttrProvider::HaGridCellAttrProvider(HaTable *table) : wxGridCellAttrP
     m_commentAttrRO = m_defaultAttrRO->Clone();
     m_commentAttrRO->SetSize(1, m_table->GetColsCount());
     m_commentAttrRO->SetBackgroundColour(HaGdi::COMMENT_BACK_COLOR);
-    m_commentAttrRO->SetFont(HaGdi::DIGI_FONT);
     m_commentAttrRO->SetAlignment(wxALIGN_CENTER_VERTICAL, wxALIGN_LEFT);
     m_commentAttrRO->SetReadOnly();
+
+    m_greyOutAttrRO = m_defaultAttrRO->Clone();
+    m_greyOutAttrRO->SetReadOnly();
+    m_greyOutAttrRO->SetTextColour(wxColour(160, 160, 160));
 }
 
 HaGridCellAttrProvider::~HaGridCellAttrProvider()
@@ -66,12 +66,12 @@ HaGridCellAttrProvider::~HaGridCellAttrProvider()
     m_integerAttrRO->DecRef();
     m_moneyAttr->DecRef();
     m_moneyAttrRO->DecRef();
-    m_deficitAttrRO->DecRef();
     m_boolAttr->DecRef();
     m_boolAttrRO->DecRef();
     m_dateAttr->DecRef();
     m_dateAttrRO->DecRef();
     m_commentAttrRO->DecRef();
+    m_greyOutAttrRO->DecRef();
 }
 
 wxGridCellAttr *HaGridCellAttrProvider::GetAttr(int row, int col, wxGridCellAttr::wxAttrKind kind) const
@@ -89,7 +89,7 @@ wxGridCellAttr *HaGridCellAttrProvider::GetAttr(int row, int col, wxGridCellAttr
         case RECORD_FLAG_NORMAL:
             return GetItemCellAttr(row, col);
         default:
-            break;
+            return GetOtherCellAttr(row, col);
         }
     }
     m_defaultAttrRO->IncRef();
@@ -120,4 +120,10 @@ wxGridCellAttr *HaGridCellAttrProvider::GetItemCellAttr([[maybe_unused]] int row
         break;
     }
     return SelectAttrRO(ro, m_defaultAttrRO, m_defaultAttr);
+}
+
+wxGridCellAttr *HaGridCellAttrProvider::GetOtherCellAttr([[maybe_unused]] int row, [[maybe_unused]] int col) const
+{
+    m_greyOutAttrRO->IncRef();
+    return m_greyOutAttrRO;
 }

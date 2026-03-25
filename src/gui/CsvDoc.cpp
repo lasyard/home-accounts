@@ -7,8 +7,6 @@
 
 #include "csv/str.h"
 
-IMPLEMENT_TM(CsvDoc)
-
 CsvDoc::CsvDoc() : m_accessors(nullptr)
 {
     wxLog::AddTraceMask(TM);
@@ -27,7 +25,7 @@ const wxString CsvDoc::GetValueString(int pos, int i) const
 {
     wxASSERT(m_accessors != nullptr);
     record_t *record = GetRecord(pos);
-    wxASSERT(is_index_valid(&m_parser, record, i));
+    wxASSERT(record != nullptr && is_index_valid(&m_parser, record, i));
     auto *getter = m_accessors[i].get;
     if (getter != nullptr) {
         return getter(&m_parser, record, i);
@@ -39,7 +37,7 @@ void CsvDoc::SetValueString(int pos, int i, const wxString &value)
 {
     wxASSERT(m_accessors != nullptr);
     record_t *record = GetRecord(pos);
-    wxASSERT(is_index_valid(&m_parser, record, i));
+    wxASSERT(record != nullptr && is_index_valid(&m_parser, record, i));
     auto *setter = m_accessors[i].set;
     if (setter != nullptr) {
         setter(&m_parser, record, i, value);
@@ -76,8 +74,10 @@ record_t *CsvDoc::InsertRecord(int pos)
         m_index.insert(m_index.begin(), record);
     } else {
         record_t *prev = GetRecord(pos - 1);
-        record = copy_comment_fields(&m_parser, record, prev);
-        return_null_if_null(record);
+        if (prev != nullptr) {
+            record = copy_comment_fields(&m_parser, record, prev);
+            return_null_if_null(record);
+        }
         list_ins(&m_records, &prev->list.next, &record->list);
         m_index.insert(std::next(m_index.begin(), pos), record);
     }
@@ -92,6 +92,7 @@ bool CsvDoc::DeleteRecord(int pos)
         item = list_del_first(&m_records);
     } else {
         record_t *p = GetRecord(pos - 1);
+        wxASSERT(p != nullptr);
         item = list_del(&m_records, &p->list.next);
     }
     if (item != NULL) {
@@ -121,7 +122,7 @@ bool CsvDoc::ReadStream(std::istream &is)
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     release_records(&m_parser, &m_records);
-    int lines = read_lines(&m_parser, &m_records, ::get_line_from_istream, static_cast<void *>(&is));
+    int lines = Reading(is);
     if (lines < 0) {
         wxLogError(_("Parse error at line %d"), -lines);
         return false;
@@ -130,18 +131,16 @@ bool CsvDoc::ReadStream(std::istream &is)
     return AfterRead();
 }
 
-bool CsvDoc::WriteStream(std::ostream &os)
+void CsvDoc::WriteStream(std::ostream &os)
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
-    if (!BeforeWrite()) {
-        wxLogStatus(_("%d lines written"), 0);
-        return false;
+    int lines = 0;
+    if (BeforeWrite()) {
+        lines = Writing(os);
     }
-    int lines = write_lines(&m_parser, &m_records, ::put_line_to_ostream, static_cast<void *>(&os));
     wxLogStatus(_("%d lines written"), lines);
     // rebuild the contents because `BeforeWrite` may have changed the data
     AfterRead();
-    return true;
 }
 
 bool CsvDoc::Read(const std::string &str)
@@ -150,14 +149,11 @@ bool CsvDoc::Read(const std::string &str)
     return ReadStream(is);
 }
 
-bool CsvDoc::Write(std::string &str)
+void CsvDoc::Write(std::string &str)
 {
     std::ostringstream os;
-    if (!WriteStream(os)) {
-        return false;
-    }
+    WriteStream(os);
     str = os.str();
-    return true;
 }
 
 const wxString CsvDoc::DefaultGetter(const struct parser *parser, const record_t *record, int i)
@@ -193,6 +189,11 @@ void CsvDoc::CreateIndex()
     }
 }
 
+int CsvDoc::Reading(std::istream &is)
+{
+    return read_lines(&m_parser, &m_records, ::get_line_from_istream, static_cast<void *>(&is));
+}
+
 bool CsvDoc::AfterRead()
 {
     CreateIndex();
@@ -212,6 +213,11 @@ bool CsvDoc::BeforeWrite()
         }
     }
     return true;
+}
+
+int CsvDoc::Writing(std::ostream &os)
+{
+    return write_lines(&m_parser, &m_records, ::put_line_to_ostream, static_cast<void *>(&os));
 }
 
 void CsvDoc::SetNewRecord([[maybe_unused]] record_t *record)

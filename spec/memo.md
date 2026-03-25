@@ -49,8 +49,8 @@ HCSV 类型是一种经过改造的 CSV 格式，由 `CsvDoc` 类实现。
 | ---: | ----------- | -------- | ------------ |
 |    0 | DATE        | CT_DATE  | 交易日期     |
 |    1 | TIME        | CT_TIME  | 交易时间     |
-|    2 | ACCOUNT     | CT_INT   | 账户 ID      |
-|    3 | AMOUNT      | CT_MONEY | 金额         |
+|    2 | AMOUNT      | CT_MONEY | 金额         |
+|    3 | ACCOUNT     | CT_INT   | 账户 ID      |
 |    4 | DESC        | CT_STR   | 说明         |
 |    5 | REAL_AMOUNT | CT_MONEY | 真实金额     |
 |    6 | REAL_DESC   | CT_STR   | 真实描述     |
@@ -75,9 +75,9 @@ HCSV 类型是一种经过改造的 CSV 格式，由 `CsvDoc` 类实现。
 
 ## conf/import_col_map 字段
 
-| 编号 | 字段名称 | 类型   | 含义               |
-| ---: | -------- | ------ | ------------------ |
-|    0 | FIELD    | CT_INT | data 字段编号      |
-|    1 | TITLES   | CT_STR | 逗号分隔的标题列表 |
+| 编号 | 字段名称 | 类型   | 含义              |
+| ---: | -------- | ------ | ----------------- |
+|    0 | FIELD    | CT_INT | data 字段编号     |
+|    1 | TITLES   | CT_STR | 导入 CSV 的列标题 |
 
 `comment_cols = 0`

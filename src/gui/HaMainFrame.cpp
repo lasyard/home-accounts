@@ -13,7 +13,6 @@
 #include "Utils.h"
 
 IMPLEMENT_DYNAMIC_CLASS(HaMainFrame, wxDocParentFrame)
-IMPLEMENT_TM(HaMainFrame)
 
 // Event propagating order: doc -> view -> frame.
 BEGIN_EVENT_TABLE(HaMainFrame, wxDocParentFrame)

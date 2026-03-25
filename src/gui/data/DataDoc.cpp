@@ -7,8 +7,6 @@
 
 #include "csv/date_time.h"
 
-IMPLEMENT_TM(DataDoc)
-
 const column_type DataDoc::COL_TYPES[] = {
     CT_DATE,
     CT_TIME,
@@ -29,6 +27,26 @@ DataDoc::DataDoc(int year) : CsvDoc(), m_year(year)
 
 DataDoc::~DataDoc()
 {
+}
+
+wxString DataDoc::GetColName(int i)
+{
+    static wxArrayString s;
+    if (0 <= i && i < COLS) {
+        if (s.IsEmpty()) {
+            s.Add(_("Date"));
+            s.Add(_("Time"));
+            s.Add(_("Amount"));
+            s.Add(_("Account"));
+            s.Add(_("Description"));
+            s.Add(_("Real Amount"));
+            s.Add(_("Real Description"));
+            s.Add(_("Memo"));
+            s.Add(_("Auto Set"));
+        }
+        return s[i];
+    }
+    return _("Invalid");
 }
 
 void DataDoc::SetOpening(money_t opening)

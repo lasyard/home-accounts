@@ -61,7 +61,7 @@ public:
     void OnSelectCell(wxGridEvent &event);
 
 protected:
-    static const int ROW_HEIGHT = 25;
+    static constexpr int ROW_HEIGHT = 25;
 
     bool SelectionIsWholeRow(const wxGridBlocks &blocks);
     void DeleteAllRowsInBlocks(const wxGridBlocks &blocks);

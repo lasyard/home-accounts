@@ -10,7 +10,6 @@
 #include "HaView.h"
 
 IMPLEMENT_APP(HaApp)
-IMPLEMENT_TM(HaApp)
 
 bool HaApp::OnInit()
 {

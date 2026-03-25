@@ -4,7 +4,6 @@
 
 #include "DataTable.h"
 
-IMPLEMENT_TM(DataGrid)
 IMPLEMENT_DYNAMIC_CLASS(DataGrid, HaGrid)
 
 BEGIN_EVENT_TABLE(DataGrid, HaGrid)

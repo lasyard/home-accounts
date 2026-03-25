@@ -22,7 +22,8 @@ public:
     void SaveContents() override;
 
 private:
-    static const char *const IMPORT_SECTION_NAME;
+    static constexpr char IMPORT_SECTION_NAME[] = "import";
+    static constexpr char IMPORT_COL_MAP_SECTION_NAME[] = "conf/import_col_map";
 
     ImportGrid *m_grid;
 };

@@ -27,14 +27,12 @@ public:
 
     auto GetRowRecordFlag(int row) const
     {
-        record_t *record = m_doc->GetRecord(row);
-        if (record != nullptr) {
-            return record->flag;
-        }
-        return (char)0;
+        record_t *record = GetRowRecord(row);
+        return (record != nullptr) ? record->flag : RECORD_FLAG_INVALID;
     }
 
     virtual enum column_type GetColType(int col) const;
+    virtual record_t *GetRowRecord(int row) const;
 
     auto *GetDoc()
     {

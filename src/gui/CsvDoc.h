@@ -10,7 +10,7 @@
 class CsvDoc
 {
 public:
-    DECLARE_TM()
+    DECLARE_TM(CsvDoc)
 
     CsvDoc();
     virtual ~CsvDoc();
@@ -62,10 +62,10 @@ public:
     void SetParser(int cols, const enum column_type types[], int comment_cols);
 
     virtual bool ReadStream(std::istream &is);
-    virtual bool WriteStream(std::ostream &os);
+    virtual void WriteStream(std::ostream &os);
 
     bool Read(const std::string &str);
-    bool Write(std::string &str);
+    void Write(std::string &str);
 
 protected:
     struct Accessor {
@@ -84,8 +84,10 @@ protected:
 
     void CreateIndex();
 
+    virtual int Reading(std::istream &is);
     virtual bool AfterRead();
     virtual bool BeforeWrite();
+    virtual int Writing(std::ostream &os);
 
     virtual void SetNewRecord(record_t *record);
     virtual bool IsRecordEmpty(record_t *record);

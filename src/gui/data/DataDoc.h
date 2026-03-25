@@ -8,21 +8,25 @@
 class DataDoc : public CsvDoc
 {
 public:
-    static const int COLS = 9;
-    static const int DATE_COL = 0;
-    static const int TIME_COL = 1;
-    static const int ACCOUNT_COL = 2;
-    static const int AMOUNT_COL = 3;
-    static const int DESC_COL = 4;
-    static const int REAL_AMOUNT_COL = 5;
-    static const int REAL_DESC_COL = 6;
-    static const int MEMO_COL = 7;
-    static const int AUTO_SET_COL = 8;
+    static constexpr int COLS = 9;
+    static constexpr int DATE_COL = 0;
+    static constexpr int TIME_COL = 1;
+    static constexpr int AMOUNT_COL = 2;
+    static constexpr int ACCOUNT_COL = 3;
+    static constexpr int DESC_COL = 4;
+    static constexpr int REAL_AMOUNT_COL = 5;
+    static constexpr int REAL_DESC_COL = 6;
+    static constexpr int MEMO_COL = 7;
+    static constexpr int AUTO_SET_COL = 8;
 
     DECLARE_TM()
 
     DataDoc(int year);
     virtual ~DataDoc();
+
+    static const column_type COL_TYPES[COLS];
+
+    static wxString GetColName(int i);
 
     money_t GetRecordRealAmount(const record_t *record) const
     {
@@ -51,7 +55,9 @@ public:
 
     const wxString GetIncomeString(int row) const
     {
-        money_t m = GetRecordRealAmount(GetRecord(row));
+        auto *record = GetRecord(row);
+        wxASSERT(record != nullptr);
+        money_t m = GetRecordRealAmount(record);
         if (m < 0) {
             return GetMoneyString(-m);
         }
@@ -60,7 +66,9 @@ public:
 
     const wxString GetOutlayString(int row) const
     {
-        money_t m = GetRecordRealAmount(GetRecord(row));
+        auto *record = GetRecord(row);
+        wxASSERT(record != nullptr);
+        money_t m = GetRecordRealAmount(record);
         if (m > 0) {
             return GetMoneyString(m);
         }
@@ -69,7 +77,9 @@ public:
 
     const wxString GetBalanceString(int row) const
     {
-        money_t balance = GetRecordBalance(GetRecord(row));
+        auto *record = GetRecord(row);
+        wxASSERT(record != nullptr);
+        money_t balance = GetRecordBalance(record);
         return GetMoneyString(balance);
     }
 
@@ -114,8 +124,6 @@ private:
         money_t income;
         money_t outlay;
     } m_stat;
-
-    static const column_type COL_TYPES[COLS];
 
     int m_year;
 };

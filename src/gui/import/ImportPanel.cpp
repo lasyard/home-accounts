@@ -12,13 +12,10 @@
 
 #include "file/Exceptions.h"
 
-IMPLEMENT_TM(ImportPanel)
 IMPLEMENT_DYNAMIC_CLASS(ImportPanel, HaPanel)
 
 BEGIN_EVENT_TABLE(ImportPanel, HaPanel)
 END_EVENT_TABLE()
-
-const char *const ImportPanel::IMPORT_SECTION_NAME = "import";
 
 ImportPanel::ImportPanel(wxWindow *parent) : HaPanel(parent)
 {
@@ -33,6 +30,11 @@ ImportPanel::~ImportPanel()
 void ImportPanel::OnUpdate()
 {
     auto *csv = new ImportDoc();
+    try {
+        auto &colMap = m_doc->GetSection(IMPORT_COL_MAP_SECTION_NAME);
+        csv->SetColumnMap(colMap);
+    } catch ([[maybe_unused]] SectionNotFound &e) {
+    }
     try {
         auto &data = m_doc->GetSection(ImportPanel::IMPORT_SECTION_NAME);
         m_ok = csv->Read(data);

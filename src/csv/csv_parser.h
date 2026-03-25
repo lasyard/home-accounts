@@ -27,8 +27,9 @@ typedef struct record {
 #pragma warning(pop)
 #endif
 
-#define RECORD_FLAG_COMMENT 0x02
-#define RECORD_FLAG_NORMAL  0x01
+#define RECORD_FLAG_COMMENT '\x02'
+#define RECORD_FLAG_NORMAL  '\x01'
+#define RECORD_FLAG_INVALID '\x00'
 
 #define get_record(ptr) container_of(ptr, record_t, list)
 

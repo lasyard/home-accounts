@@ -26,7 +26,7 @@ public:
     void OnMenu(wxCommandEvent &event);
 
 private:
-    static const char *const ACCOUNT_SECTION_NAME;
+    static constexpr char ACCOUNT_SECTION_NAME[] = "accounts";
 
     AccountsGrid *m_grid;
 

@@ -8,14 +8,14 @@
 class AccountsDoc : public CsvDoc
 {
 public:
-    static const int COLS = 7;
-    static const int TYPE_COL = 0;
-    static const int ID_COL = 1;
-    static const int NAME_COL = 2;
-    static const int BANK_COL = 3;
-    static const int OPEN_DATE_COL = 4;
-    static const int INITIAL_COL = 5;
-    static const int MEMO_COL = 6;
+    static constexpr int COLS = 7;
+    static constexpr int TYPE_COL = 0;
+    static constexpr int ID_COL = 1;
+    static constexpr int NAME_COL = 2;
+    static constexpr int BANK_COL = 3;
+    static constexpr int OPEN_DATE_COL = 4;
+    static constexpr int INITIAL_COL = 5;
+    static constexpr int MEMO_COL = 6;
 
     DECLARE_TM()
 
@@ -34,7 +34,7 @@ public:
 
     const struct str *GetRecordName(const record_t *record) const
     {
-        return (struct str *)get_const_field(&m_parser, record, NAME_COL);
+        return (const struct str *)get_const_field(&m_parser, record, NAME_COL);
     }
 
 protected:

@@ -5,8 +5,6 @@
 
 #include "csv/str.h"
 
-IMPLEMENT_TM(AccountsDoc)
-
 const column_type AccountsDoc::COL_TYPES[] = {
     CT_INT,
     CT_INT,

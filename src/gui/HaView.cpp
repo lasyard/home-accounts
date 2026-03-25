@@ -14,7 +14,6 @@
 #include "raw/RawPanel.h"
 
 IMPLEMENT_DYNAMIC_CLASS(HaView, wxView)
-IMPLEMENT_TM(HaView)
 
 BEGIN_EVENT_TABLE(HaView, wxView)
 EVT_UPDATE_UI(ID_INSERT, HaView::OnUpdateMenu)

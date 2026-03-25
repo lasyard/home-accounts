@@ -10,8 +10,6 @@
 #include "HaDefs.h"
 #include "HaTable.h"
 
-IMPLEMENT_TM(HaGrid)
-
 BEGIN_EVENT_TABLE(HaGrid, wxGrid)
 EVT_UPDATE_UI(ID_INSERT, HaGrid::OnUpdateInsert)
 EVT_MENU(ID_INSERT, HaGrid::OnInsert)

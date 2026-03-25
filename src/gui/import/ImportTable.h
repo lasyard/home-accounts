@@ -14,6 +14,16 @@ public:
     virtual ~ImportTable();
 
     void Init() override;
+
+    int GetNumberRows() override;
+    wxString GetValue(int row, int col) override;
+    wxString GetRowLabelValue(int row) override;
+    record_t *GetRowRecord(int row) const override;
+
+    bool IsInvalidCol(int col) const;
+
+private:
+    static constexpr int HEADER_ROWS = 1;
 };
 
 #endif /* _HA_IMPORT_IMPORT_TABLE_H_ */

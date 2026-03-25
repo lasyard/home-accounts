@@ -217,6 +217,10 @@ If any of these files appear later, treat them as mandatory policy.
 
 Read file `spec/features.md` to find the detail description of the feature if only a number is mentioned for the feature.
 
+Read file `spec/memo.md` first to get required informations. If not found, try dig them in source code.
+
 ## Fix a Bug
 
 Read file `spec/features.md` to find the detail description of the bug if only a number is mentioned for the bug.
+
+Read file `spec/memo.md` first to get required informations. If not found, try dig them in source code.

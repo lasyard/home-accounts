@@ -16,7 +16,6 @@
 #include "../HaDocument.h"
 
 IMPLEMENT_DYNAMIC_CLASS(RawPanel, HaPanel)
-IMPLEMENT_TM(RawPanel)
 
 BEGIN_EVENT_TABLE(RawPanel, HaPanel)
 EVT_UPDATE_UI(ID_INSERT, RawPanel::OnUpdateInsert)

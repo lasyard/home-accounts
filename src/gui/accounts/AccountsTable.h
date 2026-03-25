@@ -10,12 +10,12 @@ class AccountsTable : public HaTable
     DECLARE_DYNAMIC_CLASS(AccountsTable)
 
 public:
-    static const int ID_COL = 0;
-    static const int NAME_COL = 1;
-    static const int BANK_COL = 2;
-    static const int OPEN_DATE_COL = 3;
-    static const int INITIAL_COL = 4;
-    static const int MEMO_COL = 5;
+    static constexpr int ID_COL = 0;
+    static constexpr int NAME_COL = 1;
+    static constexpr int BANK_COL = 2;
+    static constexpr int OPEN_DATE_COL = 3;
+    static constexpr int INITIAL_COL = 4;
+    static constexpr int MEMO_COL = 5;
 
     AccountsTable(AccountsDoc *doc = nullptr);
     virtual ~AccountsTable();

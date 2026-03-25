@@ -9,9 +9,9 @@
 class SectionRecord
 {
 public:
-    static const int OFFSET_LEN = 8;
-    static const int SIZE_LEN = 8;
-    static const int NAME_LEN_LEN = 2;
+    static constexpr int OFFSET_LEN = 8;
+    static constexpr int SIZE_LEN = 8;
+    static constexpr int NAME_LEN_LEN = 2;
 
     std::string name;
     size_t offset;

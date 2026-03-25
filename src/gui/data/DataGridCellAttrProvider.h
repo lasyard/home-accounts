@@ -12,6 +12,11 @@ public:
 
     DataGridCellAttrProvider(HaTable *table);
     virtual ~DataGridCellAttrProvider();
+
+protected:
+    wxGridCellAttr *m_deficitAttrRO;
+
+    wxGridCellAttr *GetItemCellAttr(int row, int col) const override;
 };
 
 #endif /* _HA_DATA_DATA_GRID_CELL_ATTR_PROVIDER_H_ */

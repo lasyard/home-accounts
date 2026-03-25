@@ -43,8 +43,8 @@ public:
     void OnChangePass(wxCommandEvent &event);
 
 private:
-    static const char *const IV;
-    static const int MAX_BACKUPS = 5;
+    static constexpr char IV[] = APP_NAME;
+    static constexpr int MAX_BACKUPS = 5;
 
     Cache *m_doc;
     wxString m_pass;

@@ -14,9 +14,11 @@ public:
 
     // font
     // `MONO_FONT` is conflicting with some msvc names
+    static const wxFont TEXT_FONT;
     static const wxFont DIGI_FONT;
-    static const wxFont BIG_FONT;
-    static const wxFont BIG_MONO_FONT;
+    static const wxFont BIG_TEXT_FONT;
+    static const wxFont BIG_DIGI_FONT;
+    static const wxFont BOLD_TEXT_FONT;
 
 private:
     HaGdi()

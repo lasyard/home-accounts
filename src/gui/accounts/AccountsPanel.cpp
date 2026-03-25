@@ -10,7 +10,6 @@
 #include "../HaDocument.h"
 
 IMPLEMENT_DYNAMIC_CLASS(AccountsPanel, HaPanel)
-IMPLEMENT_TM(AccountsPanel)
 
 BEGIN_EVENT_TABLE(AccountsPanel, HaPanel)
 EVT_UPDATE_UI(ID_INSERT, AccountsPanel::OnUpdateMenu)
@@ -18,8 +17,6 @@ EVT_MENU(ID_INSERT, AccountsPanel::OnMenu)
 EVT_UPDATE_UI(wxID_DELETE, AccountsPanel::OnUpdateMenu)
 EVT_MENU(wxID_DELETE, AccountsPanel::OnMenu)
 END_EVENT_TABLE()
-
-const char *const AccountsPanel::ACCOUNT_SECTION_NAME = "accounts";
 
 AccountsPanel::AccountsPanel(wxWindow *parent) : HaPanel(parent)
 {

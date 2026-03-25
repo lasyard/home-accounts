@@ -34,7 +34,7 @@ public:
     void OnUpdateStatistic(wxCommandEvent &event);
 
 private:
-    static const char *const DATA_SECTION_NAME_FORMAT;
+    static constexpr char DATA_SECTION_NAME_FORMAT[] = "data/%d";
 
     wxBoxSizer *m_header;
     wxDatePickerCtrl *m_date;

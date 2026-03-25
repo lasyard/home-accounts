@@ -13,7 +13,7 @@ class RawPanel : public HaPanel
     DECLARE_EVENT_TABLE()
 
 public:
-    DECLARE_TM()
+    DECLARE_TM(RawPanel)
 
     RawPanel(wxWindow *parent = nullptr);
     virtual ~RawPanel();

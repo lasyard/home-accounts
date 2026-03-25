@@ -13,7 +13,7 @@ class ImportColMapConf;
 class ImportDoc : public CsvDoc
 {
 public:
-    DECLARE_TM()
+    DECLARE_TM(ImportDoc)
 
     ImportDoc();
     virtual ~ImportDoc();

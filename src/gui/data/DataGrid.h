@@ -13,7 +13,7 @@ class DataGrid : public HaGrid
     DECLARE_EVENT_TABLE()
 
 public:
-    DECLARE_TM()
+    DECLARE_TM(DataGrid)
 
     DataGrid();
     DataGrid(

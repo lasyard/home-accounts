@@ -17,7 +17,7 @@ public:
     static constexpr int INITIAL_COL = 5;
     static constexpr int MEMO_COL = 6;
 
-    DECLARE_TM()
+    DECLARE_TM(AccountsDoc)
 
     AccountsDoc();
     virtual ~AccountsDoc();

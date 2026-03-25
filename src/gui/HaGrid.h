@@ -14,7 +14,7 @@ class HaGrid : public wxGrid
     DECLARE_EVENT_TABLE()
 
 public:
-    DECLARE_TM()
+    DECLARE_TM(HaGrid)
 
     HaGrid();
     HaGrid(

@@ -37,6 +37,11 @@
     <ClCompile Include="..\src\gui\accounts\AccountsTable.cpp" />
     <ClCompile Include="..\src\gui\ChangePassDialog.cpp" />
     <ClCompile Include="..\src\gui\CsvDoc.cpp" />
+    <ClCompile Include="..\src\gui\data\DataDoc.cpp" />
+    <ClCompile Include="..\src\gui\data\DataGrid.cpp" />
+    <ClCompile Include="..\src\gui\data\DataGridCellAttrProvider.cpp" />
+    <ClCompile Include="..\src\gui\data\DataPanel.cpp" />
+    <ClCompile Include="..\src\gui\data\DataTable.cpp" />
     <ClCompile Include="..\src\gui\HaApp.cpp" />
     <ClCompile Include="..\src\gui\HaArtProvider.cpp" />
     <ClCompile Include="..\src\gui\HaDocument.cpp" />
@@ -44,8 +49,15 @@
     <ClCompile Include="..\src\gui\HaGrid.cpp" />
     <ClCompile Include="..\src\gui\HaGridCellAttrProvider.cpp" />
     <ClCompile Include="..\src\gui\HaMainFrame.cpp" />
+    <ClCompile Include="..\src\gui\HaPanel.cpp" />
     <ClCompile Include="..\src\gui\HaTable.cpp" />
     <ClCompile Include="..\src\gui\HaView.cpp" />
+    <ClCompile Include="..\src\gui\import\ImportColMapConf.cpp" />
+    <ClCompile Include="..\src\gui\import\ImportDoc.cpp" />
+    <ClCompile Include="..\src\gui\import\ImportGrid.cpp" />
+    <ClCompile Include="..\src\gui\import\ImportGridCellAttrProvider.cpp" />
+    <ClCompile Include="..\src\gui\import\ImportPanel.cpp" />
+    <ClCompile Include="..\src\gui\import\ImportTable.cpp" />
     <ClCompile Include="..\src\gui\raw\RawPanel.cpp" />
     <ClCompile Include="..\src\gui\Utils.cpp" />
   </ItemGroup>
@@ -57,6 +69,11 @@
     <ClInclude Include="..\src\gui\Algos.h" />
     <ClInclude Include="..\src\gui\ChangePassDialog.h" />
     <ClInclude Include="..\src\gui\CsvDoc.h" />
+    <ClInclude Include="..\src\gui\data\DataDoc.h" />
+    <ClInclude Include="..\src\gui\data\DataGrid.h" />
+    <ClInclude Include="..\src\gui\data\DataGridCellAttrProvider.h" />
+    <ClInclude Include="..\src\gui\data\DataPanel.h" />
+    <ClInclude Include="..\src\gui\data\DataTable.h" />
     <ClInclude Include="..\src\gui\HaApp.h" />
     <ClInclude Include="..\src\gui\HaArtProvider.h" />
     <ClInclude Include="..\src\gui\HaDefs.h" />
@@ -68,6 +85,12 @@
     <ClInclude Include="..\src\gui\HaPanel.h" />
     <ClInclude Include="..\src\gui\HaTable.h" />
     <ClInclude Include="..\src\gui\HaView.h" />
+    <ClInclude Include="..\src\gui\import\ImportColMapConf.h" />
+    <ClInclude Include="..\src\gui\import\ImportDoc.h" />
+    <ClInclude Include="..\src\gui\import\ImportGrid.h" />
+    <ClInclude Include="..\src\gui\import\ImportGridCellAttrProvider.h" />
+    <ClInclude Include="..\src\gui\import\ImportPanel.h" />
+    <ClInclude Include="..\src\gui\import\ImportTable.h" />
     <ClInclude Include="..\src\gui\raw\RawPanel.h" />
     <ClInclude Include="..\src\gui\Utils.h" />
     <ClInclude Include="resource.h" />

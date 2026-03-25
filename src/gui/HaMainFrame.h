@@ -13,7 +13,7 @@ class HaMainFrame : public wxDocParentFrame
     DECLARE_EVENT_TABLE()
 
 public:
-    DECLARE_TM()
+    DECLARE_TM(HaMainFrame)
 
     HaMainFrame();
     HaMainFrame(

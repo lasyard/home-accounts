@@ -17,7 +17,7 @@ class HaView : public wxView
     DECLARE_EVENT_TABLE()
 
 public:
-    DECLARE_TM()
+    DECLARE_TM(HaView)
 
     HaView();
     virtual ~HaView();

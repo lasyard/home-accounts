@@ -18,7 +18,7 @@ class DataPanel : public HaPanel
     DECLARE_EVENT_TABLE()
 
 public:
-    DECLARE_TM()
+    DECLARE_TM(DataPanel)
 
     DataPanel(wxWindow *parent = nullptr);
     virtual ~DataPanel();

@@ -13,7 +13,7 @@ class AccountsPanel : public HaPanel
     DECLARE_EVENT_TABLE()
 
 public:
-    DECLARE_TM()
+    DECLARE_TM(AccountsPanel)
 
     AccountsPanel(wxWindow *parent = nullptr);
     virtual ~AccountsPanel();

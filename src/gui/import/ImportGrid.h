@@ -9,7 +9,7 @@ class ImportGrid : public HaGrid
     DECLARE_EVENT_TABLE()
 
 public:
-    DECLARE_TM()
+    DECLARE_TM(ImportGrid)
 
     ImportGrid();
     ImportGrid(

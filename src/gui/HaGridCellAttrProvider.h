@@ -10,7 +10,7 @@ class HaTable;
 class HaGridCellAttrProvider : public wxGridCellAttrProvider
 {
 public:
-    DECLARE_TM()
+    DECLARE_TM(HaGridCellAttrProvider)
 
     HaGridCellAttrProvider(HaTable *table);
     virtual ~HaGridCellAttrProvider();

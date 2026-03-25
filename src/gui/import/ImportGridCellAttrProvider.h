@@ -8,7 +8,7 @@ class HaTable;
 class ImportGridCellAttrProvider : public HaGridCellAttrProvider
 {
 public:
-    DECLARE_TM()
+    DECLARE_TM(ImportGridCellAttrProvider)
 
     ImportGridCellAttrProvider(HaTable *table);
     virtual ~ImportGridCellAttrProvider();

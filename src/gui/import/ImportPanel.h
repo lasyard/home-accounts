@@ -13,7 +13,7 @@ class ImportPanel : public HaPanel
     DECLARE_EVENT_TABLE()
 
 public:
-    DECLARE_TM()
+    DECLARE_TM(ImportPanel)
 
     ImportPanel(wxWindow *parent = nullptr);
     virtual ~ImportPanel();

@@ -8,6 +8,8 @@
 class DataDoc : public CsvDoc
 {
 public:
+    DECLARE_TM(DataDoc)
+
     static constexpr int COLS = 9;
     static constexpr int DATE_COL = 0;
     static constexpr int TIME_COL = 1;
@@ -18,8 +20,6 @@ public:
     static constexpr int REAL_DESC_COL = 6;
     static constexpr int MEMO_COL = 7;
     static constexpr int AUTO_SET_COL = 8;
-
-    DECLARE_TM()
 
     DataDoc(int year);
     virtual ~DataDoc();

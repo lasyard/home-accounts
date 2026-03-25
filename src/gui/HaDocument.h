@@ -14,7 +14,7 @@ class HaDocument : public wxDocument
     DECLARE_EVENT_TABLE()
 
 public:
-    DECLARE_TM()
+    DECLARE_TM(HaDocument)
 
     HaDocument();
     virtual ~HaDocument();

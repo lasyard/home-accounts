@@ -9,7 +9,7 @@
 class HaApp : public wxApp
 {
 public:
-    DECLARE_TM()
+    DECLARE_TM(HaApp)
 
     bool OnInit() override;
     int OnExit() override;

@@ -10,7 +10,7 @@
 class ImportColMapConf : public CsvDoc
 {
 public:
-    DECLARE_TM()
+    DECLARE_TM(ImportColMapConf)
 
     static constexpr int INVALID_DATA_FIELD = -1;
     static constexpr int COLS = 2;

@@ -80,6 +80,7 @@
     <ClCompile Include="..\src\file\FileStore.cpp" />
     <ClCompile Include="..\src\file\SectionRecord.cpp" />
     <ClCompile Include="..\src\file\Sqlite3Store.cpp" />
+    <ClCompile Include="..\src\file\Store.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\external\sqlite-amalgamation-3510000\sqlite3.h" />

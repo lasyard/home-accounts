@@ -8,7 +8,7 @@ class HaTable;
 class DataGridCellAttrProvider : public HaGridCellAttrProvider
 {
 public:
-    DECLARE_TM()
+    DECLARE_TM(DataGridCellAttrProvider)
 
     DataGridCellAttrProvider(HaTable *table);
     virtual ~DataGridCellAttrProvider();

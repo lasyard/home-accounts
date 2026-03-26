@@ -14,6 +14,7 @@ public:
     virtual ~ImportGridCellAttrProvider();
 
 protected:
+    wxGridCellAttr *m_fieldSetAttr;
     wxGridCellAttr *m_boldTextAttrRO;
 
     wxGridCellAttr *GetItemCellAttr(int row, int col) const override;

@@ -12,6 +12,8 @@ class CsvDoc
 public:
     DECLARE_TM(CsvDoc)
 
+    static constexpr int INVALID_COL = -1;
+
     CsvDoc();
     virtual ~CsvDoc();
 

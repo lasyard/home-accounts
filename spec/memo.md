@@ -11,7 +11,7 @@
 
 ## ha 文档结构
 
-ha 文档的内容由多个 Section 组成，每个 Section 有 `name` 和 `content` 两个属性，对 Section 的操作由以下函数实现：
+ha 文档的内容由多个段 (Section) 组成，每个段有名称 (name) 和内容 (content) 两个属性，对段的操作由以下函数实现：
 
 ```cpp
 const std::string &HaDocument::GetOrCreateSection(const std::string &name);
@@ -20,14 +20,14 @@ void HaDocument::DeleteSection(const std::string &name);
 void HaDocument::SaveOrDeleteSection(const std::string &name, const std::string &content);
 ```
 
-下表为各个 Section 的说明：
+下表为各个段的说明：
 
-| Section Name          | Content 类型 | 说明                                                                        |
-| --------------------- | ------------ | --------------------------------------------------------------------------- |
-| `data/xxxx`           | HCSV         | xxxx 为数字，代表一个年份，保存此年度的数据，相关代码在目录 `src/gui/data/` |
-| `accounts`            | HCSV         | 保存账户信息，相关代码在 `src/gui/accounts/`                                |
-| `import`              | CSV          | 导入的 CSV 文件                                                             |
-| `conf/import_col_map` | HCSV         | 导入 CSV 的字段映射配置                                                     |
+| 段名                  | 内容类型 | 说明                                                                        |
+| --------------------- | -------- | --------------------------------------------------------------------------- |
+| `data/xxxx`           | HCSV     | xxxx 为数字，代表一个年份，保存此年度的数据，相关代码在目录 `src/gui/data/` |
+| `accounts`            | HCSV     | 保存账户信息，相关代码在 `src/gui/accounts/`                                |
+| `import`              | CSV      | 导入的 CSV 文件                                                             |
+| `conf/import_col_map` | HCSV     | 导入 CSV 的字段映射配置                                                     |
 
 HCSV 类型是一种经过改造的 CSV 格式，由 `CsvDoc` 类实现。
 

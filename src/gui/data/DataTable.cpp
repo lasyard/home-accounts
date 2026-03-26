@@ -17,26 +17,16 @@ DataTable::~DataTable()
 
 void DataTable::Init()
 {
-    m_colLabels = {
-        _("Time"),
-        _("Amount"),
-        _("Account"),
-        _("Description"),
-        _("Income"),
-        _("Outlay"),
-        _("Item"),
-        _("Balance"),
-        _("Memo"),
-        _("Category"),
-    };
-    m_colImpls = new struct ColImpl[m_colLabels.size()];
-    MapColToCol(TIME_COL, DataDoc::TIME_COL);
-    MapColToCol(AMOUNT_COL, DataDoc::AMOUNT_COL);
-    MapColToCol(ACCOUNT_COL, DataDoc::ACCOUNT_COL);
-    MapColToCol(DESC_COL, DataDoc::DESC_COL);
+    m_colImpls.resize(COLS);
+    SetColImpl(_("Time"), TIME_COL, DataDoc::TIME_COL);
+    SetColImpl(_("Amount"), AMOUNT_COL, DataDoc::AMOUNT_COL);
+    SetColImpl(_("Account"), ACCOUNT_COL, DataDoc::ACCOUNT_COL);
+    SetColImpl(_("Description"), DESC_COL, DataDoc::DESC_COL);
+    auto *doc = GetDataDoc();
     m_colImpls[INCOME_COL] = {
+        .label = _("Income"),
         .type = CT_MONEY,
-        .get = [this](int row) -> wxString { return GetDataDoc()->GetIncomeString(row); },
+        .get = [doc](int row) -> wxString { return doc->GetIncomeString(row); },
         .set = [this](int row, const wxString &value) -> void {
             m_doc->SetValueString(row, DataDoc::REAL_AMOUNT_COL, "-" + value);
             CacheCell(row, OUTLAY_COL);
@@ -44,26 +34,30 @@ void DataTable::Init()
         },
     };
     m_colImpls[OUTLAY_COL] = {
+        .label = _("Outlay"),
         .type = CT_MONEY,
-        .get = [this](int row) -> wxString { return GetDataDoc()->GetOutlayString(row); },
+        .get = [doc](int row) -> wxString { return doc->GetOutlayString(row); },
         .set = [this](int row, const wxString &value) -> void {
             m_doc->SetValueString(row, DataDoc::REAL_AMOUNT_COL, value);
             CacheCell(row, INCOME_COL);
             UpdateDocAndCache(row);
         },
     };
-    MapColToCol(REAL_DESC_COL, DataDoc::REAL_DESC_COL);
+    SetColImpl(_("Item"), REAL_DESC_COL, DataDoc::REAL_DESC_COL);
     m_colImpls[BALANCE_COL] = {
+        .label = _("Balance"),
         .type = CT_MONEY,
-        .get = [this](int row) -> wxString { return GetDataDoc()->GetBalanceString(row); },
+        .get = [doc](int row) -> wxString { return doc->GetBalanceString(row); },
         .set = nullptr,
     };
-    MapColToCol(MEMO_COL, DataDoc::MEMO_COL);
+    SetColImpl(_("Memo"), MEMO_COL, DataDoc::MEMO_COL);
     m_colImpls[CATEGORY_COL] = {
+        .label = _("Category"),
         .type = CT_IGNORE,
         .get = nullptr,
         .set = nullptr,
     };
+    m_cache.resize(m_doc->GetRowCount());
     SetAttrProvider(new DataGridCellAttrProvider(this));
     HaTable::Init();
 }

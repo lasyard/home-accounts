@@ -16,6 +16,7 @@ public:
     static constexpr int OPEN_DATE_COL = 3;
     static constexpr int INITIAL_COL = 4;
     static constexpr int MEMO_COL = 5;
+    static constexpr int COLS = 6;
 
     AccountsTable(AccountsDoc *doc = nullptr);
     virtual ~AccountsTable();

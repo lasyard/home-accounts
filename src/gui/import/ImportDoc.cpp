@@ -21,6 +21,9 @@ ImportDoc::ImportDoc() : m_colMap(nullptr), m_colTitles(), m_types(nullptr), m_d
 
 ImportDoc::~ImportDoc()
 {
+    if (m_colMap != nullptr) {
+        delete m_colMap;
+    }
     if (m_types != nullptr) {
         delete[] m_types;
     }
@@ -29,38 +32,37 @@ ImportDoc::~ImportDoc()
     }
 }
 
-void ImportDoc::SetColumnMap(const std::string &str)
-{
-    m_colMap.reset();
-    if (str.empty()) {
-        return;
-    }
-    auto colMap = std::make_unique<ImportColMapConf>();
-    if (!colMap->Read(str)) {
-        wxLogError(_("Invalid import field mapping"));
-        return;
-    }
-    m_colMap = std::move(colMap);
-}
-
 wxString ImportDoc::GetCsvTitle(int i) const
 {
     wxASSERT(0 <= i && (size_t)i < m_colTitles.size());
     return m_colTitles[i];
 }
 
-wxString ImportDoc::GetDataFieldName(int i) const
-{
-    int field = GetDataField(i);
-    return field != ImportColMapConf::INVALID_DATA_FIELD ? DataDoc::GetColName(field) : wxString();
-}
-
 int ImportDoc::GetDataField(int i) const
 {
-    if (0 <= i && (size_t)i < m_colTitles.size()) {
-        return m_dataFields[i];
+    return (0 <= i && (size_t)i < m_colTitles.size()) ? m_dataFields[i] : INVALID_COL;
+}
+
+wxString ImportDoc::GetDataFieldName(int i) const
+{
+    return DataDoc::GetColName(GetDataField(i));
+}
+
+bool ImportDoc::SetDataFieldByName(int i, const wxString &name)
+{
+    if (!(0 <= i && (size_t)i < m_colTitles.size())) {
+        return false;
     }
-    return ImportColMapConf::INVALID_DATA_FIELD;
+    int field = DataDoc::GetColByName(name);
+    for (int j = 0; j < (int)m_colTitles.size(); ++j) {
+        if (m_dataFields[j] == field) {
+            m_dataFields[j] = INVALID_COL;
+            m_colMap->SetMap(m_dataFields[j], m_colTitles[j]);
+        }
+    }
+    m_dataFields[i] = field;
+    m_colMap->SetMap(m_dataFields[i], m_colTitles[i]);
+    return true;
 }
 
 int ImportDoc::Reading(std::istream &is)
@@ -87,12 +89,12 @@ int ImportDoc::Reading(std::istream &is)
     m_types = new enum column_type[cols];
     std::fill(m_types, m_types + cols, CT_STR);
     m_dataFields = new int[cols];
-    std::fill(m_dataFields, m_dataFields + cols, ImportColMapConf::INVALID_DATA_FIELD);
+    std::fill(m_dataFields, m_dataFields + cols, INVALID_COL);
 
     if (m_colMap != nullptr) {
         for (int i = 0; i < cols; ++i) {
             int field = m_colMap->GetDataFieldByTitle(m_colTitles[i]);
-            if (field >= 0) {
+            if (field != INVALID_COL) {
                 m_dataFields[i] = field;
                 m_types[i] = DataDoc::COL_TYPES[field];
             }

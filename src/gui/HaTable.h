@@ -51,28 +51,30 @@ public:
     bool DeleteRows(size_t pos, size_t numRows) override;
 
 protected:
-    struct ColImpl {
+    // for columns, the int is row; for headers, the int is col
+    struct CellImpl {
+        wxString label;
         enum column_type type;
         std::function<wxString(int)> get;
         std::function<void(int, const wxString &)> set;
     };
 
     CsvDoc *m_doc;
-    wxArrayString m_colLabels;
-    wxVector<wxArrayString> *m_cache;
-    struct ColImpl *m_colImpls;
+    wxVector<wxArrayString> m_cache;
+    std::vector<struct CellImpl> m_headerImpls;
+    std::vector<struct CellImpl> m_colImpls;
 
     void CacheCell(int row, int col)
     {
-        (*m_cache)[row][col] = GetCellValue(row, col);
+        m_cache[row][col] = GetCellValue(row, col);
     }
 
     void CacheRow(int row)
     {
-        (*m_cache)[row].Empty();
+        m_cache[row].Empty();
         int cols = GetNumberCols();
         for (auto col = 0; col < cols; ++col) {
-            (*m_cache)[row].Add(GetCellValue(row, col));
+            m_cache[row].Add(GetCellValue(row, col));
         }
     }
 
@@ -93,13 +95,13 @@ protected:
         auto grid = GetView();
         if (grid != nullptr) {
             grid->BeginBatch();
-            grid->RefreshBlock(0, col, m_cache->size() - 1, col);
+            grid->RefreshBlock(0, col, m_cache.size() - 1, col);
             grid->AutoSizeColumn(col);
             grid->EndBatch();
         }
     }
 
-    void MapColToCol(int dst, int col, bool ro = false);
+    void SetColImpl(const wxString &label, int tableCol, int docCol, bool ro = false);
 
     virtual wxString GetCommentString(int row) const;
 

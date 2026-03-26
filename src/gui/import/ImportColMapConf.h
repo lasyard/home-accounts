@@ -12,7 +12,6 @@ class ImportColMapConf : public CsvDoc
 public:
     DECLARE_TM(ImportColMapConf)
 
-    static constexpr int INVALID_DATA_FIELD = -1;
     static constexpr int COLS = 2;
     static constexpr int FIELD_COL = 0;
     static constexpr int TITLES_COL = 1;
@@ -20,10 +19,21 @@ public:
     ImportColMapConf();
     virtual ~ImportColMapConf();
 
+    void SetMap(int field, const wxString &title)
+    {
+        if (field >= 0) {
+            m_titleMap[title] = field;
+        } else {
+            m_titleMap.erase(title);
+        }
+    }
+
     int GetDataFieldByTitle(const wxString &title) const;
 
 protected:
     bool AfterRead() override;
+
+    int Writing(std::ostream &os) override;
 
 private:
     static const column_type COL_TYPES[COLS];

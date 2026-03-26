@@ -8,7 +8,6 @@
 class AccountsDoc : public CsvDoc
 {
 public:
-    static constexpr int COLS = 7;
     static constexpr int TYPE_COL = 0;
     static constexpr int ID_COL = 1;
     static constexpr int NAME_COL = 2;
@@ -16,6 +15,7 @@ public:
     static constexpr int OPEN_DATE_COL = 4;
     static constexpr int INITIAL_COL = 5;
     static constexpr int MEMO_COL = 6;
+    static constexpr int COLS = 7;
 
     DECLARE_TM(AccountsDoc)
 

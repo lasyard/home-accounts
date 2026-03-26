@@ -6,26 +6,20 @@
 
 #include "HaGridCellAttrProvider.h"
 
-HaTable::HaTable(CsvDoc *doc) : wxGridTableBase(), m_doc(doc), m_colLabels(), m_cache(nullptr), m_colImpls(nullptr)
+HaTable::HaTable(CsvDoc *doc) : wxGridTableBase(), m_doc(doc), m_cache(), m_headerImpls(), m_colImpls()
 {
 }
 
 HaTable::~HaTable()
 {
-    if (m_cache != nullptr) {
-        delete m_cache;
-    }
     if (m_doc != nullptr) {
         delete m_doc;
     }
-    delete[] m_colImpls;
 }
 
 void HaTable::Init()
 {
-    int rows = (m_doc != nullptr ? m_doc->GetRowCount() : 0);
-    m_cache = new wxVector<wxArrayString>(rows);
-    for (auto i = 0; i < rows; ++i) {
+    for (auto i = 0; i < GetRowsCount(); ++i) {
         CacheRow(i);
     }
     if (GetAttrProvider() == nullptr) {
@@ -35,28 +29,30 @@ void HaTable::Init()
 
 int HaTable::GetNumberRows()
 {
-    return m_cache != nullptr ? m_cache->size() : 0;
+    return m_cache.size();
 }
 
 int HaTable::GetNumberCols()
 {
-    return m_colLabels.size();
+    return m_colImpls.size();
 }
 
 wxString HaTable::GetValue(int row, int col)
 {
-    return (*m_cache)[row][col];
+    return m_cache[row][col];
 }
 
 wxString HaTable::GetColLabelValue(int col)
 {
-    return m_colLabels[col];
+    return m_colImpls[col].label;
 }
 
 wxString HaTable::GetRowLabelValue(int row)
 {
-    if (row < GetNumberRows()) {
-        return wxString::Format("%d", row + 1);
+    if ((size_t)row < m_headerImpls.size()) {
+        return m_headerImpls[row].label;
+    } else if (row < GetRowsCount()) {
+        return wxString::Format("%d", row + 1 - (int)m_headerImpls.size());
     }
     return wxEmptyString;
 }
@@ -73,7 +69,8 @@ enum column_type HaTable::GetColType(int col) const
 
 record_t *HaTable::GetRowRecord(int row) const
 {
-    return m_doc->GetRecord(row);
+    auto headers = m_headerImpls.size();
+    return ((size_t)row >= headers && row < GetRowsCount()) ? m_doc->GetRecord(row - headers) : nullptr;
 }
 
 void HaTable::SetValue(int row, int col, const wxString &value)
@@ -94,7 +91,7 @@ bool HaTable::InsertRows(size_t pos, size_t numRows)
         if (!InsertRow(pos)) {
             break;
         }
-        m_cache->insert(std::next(m_cache->begin(), pos), wxArrayString());
+        m_cache.insert(std::next(m_cache.begin(), pos), wxArrayString());
         CacheRow(pos);
     }
     if (i > 0) {
@@ -115,8 +112,8 @@ bool HaTable::AppendRows(size_t numRows)
         if (!AppendRow()) {
             break;
         }
-        m_cache->push_back(wxArrayString());
-        CacheRow(m_cache->size() - 1);
+        m_cache.push_back(wxArrayString());
+        CacheRow(m_cache.size() - 1);
     }
     if (i > 0) {
         auto grid = GetView();
@@ -137,7 +134,7 @@ bool HaTable::DeleteRows(size_t pos, size_t numRows)
             break;
         }
     }
-    m_cache->erase(std::next(m_cache->begin(), pos), std::next(m_cache->begin(), pos + i));
+    m_cache.erase(std::next(m_cache.begin(), pos), std::next(m_cache.begin(), pos + i));
     if (i > 0) {
         auto grid = GetView();
         if (grid != nullptr) {
@@ -149,13 +146,16 @@ bool HaTable::DeleteRows(size_t pos, size_t numRows)
     return false;
 }
 
-void HaTable::MapColToCol(int dst, int col, bool ro)
+void HaTable::SetColImpl(const wxString &label, int dst, int col, bool ro)
 {
     auto &colImpl = m_colImpls[dst];
+    colImpl.label = label;
     colImpl.type = m_doc->GetColType(col);
-    colImpl.get = [this, col](int row) -> wxString { return m_doc->GetValueString(row, col); };
+    colImpl.get = [doc = m_doc, col](int row) -> wxString { return doc->GetValueString(row, col); };
     if (!ro) {
-        colImpl.set = [this, col](int row, const wxString &value) -> void { m_doc->SetValueString(row, col, value); };
+        colImpl.set = [doc = m_doc, col](int row, const wxString &value) -> void {
+            doc->SetValueString(row, col, value);
+        };
     }
 }
 
@@ -187,24 +187,40 @@ void HaTable::OnNewRow([[maybe_unused]] size_t pos)
 
 const wxString HaTable::GetCellValue(int row, int col) const
 {
-    auto flag = GetRowRecordFlag(row);
-    if (flag == RECORD_FLAG_COMMENT) {
-        if (col == 0) {
-            return GetCommentString(row);
+    auto headers = m_headerImpls.size();
+    if ((size_t)row < headers) {
+        auto &get = m_headerImpls.at(row).get;
+        if (get != nullptr) {
+            return get(col);
         }
-    } else if (col < GetColsCount()) {
-        if (m_colImpls[col].get != nullptr) {
-            return m_colImpls[col].get(row);
+    } else {
+        auto flag = GetRowRecordFlag(row);
+        if (flag == RECORD_FLAG_COMMENT) {
+            if (col == 0) {
+                return GetCommentString(row);
+            }
+        } else if (col < GetColsCount()) {
+            if (m_colImpls[col].get != nullptr) {
+                return m_colImpls[col].get(row - headers);
+            }
+            return _("not implemented");
         }
-        return _("not implemented");
     }
     return wxEmptyString;
 }
 
 void HaTable::SetCellValue(int row, int col, const wxString &value)
 {
-    wxASSERT(GetRowRecordFlag(row) == RECORD_FLAG_NORMAL);
-    if (col < GetColsCount() && m_colImpls[col].set != nullptr) {
-        m_colImpls[col].set(row, value);
+    auto headers = m_headerImpls.size();
+    if ((size_t)row < headers) {
+        auto &set = m_headerImpls.at(row).set;
+        if (set != nullptr) {
+            set(col, value);
+        }
+    } else {
+        wxASSERT(GetRowRecordFlag(row) == RECORD_FLAG_NORMAL);
+        if (col < GetColsCount() && m_colImpls[col].set != nullptr) {
+            m_colImpls[col].set(row - headers, value);
+        }
     }
 }

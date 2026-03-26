@@ -27,6 +27,7 @@ public:
     static const column_type COL_TYPES[COLS];
 
     static wxString GetColName(int i);
+    static int GetColByName(const wxString &name);
 
     money_t GetRecordRealAmount(const record_t *record) const
     {

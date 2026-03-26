@@ -1,3 +1,7 @@
+#include <algorithm>
+#include <ostream>
+#include <vector>
+
 #include <wx/log.h>
 #include <wx/tokenzr.h>
 
@@ -22,7 +26,7 @@ int ImportColMapConf::GetDataFieldByTitle(const wxString &title) const
     if (m_titleMap.contains(title)) {
         return m_titleMap.at(title);
     }
-    return INVALID_DATA_FIELD;
+    return INVALID_COL;
 }
 
 bool ImportColMapConf::AfterRead()
@@ -37,4 +41,21 @@ bool ImportColMapConf::AfterRead()
         }
     }
     return CsvDoc::AfterRead();
+}
+
+int ImportColMapConf::Writing(std::ostream &os)
+{
+    std::vector<std::pair<wxString, int>> entries(m_titleMap.begin(), m_titleMap.end());
+    std::sort(entries.begin(), entries.end(), [](const auto &lhs, const auto &rhs) {
+        if (lhs.second != rhs.second) {
+            return lhs.second < rhs.second;
+        }
+        return lhs.first < rhs.first;
+    });
+    int count = 0;
+    for (const auto &[title, field] : entries) {
+        os << field << ',' << w2s(title) << '\n';
+        ++count;
+    }
+    return count;
 }

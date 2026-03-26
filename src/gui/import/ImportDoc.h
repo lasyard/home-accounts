@@ -1,9 +1,6 @@
 #ifndef _HA_IMPORT_IMPORT_DOC_H_
 #define _HA_IMPORT_IMPORT_DOC_H_
 
-#include <memory>
-#include <string>
-
 #include <wx/arrstr.h>
 
 #include "../CsvDoc.h"
@@ -18,14 +15,24 @@ public:
     ImportDoc();
     virtual ~ImportDoc();
 
-    void SetColumnMap(const std::string &str);
+    void SetColMap(ImportColMapConf *colMap)
+    {
+        m_colMap = colMap;
+    }
+
+    ImportColMapConf *GetColMap()
+    {
+        return m_colMap;
+    }
 
     wxString GetCsvTitle(int i) const;
-    wxString GetDataFieldName(int i) const;
     int GetDataField(int i) const;
+    wxString GetDataFieldName(int i) const;
+    bool SetDataFieldByName(int i, const wxString &name);
 
 private:
-    std::unique_ptr<ImportColMapConf> m_colMap;
+    ImportColMapConf *m_colMap;
+
     wxArrayString m_colTitles;
     enum column_type *m_types;
     int *m_dataFields;

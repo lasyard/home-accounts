@@ -16,52 +16,33 @@ ImportTable::~ImportTable()
 void ImportTable::Init()
 {
     wxASSERT(m_doc != nullptr);
+    m_headerImpls.resize(HEADER_ROWS);
+    auto *doc = GetImportDoc();
+    m_headerImpls[0] = {
+        .label = _("Field"),
+        .type = CT_STR,
+        .get = [doc](int col) -> wxString { return doc->GetDataFieldName(col); },
+        // doc will be reload so need not to refresh
+        .set = [doc](int col, const wxString &value) -> void { doc->SetDataFieldByName(col, value); },
+    };
     int cols = m_doc->GetColCount();
+    m_colImpls.resize(cols);
     for (int i = 0; i < cols; ++i) {
-        m_colLabels.Add(static_cast<ImportDoc *>(m_doc)->GetCsvTitle(i));
+        SetColImpl(static_cast<ImportDoc *>(m_doc)->GetCsvTitle(i), i, i, true);
     }
-    m_colImpls = new struct ColImpl[m_colLabels.size()];
-    for (int i = 0; i < cols; ++i) {
-        MapColToCol(i, i, true);
-    }
-    HaTable::Init();
+    m_cache.resize(m_doc->GetRowCount() + HEADER_ROWS);
     SetAttrProvider(new ImportGridCellAttrProvider(this));
-}
-
-int ImportTable::GetNumberRows()
-{
-    return HaTable::GetNumberRows() + HEADER_ROWS;
-}
-
-wxString ImportTable::GetValue(int row, int col)
-{
-    auto *doc = static_cast<ImportDoc *>(m_doc);
-    wxASSERT(doc != nullptr);
-    if (row == 0) {
-        return doc->GetDataFieldName(col);
-    }
-    return HaTable::GetValue(row - HEADER_ROWS, col);
-}
-
-wxString ImportTable::GetRowLabelValue(int row)
-{
-    if (row == 0) {
-        return _("Field");
-    }
-    return wxString::Format("%d", row - HEADER_ROWS);
-}
-
-record_t *ImportTable::GetRowRecord(int row) const
-{
-    if (row != 0) {
-        return HaTable::GetRowRecord(row - HEADER_ROWS);
-    }
-    return nullptr;
+    HaTable::Init();
 }
 
 bool ImportTable::IsInvalidCol(int col) const
 {
-    auto *doc = static_cast<ImportDoc *>(m_doc);
+    auto *doc = GetImportDoc();
     wxASSERT(doc != nullptr && col >= 0 && col < doc->GetColCount());
     return doc->GetDataField(col) < 0;
+}
+
+ImportDoc *ImportTable::GetImportDoc()
+{
+    return static_cast<ImportDoc *>(m_doc);
 }

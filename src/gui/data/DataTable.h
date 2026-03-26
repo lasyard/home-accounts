@@ -20,6 +20,7 @@ public:
     static constexpr int BALANCE_COL = 7;
     static constexpr int MEMO_COL = 8;
     static constexpr int CATEGORY_COL = 9;
+    static constexpr int COLS = 10;
 
     DataTable(DataDoc *doc = nullptr);
     virtual ~DataTable();

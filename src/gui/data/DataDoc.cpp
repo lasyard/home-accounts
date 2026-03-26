@@ -49,6 +49,16 @@ wxString DataDoc::GetColName(int i)
     return _("Invalid");
 }
 
+int DataDoc::GetColByName(const wxString &name)
+{
+    for (int i = 0; i < COLS; ++i) {
+        if (GetColName(i) == name) {
+            return i;
+        }
+    }
+    return INVALID_COL;
+}
+
 void DataDoc::SetOpening(money_t opening)
 {
     m_stat.opening = opening;
@@ -76,8 +86,8 @@ void DataDoc::UpdateBalanceStat()
 int DataDoc::FindDateRow(int year, int month, int day)
 {
     int target_jdn = jdn(year, month, day);
-    return Algos::BinSearch(m_index, target_jdn, [this](const record_t *record, int jdn) {
-        int record_jdn = *(date_t *)get_const_field(&m_parser, record, DATE_COL);
+    return Algos::BinSearch(m_index, target_jdn, [parser = &m_parser](const record_t *record, int jdn) {
+        int record_jdn = *(date_t *)get_const_field(parser, record, DATE_COL);
         if (record_jdn == jdn) {
             if (record->flag == RECORD_FLAG_NORMAL) {
                 return 1;

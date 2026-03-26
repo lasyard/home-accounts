@@ -15,12 +15,14 @@ public:
 
     void Init() override;
 
-    int GetNumberRows() override;
-    wxString GetValue(int row, int col) override;
-    wxString GetRowLabelValue(int row) override;
-    record_t *GetRowRecord(int row) const override;
-
     bool IsInvalidCol(int col) const;
+
+    ImportDoc *GetImportDoc();
+
+    const ImportDoc *GetImportDoc() const
+    {
+        return const_cast<ImportTable *>(this)->GetImportDoc();
+    }
 
 private:
     static constexpr int HEADER_ROWS = 1;

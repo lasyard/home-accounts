@@ -9,8 +9,8 @@ Cache::Cache() : m_cache(), m_store(nullptr)
 Cache::Cache(Store *store) : m_cache(), m_store(store)
 {
     store->open();
-    m_store->forEachSection([this](const std::string &name) -> bool {
-        m_cache[name] = Section();
+    m_store->forEachSection([&cache = m_cache](const std::string &name) -> bool {
+        cache[name] = Section();
         return true;
     });
 }

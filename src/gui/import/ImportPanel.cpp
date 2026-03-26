@@ -1,9 +1,11 @@
 #include <fstream>
 
 #include <wx/filedlg.h>
+#include <wx/grid.h>
 #include <wx/log.h>
 #include <wx/sizer.h>
 
+#include "ImportColMapConf.h"
 #include "ImportDoc.h"
 #include "ImportGrid.h"
 #include "ImportPanel.h"
@@ -29,12 +31,14 @@ ImportPanel::~ImportPanel()
 
 void ImportPanel::OnUpdate()
 {
-    auto *csv = new ImportDoc();
-    try {
-        auto &colMap = m_doc->GetSection(IMPORT_COL_MAP_SECTION_NAME);
-        csv->SetColumnMap(colMap);
-    } catch ([[maybe_unused]] SectionNotFound &e) {
+    auto &colMapCsv = m_doc->GetOrCreateSection(IMPORT_COL_MAP_SECTION_NAME);
+    auto colMap = new ImportColMapConf();
+    if (!colMap->Read(colMapCsv)) {
+        wxLogError(_("Invalid import field mapping"));
+        return;
     }
+    auto *csv = new ImportDoc();
+    csv->SetColMap(colMap);
     try {
         auto &data = m_doc->GetSection(ImportPanel::IMPORT_SECTION_NAME);
         m_ok = csv->Read(data);
@@ -71,4 +75,25 @@ void ImportPanel::OnUpdate()
 void ImportPanel::SaveContents()
 {
     // do nothing, as the contents is read only
+}
+
+void ImportPanel::SettingDocument(HaDocument *doc)
+{
+    m_grid->Bind(wxEVT_GRID_CELL_CHANGED, &ImportPanel::OnGridCellChanged, this);
+    m_grid->Bind(wxEVT_GRID_CELL_CHANGED, &HaDocument::OnChange, doc);
+}
+
+void ImportPanel::OnGridCellChanged(wxGridEvent &event)
+{
+    if (event.GetRow() == 0) {
+        auto *import = dynamic_cast<ImportDoc *>(m_grid->GetTableDoc());
+        if (import != nullptr) {
+            std::string csv;
+            import->GetColMap()->Write(csv);
+            m_doc->SaveOrDeleteSection(IMPORT_COL_MAP_SECTION_NAME, csv);
+            m_doc->Modify(true);
+            OnUpdate();
+        }
+    }
+    event.Skip();
 }

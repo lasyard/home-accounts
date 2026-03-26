@@ -6,6 +6,7 @@
 
 class ImportGrid;
 class CsvDoc;
+class wxGridEvent;
 
 class ImportPanel : public HaPanel
 {
@@ -26,6 +27,10 @@ private:
     static constexpr char IMPORT_COL_MAP_SECTION_NAME[] = "conf/import_col_map";
 
     ImportGrid *m_grid;
+
+    void SettingDocument(HaDocument *doc) override;
+    void OnGridCellChanged(wxGridEvent &event);
+    void ReloadImportDoc(const std::string &colMap);
 };
 
 #endif /* _HA_IMPORT_IMPORT_PANEL_H_ */

@@ -2,14 +2,12 @@
 
 #include "DataGrid.h"
 
-#include "DataTable.h"
-
 IMPLEMENT_DYNAMIC_CLASS(DataGrid, HaGrid)
 
 BEGIN_EVENT_TABLE(DataGrid, HaGrid)
 END_EVENT_TABLE()
 
-DataGrid::DataGrid() : HaGrid()
+DataGrid::DataGrid() : HaGridTemplate<DataTable, DataDoc>()
 {
     wxLog::AddTraceMask(TM);
 }
@@ -22,7 +20,7 @@ DataGrid::DataGrid(
     long style,
     const wxString &name
 )
-    : HaGrid(parent, id, pos, size, style, name)
+    : HaGridTemplate<DataTable, DataDoc>(parent, id, pos, size, style, name)
 {
     wxLog::AddTraceMask(TM);
 }
@@ -33,16 +31,11 @@ DataGrid::~DataGrid()
 
 void DataGrid::MakeDateVisible(const wxDateTime &date)
 {
-    auto *doc = static_cast<DataDoc *>(GetHaTable()->GetDoc());
+    auto *doc = GetTableDoc();
     int row = doc->FindDateRow(date.GetYear(), date.GetMonth() + 1, date.GetDay());
     if (row > 0) {
         MakeCellVisible(row, 0);
     }
-}
-
-HaTable *DataGrid::CreateHaTable(CsvDoc *doc)
-{
-    return Utils::CreateHaTable<DataTable, DataDoc>(doc);
 }
 
 int DataGrid::CursorColOfNewRow()

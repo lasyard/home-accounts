@@ -5,7 +5,7 @@
 
 IMPLEMENT_DYNAMIC_CLASS(ImportTable, HaTable)
 
-ImportTable::ImportTable(ImportDoc *doc) : HaTable(doc)
+ImportTable::ImportTable(ImportDoc *doc) : HaTableTemplate<ImportDoc>(doc)
 {
 }
 
@@ -17,7 +17,7 @@ void ImportTable::Init()
 {
     wxASSERT(m_doc != nullptr);
     m_headerImpls.resize(HEADER_ROWS);
-    auto *doc = GetImportDoc();
+    auto *doc = GetDoc();
     m_headerImpls[0] = {
         .label = _("Field"),
         .type = CT_STR,
@@ -37,12 +37,7 @@ void ImportTable::Init()
 
 bool ImportTable::IsInvalidCol(int col) const
 {
-    auto *doc = GetImportDoc();
+    auto *doc = GetDoc();
     wxASSERT(doc != nullptr && col >= 0 && col < doc->GetColCount());
     return doc->GetDataField(col) < 0;
-}
-
-ImportDoc *ImportTable::GetImportDoc()
-{
-    return static_cast<ImportDoc *>(m_doc);
 }

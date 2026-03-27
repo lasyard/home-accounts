@@ -1,9 +1,12 @@
 #ifndef _HA_IMPORT_IMPORT_GRID_H_
 #define _HA_IMPORT_IMPORT_GRID_H_
 
-#include "../HaGrid.h"
+#include "../HaGridTemplate.h"
 
-class ImportGrid : public HaGrid
+#include "ImportDoc.h"
+#include "ImportTable.h"
+
+class ImportGrid : public HaGridTemplate<ImportTable, ImportDoc>
 {
     DECLARE_DYNAMIC_CLASS(ImportGrid)
     DECLARE_EVENT_TABLE()
@@ -21,8 +24,6 @@ public:
         const wxString &name = wxASCII_STR(wxGridNameStr)
     );
     ~ImportGrid();
-
-    HaTable *CreateHaTable(CsvDoc *doc) override;
 };
 
 #endif /* _HA_IMPORT_IMPORT_GRID_H_ */

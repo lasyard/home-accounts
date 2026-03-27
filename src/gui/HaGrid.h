@@ -4,7 +4,6 @@
 #include <wx/grid.h>
 #include <wx/pen.h>
 
-#include "HaTable.h"
 #include "Utils.h"
 
 class HaGrid : public wxGrid
@@ -56,12 +55,6 @@ public:
     void OnDelete(wxCommandEvent &event);
     void OnSelectCell(wxGridEvent &event);
 
-    CsvDoc *GetTableDoc()
-    {
-        auto *table = GetHaTable();
-        return table != nullptr ? table->GetDoc() : nullptr;
-    }
-
 protected:
     static constexpr int ROW_HEIGHT = 25;
 
@@ -78,11 +71,6 @@ protected:
         if (coords != wxGridNoCellCoords && !GetCellAttrPtr(coords)->IsReadOnly()) {
             SetCellValue(coords, wxEmptyString);
         }
-    }
-
-    HaTable *GetHaTable() const
-    {
-        return static_cast<HaTable *>(GetTable());
     }
 
     /**

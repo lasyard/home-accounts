@@ -1,11 +1,11 @@
 #ifndef _HA_IMPORT_IMPORT_TABLE_H_
 #define _HA_IMPORT_IMPORT_TABLE_H_
 
-#include "../HaTable.h"
+#include "../HaTableTemplate.h"
 
 class ImportDoc;
 
-class ImportTable : public HaTable
+class ImportTable : public HaTableTemplate<ImportDoc>
 {
     DECLARE_DYNAMIC_CLASS(ImportTable)
 
@@ -16,13 +16,6 @@ public:
     void Init() override;
 
     bool IsInvalidCol(int col) const;
-
-    ImportDoc *GetImportDoc();
-
-    const ImportDoc *GetImportDoc() const
-    {
-        return const_cast<ImportTable *>(this)->GetImportDoc();
-    }
 
 private:
     static constexpr int HEADER_ROWS = 1;

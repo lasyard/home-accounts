@@ -7,7 +7,7 @@
 
 IMPLEMENT_DYNAMIC_CLASS(DataTable, HaTable)
 
-DataTable::DataTable(DataDoc *doc) : HaTable(doc)
+DataTable::DataTable(DataDoc *doc) : HaTableTemplate<DataDoc>(doc)
 {
 }
 
@@ -22,7 +22,7 @@ void DataTable::Init()
     SetColImpl(_("Amount"), AMOUNT_COL, DataDoc::AMOUNT_COL);
     SetColImpl(_("Account"), ACCOUNT_COL, DataDoc::ACCOUNT_COL);
     SetColImpl(_("Description"), DESC_COL, DataDoc::DESC_COL);
-    auto *doc = GetDataDoc();
+    auto *doc = GetDoc();
     m_colImpls[INCOME_COL] = {
         .label = _("Income"),
         .type = CT_MONEY,
@@ -62,11 +62,6 @@ void DataTable::Init()
     HaTable::Init();
 }
 
-DataDoc *DataTable::GetDataDoc()
-{
-    return static_cast<DataDoc *>(m_doc);
-}
-
 void DataTable::OnNewRow(size_t pos)
 {
     HaTable::OnNewRow(pos);
@@ -75,7 +70,7 @@ void DataTable::OnNewRow(size_t pos)
 
 void DataTable::UpdateDocAndCache(int row)
 {
-    GetDataDoc()->UpdateBalanceStat();
+    GetDoc()->UpdateBalanceStat();
     for (auto i = row; i < GetNumberRows(); ++i) {
         CacheCell(i, BALANCE_COL);
     }

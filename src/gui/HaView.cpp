@@ -3,10 +3,8 @@
 #include "HaView.h"
 
 #include "HaApp.h"
-#include "HaDefs.h"
 #include "HaDocument.h"
 #include "HaMainFrame.h"
-#include "Utils.h"
 
 #include "accounts/AccountsPanel.h"
 #include "data/DataPanel.h"

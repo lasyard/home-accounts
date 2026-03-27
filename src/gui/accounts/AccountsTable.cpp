@@ -4,7 +4,7 @@
 
 IMPLEMENT_DYNAMIC_CLASS(AccountsTable, HaTable)
 
-AccountsTable::AccountsTable(AccountsDoc *doc) : HaTable(doc)
+AccountsTable::AccountsTable(AccountsDoc *doc) : HaTableTemplate<AccountsDoc>(doc)
 {
 }
 

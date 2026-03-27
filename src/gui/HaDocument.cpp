@@ -13,7 +13,6 @@
 #include "HaDocument.h"
 
 #include "ChangePassDialog.h"
-#include "HaDefs.h"
 #include "HaView.h"
 
 #include "data/DataDoc.h"

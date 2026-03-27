@@ -2,17 +2,12 @@
 
 #include "AccountsGrid.h"
 
-#include "AccountsDoc.h"
-#include "AccountsTable.h"
-
-#include "../HaTable.h"
-
 IMPLEMENT_DYNAMIC_CLASS(AccountsGrid, HaGrid)
 
 BEGIN_EVENT_TABLE(AccountsGrid, HaGrid)
 END_EVENT_TABLE()
 
-AccountsGrid::AccountsGrid() : HaGrid()
+AccountsGrid::AccountsGrid() : HaGridTemplate<AccountsTable, AccountsDoc>()
 {
     wxLog::AddTraceMask(TM);
 }
@@ -25,18 +20,13 @@ AccountsGrid::AccountsGrid(
     long style,
     const wxString &name
 )
-    : HaGrid(parent, id, pos, size, style, name)
+    : HaGridTemplate<AccountsTable, AccountsDoc>(parent, id, pos, size, style, name)
 {
     wxLog::AddTraceMask(TM);
 }
 
 AccountsGrid::~AccountsGrid()
 {
-}
-
-HaTable *AccountsGrid::CreateHaTable(CsvDoc *doc)
-{
-    return Utils::CreateHaTable<AccountsTable, AccountsDoc>(doc);
 }
 
 int AccountsGrid::CursorColOfNewRow()

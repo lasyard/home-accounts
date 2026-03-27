@@ -32,11 +32,6 @@ public:
     virtual enum column_type GetColType(int col) const;
     virtual record_t *GetRowRecord(int row) const;
 
-    auto *GetDoc()
-    {
-        return m_doc;
-    }
-
     bool IsColReadOnly(int col) const
     {
         return m_colImpls[col].set == nullptr;

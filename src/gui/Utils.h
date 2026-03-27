@@ -84,14 +84,6 @@ template <typename G> G *AddSoleGrid(wxWindow *parent)
     return grid;
 }
 
-template <typename T, typename D> HaTable *CreateHaTable(CsvDoc *doc)
-{
-    auto *d = dynamic_cast<D *>(doc);
-    wxASSERT(d != nullptr);
-    auto *table = new T(d);
-    return table;
-}
-
 } // namespace Utils
 
 #endif /* _HA_GUI_UTILS_H_ */

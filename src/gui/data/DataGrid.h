@@ -1,13 +1,12 @@
 #ifndef _HA_DATA_DATA_GRID_H_
 #define _HA_DATA_DATA_GRID_H_
 
-#include "../HaGrid.h"
+#include "../HaGridTemplate.h"
 
 #include "DataDoc.h"
+#include "DataTable.h"
 
-class DataTable;
-
-class DataGrid : public HaGrid
+class DataGrid : public HaGridTemplate<DataTable, DataDoc>
 {
     DECLARE_DYNAMIC_CLASS(DataGrid)
     DECLARE_EVENT_TABLE()
@@ -27,9 +26,6 @@ public:
     virtual ~DataGrid();
 
     void MakeDateVisible(const wxDateTime &date);
-
-protected:
-    HaTable *CreateHaTable(CsvDoc *doc) override;
 
 private:
     int CursorColOfNewRow() override;

@@ -1,16 +1,13 @@
 #include <wx/aboutdlg.h>
 #include <wx/config.h>
+#include <wx/menu.h>
 #include <wx/notebook.h>
 #include <wx/stdpaths.h>
-#include <wx/utils.h>
-#include <wx/wx.h>
 #include <wx/xrc/xmlres.h>
 
 #include "HaMainFrame.h"
 
 #include "HaApp.h"
-#include "HaDefs.h"
-#include "Utils.h"
 
 IMPLEMENT_DYNAMIC_CLASS(HaMainFrame, wxDocParentFrame)
 

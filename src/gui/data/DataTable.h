@@ -1,11 +1,11 @@
 #ifndef _HA_DATA_DATA_TABLE_H_
 #define _HA_DATA_DATA_TABLE_H_
 
-#include "../HaTable.h"
+#include "../HaTableTemplate.h"
 
 class DataDoc;
 
-class DataTable : public HaTable
+class DataTable : public HaTableTemplate<DataDoc>
 {
     DECLARE_DYNAMIC_CLASS(DataTable)
 
@@ -26,8 +26,6 @@ public:
     virtual ~DataTable();
 
     void Init() override;
-
-    DataDoc *GetDataDoc();
 
 protected:
     void OnNewRow(size_t pos) override;

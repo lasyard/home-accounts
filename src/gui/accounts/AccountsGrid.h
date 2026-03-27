@@ -1,9 +1,12 @@
 #ifndef _HA_ACCOUNTS_ACCOUNTS_GRID_H_
 #define _HA_ACCOUNTS_ACCOUNTS_GRID_H_
 
-#include "../HaGrid.h"
+#include "../HaGridTemplate.h"
 
-class AccountsGrid : public HaGrid
+#include "AccountsDoc.h"
+#include "AccountsTable.h"
+
+class AccountsGrid : public HaGridTemplate<AccountsTable, AccountsDoc>
 {
     DECLARE_DYNAMIC_CLASS(AccountGrid)
     DECLARE_EVENT_TABLE()
@@ -23,8 +26,6 @@ public:
     virtual ~AccountsGrid();
 
 protected:
-    HaTable *CreateHaTable(CsvDoc *doc) override;
-
     int CursorColOfNewRow() override;
 };
 

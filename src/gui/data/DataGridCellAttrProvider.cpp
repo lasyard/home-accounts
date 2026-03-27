@@ -27,7 +27,7 @@ wxGridCellAttr *DataGridCellAttrProvider::GetItemCellAttr(int row, int col) cons
 {
     auto *table = static_cast<DataTable *>(m_table);
     if (table != nullptr && col == DataTable::BALANCE_COL &&
-        table->GetDataDoc()->GetRecordBalance(table->GetRowRecord(row)) < 0) {
+        table->GetDoc()->GetRecordBalance(table->GetRowRecord(row)) < 0) {
         m_deficitAttrRO->IncRef();
         return m_deficitAttrRO;
     }

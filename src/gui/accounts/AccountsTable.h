@@ -1,11 +1,11 @@
 #ifndef _HA_ACCOUNTS_ACCOUNTS_TABLE_H_
 #define _HA_ACCOUNTS_ACCOUNTS_TABLE_H_
 
-#include "../HaTable.h"
+#include "../HaTableTemplate.h"
 
 class AccountsDoc;
 
-class AccountsTable : public HaTable
+class AccountsTable : public HaTableTemplate<AccountsDoc>
 {
     DECLARE_DYNAMIC_CLASS(AccountsTable)
 

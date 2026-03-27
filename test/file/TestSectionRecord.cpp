@@ -1,5 +1,6 @@
 #include "doctest/doctest.h"
 
+#include <cstring>
 #include <sstream>
 
 #include "SectionRecord.h"

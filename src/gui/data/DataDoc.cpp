@@ -1,9 +1,9 @@
+#include <algorithm>
+
 #include <wx/log.h>
 #include <wx/translation.h>
 
 #include "DataDoc.h"
-
-#include "../Algos.h"
 
 #include "csv/date_time.h"
 
@@ -86,15 +86,12 @@ void DataDoc::UpdateBalanceStat()
 int DataDoc::FindDateRow(int year, int month, int day)
 {
     int target_jdn = jdn(year, month, day);
-    return Algos::BinSearch(m_index, target_jdn, [parser = &m_parser](const record_t *record, int jdn) {
-        int record_jdn = *(date_t *)get_const_field(parser, record, DATE_COL);
-        if (record_jdn == jdn) {
-            if (record->flag == RECORD_FLAG_NORMAL) {
-                return 1;
-            }
-        }
-        return (record_jdn > jdn) - (record_jdn < jdn);
-    });
+    auto it =
+        std::lower_bound(m_index.begin(), m_index.end(), target_jdn, [parser = &m_parser](record_t *record, int jdn) {
+            int record_jdn = *(date_t *)get_const_field(parser, record, DATE_COL);
+            return record_jdn < jdn;
+        });
+    return it - m_index.begin();
 }
 
 record_t *DataDoc::InsertRecordAtTime(date_t date, timo_t time)

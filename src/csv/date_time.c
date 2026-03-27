@@ -65,9 +65,9 @@ const char *parse_date(const char *buf, date_t *data, char sep, char dateSep)
             return_null_if_null(p);
         }
     }
-    year = make_valid(year, 1900, 2100);
-    month = make_valid(month, 1, 12);
-    day = make_valid(day, 1, end_day_of_month((int)year, month));
+    year = make_valid((int)year, 1900, 2100);
+    month = make_valid((int)month, 1, 12);
+    day = make_valid((int)day, 1, end_day_of_month((int)year, (int)month));
     *data = jdn((int)year, (int)month, (int)day);
     return p;
 }
@@ -94,9 +94,9 @@ const char *parse_time(const char *buf, timo_t *data, char sep)
             return_null_if_null(p);
         }
     }
-    hour = make_valid(hour, 0, 23);
-    min = make_valid(min, 0, 59);
-    sec = make_valid(sec, 0, 59);
+    hour = make_valid((int)hour, 0, 23);
+    min = make_valid((int)min, 0, 59);
+    sec = make_valid((int)sec, 0, 59);
     *data = (hour * 60 + min) * 60 + sec;
     return p;
 }

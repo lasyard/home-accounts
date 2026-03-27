@@ -2,9 +2,11 @@
 #define _HA_FILE_FILE_STORE_H_
 
 #include <fstream>
+#include <map>
 
 #include "CryptoStore.h"
-#include "SectionRecord.h"
+
+class SectionRecord;
 
 class FileStore : public CryptoStore
 {

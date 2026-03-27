@@ -21,8 +21,6 @@ EVT_MENU(ID_INSERT, HaView::OnMenu)
 EVT_UPDATE_UI(wxID_DELETE, HaView::OnUpdateMenu)
 EVT_MENU(wxID_DELETE, HaView::OnMenu)
 EVT_MENU(ID_IMPORT, HaView::OnImport)
-EVT_NOTEBOOK_PAGE_CHANGING(ID_BOOK, HaView::OnPageChanging)
-EVT_NOTEBOOK_PAGE_CHANGED(ID_BOOK, HaView::OnPageChanged)
 END_EVENT_TABLE()
 
 HaView::HaView() : wxView()
@@ -40,6 +38,8 @@ bool HaView::OnCreate([[maybe_unused]] wxDocument *doc, [[maybe_unused]] long fl
     auto *frame = static_cast<HaMainFrame *>(wxGetApp().GetTopWindow());
     SetFrame(frame);
     m_book = frame->GetBook();
+    m_book->Bind(wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING, &HaView::OnPageChanging, this);
+    m_book->Bind(wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED, &HaView::OnPageChanged, this);
     m_book->Show();
     frame->Layout();
     m_book->AddPage(new DataPanel(m_book), _("Data"));
@@ -119,6 +119,13 @@ void HaView::OnPageChanged(wxBookCtrlEvent &event)
 void HaView::SaveContents()
 {
     GetCurrentHaPanel()->TrySaveContents();
+}
+
+void HaView::CloseImportPanel()
+{
+    m_book->SetSelection(0);
+    m_book->DeletePage(m_book->FindPage(m_importPanel));
+    m_importPanel = nullptr;
 }
 
 HaDocument *HaView::GetHaDocument() const

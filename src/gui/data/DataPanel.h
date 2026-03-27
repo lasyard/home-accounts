@@ -9,7 +9,6 @@ class wxDateEvent;
 class wxStaticText;
 class wxBoxSizer;
 
-class CsvDoc;
 class DataGrid;
 
 class DataPanel : public HaPanel
@@ -34,8 +33,6 @@ public:
     void OnUpdateStatistic(wxCommandEvent &event);
 
 private:
-    static constexpr char DATA_SECTION_NAME_FORMAT[] = "data/%d";
-
     wxBoxSizer *m_header;
     wxDatePickerCtrl *m_date;
     wxStaticText *m_opening;
@@ -47,11 +44,6 @@ private:
     int m_currentYear;
 
     void SettingDocument(HaDocument *doc) override;
-
-    const std::string sectionNameOfYear(int year) const
-    {
-        return w2s(wxString::Format(DATA_SECTION_NAME_FORMAT, year));
-    }
 
     void ShowDataOfYear(int year);
 

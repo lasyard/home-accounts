@@ -1,7 +1,9 @@
 #include <sstream>
 
-#include "Exceptions.h"
 #include "FileStore.h"
+
+#include "Exceptions.h"
+#include "SectionRecord.h"
 
 FileStore::FileStore(const std::string &fileName, const std::string &pass, const std::string &iv)
     : CryptoStore(iv)

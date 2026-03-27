@@ -7,6 +7,7 @@
 
 class HaView;
 class Cache;
+class DataDoc;
 
 class HaDocument : public wxDocument
 {
@@ -42,14 +43,23 @@ public:
     void OnUpdateMenu(wxUpdateUIEvent &event);
     void OnChangePass(wxCommandEvent &event);
 
+    HaView *GetHaView() const;
+
+    template <typename CSV> CSV *LoadCsvDoc(const std::string &sectionName, bool &ok)
+    {
+        auto &data = GetOrCreateSection(sectionName);
+        auto *csv = new CSV();
+        ok = csv->Read(data);
+        return csv;
+    }
+
+    DataDoc *LoadDataDoc(int year, bool &ok);
+
 private:
-    static constexpr char IV[] = APP_NAME;
-    static constexpr int MAX_BACKUPS = 5;
+    static constexpr const char IV[] = APP_NAME;
 
     Cache *m_doc;
     wxString m_pass;
-
-    HaView *GetView() const;
 
     // create a timestamped backup for fileName if needed; returns true if backup created
     bool CreateBackupIfNeeded(const wxString &fileName);

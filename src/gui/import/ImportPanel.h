@@ -5,8 +5,8 @@
 #include "../Utils.h"
 
 class ImportGrid;
-class CsvDoc;
 class wxGridEvent;
+class wxCommandEvent;
 
 class ImportPanel : public HaPanel
 {
@@ -23,14 +23,11 @@ public:
     void SaveContents() override;
 
 private:
-    static constexpr char IMPORT_SECTION_NAME[] = "import";
-    static constexpr char IMPORT_COL_MAP_SECTION_NAME[] = "conf/import_col_map";
-
     ImportGrid *m_grid;
 
     void SettingDocument(HaDocument *doc) override;
     void OnGridCellChanged(wxGridEvent &event);
-    void ReloadImportDoc(const std::string &colMap);
+    void OnMerge(wxCommandEvent &event);
 };
 
 #endif /* _HA_IMPORT_IMPORT_PANEL_H_ */

@@ -78,12 +78,6 @@ void HaGrid::InitTable(CsvDoc *doc)
     RefreshContent();
 }
 
-CsvDoc *HaGrid::GetTableDoc()
-{
-    auto *table = GetHaTable();
-    return table != nullptr ? table->GetDoc() : nullptr;
-}
-
 void HaGrid::OnUpdateInsert(wxUpdateUIEvent &event)
 {
     event.Enable(HasFocus() && GetGridCursorRow() >= 0);
@@ -190,11 +184,6 @@ void HaGrid::ClearAllCellsInBlocks(const wxGridBlocks &blocks)
 int HaGrid::CursorColOfNewRow()
 {
     return -1;
-}
-
-HaTable *HaGrid::GetHaTable() const
-{
-    return static_cast<HaTable *>(GetTable());
 }
 
 void HaGrid::CheckEventHandler()

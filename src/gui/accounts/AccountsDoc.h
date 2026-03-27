@@ -1,8 +1,6 @@
 #ifndef _HA_ACCOUNTS_ACCOUNTS_DOC_H_
 #define _HA_ACCOUNTS_ACCOUNTS_DOC_H_
 
-#include <wx/arrstr.h>
-
 #include "../CsvDoc.h"
 
 class AccountsDoc : public CsvDoc
@@ -36,6 +34,8 @@ public:
     {
         return (const struct str *)get_const_field(&m_parser, record, NAME_COL);
     }
+
+    void GetIdAndNames(std::vector<int> &ids, wxArrayString &names) const;
 
 protected:
     static const wxString TypeGetter(const struct parser *parser, const record_t *record, int i);

@@ -65,7 +65,7 @@ parse_by_type(const struct parser_options *options, const char *buf, enum column
     return NULL;
 }
 
-static void *copy_by_type(enum column_type type, void *dst, const void *src)
+void *copy_by_type(enum column_type type, void *dst, const void *src)
 {
     switch (type) {
     case CT_STR:

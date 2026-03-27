@@ -1,4 +1,7 @@
+#include <cryptopp/zlib.h>
+
 #include "CryptoStore.h"
+
 #include "Exceptions.h"
 
 CryptoStore::~CryptoStore()

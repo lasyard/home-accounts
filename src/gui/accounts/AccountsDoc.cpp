@@ -27,6 +27,22 @@ AccountsDoc::~AccountsDoc()
 {
 }
 
+void AccountsDoc::GetIdAndNames(std::vector<int> &ids, wxArrayString &names) const
+{
+    for (struct list_item *pos = m_records.first; pos != NULL; pos = pos->next) {
+        auto *record = get_record(pos);
+        if (record->flag != RECORD_FLAG_NORMAL) {
+            continue;
+        }
+        auto *name = GetRecordName(record);
+        if (str_is_empty(name)) {
+            continue;
+        }
+        ids.push_back(GetRecordId(record));
+        names.push_back(wxString(name->buf, name->len));
+    }
+}
+
 const wxString AccountsDoc::TypeGetter(const struct parser *parser, const record_t *record, int i)
 {
     auto type = *(int64_t *)get_const_field(parser, record, i);

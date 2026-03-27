@@ -1,11 +1,10 @@
 #ifndef _HA_FILE_CACHE_H_
 #define _HA_FILE_CACHE_H_
 
-#include <functional>
 #include <map>
 #include <string>
 
-#include "Store.h"
+class Store;
 
 class Section
 {

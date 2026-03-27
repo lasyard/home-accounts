@@ -1,8 +1,5 @@
 #include "doctest/doctest.h"
 
-#include <cstdlib>
-#include <cstring>
-
 #include "utils.h"
 
 TEST_CASE("is_space")

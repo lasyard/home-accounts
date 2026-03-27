@@ -1,5 +1,4 @@
 #include <cryptopp/aes.h>
-#include <cryptopp/files.h>
 #include <cryptopp/gcm.h>
 #include <cryptopp/sha.h>
 #include <cryptopp/zlib.h>

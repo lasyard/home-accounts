@@ -2,6 +2,27 @@
 
 #include "SectionRecord.h"
 
+SectionRecord::SectionRecord() : name(), offset(0), size(0)
+{
+    memset(key, 0, CRYPTO_KEY_LEN);
+}
+
+SectionRecord::SectionRecord(const std::string s) : name(s), offset(0), size(0)
+{
+    memset(key, 0, CRYPTO_KEY_LEN);
+}
+
+SectionRecord::SectionRecord(const SectionRecord &obj)
+{
+    copy(obj);
+}
+
+const SectionRecord &SectionRecord::operator=(const SectionRecord &obj)
+{
+    copy(obj);
+    return *this;
+}
+
 void SectionRecord::write(std::ostream &os) const
 {
     os.write((const char *)&offset, OFFSET_LEN);
@@ -41,6 +62,14 @@ bool SectionRecord::read(std::istream &is)
     name = std::string(buf, len);
     delete[] buf;
     return true;
+}
+
+void SectionRecord::copy(const SectionRecord &obj)
+{
+    name = obj.name;
+    offset = obj.offset;
+    size = obj.size;
+    memcpy(key, obj.key, CRYPTO_KEY_LEN);
 }
 
 std::ostream &operator<<(std::ostream &os, const SectionRecord &obj)

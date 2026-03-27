@@ -30,10 +30,8 @@ AccountsPanel::~AccountsPanel()
 
 void AccountsPanel::OnUpdate()
 {
-    auto &data = m_doc->GetOrCreateSection(ACCOUNT_SECTION_NAME);
-    auto *csv = new AccountsDoc();
-    m_ok = csv->Read(data);
-    m_grid->InitTable(csv);
+    auto *doc = m_doc->LoadCsvDoc<AccountsDoc>(ACCOUNTS_SECTION_NAME, m_ok);
+    m_grid->InitTable(doc);
 }
 
 void AccountsPanel::SaveContents()
@@ -43,7 +41,7 @@ void AccountsPanel::SaveContents()
     wxASSERT(doc != nullptr);
     std::string str;
     doc->Write(str);
-    m_doc->SaveOrDeleteSection(ACCOUNT_SECTION_NAME, str);
+    m_doc->SaveOrDeleteSection(ACCOUNTS_SECTION_NAME, str);
 }
 
 void AccountsPanel::ClearContents()

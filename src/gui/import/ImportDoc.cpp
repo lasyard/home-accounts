@@ -1,6 +1,5 @@
 #include <istream>
 
-#include <wx/arrstr.h>
 #include <wx/log.h>
 #include <wx/translation.h>
 
@@ -14,9 +13,15 @@
 
 #include "csv/str.h"
 
-ImportDoc::ImportDoc() : m_colMap(nullptr), m_colTitles(), m_types(nullptr), m_dataFields(nullptr)
+ImportDoc::ImportDoc()
+    : m_colMap(nullptr)
+    , m_colTitles()
+    , m_types(nullptr)
+    , m_dataFields(nullptr)
+    , m_csvCols(new int[DataDoc::COLS])
 {
     wxLog::AddTraceMask(TM);
+    std::fill(m_csvCols, m_csvCols + DataDoc::COLS, INVALID_COL);
 }
 
 ImportDoc::~ImportDoc()
@@ -30,6 +35,21 @@ ImportDoc::~ImportDoc()
     if (m_dataFields != nullptr) {
         delete[] m_dataFields;
     }
+    if (m_csvCols != nullptr) {
+        delete[] m_csvCols;
+    }
+}
+
+date_t ImportDoc::GetRecordDate(const record_t *record) const
+{
+    int i = m_csvCols[DataDoc::DATE_COL];
+    return i != INVALID_COL ? *(date_t *)get_const_field(&m_parser, record, i) : UNKNOWN_DATE;
+}
+
+timo_t ImportDoc::GetRecordTime(const record_t *record) const
+{
+    int i = m_csvCols[DataDoc::TIME_COL];
+    return i != INVALID_COL ? *(timo_t *)get_const_field(&m_parser, record, i) : UNKNOWN_TIME;
 }
 
 wxString ImportDoc::GetCsvTitle(int i) const
@@ -54,15 +74,20 @@ bool ImportDoc::SetDataFieldByName(int i, const wxString &name)
         return false;
     }
     int field = DataDoc::GetColByName(name);
-    for (int j = 0; j < (int)m_colTitles.size(); ++j) {
-        if (m_dataFields[j] == field) {
-            m_dataFields[j] = INVALID_COL;
-            m_colMap->SetMap(m_dataFields[j], m_colTitles[j]);
-        }
+    int col = m_csvCols[field];
+    if (col != INVALID_COL) {
+        m_dataFields[col] = INVALID_COL;
+        m_colMap->SetMap(m_dataFields[col], m_colTitles[col]);
     }
+    m_csvCols[field] = i;
     m_dataFields[i] = field;
     m_colMap->SetMap(m_dataFields[i], m_colTitles[i]);
     return true;
+}
+
+int ImportDoc::GetCsvCol(int i) const
+{
+    return (0 <= i && (size_t)i < DataDoc::COLS) ? m_csvCols[i] : INVALID_COL;
 }
 
 int ImportDoc::Reading(std::istream &is)
@@ -95,6 +120,7 @@ int ImportDoc::Reading(std::istream &is)
         for (int i = 0; i < cols; ++i) {
             int field = m_colMap->GetDataFieldByTitle(m_colTitles[i]);
             if (field != INVALID_COL) {
+                m_csvCols[field] = i;
                 m_dataFields[i] = field;
                 m_types[i] = DataDoc::COL_TYPES[field];
             }

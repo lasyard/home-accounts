@@ -20,7 +20,6 @@ EVT_UPDATE_UI(ID_INSERT, DataPanel::OnUpdateMenu)
 EVT_MENU(ID_INSERT, DataPanel::OnMenu)
 EVT_UPDATE_UI(wxID_DELETE, DataPanel::OnUpdateMenu)
 EVT_MENU(wxID_DELETE, DataPanel::OnMenu)
-EVT_DATE_CHANGED(ID_DATE, DataPanel::OnDateChanged)
 END_EVENT_TABLE()
 
 DataPanel::DataPanel(wxWindow *parent) : HaPanel(parent)
@@ -28,7 +27,8 @@ DataPanel::DataPanel(wxWindow *parent) : HaPanel(parent)
     wxLog::AddTraceMask(TM);
     m_header = new wxBoxSizer(wxHORIZONTAL);
     AddHeaderLabel(_("Select Date:"), HaGdi::BIG_TEXT_FONT, true);
-    m_date = new wxDatePickerCtrl(this, ID_DATE);
+    m_date = new wxDatePickerCtrl(this, wxID_ANY);
+    m_date->Bind(wxEVT_DATE_CHANGED, &DataPanel::OnDateChanged, this);
     m_date->SetFont(HaGdi::BIG_DIGI_FONT);
     m_header->Add(m_date, wxSizerFlags().Border(wxRIGHT, 9).Proportion(0));
     AddHeaderLabel(_("Opening:"), HaGdi::BIG_TEXT_FONT, true);
@@ -66,7 +66,7 @@ void DataPanel::SaveContents()
     wxASSERT(doc != nullptr);
     std::string str;
     doc->Write(str);
-    m_doc->SaveOrDeleteSection(sectionNameOfYear(m_currentYear), str);
+    m_doc->SaveOrDeleteSection(DataSectionNameOfYear(m_currentYear), str);
 }
 
 void DataPanel::ClearContents()
@@ -117,16 +117,14 @@ void DataPanel::SettingDocument(HaDocument *doc)
 void DataPanel::ShowDataOfYear(int year)
 {
     m_currentYear = year;
-    auto &data = m_doc->GetOrCreateSection(sectionNameOfYear(year));
-    auto *csv = new DataDoc(year);
-    m_ok = csv->Read(data);
+    auto *csv = m_doc->LoadDataDoc(year, m_ok);
     m_grid->InitTable(csv);
     UpdateStatistic();
 }
 
 void DataPanel::UpdateStatistic()
 {
-    auto *doc = m_grid->GetTableDoc();
+    auto *doc = static_cast<DataDoc *>(m_grid->GetTableDoc());
     m_opening->SetLabel(doc->GetStatOpeningString());
     m_income->SetLabel(doc->GetStatIncomeString());
     m_outlay->SetLabel(doc->GetStatOutlayString());

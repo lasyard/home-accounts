@@ -31,19 +31,10 @@ DataGrid::~DataGrid()
 {
 }
 
-DataTable *DataGrid::GetDataTable() const
-{
-    return static_cast<DataTable *>(GetTable());
-}
-
-DataDoc *DataGrid::GetTableDoc()
-{
-    return GetDataTable()->GetDataDoc();
-}
-
 void DataGrid::MakeDateVisible(const wxDateTime &date)
 {
-    int row = GetTableDoc()->FindDateRow(date.GetYear(), date.GetMonth() + 1, date.GetDay());
+    auto *doc = static_cast<DataDoc *>(GetHaTable()->GetDoc());
+    int row = doc->FindDateRow(date.GetYear(), date.GetMonth() + 1, date.GetDay());
     if (row > 0) {
         MakeCellVisible(row, 0);
     }

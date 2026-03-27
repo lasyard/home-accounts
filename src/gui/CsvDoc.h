@@ -54,6 +54,16 @@ public:
         return m_index[pos];
     }
 
+    void *GetRecordField(record_t *record, int i) const
+    {
+        return get_field(&m_parser, record, i);
+    }
+
+    void SetRecordField(record_t *record, int i, const void *value) const
+    {
+        set_field(&m_parser, record, i, value);
+    }
+
     virtual const wxString GetValueString(int pos, int i) const;
     virtual void SetValueString(int pos, int i, const wxString &value);
 

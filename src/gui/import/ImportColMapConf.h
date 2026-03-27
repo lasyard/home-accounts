@@ -3,8 +3,6 @@
 
 #include <map>
 
-#include <wx/string.h>
-
 #include "../CsvDoc.h"
 
 class ImportColMapConf : public CsvDoc

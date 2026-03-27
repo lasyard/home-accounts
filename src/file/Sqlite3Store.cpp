@@ -1,6 +1,6 @@
-#include "Sqlite3Store.h"
-
 #include <filesystem>
+
+#include "Sqlite3Store.h"
 
 #include "sqlite3.h"
 

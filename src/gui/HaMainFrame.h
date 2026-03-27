@@ -47,9 +47,6 @@ public:
     }
 
 private:
-    static const wxString CFG_FILE_HISTORY;
-    static const wxString LICENSE_FILE_NAME;
-
     wxNotebook *m_book;
 };
 

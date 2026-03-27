@@ -3,7 +3,6 @@
 #include <vector>
 
 #include <wx/log.h>
-#include <wx/tokenzr.h>
 
 #include "ImportColMapConf.h"
 

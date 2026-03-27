@@ -3,6 +3,7 @@
 
 #include "../CsvDoc.h"
 
+#include "csv/date_time.h"
 #include "csv/money.h"
 
 class DataDoc : public CsvDoc
@@ -35,6 +36,16 @@ public:
         return *(money_t *)get_const_field(&m_parser, record, REAL_AMOUNT_COL);
     }
 
+    date_t GetRecordDate(const record_t *record) const
+    {
+        return *(date_t *)get_const_field(&m_parser, record, DATE_COL);
+    }
+
+    timo_t GetRecordTime(const record_t *record) const
+    {
+        return *(timo_t *)get_const_field(&m_parser, record, TIME_COL);
+    }
+
     money_t GetRecordBalance(const record_t *record) const
     {
         if (record->udata != NULL) {
@@ -43,7 +54,22 @@ public:
         return 0;
     }
 
-    void SetRecordBalance(record_t *record, money_t balance)
+    void SetRecordDate(record_t *record, date_t date) const
+    {
+        *(date_t *)get_field(&m_parser, record, DATE_COL) = date;
+    }
+
+    void SetRecordTime(record_t *record, timo_t time) const
+    {
+        *(timo_t *)get_field(&m_parser, record, TIME_COL) = time;
+    }
+
+    void SetRecordAccount(record_t *record, int account) const
+    {
+        set_int_field(&m_parser, record, ACCOUNT_COL, account);
+    }
+
+    void SetRecordBalance(record_t *record, money_t balance) const
     {
         if (record->udata == NULL) {
             record->udata = malloc(sizeof(ExtraCols));
@@ -88,6 +114,8 @@ public:
     void UpdateBalanceStat();
 
     int FindDateRow(int year, int month, int day);
+
+    record_t *InsertRecordAtTime(date_t date, timo_t time);
 
     wxString GetStatOpeningString() const
     {

@@ -1,6 +1,7 @@
 #include <fstream>
 
 #include "DirectoryStore.h"
+
 #include "Exceptions.h"
 
 namespace fs = std::filesystem;

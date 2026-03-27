@@ -1,6 +1,5 @@
 #include "doctest/doctest.h"
 
-#include <cstdlib>
 #include <cstring>
 
 #include "str.h"

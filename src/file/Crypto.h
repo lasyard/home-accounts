@@ -4,8 +4,6 @@
 #include <string>
 
 #include <cryptopp/config.h>
-#include <cryptopp/filters.h>
-#include <cryptopp/zlib.h>
 
 // since crypto++6.0, `byte` is in `CryptoPP` namespace
 #if CRYPTOPP_MAJOR >= 6

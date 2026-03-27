@@ -7,6 +7,8 @@
 #include <wx/strconv.h>
 #include <wx/string.h>
 
+#include "HaDefs.h"
+
 #define DECLARE_TM(class) static constexpr wxChar TM[] = wxS(#class);
 
 class wxEvent;
@@ -37,6 +39,11 @@ inline wxString Trim(const wxString &str)
     s.Trim(true);
     s.Trim(false);
     return s;
+}
+
+inline const std::string DataSectionNameOfYear(int year)
+{
+    return w2s(wxString::Format(DATA_SECTION_NAME_FORMAT, year));
 }
 
 extern "C" {

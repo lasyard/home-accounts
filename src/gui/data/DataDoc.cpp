@@ -97,9 +97,43 @@ int DataDoc::FindDateRow(int year, int month, int day)
     });
 }
 
+record_t *DataDoc::InsertRecordAtTime(date_t date, timo_t time)
+{
+    size_t pos;
+    for (pos = 0; pos < GetRowCount(); ++pos) {
+        auto *record = GetRecord(pos);
+        auto recordDate = GetRecordDate(record);
+        if (date > recordDate) {
+            continue;
+        }
+        if (date == recordDate) {
+            if (record->flag == RECORD_FLAG_COMMENT) {
+                continue;
+            }
+            auto recordTime = GetRecordTime(record);
+            if (recordTime == UNKNOWN_TIME) {
+                continue;
+            }
+            if (time != UNKNOWN_TIME && time >= recordTime) {
+                continue;
+            }
+        }
+        break;
+    }
+    auto *record = InsertRecord(pos);
+    if (record == nullptr) {
+        return nullptr;
+    }
+    SetRecordDate(record, date);
+    SetRecordTime(record, time);
+    return record;
+}
+
 bool DataDoc::AfterRead()
 {
-    fill_serial(&m_parser, &m_records, jdn(m_year, 1, 1), jdn(m_year, 12, 31));
+    int start = jdn(m_year, 1, 1);
+    int end = jdn(m_year, 12, 31);
+    fill_serial(&m_parser, &m_records, start, end);
     SetOpening(0);
     return CsvDoc::AfterRead();
 }

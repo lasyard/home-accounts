@@ -26,10 +26,6 @@ public:
     );
     virtual ~DataGrid();
 
-    DataTable *GetDataTable() const;
-
-    DataDoc *GetTableDoc() override;
-
     void MakeDateVisible(const wxDateTime &date);
 
 protected:

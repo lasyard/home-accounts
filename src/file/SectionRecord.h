@@ -1,14 +1,15 @@
 #ifndef _HA_FILE_SECTION_RECORD_H_
 #define _HA_FILE_SECTION_RECORD_H_
 
-#include <cstring>
-#include <ostream>
-
 #include "Crypto.h"
 
 class SectionRecord
 {
 public:
+    SectionRecord();
+    SectionRecord(const std::string s);
+    SectionRecord(const SectionRecord &obj);
+
     static constexpr int OFFSET_LEN = 8;
     static constexpr int SIZE_LEN = 8;
     static constexpr int NAME_LEN_LEN = 2;
@@ -18,26 +19,7 @@ public:
     size_t size;
     unsigned char key[CRYPTO_KEY_LEN];
 
-    SectionRecord() : name(), offset(0), size(0)
-    {
-        memset(key, 0, CRYPTO_KEY_LEN);
-    }
-
-    SectionRecord(const std::string s) : name(s), offset(0), size(0)
-    {
-        memset(key, 0, CRYPTO_KEY_LEN);
-    }
-
-    SectionRecord(const SectionRecord &obj)
-    {
-        copy(obj);
-    }
-
-    const SectionRecord &operator=(const SectionRecord &obj)
-    {
-        copy(obj);
-        return *this;
-    }
+    const SectionRecord &operator=(const SectionRecord &obj);
 
     void write(std::ostream &os) const;
     bool read(std::istream &is);
@@ -48,13 +30,7 @@ public:
     }
 
 private:
-    void copy(const SectionRecord &obj)
-    {
-        name = obj.name;
-        offset = obj.offset;
-        size = obj.size;
-        memcpy(key, obj.key, CRYPTO_KEY_LEN);
-    }
+    void copy(const SectionRecord &obj);
 
     friend std::ostream &operator<<(std::ostream &os, const SectionRecord &obj);
 };

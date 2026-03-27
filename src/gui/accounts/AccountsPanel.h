@@ -5,7 +5,6 @@
 #include "../Utils.h"
 
 class AccountsGrid;
-class CsvDoc;
 
 class AccountsPanel : public HaPanel
 {
@@ -26,8 +25,6 @@ public:
     void OnMenu(wxCommandEvent &event);
 
 private:
-    static constexpr char ACCOUNT_SECTION_NAME[] = "accounts";
-
     AccountsGrid *m_grid;
 
     void SettingDocument(HaDocument *doc) override;

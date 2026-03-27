@@ -16,6 +16,8 @@
 #include "HaDefs.h"
 #include "HaView.h"
 
+#include "data/DataDoc.h"
+
 #include "file/Cache.h"
 #include "file/Exceptions.h"
 #include "file/Sqlite3Store.h"
@@ -79,7 +81,7 @@ bool HaDocument::DoOpenDocument(const wxString &fileName)
 bool HaDocument::DoSaveDocument(const wxString &fileName)
 {
     wxLogTrace(TM, "\"%s(%s)\" called.", __WXFUNCTION__, fileName);
-    auto *view = GetView();
+    auto *view = GetHaView();
     if (view != nullptr) {
         view->SaveContents();
     }
@@ -171,9 +173,17 @@ void HaDocument::OnChangePass([[maybe_unused]] wxCommandEvent &event)
     }
 }
 
-HaView *HaDocument::GetView() const
+HaView *HaDocument::GetHaView() const
 {
     return dynamic_cast<HaView *>(this->GetFirstView());
+}
+
+DataDoc *HaDocument::LoadDataDoc(int year, bool &ok)
+{
+    auto &data = GetOrCreateSection(DataSectionNameOfYear(year));
+    auto *csv = new DataDoc(year);
+    ok = csv->Read(data);
+    return csv;
 }
 
 bool HaDocument::CreateBackupIfNeeded(const wxString &fileName)

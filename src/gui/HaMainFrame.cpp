@@ -27,9 +27,6 @@ EVT_MENU(ID_LICENSE, HaMainFrame::OnLicense)
 EVT_MENU(ID_WX_INFO, HaMainFrame::OnWxInfo)
 END_EVENT_TABLE()
 
-const wxString HaMainFrame::CFG_FILE_HISTORY = "FileHistory";
-const wxString HaMainFrame::LICENSE_FILE_NAME = "LICENSE";
-
 HaMainFrame::HaMainFrame() : wxDocParentFrame()
 {
     wxLog::AddTraceMask(TM);
@@ -61,7 +58,7 @@ HaMainFrame::HaMainFrame(
     statusBar->SetFieldsCount();
     SetStatusBar(statusBar);
     auto *sizer = new wxBoxSizer(wxVERTICAL);
-    m_book = new wxNotebook(this, ID_BOOK);
+    m_book = new wxNotebook(this, wxID_ANY);
     sizer->Add(m_book, wxSizerFlags().Expand().Border(wxALL, 0).Proportion(1));
     SetSizer(sizer);
     m_book->Show(false);

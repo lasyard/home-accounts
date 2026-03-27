@@ -4,10 +4,8 @@
 #include <wx/grid.h>
 #include <wx/pen.h>
 
+#include "HaTable.h"
 #include "Utils.h"
-
-class CsvDoc;
-class HaTable;
 
 class HaGrid : public wxGrid
 {
@@ -52,13 +50,17 @@ public:
 
     void InitTable(CsvDoc *doc);
 
-    virtual CsvDoc *GetTableDoc();
-
     void OnUpdateInsert(wxUpdateUIEvent &event);
     void OnInsert(wxCommandEvent &event);
     void OnUpdateDelete(wxUpdateUIEvent &event);
     void OnDelete(wxCommandEvent &event);
     void OnSelectCell(wxGridEvent &event);
+
+    CsvDoc *GetTableDoc()
+    {
+        auto *table = GetHaTable();
+        return table != nullptr ? table->GetDoc() : nullptr;
+    }
 
 protected:
     static constexpr int ROW_HEIGHT = 25;
@@ -78,7 +80,10 @@ protected:
         }
     }
 
-    HaTable *GetHaTable() const;
+    HaTable *GetHaTable() const
+    {
+        return static_cast<HaTable *>(GetTable());
+    }
 
     /**
      * @brief Check the pushed event handler of a `wxWindow`.

@@ -37,6 +37,8 @@ public:
 
     void SaveContents();
 
+    void CloseImportPanel();
+
 private:
     wxNotebook *m_book;
     HaPanel *m_importPanel;

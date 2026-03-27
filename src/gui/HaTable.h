@@ -6,8 +6,6 @@
 
 #include "CsvDoc.h"
 
-#include "csv/column_type.h"
-
 class HaTable : public wxGridTableBase
 {
 public:

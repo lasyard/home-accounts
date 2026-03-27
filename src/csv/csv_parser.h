@@ -63,6 +63,13 @@ static inline void *get_field(const struct parser *parser, record_t *record, int
     return record->data + offset;
 }
 
+void *copy_by_type(enum column_type type, void *dst, const void *src);
+
+static inline void set_field(const struct parser *parser, record_t *record, int i, const void *value)
+{
+    copy_by_type(parser->meta->types[i], get_field(parser, record, i), value);
+}
+
 static inline const void *get_const_field(const struct parser *parser, const record_t *record, int i)
 {
     return get_field(parser, (record_t *)record, i);

@@ -10,11 +10,12 @@ class DataGridCellAttrProvider : public HaGridCellAttrProvider
 public:
     DECLARE_TM(DataGridCellAttrProvider)
 
-    DataGridCellAttrProvider(HaTable *table);
+    DataGridCellAttrProvider(HaTable *table, const wxArrayString &accountNames);
     virtual ~DataGridCellAttrProvider();
 
 protected:
     wxGridCellAttr *m_deficitAttrRO;
+    wxGridCellAttr *m_accountChoiceAttr;
 
     wxGridCellAttr *GetItemCellAttr(int row, int col) const override;
 };

@@ -15,19 +15,18 @@ const column_type AccountsDoc::COL_TYPES[] = {
     CT_STR,
 };
 
-AccountsDoc::AccountsDoc() : CsvDoc(), m_maxId(0)
+AccountsDoc::AccountsDoc() : HaCsvTemplate<AccountsDoc>(), m_maxId(0)
 {
     wxLog::AddTraceMask(TM);
     SetParser(COLS, COL_TYPES, 1);
-    m_accessors[TYPE_COL].get = &AccountsDoc::TypeGetter;
-    m_accessors[TYPE_COL].set = &AccountsDoc::TypeSetter;
+    SetAccessor(TYPE_COL, CT_STR, &AccountsDoc::TypeGetter, &AccountsDoc::TypeSetter);
 }
 
 AccountsDoc::~AccountsDoc()
 {
 }
 
-void AccountsDoc::GetIdAndNames(std::vector<int> &ids, wxArrayString &names) const
+void AccountsDoc::GetIdAndNames(std::vector<int64_t> &ids, wxArrayString &names) const
 {
     for (struct list_item *pos = m_records.first; pos != NULL; pos = pos->next) {
         auto *record = get_record(pos);
@@ -43,9 +42,9 @@ void AccountsDoc::GetIdAndNames(std::vector<int> &ids, wxArrayString &names) con
     }
 }
 
-const wxString AccountsDoc::TypeGetter(const struct parser *parser, const record_t *record, int i)
+const wxString AccountsDoc::TypeGetter(const record_t *record, int i) const
 {
-    auto type = *(int64_t *)get_const_field(parser, record, i);
+    auto type = *(int64_t *)get_const_field(&m_parser, record, i);
     const wxArrayString &types = GetAccountTypeStrings();
     if (type < 0 || type >= (int64_t)types.size()) {
         type = 0;
@@ -53,7 +52,7 @@ const wxString AccountsDoc::TypeGetter(const struct parser *parser, const record
     return types[type];
 }
 
-void AccountsDoc::TypeSetter(const struct parser *parser, record_t *record, int i, const wxString &value)
+void AccountsDoc::TypeSetter(record_t *record, int i, const wxString &value)
 {
     wxASSERT(i == TYPE_COL);
     int64_t index;
@@ -66,7 +65,7 @@ void AccountsDoc::TypeSetter(const struct parser *parser, record_t *record, int 
     if (index == (int64_t)types.size()) {
         index = 0;
     }
-    *(int64_t *)get_field(parser, record, i) = index;
+    *(int64_t *)get_field(&m_parser, record, i) = index;
 }
 
 bool AccountsDoc::AfterRead()
@@ -82,7 +81,7 @@ bool AccountsDoc::AfterRead()
         }
     }
     fill_serial(&m_parser, &m_records, 1, 3);
-    return CsvDoc::AfterRead();
+    return HaCsv::AfterRead();
 }
 
 void AccountsDoc::SetNewRecord(record_t *record)

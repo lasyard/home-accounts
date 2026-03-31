@@ -14,7 +14,8 @@
 #include "csv/str.h"
 
 ImportDoc::ImportDoc()
-    : m_colMap(nullptr)
+    : HaCsvTemplate<ImportDoc>()
+    , m_colMap(nullptr)
     , m_colTitles()
     , m_types(nullptr)
     , m_dataFields(nullptr)
@@ -127,7 +128,7 @@ int ImportDoc::Reading(std::istream &is)
         }
     }
     SetParser(cols, m_types, 0);
-    int lines = CsvDoc::Reading(is);
+    int lines = HaCsv::Reading(is);
     if (lines < 0) {
         return lines - 1;
     }
@@ -144,5 +145,5 @@ int ImportDoc::Writing(std::ostream &os)
         os.write(s.c_str(), s.length());
     }
     os.put('\n');
-    return CsvDoc::Writing(os) + 1;
+    return HaCsv::Writing(os) + 1;
 }

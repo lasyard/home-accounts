@@ -19,10 +19,11 @@ const column_type DataDoc::COL_TYPES[] = {
     CT_BOOL,
 };
 
-DataDoc::DataDoc(int year) : CsvDoc(), m_year(year)
+DataDoc::DataDoc(int year) : HaCsvTemplate<DataDoc>(), m_year(year)
 {
     wxLog::AddTraceMask(TM);
     SetParser(COLS, COL_TYPES, 1);
+    SetAccessor(ACCOUNT_COL, CT_STR, &DataDoc::AccountGetter, &DataDoc::AccountSetter);
 }
 
 DataDoc::~DataDoc()
@@ -57,6 +58,20 @@ int DataDoc::GetColByName(const wxString &name)
         }
     }
     return INVALID_COL;
+}
+
+void DataDoc::SetAccountNames(const std::vector<int64_t> &ids, const wxArrayString &names)
+{
+    m_accountNames = names;
+    m_accountIdNames.clear();
+    m_accountNameIds.clear();
+    auto n = ids.size();
+    for (size_t i = 0; i < n; ++i) {
+        auto id = ids[i];
+        auto &name = names[i];
+        m_accountIdNames[id] = name;
+        m_accountNameIds[name] = id;
+    }
 }
 
 void DataDoc::SetOpening(money_t opening)
@@ -126,13 +141,33 @@ record_t *DataDoc::InsertRecordAtTime(date_t date, timo_t time)
     return record;
 }
 
+const wxString DataDoc::AccountGetter(const record_t *record, int i) const
+{
+    auto id = *(int64_t *)get_const_field(&m_parser, record, i);
+    auto it = m_accountIdNames.find(id);
+    if (it != m_accountIdNames.end()) {
+        return it->second;
+    }
+    return wxString::Format("%lld", id);
+}
+
+void DataDoc::AccountSetter(record_t *record, int i, const wxString &value)
+{
+    auto it = m_accountNameIds.find(value);
+    if (it != m_accountNameIds.end()) {
+        *(int64_t *)get_field(&m_parser, record, i) = it->second;
+    } else if (parse_field(&m_parser, value.c_str(), record, i) == NULL) {
+        wxLogError(_("Invalid value: %s"), value);
+    }
+}
+
 bool DataDoc::AfterRead()
 {
     int start = jdn(m_year, 1, 1);
     int end = jdn(m_year, 12, 31);
     fill_serial(&m_parser, &m_records, start, end);
     SetOpening(0);
-    return CsvDoc::AfterRead();
+    return HaCsv::AfterRead();
 }
 
 bool DataDoc::IsRecordEmpty(record_t *record)

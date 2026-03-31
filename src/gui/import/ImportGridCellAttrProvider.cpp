@@ -6,9 +6,8 @@
 
 #include "../HaGdi.h"
 
-#include "../data/DataDoc.h"
-
-ImportGridCellAttrProvider::ImportGridCellAttrProvider(HaTable *table) : HaGridCellAttrProvider(table)
+ImportGridCellAttrProvider::ImportGridCellAttrProvider(HaTable *table, const wxArrayString &fieldNames)
+    : HaGridCellAttrProvider(table)
 {
     wxLog::AddTraceMask(TM);
 
@@ -19,11 +18,7 @@ ImportGridCellAttrProvider::ImportGridCellAttrProvider(HaTable *table) : HaGridC
 
     m_fieldSetAttr->SetAlignment(wxALIGN_CENTER_HORIZONTAL, wxALIGN_CENTER_VERTICAL);
     m_fieldSetAttr->SetFont(HaGdi::BOLD_TEXT_FONT);
-    wxArrayString choices;
-    for (int i = -1; i < DataDoc::COLS; ++i) {
-        choices.Add(DataDoc::GetColName(i));
-    }
-    auto *editor = new wxGridCellChoiceEditor(choices, false);
+    auto *editor = new wxGridCellChoiceEditor(fieldNames, false);
     m_fieldSetAttr->SetEditor(editor);
 }
 

@@ -1,13 +1,13 @@
 #ifndef _HA_IMPORT_IMPORT_DOC_H_
 #define _HA_IMPORT_IMPORT_DOC_H_
 
-#include "../CsvDoc.h"
+#include "../HaCsvTemplate.h"
 
 #include "csv/date_time.h"
 
 class ImportColMapConf;
 
-class ImportDoc : public CsvDoc
+class ImportDoc : public HaCsvTemplate<ImportDoc>
 {
 public:
     DECLARE_TM(ImportDoc)

@@ -10,7 +10,7 @@
 
 const column_type ImportColMapConf::COL_TYPES[] = {CT_INT, CT_STR};
 
-ImportColMapConf::ImportColMapConf() : m_titleMap()
+ImportColMapConf::ImportColMapConf() : HaCsvTemplate<ImportColMapConf>(), m_titleMap()
 {
     wxLog::AddTraceMask(TM);
     SetParser(COLS, COL_TYPES, 0);
@@ -39,7 +39,7 @@ bool ImportColMapConf::AfterRead()
             m_titleMap[wxString(title->buf, title->len)] = field;
         }
     }
-    return CsvDoc::AfterRead();
+    return HaCsv::AfterRead();
 }
 
 int ImportColMapConf::Writing(std::ostream &os)

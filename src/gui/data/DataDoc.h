@@ -1,12 +1,14 @@
 #ifndef _HA_DATA_DATA_DOC_H_
 #define _HA_DATA_DATA_DOC_H_
 
-#include "../CsvDoc.h"
+#include <map>
+
+#include "../HaCsvTemplate.h"
 
 #include "csv/date_time.h"
 #include "csv/money.h"
 
-class DataDoc : public CsvDoc
+class DataDoc : public HaCsvTemplate<DataDoc>
 {
 public:
     DECLARE_TM(DataDoc)
@@ -29,6 +31,13 @@ public:
 
     static wxString GetColName(int i);
     static int GetColByName(const wxString &name);
+
+    void SetAccountNames(const std::vector<int64_t> &ids, const wxArrayString &names);
+
+    const wxArrayString &GetAccountNames() const
+    {
+        return m_accountNames;
+    }
 
     money_t GetRecordRealAmount(const record_t *record) const
     {
@@ -64,9 +73,9 @@ public:
         *(timo_t *)get_field(&m_parser, record, TIME_COL) = time;
     }
 
-    void SetRecordAccount(record_t *record, int account) const
+    void SetRecordAccount(record_t *record, int64_t account) const
     {
-        set_int_field(&m_parser, record, ACCOUNT_COL, account);
+        *(int64_t *)get_field(&m_parser, record, ACCOUNT_COL) = account;
     }
 
     void SetRecordBalance(record_t *record, money_t balance) const
@@ -138,6 +147,9 @@ public:
     }
 
 protected:
+    const wxString AccountGetter(const record_t *record, int i) const;
+    void AccountSetter(record_t *record, int i, const wxString &value);
+
     bool AfterRead() override;
 
     bool IsRecordEmpty(record_t *record) override;
@@ -155,6 +167,10 @@ private:
     } m_stat;
 
     int m_year;
+
+    wxArrayString m_accountNames;
+    std::map<int64_t, wxString> m_accountIdNames;
+    std::map<wxString, int64_t> m_accountNameIds;
 };
 
 #endif /* _HA_DATA_DATA_DOC_H_ */

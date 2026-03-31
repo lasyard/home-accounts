@@ -5,7 +5,7 @@
 
 class ImportDoc;
 
-class ImportTable : public HaTableTemplate<ImportDoc>
+class ImportTable : public HaTableTemplate<ImportTable, ImportDoc>
 {
     DECLARE_DYNAMIC_CLASS(ImportTable)
 
@@ -19,6 +19,9 @@ public:
 
 private:
     static constexpr int HEADER_ROWS = 1;
+
+    wxString HeaderGetter(int row, int col) const;
+    void HeaderSetter(int row, int col, const wxString &value);
 };
 
 #endif /* _HA_IMPORT_IMPORT_TABLE_H_ */

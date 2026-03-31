@@ -5,7 +5,7 @@
 
 class DataDoc;
 
-class DataTable : public HaTableTemplate<DataDoc>
+class DataTable : public HaTableTemplate<DataTable, DataDoc>
 {
     DECLARE_DYNAMIC_CLASS(DataTable)
 
@@ -32,6 +32,12 @@ protected:
 
 private:
     void UpdateDocAndCache(int row);
+
+    wxString IncomeGetter(int row, int col) const;
+    void IncomeSetter(int row, int col, const wxString &value);
+    wxString OutlayGetter(int row, int col) const;
+    void OutlaySetter(int row, int col, const wxString &value);
+    wxString BalanceGetter(int row, int col) const;
 };
 
 #endif /* _HA_DATA_DATA_TABLE_H_ */

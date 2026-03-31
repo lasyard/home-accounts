@@ -3,48 +3,22 @@
 
 #include <sstream>
 
-#include "CsvDoc.h"
+#include "HaCsv.h"
 
-#include "csv/str.h"
-
-CsvDoc::CsvDoc() : m_accessors(nullptr)
+HaCsv::HaCsv()
 {
     wxLog::AddTraceMask(TM);
     init_parser(&m_parser);
     list_head_init(&m_records);
 }
 
-CsvDoc::~CsvDoc()
+HaCsv::~HaCsv()
 {
-    delete[] m_accessors;
     release_records(&m_parser, &m_records);
     release_parser(&m_parser);
 }
 
-const wxString CsvDoc::GetValueString(int pos, int i) const
-{
-    wxASSERT(m_accessors != nullptr);
-    record_t *record = GetRecord(pos);
-    wxASSERT(record != nullptr && is_index_valid(&m_parser, record, i));
-    auto *getter = m_accessors[i].get;
-    if (getter != nullptr) {
-        return getter(&m_parser, record, i);
-    }
-    return wxEmptyString;
-}
-
-void CsvDoc::SetValueString(int pos, int i, const wxString &value)
-{
-    wxASSERT(m_accessors != nullptr);
-    record_t *record = GetRecord(pos);
-    wxASSERT(record != nullptr && is_index_valid(&m_parser, record, i));
-    auto *setter = m_accessors[i].set;
-    if (setter != nullptr) {
-        setter(&m_parser, record, i, value);
-    }
-}
-
-wxString CsvDoc::GetMoneyString(money_t m) const
+wxString HaCsv::GetMoneyString(money_t m) const
 {
     char buf[MAX_LINE_LENGTH + 1];
     char *p = output_money(buf, m, m_parser.options.money_prec, m_parser.options.money_scale);
@@ -52,7 +26,7 @@ wxString CsvDoc::GetMoneyString(money_t m) const
     return wxString(buf);
 }
 
-record_t *CsvDoc::AddRecord()
+record_t *HaCsv::AddRecord()
 {
     record_t *record = new_record(&m_parser);
     return_null_if_null(record);
@@ -65,7 +39,7 @@ record_t *CsvDoc::AddRecord()
     return record;
 }
 
-record_t *CsvDoc::InsertRecord(int pos)
+record_t *HaCsv::InsertRecord(int pos)
 {
     record_t *record = new_record(&m_parser);
     return_null_if_null(record);
@@ -85,7 +59,7 @@ record_t *CsvDoc::InsertRecord(int pos)
     return record;
 }
 
-bool CsvDoc::DeleteRecord(int pos)
+bool HaCsv::DeleteRecord(int pos)
 {
     struct list_item *item = NULL;
     if (pos == 0) {
@@ -103,22 +77,13 @@ bool CsvDoc::DeleteRecord(int pos)
     return false;
 }
 
-void CsvDoc::SetParser(int cols, const enum column_type types[], int comment_cols)
+void HaCsv::SetParser(int cols, const enum column_type types[], int comment_cols)
 {
     set_parser_types(&m_parser, cols, types, comment_cols);
     list_head_init(&m_records);
-    m_accessors = new struct Accessor[cols];
-    for (int i = 0; i < cols; ++i) {
-        if (m_parser.meta->types[i] != CT_STR) {
-            m_accessors[i].get = &CsvDoc::DefaultGetter;
-        } else {
-            m_accessors[i].get = &CsvDoc::StrGetter;
-        }
-        m_accessors[i].set = &CsvDoc::DefaultSetter;
-    }
 }
 
-bool CsvDoc::ReadStream(std::istream &is)
+bool HaCsv::ReadStream(std::istream &is)
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     release_records(&m_parser, &m_records);
@@ -131,7 +96,7 @@ bool CsvDoc::ReadStream(std::istream &is)
     return AfterRead();
 }
 
-void CsvDoc::WriteStream(std::ostream &os)
+void HaCsv::WriteStream(std::ostream &os)
 {
     wxLogTrace(TM, "\"%s\" called.", __WXFUNCTION__);
     int lines = 0;
@@ -143,44 +108,20 @@ void CsvDoc::WriteStream(std::ostream &os)
     AfterRead();
 }
 
-bool CsvDoc::Read(const std::string &str)
+bool HaCsv::Read(const std::string &str)
 {
     std::istringstream is(str);
     return ReadStream(is);
 }
 
-void CsvDoc::Write(std::string &str)
+void HaCsv::Write(std::string &str)
 {
     std::ostringstream os;
     WriteStream(os);
     str = os.str();
 }
 
-const wxString CsvDoc::DefaultGetter(const struct parser *parser, const record_t *record, int i)
-{
-    char buf[MAX_LINE_LENGTH + 1];
-    char *p = output_field(parser, buf, record, i);
-    *p = '\0';
-    return wxString(buf);
-}
-
-const wxString CsvDoc::StrGetter(const struct parser *parser, const record_t *record, int i)
-{
-    auto *s = (struct str *)get_const_field(parser, record, i);
-    if (!str_is_empty(s)) {
-        return wxString(s->buf, s->len);
-    }
-    return wxEmptyString;
-}
-
-void CsvDoc::DefaultSetter(const struct parser *parser, record_t *record, int i, const wxString &value)
-{
-    if (parse_field(parser, value.c_str(), record, i) == NULL) {
-        wxLogError(_("Invalid value: %s"), value);
-    }
-}
-
-void CsvDoc::CreateIndex()
+void HaCsv::CreateIndex()
 {
     m_index.clear();
     for (struct list_item *pos = m_records.first; pos != NULL; pos = pos->next) {
@@ -189,18 +130,18 @@ void CsvDoc::CreateIndex()
     }
 }
 
-int CsvDoc::Reading(std::istream &is)
+int HaCsv::Reading(std::istream &is)
 {
     return read_lines(&m_parser, &m_records, ::get_line_from_istream, static_cast<void *>(&is));
 }
 
-bool CsvDoc::AfterRead()
+bool HaCsv::AfterRead()
 {
     CreateIndex();
     return true;
 }
 
-bool CsvDoc::BeforeWrite()
+bool HaCsv::BeforeWrite()
 {
     struct list_item **pos = &m_records.first;
     while (*pos != NULL) {
@@ -215,16 +156,16 @@ bool CsvDoc::BeforeWrite()
     return true;
 }
 
-int CsvDoc::Writing(std::ostream &os)
+int HaCsv::Writing(std::ostream &os)
 {
     return write_lines(&m_parser, &m_records, ::put_line_to_ostream, static_cast<void *>(&os));
 }
 
-void CsvDoc::SetNewRecord([[maybe_unused]] record_t *record)
+void HaCsv::SetNewRecord([[maybe_unused]] record_t *record)
 {
 }
 
-bool CsvDoc::IsRecordEmpty([[maybe_unused]] record_t *record)
+bool HaCsv::IsRecordEmpty([[maybe_unused]] record_t *record)
 {
     return false;
 }

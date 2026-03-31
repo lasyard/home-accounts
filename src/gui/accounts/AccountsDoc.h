@@ -1,9 +1,9 @@
 #ifndef _HA_ACCOUNTS_ACCOUNTS_DOC_H_
 #define _HA_ACCOUNTS_ACCOUNTS_DOC_H_
 
-#include "../CsvDoc.h"
+#include "../HaCsvTemplate.h"
 
-class AccountsDoc : public CsvDoc
+class AccountsDoc : public HaCsvTemplate<AccountsDoc>
 {
 public:
     static constexpr int TYPE_COL = 0;
@@ -20,12 +20,12 @@ public:
     AccountsDoc();
     virtual ~AccountsDoc();
 
-    int GetRecordId(const record_t *record) const
+    int64_t GetRecordId(const record_t *record) const
     {
         return *(int64_t *)get_const_field(&m_parser, record, ID_COL);
     }
 
-    void SetRecordId(record_t *record, int id) const
+    void SetRecordId(record_t *record, int64_t id) const
     {
         *(int64_t *)get_field(&m_parser, record, ID_COL) = id;
     }
@@ -35,11 +35,11 @@ public:
         return (const struct str *)get_const_field(&m_parser, record, NAME_COL);
     }
 
-    void GetIdAndNames(std::vector<int> &ids, wxArrayString &names) const;
+    void GetIdAndNames(std::vector<int64_t> &ids, wxArrayString &names) const;
 
 protected:
-    static const wxString TypeGetter(const struct parser *parser, const record_t *record, int i);
-    static void TypeSetter(const struct parser *parser, record_t *record, int i, const wxString &value);
+    const wxString TypeGetter(const record_t *record, int i) const;
+    void TypeSetter(record_t *record, int i, const wxString &value);
 
     bool AfterRead() override;
 

@@ -4,24 +4,23 @@
 #include <wx/grid.h>
 #include <wx/vector.h>
 
-#include "CsvDoc.h"
+#include "HaCsv.h"
 
 class HaTable : public wxGridTableBase
 {
 public:
-    HaTable(CsvDoc *doc);
+    HaTable(HaCsv *doc);
     virtual ~HaTable();
 
     virtual void Init();
 
     int GetNumberRows() override;
-    int GetNumberCols() override;
 
-    wxString GetValue(int row, int col) override;
-    wxString GetColLabelValue(int col) override;
-    wxString GetRowLabelValue(int row) override;
+    virtual enum column_type GetColType(int col) const = 0;
 
-    bool CanHaveAttributes() override;
+    virtual bool IsColReadOnly(int col) const = 0;
+
+    virtual record_t *GetRowRecord(int row) const = 0;
 
     auto GetRowRecordFlag(int row) const
     {
@@ -29,14 +28,9 @@ public:
         return (record != nullptr) ? record->flag : RECORD_FLAG_INVALID;
     }
 
-    virtual enum column_type GetColType(int col) const;
-    virtual record_t *GetRowRecord(int row) const;
+    bool CanHaveAttributes() override;
 
-    bool IsColReadOnly(int col) const
-    {
-        return m_colImpls[col].set == nullptr;
-    }
-
+    wxString GetValue(int row, int col) override;
     void SetValue(int row, int col, const wxString &value) override;
 
     bool InsertRows(size_t pos, size_t numRows) override;
@@ -44,18 +38,8 @@ public:
     bool DeleteRows(size_t pos, size_t numRows) override;
 
 protected:
-    // for columns, the int is row; for headers, the int is col
-    struct CellImpl {
-        wxString label;
-        enum column_type type;
-        std::function<wxString(int)> get;
-        std::function<void(int, const wxString &)> set;
-    };
-
-    CsvDoc *m_doc;
+    HaCsv *m_doc;
     wxVector<wxArrayString> m_cache;
-    std::vector<struct CellImpl> m_headerImpls;
-    std::vector<struct CellImpl> m_colImpls;
 
     void CacheCell(int row, int col)
     {
@@ -94,7 +78,15 @@ protected:
         }
     }
 
-    void SetColImpl(const wxString &label, int tableCol, int docCol, bool ro = false);
+    wxString DocGetter(int row, int col) const
+    {
+        return m_doc->GetValueString(row, col);
+    }
+
+    void DocSetter(int row, int col, const wxString &value)
+    {
+        m_doc->SetValueString(row, col, value);
+    }
 
     virtual wxString GetCommentString(int row) const;
 
@@ -104,9 +96,8 @@ protected:
 
     virtual void OnNewRow(size_t pos);
 
-private:
-    const wxString GetCellValue(int row, int col) const;
-    void SetCellValue(int row, int col, const wxString &value);
+    virtual const wxString GetCellValue(int row, int col) const = 0;
+    virtual void SetCellValue(int row, int col, const wxString &value) = 0;
 };
 
 #endif /* _HA_GUI_HA_TABLE_H_ */

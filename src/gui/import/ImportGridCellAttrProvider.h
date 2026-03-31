@@ -10,7 +10,7 @@ class ImportGridCellAttrProvider : public HaGridCellAttrProvider
 public:
     DECLARE_TM(ImportGridCellAttrProvider)
 
-    ImportGridCellAttrProvider(HaTable *table);
+    ImportGridCellAttrProvider(HaTable *table, const wxArrayString &fieldNames);
     virtual ~ImportGridCellAttrProvider();
 
 protected:

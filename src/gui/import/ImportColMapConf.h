@@ -3,9 +3,9 @@
 
 #include <map>
 
-#include "../CsvDoc.h"
+#include "../HaCsvTemplate.h"
 
-class ImportColMapConf : public CsvDoc
+class ImportColMapConf : public HaCsvTemplate<ImportColMapConf>
 {
 public:
     DECLARE_TM(ImportColMapConf)

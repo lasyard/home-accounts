@@ -112,42 +112,6 @@ static char *output_by_type(const struct parser_options *options, char *buf, enu
     return buf;
 }
 
-int get_int_field(const struct parser *parser, const record_t *record, int i)
-{
-    switch (parser->meta->types[i]) {
-    case CT_INT:
-    case CT_MONEY:
-        return (int)*(int64_t *)get_const_field(parser, record, i);
-    case CT_BOOL:
-        return (int)*(bool *)get_const_field(parser, record, i);
-    case CT_DATE:
-    case CT_TIME:
-        return (int)*(int32_t *)get_const_field(parser, record, i);
-    default:
-        break;
-    }
-    return 0;
-}
-
-void set_int_field(const struct parser *parser, record_t *record, int i, int value)
-{
-    switch (parser->meta->types[i]) {
-    case CT_INT:
-    case CT_MONEY:
-        *(int64_t *)get_field(parser, record, i) = (int64_t)value;
-        break;
-    case CT_BOOL:
-        *(bool *)get_field(parser, record, i) = (value != 0);
-        break;
-    case CT_DATE:
-    case CT_TIME:
-        *(int32_t *)get_field(parser, record, i) = (int32_t)value;
-        break;
-    default:
-        break;
-    }
-}
-
 void init_parser(struct parser *parser)
 {
     parser->options.sep = ',';
@@ -418,13 +382,32 @@ void release_records(const struct parser *parser, struct list_head *records)
     list_head_init(records);
 }
 
-static record_t *new_comment_of_serial(const struct parser *parser, int expected)
+static int get_int_field_64(const struct parser *parser, const record_t *record, int i)
 {
-    record_t *elem = new_record(parser);
-    return_null_if_null(elem);
-    set_int_field(parser, elem, 0, expected);
-    elem->flag = RECORD_FLAG_COMMENT;
-    return elem;
+    return (int)*(int64_t *)get_const_field(parser, record, i);
+}
+
+static int get_int_field_32(const struct parser *parser, const record_t *record, int i)
+{
+    return (int)*(int32_t *)get_const_field(parser, record, i);
+}
+
+static record_t *new_comment_of_serial_64(const struct parser *parser, int expected)
+{
+    record_t *record = new_record(parser);
+    return_null_if_null(record);
+    *(int64_t *)get_field(parser, record, 0) = (int64_t)expected;
+    record->flag = RECORD_FLAG_COMMENT;
+    return record;
+}
+
+static record_t *new_comment_of_serial_32(const struct parser *parser, int expected)
+{
+    record_t *record = new_record(parser);
+    return_null_if_null(record);
+    *(int32_t *)get_field(parser, record, 0) = (int32_t)expected;
+    record->flag = RECORD_FLAG_COMMENT;
+    return record;
 }
 
 /**
@@ -434,19 +417,36 @@ static record_t *new_comment_of_serial(const struct parser *parser, int expected
  * @param records
  * @param start
  * @param end
- * @return int
+ * @return bool true if success, false if failed (e.g. invalid serial column type, memory allocation failure, etc.)
  */
-int fill_serial(const struct parser *parser, struct list_head *records, int start, int end)
+bool fill_serial(const struct parser *parser, struct list_head *records, int start, int end)
 {
+    int (*get_int_field)(const struct parser *parser, const record_t *record, int i);
+    record_t *(*new_comment_of_serial)(const struct parser *parser, int expected);
+    switch (parser->meta->types[0]) {
+    case CT_INT:
+    case CT_MONEY:
+        get_int_field = get_int_field_64;
+        new_comment_of_serial = new_comment_of_serial_64;
+        break;
+    case CT_DATE:
+    case CT_TIME:
+        get_int_field = get_int_field_32;
+        new_comment_of_serial = new_comment_of_serial_32;
+        break;
+    default:
+        return false;
+    }
+
     struct list_item **p = &records->first;
-    int expected = start;
+    int64_t expected = start;
     while (*p != NULL && expected <= end) {
         record_t *record = get_record(*p);
         if (record->flag != RECORD_FLAG_COMMENT) {
             p = &(*p)->next;
             continue;
         }
-        int val = get_int_field(parser, record, 0);
+        int64_t val = get_int_field(parser, record, 0);
         if (val < expected) {
             return val;
         }
@@ -456,7 +456,7 @@ int fill_serial(const struct parser *parser, struct list_head *records, int star
         if (val > expected) {
             record_t *elem = new_comment_of_serial(parser, expected);
             if (elem == NULL) {
-                return -1;
+                return false;
             }
             list_ins(records, p, &elem->list);
         }
@@ -466,10 +466,10 @@ int fill_serial(const struct parser *parser, struct list_head *records, int star
     while (expected <= end) {
         record_t *elem = new_comment_of_serial(parser, expected);
         if (elem == NULL) {
-            return -1;
+            return false;
         }
         list_add(records, &elem->list);
         ++expected;
     }
-    return 0;
+    return true;
 }

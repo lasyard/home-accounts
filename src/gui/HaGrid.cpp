@@ -70,7 +70,7 @@ void HaGrid::SetAttributes()
     EndBatch();
 }
 
-void HaGrid::InitTable(CsvDoc *doc)
+void HaGrid::InitTable(HaCsv *doc)
 {
     auto *table = CreateHaTable(doc);
     table->Init();

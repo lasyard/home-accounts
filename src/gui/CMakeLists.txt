@@ -16,10 +16,10 @@ add_compile_definitions("XRS_FILE=\"${XRS_FILE}\"")
 string(TIMESTAMP CURRENT_YEAR "%Y")
 
 add_exe(${APP_NAME}
-    CsvDoc.cpp
     ChangePassDialog.cpp
     HaApp.cpp
     HaArtProvider.cpp
+    HaCsv.cpp
     HaDocument.cpp
     HaGdi.cpp
     HaGrid.cpp

@@ -3,14 +3,14 @@
 #include <fstream>
 #include <sstream>
 
-#include "CsvDoc.h"
+#include "HaDoc.h"
 
 TEST_CASE("read")
 {
     const enum column_type types[] = {CT_INT, CT_STR, CT_MONEY, CT_DATE, CT_TIME};
     std::fstream file("sample.csv", std::ios::in);
     CHECK(file.is_open());
-    CsvDoc doc;
+    HaDoc doc;
     doc.SetParser(5, types, 0);
     CHECK(doc.ReadStream(file));
     CHECK(doc.GetRowCount() == 3);
@@ -34,7 +34,7 @@ TEST_CASE("read")
 TEST_CASE("write")
 {
     const enum column_type types[] = {CT_INT, CT_STR, CT_MONEY, CT_DATE, CT_TIME};
-    CsvDoc doc;
+    HaDoc doc;
     doc.SetParser(5, types, 0);
     doc.AddRecord();
     doc.SetValueString(0, 0, "1");
@@ -52,7 +52,7 @@ TEST_CASE("read & write with comments")
     const enum column_type types[] = {CT_INT, CT_STR, CT_MONEY, CT_DATE, CT_TIME};
     std::fstream file("sample1.csv", std::ios::in);
     CHECK(file.is_open());
-    CsvDoc doc;
+    HaDoc doc;
     doc.SetParser(5, types, 1);
     CHECK(doc.ReadStream(file));
     CHECK(doc.GetRowCount() == 7);

@@ -16,7 +16,7 @@ class wxString;
 class wxWindow;
 
 class HaTable;
-class CsvDoc;
+class HaCsv;
 
 inline std::string w2s(const wxString &str)
 {

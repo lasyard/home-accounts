@@ -69,7 +69,7 @@ void ImportPanel::OnUpdate()
             _("Select CSV file to import"),
             wxEmptyString,
             wxEmptyString,
-            _("CSV files (*.csv)|*.csv|All files (*.*)|*.*"),
+            "CSV files (*.csv)|*.csv|All files (*.*)|*.*",
             wxFD_OPEN | wxFD_FILE_MUST_EXIST
         );
         if (dlg.ShowModal() != wxID_OK) {
@@ -87,7 +87,7 @@ void ImportPanel::OnUpdate()
         // there may be something read, even it is not ok
         std::string str;
         csv->Write(str);
-        m_doc->SaveOrDeleteSection(IMPORT_SECTION_NAME, str);
+        m_doc->SaveSection(IMPORT_SECTION_NAME, str);
         m_doc->Modify(true);
     }
     m_grid->InitTable(csv);
@@ -111,7 +111,7 @@ void ImportPanel::OnGridCellChanged(wxGridEvent &event)
         if (import != nullptr) {
             std::string csv;
             import->GetColMap()->Write(csv);
-            m_doc->SaveOrDeleteSection(IMPORT_COL_MAP_SECTION_NAME, csv);
+            m_doc->SaveSection(IMPORT_COL_MAP_SECTION_NAME, csv);
             m_doc->Modify(true);
             OnUpdate();
         }
@@ -125,7 +125,7 @@ void ImportPanel::OnMerge([[maybe_unused]] wxCommandEvent &event)
     auto *import = dynamic_cast<ImportDoc *>(m_grid->GetTableDoc());
 
     int dateCsvCol = import->GetCsvCol(DataDoc::DATE_COL);
-    if (dateCsvCol == CsvDoc::INVALID_COL) {
+    if (dateCsvCol == HaCsv::INVALID_COL) {
         wxMessageBox(_("Cannot import: no DATE."));
         return;
     }
@@ -138,7 +138,7 @@ void ImportPanel::OnMerge([[maybe_unused]] wxCommandEvent &event)
         return;
     }
     wxArrayString accountNames;
-    std::vector<int> accountIds;
+    std::vector<int64_t> accountIds;
     accounts->GetIdAndNames(accountIds, accountNames);
     delete accounts;
     if (accountNames.IsEmpty()) {
@@ -152,7 +152,7 @@ void ImportPanel::OnMerge([[maybe_unused]] wxCommandEvent &event)
     }
     int sel = dlg.GetSelection();
     wxASSERT(sel >= 0 && (size_t)sel < accountIds.size());
-    int accountId = accountIds[sel];
+    auto accountId = accountIds[sel];
 
     std::map<int, std::unique_ptr<DataDoc>> docs;
     for (struct list_item *pos = import->GetRecords()->first; pos != NULL; pos = pos->next) {
@@ -185,7 +185,7 @@ void ImportPanel::OnMerge([[maybe_unused]] wxCommandEvent &event)
         dataDoc->SetRecordAccount(record, accountId);
         for (int col = 0; col < DataDoc::COLS; ++col) {
             int csvCol = import->GetCsvCol(col);
-            if (csvCol == CsvDoc::INVALID_COL) {
+            if (csvCol == HaCsv::INVALID_COL) {
                 continue;
             }
             dataDoc->SetRecordField(record, col, import->GetRecordField(importRecord, csvCol));

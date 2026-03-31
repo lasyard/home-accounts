@@ -37,11 +37,11 @@ void AccountsPanel::OnUpdate()
 void AccountsPanel::SaveContents()
 {
     m_grid->SaveEditControlValue();
-    CsvDoc *doc = m_grid->GetTableDoc();
+    HaCsv *doc = m_grid->GetTableDoc();
     wxASSERT(doc != nullptr);
     std::string str;
     doc->Write(str);
-    m_doc->SaveOrDeleteSection(ACCOUNTS_SECTION_NAME, str);
+    m_doc->SaveSection(ACCOUNTS_SECTION_NAME, str);
 }
 
 void AccountsPanel::ClearContents()

@@ -39,7 +39,7 @@ public:
     }
 
 protected:
-    HaTable *CreateHaTable(CsvDoc *doc) override
+    HaTable *CreateHaTable(HaCsv *doc) override
     {
         wxASSERT(doc != nullptr);
         return new TABLE(static_cast<DOC *>(doc));

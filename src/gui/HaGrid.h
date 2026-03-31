@@ -47,7 +47,7 @@ public:
      */
     void SetAttributes();
 
-    void InitTable(CsvDoc *doc);
+    void InitTable(HaCsv *doc);
 
     void OnUpdateInsert(wxUpdateUIEvent &event);
     void OnInsert(wxCommandEvent &event);
@@ -62,7 +62,7 @@ protected:
     void DeleteAllRowsInBlocks(const wxGridBlocks &blocks);
     void ClearAllCellsInBlocks(const wxGridBlocks &blocks);
 
-    virtual HaTable *CreateHaTable(CsvDoc *doc) = 0;
+    virtual HaTable *CreateHaTable(HaCsv *doc) = 0;
 
     virtual int CursorColOfNewRow();
 

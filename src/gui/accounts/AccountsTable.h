@@ -5,7 +5,7 @@
 
 class AccountsDoc;
 
-class AccountsTable : public HaTableTemplate<AccountsDoc>
+class AccountsTable : public HaTableTemplate<AccountsTable, AccountsDoc>
 {
     DECLARE_DYNAMIC_CLASS(AccountsTable)
 

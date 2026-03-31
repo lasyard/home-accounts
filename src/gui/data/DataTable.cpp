@@ -7,7 +7,7 @@
 
 IMPLEMENT_DYNAMIC_CLASS(DataTable, HaTable)
 
-DataTable::DataTable(DataDoc *doc) : HaTableTemplate<DataDoc>(doc)
+DataTable::DataTable(DataDoc *doc) : HaTableTemplate<DataTable, DataDoc>(doc)
 {
 }
 
@@ -18,47 +18,18 @@ DataTable::~DataTable()
 void DataTable::Init()
 {
     m_colImpls.resize(COLS);
-    SetColImpl(_("Time"), TIME_COL, DataDoc::TIME_COL);
-    SetColImpl(_("Amount"), AMOUNT_COL, DataDoc::AMOUNT_COL);
-    SetColImpl(_("Account"), ACCOUNT_COL, DataDoc::ACCOUNT_COL);
-    SetColImpl(_("Description"), DESC_COL, DataDoc::DESC_COL);
-    auto *doc = GetDoc();
-    m_colImpls[INCOME_COL] = {
-        .label = _("Income"),
-        .type = CT_MONEY,
-        .get = [doc](int row) -> wxString { return doc->GetIncomeString(row); },
-        .set = [this](int row, const wxString &value) -> void {
-            m_doc->SetValueString(row, DataDoc::REAL_AMOUNT_COL, "-" + value);
-            CacheCell(row, OUTLAY_COL);
-            UpdateDocAndCache(row);
-        },
-    };
-    m_colImpls[OUTLAY_COL] = {
-        .label = _("Outlay"),
-        .type = CT_MONEY,
-        .get = [doc](int row) -> wxString { return doc->GetOutlayString(row); },
-        .set = [this](int row, const wxString &value) -> void {
-            m_doc->SetValueString(row, DataDoc::REAL_AMOUNT_COL, value);
-            CacheCell(row, INCOME_COL);
-            UpdateDocAndCache(row);
-        },
-    };
-    SetColImpl(_("Item"), REAL_DESC_COL, DataDoc::REAL_DESC_COL);
-    m_colImpls[BALANCE_COL] = {
-        .label = _("Balance"),
-        .type = CT_MONEY,
-        .get = [doc](int row) -> wxString { return doc->GetBalanceString(row); },
-        .set = nullptr,
-    };
-    SetColImpl(_("Memo"), MEMO_COL, DataDoc::MEMO_COL);
-    m_colImpls[CATEGORY_COL] = {
-        .label = _("Category"),
-        .type = CT_IGNORE,
-        .get = nullptr,
-        .set = nullptr,
-    };
+    SetColImplDoc(_("Time"), TIME_COL, DataDoc::TIME_COL);
+    SetColImplDoc(_("Amount"), AMOUNT_COL, DataDoc::AMOUNT_COL);
+    SetColImplDoc(_("Account"), ACCOUNT_COL, DataDoc::ACCOUNT_COL);
+    SetColImplDoc(_("Description"), DESC_COL, DataDoc::DESC_COL);
+    SetColImpl(_("Income"), INCOME_COL, CT_MONEY, &DataTable::IncomeGetter, &DataTable::IncomeSetter);
+    SetColImpl(_("Outlay"), OUTLAY_COL, CT_MONEY, &DataTable::OutlayGetter, &DataTable::OutlaySetter);
+    SetColImplDoc(_("Item"), REAL_DESC_COL, DataDoc::REAL_DESC_COL);
+    SetColImpl(_("Balance"), BALANCE_COL, CT_MONEY, &DataTable::BalanceGetter);
+    SetColImplDoc(_("Memo"), MEMO_COL, DataDoc::MEMO_COL);
+    SetColImpl(_("Category"), CATEGORY_COL, CT_IGNORE);
     m_cache.resize(m_doc->GetRowCount());
-    SetAttrProvider(new DataGridCellAttrProvider(this));
+    SetAttrProvider(new DataGridCellAttrProvider(this, GetDoc()->GetAccountNames()));
     HaTable::Init();
 }
 
@@ -74,4 +45,33 @@ void DataTable::UpdateDocAndCache(int row)
     for (auto i = row; i < GetNumberRows(); ++i) {
         CacheCell(i, BALANCE_COL);
     }
+}
+
+wxString DataTable::IncomeGetter(int row, [[maybe_unused]] int col) const
+{
+    return GetDoc()->GetIncomeString(row);
+}
+
+void DataTable::IncomeSetter(int row, [[maybe_unused]] int col, const wxString &value)
+{
+    m_doc->SetValueString(row, DataDoc::REAL_AMOUNT_COL, "-" + value);
+    CacheCell(row, OUTLAY_COL);
+    UpdateDocAndCache(row);
+}
+
+wxString DataTable::OutlayGetter(int row, [[maybe_unused]] int col) const
+{
+    return GetDoc()->GetOutlayString(row);
+}
+
+void DataTable::OutlaySetter(int row, [[maybe_unused]] int col, const wxString &value)
+{
+    m_doc->SetValueString(row, DataDoc::REAL_AMOUNT_COL, value);
+    CacheCell(row, INCOME_COL);
+    UpdateDocAndCache(row);
+}
+
+wxString DataTable::BalanceGetter(int row, [[maybe_unused]] int col) const
+{
+    return GetDoc()->GetBalanceString(row);
 }

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HomeAccounts 1.0.0\n"
 "Report-Msgid-Bugs-To: lasyard@yeah.net\n"
-"POT-Creation-Date: 2026-01-22 18:53+0800\n"
+"POT-Creation-Date: 2026-03-31 18:50+0800\n"
 "PO-Revision-Date: 2025-01-10 16:01+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -15,6 +15,26 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: HaCsvTemplate.h:102 data/DataDoc.cpp:160
+#, c-format
+msgid "Invalid value: %s"
+msgstr "无效值：%s"
+
+#: HaCsv.cpp:92
+#, c-format
+msgid "Parse error at line %d"
+msgstr "第 %d 行解析错误"
+
+#: HaCsv.cpp:95
+#, c-format
+msgid "%d lines read"
+msgstr "已读取 %d 行"
+
+#: HaCsv.cpp:106
+#, c-format
+msgid "%d lines written"
+msgstr "已写入 %d 行"
 
 #: ChangePassDialog.cpp:22
 msgid "Wrong password!"
@@ -24,180 +44,248 @@ msgstr "密码错误！"
 msgid "Confirm new password failed!"
 msgstr "确认新密码错误！"
 
-#: HaMainFrame.cpp:73
+#: HaTableTemplate.h:138
+msgid "not implemented"
+msgstr "未实现"
+
+#: HaMainFrame.cpp:67
 msgid "File"
 msgstr "文件"
 
-#: HaMainFrame.cpp:113
+#: HaMainFrame.cpp:107
 msgid "License"
 msgstr "许可证"
 
-#: accounts/AccountsDoc.cpp:24
+#: accounts/AccountsDoc.cpp:101 data/DataDoc.cpp:50
 msgid "Invalid"
 msgstr "无效"
 
-#: accounts/AccountsDoc.cpp:25
+#: accounts/AccountsDoc.cpp:102
 msgid "Debit"
 msgstr "借记卡"
 
-#: accounts/AccountsDoc.cpp:26
+#: accounts/AccountsDoc.cpp:103
 msgid "Credit"
 msgstr "信用卡"
 
-#: accounts/AccountsDoc.cpp:27
+#: accounts/AccountsDoc.cpp:104
 msgid "Transfer"
 msgstr "支付账户"
 
-#: accounts/AccountsTable.cpp:10
+#: accounts/AccountsTable.cpp:18
 msgid "ID"
 msgstr "ID"
 
-#: accounts/AccountsTable.cpp:11
+#: accounts/AccountsTable.cpp:19
 msgid "Name"
 msgstr "名称"
 
-#: accounts/AccountsTable.cpp:12
+#: accounts/AccountsTable.cpp:20
 msgid "Bank"
 msgstr "开户银行"
 
-#: accounts/AccountsTable.cpp:13
+#: accounts/AccountsTable.cpp:21
 msgid "Open Date"
 msgstr "开户日期"
 
-#: accounts/AccountsTable.cpp:14
+#: accounts/AccountsTable.cpp:22
 msgid "Initial"
 msgstr "初始余额"
 
-#: accounts/AccountsTable.cpp:15 data/DataTable.cpp:20
+#: accounts/AccountsTable.cpp:23 data/DataDoc.cpp:45 data/DataTable.cpp:29
 msgid "Memo"
 msgstr "备注"
 
-#: HaView.cpp:44
+#: HaView.cpp:43
 msgid "Data"
 msgstr "数据"
 
-#: HaView.cpp:45
+#: HaView.cpp:44
 msgid "Accounts"
 msgstr "账户"
 
-#: HaView.cpp:46
+#: HaView.cpp:45
 msgid "Raw"
 msgstr "源文件"
 
-#: HaApp.cpp:43
+#: HaView.cpp:92
+msgid "Import"
+msgstr "导入"
+
+#: HaApp.cpp:42
 msgid " Doc"
 msgstr " 文档"
 
-#: HaApp.cpp:44
+#: HaApp.cpp:43
 msgid " View"
 msgstr " 视"
 
-#: CsvDoc.cpp:48
-#, c-format
-msgid "Invalid value: %s"
-msgstr "无效值：%s"
-
-#: CsvDoc.cpp:124
-#, c-format
-msgid "Parse error at line %d"
-msgstr "第 %d 行解析错误"
-
-#: CsvDoc.cpp:127
-#, c-format
-msgid "%d lines read"
-msgstr "已读取 %d 行"
-
-#: CsvDoc.cpp:143 CsvDoc.cpp:147
-#, c-format
-msgid "%d lines written"
-msgstr "已写入 %d 行"
-
-#: HaDocument.cpp:60
+#: HaDocument.cpp:67
 msgid "Input the password for the file:"
 msgstr "输入文件的密码："
 
-#: data/DataPanel.cpp:33
+#: HaDocument.cpp:242
+#, c-format
+msgid "Failed to create backup file \"%s\"."
+msgstr ""
+
+#: import/ImportTable.cpp:23
+msgid "Field"
+msgstr "字段"
+
+#: import/ImportPanel.cpp:39 import/ImportPanel.cpp:149
+msgid "Merge"
+msgstr "合并"
+
+#: import/ImportPanel.cpp:58
+msgid "Invalid import column mapping"
+msgstr "无效的导入列映射"
+
+#: import/ImportPanel.cpp:69
+msgid "Select CSV file to import"
+msgstr "选择要导入的 CSV 文件"
+
+#: import/ImportPanel.cpp:82
+#, c-format
+msgid "Failed to open file: %s"
+msgstr "无法打开文件：%s"
+
+#: import/ImportPanel.cpp:129
+msgid "Cannot import: no DATE."
+msgstr "无法导入：没有日期。"
+
+#: import/ImportPanel.cpp:136
+msgid "Invalid accounts"
+msgstr "无效账户"
+
+#: import/ImportPanel.cpp:145
+msgid "Cannot import: no account is available."
+msgstr "无法导入：没有可用的账户。"
+
+#: import/ImportPanel.cpp:149
+msgid "Select an account"
+msgstr "选择一个账户："
+
+#: import/ImportPanel.cpp:162
+msgid "Cannot import: some records have no DATE."
+msgstr "无法导入：有些记录没有日期。"
+
+#: import/ImportPanel.cpp:174
+#, c-format
+msgid "Invalid data of year %d"
+msgstr "%d 年的数据无效"
+
+#: import/ImportPanel.cpp:182
+#, c-format
+msgid "Failed to insert record to data of year %d"
+msgstr "插入记录到 %d 年的数据失败"
+
+#: import/ImportPanel.cpp:203
+msgid "Merge completed."
+msgstr "合并完成。"
+
+#: import/ImportDoc.cpp:99
+msgid "Empty CSV input"
+msgstr "空的 CSV 输入"
+
+#: import/ImportDoc.cpp:105
+msgid "Invalid CSV header"
+msgstr "无效的 CSV 头"
+
+#: data/DataPanel.cpp:31
 msgid "Select Date:"
 msgstr "选择日期："
 
-#: data/DataPanel.cpp:37
+#: data/DataPanel.cpp:36
 msgid "Opening:"
 msgstr "期初余额："
 
-#: data/DataPanel.cpp:39
+#: data/DataPanel.cpp:38
 msgid "Total Income:"
 msgstr "总收入："
 
-#: data/DataPanel.cpp:42
+#: data/DataPanel.cpp:41
 msgid "Total Outlay:"
 msgstr "总支出："
 
-#: data/DataPanel.cpp:45
+#: data/DataPanel.cpp:44
 msgid "Closing:"
 msgstr "期末余额："
 
-#: data/DataTable.cpp:12
+#: data/DataDoc.cpp:38
+msgid "Date"
+msgstr "日期"
+
+#: data/DataDoc.cpp:39 data/DataTable.cpp:21
 msgid "Time"
 msgstr "时间"
 
-#: data/DataTable.cpp:13
+#: data/DataDoc.cpp:40 data/DataTable.cpp:22
 msgid "Amount"
 msgstr "金额"
 
-#: data/DataTable.cpp:14
+#: data/DataDoc.cpp:41 data/DataTable.cpp:23
 msgid "Account"
 msgstr "账户"
 
-#: data/DataTable.cpp:15
+#: data/DataDoc.cpp:42 data/DataTable.cpp:24
 msgid "Description"
 msgstr "说明"
 
-#: data/DataTable.cpp:16
+#: data/DataDoc.cpp:43
+msgid "Real Amount"
+msgstr "记账金额"
+
+#: data/DataDoc.cpp:44
+msgid "Real Description"
+msgstr "真实说明"
+
+#: data/DataDoc.cpp:46
+msgid "Auto Set"
+msgstr "自动设置"
+
+#: data/DataTable.cpp:25
 msgid "Income"
 msgstr "收入"
 
-#: data/DataTable.cpp:17
+#: data/DataTable.cpp:26
 msgid "Outlay"
 msgstr "支出"
 
-#: data/DataTable.cpp:18
+#: data/DataTable.cpp:27
 msgid "Item"
 msgstr "项目"
 
-#: data/DataTable.cpp:19
+#: data/DataTable.cpp:28
 msgid "Balance"
 msgstr "余额"
 
-#: data/DataTable.cpp:21
+#: data/DataTable.cpp:30
 msgid "Category"
 msgstr "类别"
 
-#: raw/RawPanel.cpp:50
+#: data/DataGridCellAttrProvider.cpp:15 HaGridCellAttrProvider.cpp:44
+msgid "%Y-%m-%d"
+msgstr "%Y 年 %m 月 %d 日"
+
+#: raw/RawPanel.cpp:49
 msgid "DOC_ROOT"
 msgstr "文档之根"
 
-#: raw/RawPanel.cpp:90
+#: raw/RawPanel.cpp:89
 msgid "Enter new section name:"
 msgstr "输入新段落名称："
 
-#: raw/RawPanel.cpp:110
+#: raw/RawPanel.cpp:109
 #, c-format
 msgid "Are you sure to delete section \"%s\" and all of its sub section?"
 msgstr "确定要删除段落“%s”及其所有子段落吗？"
 
-#: raw/RawPanel.cpp:150
+#: raw/RawPanel.cpp:149
 msgid "Section name cannot be empty."
 msgstr "段落名称不能为空。"
 
-#: raw/RawPanel.cpp:166
+#: raw/RawPanel.cpp:165
 #, c-format
 msgid "Section \"%s\" already exists."
 msgstr "段落“%s”已存在。"
-
-#: HaGridCellAttrProvider.cpp:47
-msgid "%Y-%m-%d"
-msgstr "%Y 年 %m 月 %d 日"
-
-#: HaTable.cpp:198
-msgid "not implemented"
-msgstr "未实现"

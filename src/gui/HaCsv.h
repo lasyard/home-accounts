@@ -1,5 +1,5 @@
-#ifndef _HA_GUI_CSV_DOC_H_
-#define _HA_GUI_CSV_DOC_H_
+#ifndef _HA_GUI_HA_CSV_H_
+#define _HA_GUI_HA_CSV_H_
 
 #include "Utils.h"
 
@@ -7,15 +7,15 @@
 #include "csv/list.h"
 #include "csv/money.h"
 
-class CsvDoc
+class HaCsv
 {
 public:
-    DECLARE_TM(CsvDoc)
+    DECLARE_TM(HaCsv)
 
     static constexpr int INVALID_COL = -1;
 
-    CsvDoc();
-    virtual ~CsvDoc();
+    HaCsv();
+    virtual ~HaCsv();
 
     int GetColCount() const
     {
@@ -27,11 +27,7 @@ public:
         return m_parser.comment_cols;
     }
 
-    enum column_type GetColType(int i) const
-    {
-        wxASSERT(i < GetColCount());
-        return m_parser.meta->types[i];
-    }
+    virtual enum column_type GetColType(int i) const = 0;
 
     const struct list_head *GetRecords() const
     {
@@ -64,14 +60,14 @@ public:
         set_field(&m_parser, record, i, value);
     }
 
-    virtual const wxString GetValueString(int pos, int i) const;
-    virtual void SetValueString(int pos, int i, const wxString &value);
+    virtual const wxString GetValueString(int pos, int i) const = 0;
+    virtual void SetValueString(int pos, int i, const wxString &value) = 0;
 
     record_t *AddRecord();
     record_t *InsertRecord(int pos);
     bool DeleteRecord(int pos);
 
-    void SetParser(int cols, const enum column_type types[], int comment_cols);
+    virtual void SetParser(int cols, const enum column_type types[], int comment_cols);
 
     virtual bool ReadStream(std::istream &is);
     virtual void WriteStream(std::ostream &os);
@@ -80,19 +76,14 @@ public:
     void Write(std::string &str);
 
 protected:
-    struct Accessor {
-        const wxString (*get)(const struct parser *parser, const record_t *record, int i);
-        void (*set)(const struct parser *parser, record_t *record, int i, const wxString &value);
-    } *m_accessors;
-
     struct parser m_parser;
     struct list_head m_records;
     std::vector<record_t *> m_index;
 
-    static const wxString DefaultGetter(const struct parser *parser, const record_t *record, int i);
-    static const wxString StrGetter(const struct parser *parser, const record_t *record, int i);
+    const wxString DefaultGetter(const record_t *record, int i) const;
+    const wxString StrGetter(const record_t *record, int i) const;
 
-    static void DefaultSetter(const struct parser *parser, record_t *record, int i, const wxString &value);
+    void DefaultSetter(record_t *record, int i, const wxString &value);
 
     void CreateIndex();
 
@@ -107,4 +98,4 @@ protected:
     wxString GetMoneyString(money_t m) const;
 };
 
-#endif /* _HA_GUI_CSV_DOC_H_ */
+#endif /* _HA_GUI_HA_CSV_H_ */

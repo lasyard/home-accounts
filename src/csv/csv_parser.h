@@ -75,9 +75,6 @@ static inline const void *get_const_field(const struct parser *parser, const rec
     return get_field(parser, (record_t *)record, i);
 }
 
-int get_int_field(const struct parser *parser, const record_t *record, int i);
-void set_int_field(const struct parser *parser, record_t *record, int i, int value);
-
 void init_parser(struct parser *parser);
 void set_money_prec(struct parser *parser, int money_prec);
 void release_parser(struct parser *parser);
@@ -114,7 +111,7 @@ int write_lines(
 
 void release_records(const struct parser *parser, struct list_head *records);
 
-int fill_serial(const struct parser *parser, struct list_head *records, int start, int end);
+bool fill_serial(const struct parser *parser, struct list_head *records, int start, int end);
 
 #ifdef __cplusplus
 }

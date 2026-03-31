@@ -13,6 +13,8 @@
 #include "../HaDocument.h"
 #include "../HaGdi.h"
 
+#include "../accounts/AccountsDoc.h"
+
 IMPLEMENT_DYNAMIC_CLASS(DataPanel, HaPanel)
 
 BEGIN_EVENT_TABLE(DataPanel, HaPanel)
@@ -62,7 +64,7 @@ void DataPanel::OnUpdate()
 void DataPanel::SaveContents()
 {
     m_grid->SaveEditControlValue();
-    CsvDoc *doc = m_grid->GetTableDoc();
+    HaCsv *doc = m_grid->GetTableDoc();
     wxASSERT(doc != nullptr);
     std::string str;
     doc->Write(str);
@@ -117,8 +119,17 @@ void DataPanel::SettingDocument(HaDocument *doc)
 void DataPanel::ShowDataOfYear(int year)
 {
     m_currentYear = year;
-    auto *csv = m_doc->LoadDataDoc(year, m_ok);
-    m_grid->InitTable(csv);
+    auto *data = m_doc->LoadDataDoc(year, m_ok);
+    bool ok = false;
+    auto *accounts = m_doc->LoadCsvDoc<AccountsDoc>(ACCOUNTS_SECTION_NAME, ok);
+    if (ok) {
+        std::vector<int64_t> ids;
+        wxArrayString names;
+        accounts->GetIdAndNames(ids, names);
+        data->SetAccountNames(ids, names);
+    }
+    delete accounts;
+    m_grid->InitTable(data);
     UpdateStatistic();
 }
 

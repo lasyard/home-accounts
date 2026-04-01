@@ -1,18 +1,38 @@
 #include <ctype.h>
+#include <stddef.h>
+#include <string.h>
 
 #include "money.h"
 
 #include "int.h"
+#include "parser_options.h"
 #include "utils.h"
 
-const char *parse_money(const char *buf, money_t *data, char sep, int scale, char num_sep)
+static bool starts_with(const char *str, const char *prefix)
+{
+    while (*prefix != '\0') {
+        if (*str != *prefix) {
+            return false;
+        }
+        ++str;
+        ++prefix;
+    }
+    return true;
+}
+
+const char *parse_money(const char *buf, money_t *data, const struct parser_options *options)
 {
     money_t num = 0;
     const char *p = skip_space(buf);
+    if (options->money_sigil != NULL && starts_with(p, options->money_sigil)) {
+        p += strlen(options->money_sigil);
+        p = skip_space(p);
+    }
     bool decimal = false;
     bool pos;
+    int scale = options->money_scale;
     p = parse_sign(p, &pos);
-    for (; *p != sep && !is_line_end(*p); ++p) {
+    for (; *p != options->sep && !is_line_end(*p); ++p) {
         if (!is_space(*p)) {
             if (isdigit(*p)) {
                 num = num * 10 + digittoint(*p);
@@ -20,19 +40,17 @@ const char *parse_money(const char *buf, money_t *data, char sep, int scale, cha
                 decimal = true;
                 ++p;
                 break;
-            } else if (*p != num_sep) { // allow delimiter of numbers
+            } else if (*p != options->num_sep) {
                 return NULL;
             }
         }
     }
     num *= scale;
     if (decimal) {
-        // fraction part.
         scale /= 10;
-        for (; *p != sep && !is_line_end(*p); ++p) {
+        for (; *p != options->sep && !is_line_end(*p); ++p) {
             if (!is_space(*p)) {
                 if (isdigit(*p)) {
-                    // too many digits.
                     if (scale < 1) {
                         return NULL;
                     }

@@ -3,6 +3,7 @@
 
 #include "column_type.h"
 #include "list.h"
+#include "parser_options.h"
 
 #define MAX_LINE_LENGTH 1023
 
@@ -10,6 +11,7 @@
 #pragma warning(push)
 #pragma warning(disable : 4200)
 #endif
+
 struct record_meta {
     int cols;                      // the number of columns
     const enum column_type *types; // the types of each column
@@ -36,14 +38,6 @@ typedef struct record {
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-struct parser_options {
-    char sep;        // the separator of fields
-    char num_sep;    // the separator in numbers
-    char date_sep;   // the separator of y/m/d in date
-    int money_prec;  // the precision of money
-    int money_scale; // the scale factor of money
-};
 
 struct parser {
     struct parser_options options;

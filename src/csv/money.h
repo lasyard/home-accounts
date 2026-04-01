@@ -3,22 +3,15 @@
 
 #include <stdint.h>
 
+struct parser_options;
+
 typedef int64_t money_t;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/**
- * @brief Parse a number as money, scaled.
- *
- * @param buf
- * @param data
- * @param sep
- * @param mul must be 10, 100, 1000, etc.
- * @return const char*
- */
-const char *parse_money(const char *buf, money_t *data, char sep, int scale, char num_sep);
+const char *parse_money(const char *buf, money_t *data, const struct parser_options *options);
 
 char *output_money(char *buf, money_t data, int prec, int scale);
 

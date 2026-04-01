@@ -50,7 +50,7 @@ parse_by_type(const struct parser_options *options, const char *buf, enum column
     case CT_BOOL:
         return parse_bool(buf, (bool *)data, options->sep);
     case CT_MONEY:
-        return parse_money(buf, (money_t *)data, options->sep, options->money_scale, options->num_sep);
+        return parse_money(buf, (money_t *)data, options);
     case CT_DATE:
         return parse_date(buf, (date_t *)data, options->sep, options->date_sep);
     case CT_TIME:
@@ -117,6 +117,7 @@ void init_parser(struct parser *parser)
     parser->options.sep = ',';
     parser->options.num_sep = ' ';
     parser->options.date_sep = '-';
+    parser->options.money_sigil = "¥";
     parser->comment_cols = 0;
     parser->meta = NULL;
     set_money_prec(parser, 2);

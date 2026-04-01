@@ -81,3 +81,11 @@ HCSV 类型是一种经过改造的 CSV 格式，由 `CsvDoc` 类实现。
 |    1 | TITLES   | CT_STR | 导入 CSV 的列标题 |
 
 `comment_cols = 0`
+
+## 源码结构
+
+| 目录       | 编程语言 | 基础框架          | 说明            |
+| ---------- | -------- | ----------------- | --------------- |
+| `src/csv`  | C        | 无                | HCSV 解析器相关 |
+| `src/file` | C++      | CryptoPP, sqlite3 | 文件存储相关    |
+| `src/gui`  | C++      | wxWidgets         | GUI 和主要功能  |

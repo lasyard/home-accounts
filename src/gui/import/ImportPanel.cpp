@@ -38,12 +38,15 @@ ImportPanel::ImportPanel(wxWindow *parent) : HaPanel(parent)
     headerSizer->AddStretchSpacer(1);
     auto *btnMerge = new wxButton(this, wxID_ANY, _("Merge"));
     headerSizer->Add(btnMerge, wxSizerFlags().Border(wxALL, 3).Proportion(0));
+    auto *btnReject = new wxButton(this, wxID_ANY, _("Reject"));
+    headerSizer->Add(btnReject, wxSizerFlags().Border(wxALL, 3).Proportion(0));
     sizer->Add(headerSizer, wxSizerFlags().Expand().Border(wxLEFT | wxRIGHT | wxTOP, 0).Proportion(0));
     m_grid = new ImportGrid(this, wxID_ANY);
     m_grid->SetAttributes();
     sizer->Add(m_grid, wxSizerFlags().Expand().Border(wxALL, 0).Proportion(1));
     SetSizer(sizer);
     btnMerge->Bind(wxEVT_BUTTON, &ImportPanel::OnMerge, this);
+    btnReject->Bind(wxEVT_BUTTON, &ImportPanel::OnReject, this);
 }
 
 ImportPanel::~ImportPanel()
@@ -201,5 +204,12 @@ void ImportPanel::OnMerge([[maybe_unused]] wxCommandEvent &event)
     m_doc->DeleteSection(IMPORT_SECTION_NAME);
     m_doc->Modify(true);
     wxMessageBox(_("Merge completed."));
+    m_doc->GetHaView()->CloseImportPanel();
+}
+
+void ImportPanel::OnReject([[maybe_unused]] wxCommandEvent &event)
+{
+    m_doc->DeleteSection(IMPORT_SECTION_NAME);
+    m_doc->Modify(true);
     m_doc->GetHaView()->CloseImportPanel();
 }

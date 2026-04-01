@@ -28,6 +28,7 @@ private:
     void SettingDocument(HaDocument *doc) override;
     void OnGridCellChanged(wxGridEvent &event);
     void OnMerge(wxCommandEvent &event);
+    void OnReject(wxCommandEvent &event);
 };
 
 #endif /* _HA_IMPORT_IMPORT_PANEL_H_ */

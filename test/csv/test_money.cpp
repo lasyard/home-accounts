@@ -1,5 +1,7 @@
 #include "doctest/doctest.h"
 
+#include <cstddef>
+
 #include "money.h"
 
 #include "parser_options.h"

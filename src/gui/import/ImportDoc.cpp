@@ -74,15 +74,21 @@ bool ImportDoc::SetDataFieldByName(int i, const wxString &name)
     if (!(0 <= i && (size_t)i < m_colTitles.size())) {
         return false;
     }
-    int field = DataDoc::GetColByName(name);
-    int col = m_csvCols[field];
-    if (col != INVALID_COL) {
-        m_dataFields[col] = INVALID_COL;
-        m_colMap->SetMap(m_dataFields[col], m_colTitles[col]);
+    int oldField = m_dataFields[i];
+    if (oldField != INVALID_COL) {
+        m_csvCols[oldField] = INVALID_COL;
     }
-    m_csvCols[field] = i;
+    int field = DataDoc::GetColByName(name);
+    if (field != INVALID_COL) {
+        int col = m_csvCols[field];
+        if (col != INVALID_COL) {
+            m_dataFields[col] = INVALID_COL;
+            m_colMap->SetMap(m_dataFields[col], m_colTitles[col]);
+        }
+        m_csvCols[field] = i;
+    }
     m_dataFields[i] = field;
-    m_colMap->SetMap(m_dataFields[i], m_colTitles[i]);
+    m_colMap->SetMap(field, m_colTitles[i]);
     return true;
 }
 

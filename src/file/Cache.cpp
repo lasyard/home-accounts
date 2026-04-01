@@ -97,6 +97,8 @@ void Cache::saveAs(Store *store)
             if (section.readDirty) {
                 m_store->readSection(name, section.content);
             }
+            // mark all sections as dirty, so they will be written to the new store
+            section.writeDirty = true;
         }
     }
     try {

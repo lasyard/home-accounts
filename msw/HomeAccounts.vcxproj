@@ -36,7 +36,6 @@
     <ClCompile Include="..\src\gui\accounts\AccountsPanel.cpp" />
     <ClCompile Include="..\src\gui\accounts\AccountsTable.cpp" />
     <ClCompile Include="..\src\gui\ChangePassDialog.cpp" />
-    <ClCompile Include="..\src\gui\CsvDoc.cpp" />
     <ClCompile Include="..\src\gui\data\DataDoc.cpp" />
     <ClCompile Include="..\src\gui\data\DataGrid.cpp" />
     <ClCompile Include="..\src\gui\data\DataGridCellAttrProvider.cpp" />
@@ -44,6 +43,7 @@
     <ClCompile Include="..\src\gui\data\DataTable.cpp" />
     <ClCompile Include="..\src\gui\HaApp.cpp" />
     <ClCompile Include="..\src\gui\HaArtProvider.cpp" />
+    <ClCompile Include="..\src\gui\HaCsv.cpp" />
     <ClCompile Include="..\src\gui\HaDocument.cpp" />
     <ClCompile Include="..\src\gui\HaGdi.cpp" />
     <ClCompile Include="..\src\gui\HaGrid.cpp" />
@@ -60,15 +60,15 @@
     <ClCompile Include="..\src\gui\import\ImportTable.cpp" />
     <ClCompile Include="..\src\gui\raw\RawPanel.cpp" />
     <ClCompile Include="..\src\gui\Utils.cpp" />
+    <ClCompile Include="..\src\gui\WxUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\gui\accounts\AccountsDoc.h" />
     <ClInclude Include="..\src\gui\accounts\AccountsGrid.h" />
     <ClInclude Include="..\src\gui\accounts\AccountsPanel.h" />
     <ClInclude Include="..\src\gui\accounts\AccountsTable.h" />
-    <ClInclude Include="..\src\gui\Algos.h" />
+    <ClInclude Include="..\src\gui\BiMap.h" />
     <ClInclude Include="..\src\gui\ChangePassDialog.h" />
-    <ClInclude Include="..\src\gui\CsvDoc.h" />
     <ClInclude Include="..\src\gui\data\DataDoc.h" />
     <ClInclude Include="..\src\gui\data\DataGrid.h" />
     <ClInclude Include="..\src\gui\data\DataGridCellAttrProvider.h" />
@@ -76,7 +76,10 @@
     <ClInclude Include="..\src\gui\data\DataTable.h" />
     <ClInclude Include="..\src\gui\HaApp.h" />
     <ClInclude Include="..\src\gui\HaArtProvider.h" />
+    <ClInclude Include="..\src\gui\HaCsv.h" />
+    <ClInclude Include="..\src\gui\HaCsvTemplate.h" />
     <ClInclude Include="..\src\gui\HaDefs.h" />
+    <ClInclude Include="..\src\gui\HaDoc.h" />
     <ClInclude Include="..\src\gui\HaDocument.h" />
     <ClInclude Include="..\src\gui\HaGdi.h" />
     <ClInclude Include="..\src\gui\HaGrid.h" />
@@ -95,6 +98,7 @@
     <ClInclude Include="..\src\gui\import\ImportTable.h" />
     <ClInclude Include="..\src\gui\raw\RawPanel.h" />
     <ClInclude Include="..\src\gui\Utils.h" />
+    <ClInclude Include="..\src\gui\WxUtils.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>

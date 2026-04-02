@@ -1,5 +1,6 @@
 #include <fstream>
 #include <map>
+#include <memory>
 #include <vector>
 
 #include <wx/button.h>

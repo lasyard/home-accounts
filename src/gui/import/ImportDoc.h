@@ -36,8 +36,8 @@ public:
 
     int GetCsvCol(int field) const
     {
-        auto *csvCol = m_csvColDataFieldMap.v_k(field);
-        return csvCol != nullptr ? *csvCol : INVALID_COL;
+        auto csvCol = m_csvColDataFieldMap.v_k(field);
+        return csvCol;
     }
 
 private:
@@ -45,7 +45,7 @@ private:
 
     wxArrayString m_colTitles;
     enum column_type *m_types;
-    BiMap<int, int> m_csvColDataFieldMap;
+    BiMap<int, int, INVALID_COL, INVALID_COL> m_csvColDataFieldMap;
 
     int Reading(std::istream &is) override;
     int Writing(std::ostream &os) override;

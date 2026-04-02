@@ -43,20 +43,20 @@ void ImportDoc::SaveColMap(std::string &csv) const
 
 date_t ImportDoc::GetRecordDate(const record_t *record) const
 {
-    auto *csvCol = m_csvColDataFieldMap.v_k(DataDoc::DATE_COL);
-    if (csvCol == nullptr) {
+    auto csvCol = m_csvColDataFieldMap.v_k(DataDoc::DATE_COL);
+    if (csvCol == INVALID_COL) {
         return UNKNOWN_DATE;
     }
-    return *(date_t *)get_const_field(&m_parser, record, *csvCol);
+    return *(date_t *)get_const_field(&m_parser, record, csvCol);
 }
 
 timo_t ImportDoc::GetRecordTime(const record_t *record) const
 {
-    auto *csvCol = m_csvColDataFieldMap.v_k(DataDoc::TIME_COL);
-    if (csvCol == nullptr) {
+    auto csvCol = m_csvColDataFieldMap.v_k(DataDoc::TIME_COL);
+    if (csvCol == INVALID_COL) {
         return UNKNOWN_TIME;
     }
-    return *(timo_t *)get_const_field(&m_parser, record, *csvCol);
+    return *(timo_t *)get_const_field(&m_parser, record, csvCol);
 }
 
 std::pair<date_t, timo_t> ImportDoc::GetRecordDateTime(const record_t *record) const
@@ -66,11 +66,11 @@ std::pair<date_t, timo_t> ImportDoc::GetRecordDateTime(const record_t *record) c
     if (date != UNKNOWN_DATE) {
         return {date, time};
     }
-    auto *csvCol = m_csvColDataFieldMap.v_k(DataDoc::DATETIME_VIRTUAL_COL);
-    if (csvCol == nullptr) {
+    auto csvCol = m_csvColDataFieldMap.v_k(DataDoc::DATETIME_VIRTUAL_COL);
+    if (csvCol == INVALID_COL) {
         return {UNKNOWN_DATE, UNKNOWN_TIME};
     }
-    auto *s = (const struct str *)get_const_field(&m_parser, record, *csvCol);
+    auto *s = (const struct str *)get_const_field(&m_parser, record, csvCol);
     if (str_is_empty(s)) {
         return {UNKNOWN_DATE, UNKNOWN_TIME};
     }
@@ -87,8 +87,7 @@ wxString ImportDoc::GetCsvTitle(int i) const
 
 int ImportDoc::GetDataField(int i) const
 {
-    auto *field = m_csvColDataFieldMap.k_v(i);
-    return field != nullptr ? *field : INVALID_COL;
+    return m_csvColDataFieldMap.k_v(i);
 }
 
 wxString ImportDoc::GetDataFieldName(int i) const
@@ -101,20 +100,20 @@ bool ImportDoc::SetDataFieldByName(int csvCol, const wxString &name)
     wxASSERT(0 <= csvCol && (size_t)csvCol < m_colTitles.size());
     int field = DataDoc::GetColByName(name);
     if (field != INVALID_COL) {
-        auto old = m_csvColDataFieldMap.set_kv(csvCol, field);
-        if (old.second != nullptr) {
-            m_colMap->SetMap(INVALID_COL, m_colTitles[csvCol]);
+        auto oldCol = m_csvColDataFieldMap.v_k(field);
+        if (oldCol != INVALID_COL) {
+            m_colMap->SetMap(INVALID_COL, m_colTitles[oldCol]);
         }
     }
     m_colMap->SetMap(field, m_colTitles[csvCol]);
     if (field == DataDoc::DATETIME_VIRTUAL_COL) {
-        auto *oldK = m_csvColDataFieldMap.erase_v(DataDoc::DATE_COL);
-        if (oldK != nullptr) {
-            m_colMap->SetMap(INVALID_COL, m_colTitles[*oldK]);
+        auto oldK = m_csvColDataFieldMap.erase_v(DataDoc::DATE_COL);
+        if (oldK != INVALID_COL) {
+            m_colMap->SetMap(INVALID_COL, m_colTitles[oldK]);
         }
         oldK = m_csvColDataFieldMap.erase_v(DataDoc::TIME_COL);
-        if (oldK != nullptr) {
-            m_colMap->SetMap(INVALID_COL, m_colTitles[*oldK]);
+        if (oldK != INVALID_COL) {
+            m_colMap->SetMap(INVALID_COL, m_colTitles[oldK]);
         }
     }
     return true;

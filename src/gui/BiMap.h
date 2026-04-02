@@ -3,38 +3,43 @@
 
 #include <map>
 
-template <typename K, typename V> class BiMap
+template <typename K, typename V, auto INVALID_K, auto INVALID_V> class BiMap
 {
 public:
     BiMap() = default;
     virtual ~BiMap() = default;
 
-    /**
-     * @brief Set the kv object
-     *
-     * @param k
-     * @param v
-     * @return std::pair<const K *, const V *> old key and value, or nullptr if there is no old key or value
-     */
-    std::pair<const K *, const V *> set_kv(const K &k, const V &v)
+    std::pair<K, V> set_kv(const K &k, const V &v)
     {
-        auto *old_k = erase_old_k(v);
-        auto *old_v = erase_old_v(k);
+        auto old_k = v_k(v);
+        auto old_v = k_v(k);
+        if (old_k != INVALID_K) {
+            m_kv.erase(old_k);
+        }
+        if (old_v != INVALID_V) {
+            m_vk.erase(old_v);
+        }
         m_kv[k] = v;
         m_vk[v] = k;
         return {old_k, old_v};
     }
 
-    const V *erase_k(const K &k)
+    V erase_k(const K &k)
     {
-        auto old_v = erase_old_v(k);
+        auto old_v = k_v(k);
+        if (old_v != INVALID_V) {
+            m_vk.erase(old_v);
+        }
         m_kv.erase(k);
         return old_v;
     }
 
-    const K *erase_v(const V &v)
+    K erase_v(const V &v)
     {
-        auto old_k = erase_old_k(v);
+        auto old_k = v_k(v);
+        if (old_k != INVALID_K) {
+            m_kv.erase(old_k);
+        }
         m_vk.erase(v);
         return old_k;
     }
@@ -49,16 +54,16 @@ public:
         return m_vk.find(v) != m_vk.end();
     }
 
-    const V *k_v(const K &k) const
+    V k_v(const K &k) const
     {
         auto it = m_kv.find(k);
-        return (it != m_kv.end()) ? &it->second : nullptr;
+        return (it != m_kv.end()) ? it->second : V(INVALID_V);
     }
 
-    const K *v_k(const V &v) const
+    K v_k(const V &v) const
     {
         auto it = m_vk.find(v);
-        return (it != m_vk.end()) ? &it->second : nullptr;
+        return (it != m_vk.end()) ? it->second : K(INVALID_K);
     }
 
     void clear()
@@ -80,24 +85,6 @@ public:
 private:
     std::map<K, V> m_kv;
     std::map<V, K> m_vk;
-
-    const K *erase_old_k(const V &v)
-    {
-        auto *old_k = v_k(v);
-        if (old_k != nullptr) {
-            m_kv.erase(*old_k);
-        }
-        return old_k;
-    }
-
-    const V *erase_old_v(const K &k)
-    {
-        auto old_v = k_v(k);
-        if (old_v != nullptr) {
-            m_vk.erase(*old_v);
-        }
-        return old_v;
-    }
 };
 
 #endif /* _HA_GUI_BI_MAP_H_ */

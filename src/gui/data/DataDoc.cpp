@@ -155,18 +155,18 @@ record_t *DataDoc::InsertRecordAtTime(date_t date, timo_t time)
 const wxString DataDoc::AccountGetter(const record_t *record, int i) const
 {
     auto id = *(int64_t *)get_const_field(&m_parser, record, i);
-    auto *name = m_accountIdNameMap.k_v(id);
-    if (name != nullptr) {
-        return *name;
+    auto name = m_accountIdNameMap.k_v(id);
+    if (name != INVALID_COL_NAME) {
+        return name;
     }
     return wxString::Format("%lld", id);
 }
 
 void DataDoc::AccountSetter(record_t *record, int i, const wxString &value)
 {
-    auto *id = m_accountIdNameMap.v_k(value);
-    if (id != nullptr) {
-        *(int64_t *)get_field(&m_parser, record, i) = *id;
+    auto id = m_accountIdNameMap.v_k(value);
+    if (id != INVALID_COL) {
+        *(int64_t *)get_field(&m_parser, record, i) = id;
     } else if (parse_field(&m_parser, value.c_str(), record, i) == NULL) {
         wxLogError(_("Invalid value: %s"), value);
     }

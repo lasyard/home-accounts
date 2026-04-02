@@ -13,6 +13,7 @@ public:
     DECLARE_TM(HaCsv)
 
     static constexpr int INVALID_COL = -1;
+    static constexpr const char INVALID_COL_NAME[] = "";
 
     HaCsv();
     virtual ~HaCsv();

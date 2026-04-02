@@ -1,8 +1,6 @@
 #ifndef _HA_DATA_DATA_DOC_H_
 #define _HA_DATA_DATA_DOC_H_
 
-#include <map>
-
 #include "../HaCsvTemplate.h"
 
 #include "../BiMap.h"
@@ -26,7 +24,7 @@ public:
     static constexpr int MEMO_COL = 7;
     static constexpr int AUTO_SET_COL = 8;
 
-    static constexpr int DATETIME_VIRTUAL_COL = -2;
+    static constexpr int DATETIME_VIRTUAL_COL = 100;
 
     DataDoc(int year);
     virtual ~DataDoc();
@@ -174,7 +172,7 @@ private:
     int m_year;
 
     wxArrayString m_accountNames;
-    BiMap<int64_t, wxString> m_accountIdNameMap;
+    BiMap<int64_t, wxString, INVALID_COL, INVALID_COL_NAME> m_accountIdNameMap;
 };
 
 #endif /* _HA_DATA_DATA_DOC_H_ */

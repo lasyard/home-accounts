@@ -2,7 +2,7 @@
 #define _HA_IMPORT_IMPORT_PANEL_H_
 
 #include "../HaPanel.h"
-#include "../Utils.h"
+#include "../WxUtils.h"
 
 class ImportGrid;
 class wxGridEvent;

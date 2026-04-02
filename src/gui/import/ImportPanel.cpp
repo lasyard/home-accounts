@@ -77,6 +77,7 @@ void ImportPanel::OnUpdate()
         );
         if (dlg.ShowModal() != wxID_OK) {
             delete csv;
+            m_doc->GetHaView()->CloseImportPanel();
             return;
         }
         wxString path = dlg.GetPath();
@@ -113,7 +114,7 @@ void ImportPanel::OnGridCellChanged(wxGridEvent &event)
         auto *import = dynamic_cast<ImportDoc *>(m_grid->GetTableDoc());
         if (import != nullptr) {
             std::string csv;
-            import->GetColMap()->Write(csv);
+            import->SaveColMap(csv);
             m_doc->SaveSection(IMPORT_COL_MAP_SECTION_NAME, csv);
             m_doc->Modify(true);
             OnUpdate();
@@ -127,8 +128,7 @@ void ImportPanel::OnMerge([[maybe_unused]] wxCommandEvent &event)
     m_grid->SaveEditControlValue();
     auto *import = dynamic_cast<ImportDoc *>(m_grid->GetTableDoc());
 
-    int dateCsvCol = import->GetCsvCol(DataDoc::DATE_COL);
-    if (dateCsvCol == HaCsv::INVALID_COL) {
+    if (!import->DateColExists()) {
         wxMessageBox(_("Cannot import: no DATE."));
         return;
     }
@@ -160,13 +160,13 @@ void ImportPanel::OnMerge([[maybe_unused]] wxCommandEvent &event)
     std::map<int, std::unique_ptr<DataDoc>> docs;
     for (struct list_item *pos = import->GetRecords()->first; pos != NULL; pos = pos->next) {
         auto *importRecord = get_record(pos);
-        auto date = import->GetRecordDate(importRecord);
-        if (date == UNKNOWN_DATE) {
+        auto dateTime = import->GetRecordDateTime(importRecord);
+        if (dateTime.first == UNKNOWN_DATE) {
             wxMessageBox(_("Cannot import: some records have no DATE."));
             return;
         }
         int year, month, day;
-        jdn_split(date, &year, &month, &day);
+        jdn_split(dateTime.first, &year, &month, &day);
         DataDoc *dataDoc = nullptr;
         if (docs.contains(year)) {
             dataDoc = docs.at(year).get();
@@ -179,8 +179,7 @@ void ImportPanel::OnMerge([[maybe_unused]] wxCommandEvent &event)
             }
             docs[year] = std::unique_ptr<DataDoc>(dataDoc);
         }
-        auto time = import->GetRecordTime(importRecord);
-        auto *record = dataDoc->InsertRecordAtTime(date, time);
+        auto *record = dataDoc->InsertRecordAtTime(dateTime.first, dateTime.second);
         if (record == nullptr) {
             wxLogError(_("Failed to insert record to data of year %d"), year);
             return;

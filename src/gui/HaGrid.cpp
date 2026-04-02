@@ -6,9 +6,9 @@
 
 #include "HaGrid.h"
 
-#include "Algos.h"
 #include "HaDefs.h"
 #include "HaTable.h"
+#include "Utils.h"
 
 BEGIN_EVENT_TABLE(HaGrid, wxGrid)
 EVT_UPDATE_UI(ID_INSERT, HaGrid::OnUpdateInsert)
@@ -164,7 +164,7 @@ void HaGrid::DeleteAllRowsInBlocks(const wxGridBlocks &blocks)
         rows.push_back(std::make_pair(block.GetTopRow(), block.GetBottomRow()));
     }
     std::vector<std::pair<int, int>> sorted;
-    Algos::MergeRange(rows, sorted);
+    Utils::MergeRange(rows, sorted);
     for (auto i = sorted.crbegin(); i != sorted.crend(); ++i) {
         DeleteRows(i->first, i->second - i->first + 1);
     }

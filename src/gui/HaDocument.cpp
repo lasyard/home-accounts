@@ -14,6 +14,7 @@
 
 #include "ChangePassDialog.h"
 #include "HaView.h"
+#include "Utils.h"
 
 #include "data/DataDoc.h"
 

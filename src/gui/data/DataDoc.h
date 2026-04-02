@@ -5,6 +5,8 @@
 
 #include "../HaCsvTemplate.h"
 
+#include "../BiMap.h"
+
 #include "csv/date_time.h"
 #include "csv/money.h"
 
@@ -24,6 +26,8 @@ public:
     static constexpr int MEMO_COL = 7;
     static constexpr int AUTO_SET_COL = 8;
 
+    static constexpr int DATETIME_VIRTUAL_COL = -2;
+
     DataDoc(int year);
     virtual ~DataDoc();
 
@@ -31,8 +35,9 @@ public:
 
     static wxString GetColName(int i);
     static int GetColByName(const wxString &name);
+    static void GetAllColNames(wxArrayString &colNames);
 
-    void SetAccountNames(const std::vector<int64_t> &ids, const wxArrayString &names);
+    void SetAccountIdAndNames(const std::vector<int64_t> &ids, const wxArrayString &names);
 
     const wxArrayString &GetAccountNames() const
     {
@@ -169,8 +174,7 @@ private:
     int m_year;
 
     wxArrayString m_accountNames;
-    std::map<int64_t, wxString> m_accountIdNames;
-    std::map<wxString, int64_t> m_accountNameIds;
+    BiMap<int64_t, wxString> m_accountIdNameMap;
 };
 
 #endif /* _HA_DATA_DATA_DOC_H_ */

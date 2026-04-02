@@ -3,8 +3,6 @@
 #include "DataDoc.h"
 #include "DataGridCellAttrProvider.h"
 
-#include "../Utils.h"
-
 IMPLEMENT_DYNAMIC_CLASS(DataTable, HaTable)
 
 DataTable::DataTable(DataDoc *doc) : HaTableTemplate<DataTable, DataDoc>(doc)

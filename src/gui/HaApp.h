@@ -4,7 +4,7 @@
 #include <wx/app.h>
 #include <wx/docview.h>
 
-#include "Utils.h"
+#include "WxUtils.h"
 
 class HaApp : public wxApp
 {

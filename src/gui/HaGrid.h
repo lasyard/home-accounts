@@ -4,7 +4,7 @@
 #include <wx/grid.h>
 #include <wx/pen.h>
 
-#include "Utils.h"
+#include "WxUtils.h"
 
 class HaGrid : public wxGrid
 {

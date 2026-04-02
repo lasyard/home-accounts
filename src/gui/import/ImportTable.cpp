@@ -27,11 +27,9 @@ void ImportTable::Init()
         SetColImplDoc(static_cast<ImportDoc *>(m_doc)->GetCsvTitle(i), i, i, true);
     }
     m_cache.resize(m_doc->GetRowCount() + HEADER_ROWS);
-    wxArrayString fieldNames;
-    for (int i = -1; i < DataDoc::COLS; ++i) {
-        fieldNames.Add(DataDoc::GetColName(i));
-    }
-    SetAttrProvider(new ImportGridCellAttrProvider(this, fieldNames));
+    wxArrayString colNames;
+    DataDoc::GetAllColNames(colNames);
+    SetAttrProvider(new ImportGridCellAttrProvider(this, colNames));
     HaTable::Init();
 }
 

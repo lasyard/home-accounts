@@ -3,6 +3,8 @@
 
 #include "../HaCsvTemplate.h"
 
+#include "../BiMap.h"
+
 #include "csv/date_time.h"
 
 class ImportColMapConf;
@@ -17,37 +19,33 @@ public:
 
     date_t GetRecordDate(const record_t *record) const;
     timo_t GetRecordTime(const record_t *record) const;
+    std::pair<date_t, timo_t> GetRecordDateTime(const record_t *record) const;
 
     void SetColMap(ImportColMapConf *colMap)
     {
         m_colMap = colMap;
     }
 
-    ImportColMapConf *GetColMap()
-    {
-        return m_colMap;
-    }
+    void SaveColMap(std::string &csv) const;
 
     wxString GetCsvTitle(int i) const;
     int GetDataField(int i) const;
     wxString GetDataFieldName(int i) const;
     bool SetDataFieldByName(int i, const wxString &name);
-    int GetCsvCol(int i) const;
+    bool DateColExists() const;
 
-    struct ImportingRows {
-        int importRow;
-        int year;
-        date_t date;
-        timo_t time;
-    };
+    int GetCsvCol(int field) const
+    {
+        auto *csvCol = m_csvColDataFieldMap.v_k(field);
+        return csvCol != nullptr ? *csvCol : INVALID_COL;
+    }
 
 private:
     ImportColMapConf *m_colMap;
 
     wxArrayString m_colTitles;
     enum column_type *m_types;
-    int *m_dataFields;
-    int *m_csvCols;
+    BiMap<int, int> m_csvColDataFieldMap;
 
     int Reading(std::istream &is) override;
     int Writing(std::ostream &os) override;

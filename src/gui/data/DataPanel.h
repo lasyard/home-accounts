@@ -2,7 +2,7 @@
 #define _HA_DATA_DATA_PANEL_H_
 
 #include "../HaPanel.h"
-#include "../Utils.h"
+#include "../WxUtils.h"
 
 class wxDatePickerCtrl;
 class wxDateEvent;

@@ -3,7 +3,7 @@
 
 #include <wx/docview.h>
 
-#include "Utils.h"
+#include "WxUtils.h"
 
 class wxBookCtrlEvent;
 class wxNotebook;

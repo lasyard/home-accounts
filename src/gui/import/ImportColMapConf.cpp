@@ -22,8 +22,9 @@ ImportColMapConf::~ImportColMapConf()
 
 int ImportColMapConf::GetDataFieldByTitle(const wxString &title) const
 {
-    if (m_titleMap.contains(title)) {
-        return m_titleMap.at(title);
+    auto it = m_titleMap.find(title);
+    if (it != m_titleMap.end()) {
+        return it->second;
     }
     return INVALID_COL;
 }

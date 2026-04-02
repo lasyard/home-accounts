@@ -126,7 +126,7 @@ void DataPanel::ShowDataOfYear(int year)
         std::vector<int64_t> ids;
         wxArrayString names;
         accounts->GetIdAndNames(ids, names);
-        data->SetAccountNames(ids, names);
+        data->SetAccountIdAndNames(ids, names);
     }
     delete accounts;
     m_grid->InitTable(data);

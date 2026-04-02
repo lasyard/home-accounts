@@ -29,6 +29,7 @@ add_exe(${APP_NAME}
     HaTable.cpp
     HaView.cpp
     Utils.cpp
+    WxUtils.cpp
     # order is vital
     LIBS
     ${wxWidgets_LIBRARIES}

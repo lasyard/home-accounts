@@ -3,7 +3,7 @@
 
 #include <wx/grid.h>
 
-#include "Utils.h"
+#include "WxUtils.h"
 
 class HaTable;
 

@@ -19,7 +19,7 @@ const column_type DataDoc::COL_TYPES[] = {
     CT_BOOL,
 };
 
-DataDoc::DataDoc(int year) : HaCsvTemplate<DataDoc>(), m_year(year)
+DataDoc::DataDoc(int year) : HaCsvTemplate<DataDoc>(), m_year(year), m_accountNames(), m_accountIdNameMap()
 {
     wxLog::AddTraceMask(TM);
     SetParser(COLS, COL_TYPES, 1);
@@ -47,11 +47,17 @@ wxString DataDoc::GetColName(int i)
         }
         return s[i];
     }
+    if (i == DATETIME_VIRTUAL_COL) {
+        return _("Date & Time");
+    }
     return _("Invalid");
 }
 
 int DataDoc::GetColByName(const wxString &name)
 {
+    if (GetColName(DATETIME_VIRTUAL_COL) == name) {
+        return DATETIME_VIRTUAL_COL;
+    }
     for (int i = 0; i < COLS; ++i) {
         if (GetColName(i) == name) {
             return i;
@@ -60,17 +66,22 @@ int DataDoc::GetColByName(const wxString &name)
     return INVALID_COL;
 }
 
-void DataDoc::SetAccountNames(const std::vector<int64_t> &ids, const wxArrayString &names)
+void DataDoc::GetAllColNames(wxArrayString &colNames)
+{
+    colNames.Clear();
+    colNames.Add(GetColName(INVALID_COL));
+    for (int i = 0; i < COLS; ++i) {
+        colNames.Add(GetColName(i));
+    }
+    colNames.Add(GetColName(DATETIME_VIRTUAL_COL));
+}
+
+void DataDoc::SetAccountIdAndNames(const std::vector<int64_t> &ids, const wxArrayString &names)
 {
     m_accountNames = names;
-    m_accountIdNames.clear();
-    m_accountNameIds.clear();
-    auto n = ids.size();
-    for (size_t i = 0; i < n; ++i) {
-        auto id = ids[i];
-        auto &name = names[i];
-        m_accountIdNames[id] = name;
-        m_accountNameIds[name] = id;
+    m_accountIdNameMap.clear();
+    for (size_t i = 0; i < ids.size(); ++i) {
+        m_accountIdNameMap.set_kv(ids[i], names[i]);
     }
 }
 
@@ -144,18 +155,18 @@ record_t *DataDoc::InsertRecordAtTime(date_t date, timo_t time)
 const wxString DataDoc::AccountGetter(const record_t *record, int i) const
 {
     auto id = *(int64_t *)get_const_field(&m_parser, record, i);
-    auto it = m_accountIdNames.find(id);
-    if (it != m_accountIdNames.end()) {
-        return it->second;
+    auto *name = m_accountIdNameMap.k_v(id);
+    if (name != nullptr) {
+        return *name;
     }
     return wxString::Format("%lld", id);
 }
 
 void DataDoc::AccountSetter(record_t *record, int i, const wxString &value)
 {
-    auto it = m_accountNameIds.find(value);
-    if (it != m_accountNameIds.end()) {
-        *(int64_t *)get_field(&m_parser, record, i) = it->second;
+    auto *id = m_accountIdNameMap.v_k(value);
+    if (id != nullptr) {
+        *(int64_t *)get_field(&m_parser, record, i) = *id;
     } else if (parse_field(&m_parser, value.c_str(), record, i) == NULL) {
         wxLogError(_("Invalid value: %s"), value);
     }

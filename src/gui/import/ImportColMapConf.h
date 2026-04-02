@@ -19,7 +19,7 @@ public:
 
     void SetMap(int field, const wxString &title)
     {
-        if (field >= 0) {
+        if (field != HaCsv::INVALID_COL) {
             m_titleMap[title] = field;
         } else {
             m_titleMap.erase(title);

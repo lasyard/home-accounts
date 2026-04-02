@@ -1,7 +1,7 @@
 #ifndef _HA_GUI_HA_CSV_H_
 #define _HA_GUI_HA_CSV_H_
 
-#include "Utils.h"
+#include "WxUtils.h"
 
 #include "csv/csv_parser.h"
 #include "csv/list.h"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HomeAccounts 1.0.0\n"
 "Report-Msgid-Bugs-To: lasyard@yeah.net\n"
-"POT-Creation-Date: 2026-03-31 18:50+0800\n"
+"POT-Creation-Date: 2026-04-02 16:43+0800\n"
 "PO-Revision-Date: 2025-01-10 16:01+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -16,22 +16,22 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: HaCsvTemplate.h:102 data/DataDoc.cpp:160
+#: HaCsvTemplate.h:102 data/DataDoc.cpp:171
 #, c-format
 msgid "Invalid value: %s"
 msgstr "无效值：%s"
 
-#: HaCsv.cpp:92
+#: HaCsv.cpp:94
 #, c-format
 msgid "Parse error at line %d"
 msgstr "第 %d 行解析错误"
 
-#: HaCsv.cpp:95
+#: HaCsv.cpp:97
 #, c-format
 msgid "%d lines read"
 msgstr "已读取 %d 行"
 
-#: HaCsv.cpp:106
+#: HaCsv.cpp:108
 #, c-format
 msgid "%d lines written"
 msgstr "已写入 %d 行"
@@ -56,7 +56,7 @@ msgstr "文件"
 msgid "License"
 msgstr "许可证"
 
-#: accounts/AccountsDoc.cpp:101 data/DataDoc.cpp:50
+#: accounts/AccountsDoc.cpp:101 data/DataDoc.cpp:53
 msgid "Invalid"
 msgstr "无效"
 
@@ -92,7 +92,7 @@ msgstr "开户日期"
 msgid "Initial"
 msgstr "初始余额"
 
-#: accounts/AccountsTable.cpp:23 data/DataDoc.cpp:45 data/DataTable.cpp:29
+#: accounts/AccountsTable.cpp:23 data/DataDoc.cpp:45 data/DataTable.cpp:27
 msgid "Memo"
 msgstr "备注"
 
@@ -120,11 +120,11 @@ msgstr " 文档"
 msgid " View"
 msgstr " 视"
 
-#: HaDocument.cpp:67
+#: HaDocument.cpp:68
 msgid "Input the password for the file:"
 msgstr "输入文件的密码："
 
-#: HaDocument.cpp:242
+#: HaDocument.cpp:243
 #, c-format
 msgid "Failed to create backup file \"%s\"."
 msgstr ""
@@ -133,62 +133,66 @@ msgstr ""
 msgid "Field"
 msgstr "字段"
 
-#: import/ImportPanel.cpp:39 import/ImportPanel.cpp:149
+#: import/ImportPanel.cpp:39 import/ImportPanel.cpp:151
 msgid "Merge"
 msgstr "合并"
 
-#: import/ImportPanel.cpp:58
+#: import/ImportPanel.cpp:41
+msgid "Reject"
+msgstr "丢弃"
+
+#: import/ImportPanel.cpp:61
 msgid "Invalid import column mapping"
 msgstr "无效的导入列映射"
 
-#: import/ImportPanel.cpp:69
+#: import/ImportPanel.cpp:72
 msgid "Select CSV file to import"
 msgstr "选择要导入的 CSV 文件"
 
-#: import/ImportPanel.cpp:82
+#: import/ImportPanel.cpp:85
 #, c-format
 msgid "Failed to open file: %s"
 msgstr "无法打开文件：%s"
 
-#: import/ImportPanel.cpp:129
+#: import/ImportPanel.cpp:131
 msgid "Cannot import: no DATE."
 msgstr "无法导入：没有日期。"
 
-#: import/ImportPanel.cpp:136
+#: import/ImportPanel.cpp:138
 msgid "Invalid accounts"
 msgstr "无效账户"
 
-#: import/ImportPanel.cpp:145
+#: import/ImportPanel.cpp:147
 msgid "Cannot import: no account is available."
 msgstr "无法导入：没有可用的账户。"
 
-#: import/ImportPanel.cpp:149
+#: import/ImportPanel.cpp:151
 msgid "Select an account"
 msgstr "选择一个账户："
 
-#: import/ImportPanel.cpp:162
+#: import/ImportPanel.cpp:164
 msgid "Cannot import: some records have no DATE."
 msgstr "无法导入：有些记录没有日期。"
 
-#: import/ImportPanel.cpp:174
+#: import/ImportPanel.cpp:176
 #, c-format
 msgid "Invalid data of year %d"
 msgstr "%d 年的数据无效"
 
-#: import/ImportPanel.cpp:182
+#: import/ImportPanel.cpp:183
 #, c-format
 msgid "Failed to insert record to data of year %d"
 msgstr "插入记录到 %d 年的数据失败"
 
-#: import/ImportPanel.cpp:203
+#: import/ImportPanel.cpp:204
 msgid "Merge completed."
 msgstr "合并完成。"
 
-#: import/ImportDoc.cpp:99
+#: import/ImportDoc.cpp:133
 msgid "Empty CSV input"
 msgstr "空的 CSV 输入"
 
-#: import/ImportDoc.cpp:105
+#: import/ImportDoc.cpp:139
 msgid "Invalid CSV header"
 msgstr "无效的 CSV 头"
 
@@ -216,19 +220,19 @@ msgstr "期末余额："
 msgid "Date"
 msgstr "日期"
 
-#: data/DataDoc.cpp:39 data/DataTable.cpp:21
+#: data/DataDoc.cpp:39 data/DataTable.cpp:19
 msgid "Time"
 msgstr "时间"
 
-#: data/DataDoc.cpp:40 data/DataTable.cpp:22
+#: data/DataDoc.cpp:40 data/DataTable.cpp:20
 msgid "Amount"
 msgstr "金额"
 
-#: data/DataDoc.cpp:41 data/DataTable.cpp:23
+#: data/DataDoc.cpp:41 data/DataTable.cpp:21
 msgid "Account"
 msgstr "账户"
 
-#: data/DataDoc.cpp:42 data/DataTable.cpp:24
+#: data/DataDoc.cpp:42 data/DataTable.cpp:22
 msgid "Description"
 msgstr "说明"
 
@@ -244,23 +248,27 @@ msgstr "真实说明"
 msgid "Auto Set"
 msgstr "自动设置"
 
-#: data/DataTable.cpp:25
+#: data/DataDoc.cpp:51
+msgid "Date & Time"
+msgstr "日期和时间"
+
+#: data/DataTable.cpp:23
 msgid "Income"
 msgstr "收入"
 
-#: data/DataTable.cpp:26
+#: data/DataTable.cpp:24
 msgid "Outlay"
 msgstr "支出"
 
-#: data/DataTable.cpp:27
+#: data/DataTable.cpp:25
 msgid "Item"
 msgstr "项目"
 
-#: data/DataTable.cpp:28
+#: data/DataTable.cpp:26
 msgid "Balance"
 msgstr "余额"
 
-#: data/DataTable.cpp:30
+#: data/DataTable.cpp:28
 msgid "Category"
 msgstr "类别"
 

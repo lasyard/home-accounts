@@ -4,7 +4,7 @@
 
 #include "ChangePassDialog.h"
 
-#include "Utils.h"
+#include "WxUtils.h"
 
 ChangePassDialog::ChangePassDialog(wxWindow *parent, const wxString &currentPass)
     : wxDialog()

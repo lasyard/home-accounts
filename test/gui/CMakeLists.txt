@@ -17,4 +17,5 @@ target_sources(TestHaDoc PRIVATE
     ${CMAKE_CURRENT_BINARY_DIR}/sample1.csv
 )
 
-add_doctest(TestAlgos ${TEST_MAIN_SRC} TestAlgos.cpp)
+add_doctest(TestBiMap ${TEST_MAIN_SRC} TestBiMap.cpp)
+add_doctest(TestUtils ${TEST_MAIN_SRC} TestUtils.cpp)

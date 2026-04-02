@@ -2,7 +2,7 @@
 #define _HA_ACCOUNTS_ACCOUNTS_PANEL_H_
 
 #include "../HaPanel.h"
-#include "../Utils.h"
+#include "../WxUtils.h"
 
 class AccountsGrid;
 

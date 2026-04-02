@@ -5,6 +5,8 @@
 
 #include "HaCsv.h"
 
+#include "Utils.h"
+
 HaCsv::HaCsv()
 {
     wxLog::AddTraceMask(TM);

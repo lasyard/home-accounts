@@ -2,7 +2,7 @@
 #define _HA_RAW_RAW_PANEL_H_
 
 #include "../HaPanel.h"
-#include "../Utils.h"
+#include "../WxUtils.h"
 
 class wxTextCtrl;
 class wxTreebook;

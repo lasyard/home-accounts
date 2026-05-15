@@ -8,8 +8,8 @@
 
 修复缺陷时请先读 `/docs` 目录下面的文件以获取需要的信息。
 
-[x] 1. Import 面板上设置列字段时 Crash
-[x] 2. Crash 时某些段被清空
+- [x] 1. Import 面板上设置列字段时 Crash
+- [x] 2. Crash 时某些段被清空
 
 ## 1. Import 面板上设置列字段时 Crash
 

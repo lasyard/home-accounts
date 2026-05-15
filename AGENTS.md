@@ -19,9 +19,27 @@ Practical guide for autonomous coding agents in this repository.
 - `test/csv`: unit tests for csv C modules
 - `test/file`: unit tests for storage/file modules
 - `test/gui`: tests for GUI-adjacent document/algorithm logic
+- `test/std`: tests for generic helpers
 - `test/wx`: tests for wx helper behavior
 - `cmake-common/functions.cmake`: shared CMake helpers and defaults
 - `.clang-format` and `.editorconfig`: formatting authority
+
+## Runtime Data Model and GUI Flow
+
+- The app persists feature data as named text sections, not direct typed objects
+- `HaDocument` owns a `Cache` of sections such as `accounts`, `data/<year>`, `import`, and `conf/import_col_map`
+- Normal open/save uses `Sqlite3Store` with encrypted SQLite table `files(name, key, data)`
+- `Cache` loads section names first, reads content lazily, and flushes dirty sections only
+- wx doc/view wiring:
+  - `HaApp` registers one `wxDocTemplate` for `HaDocument` and `HaView`
+  - `HaMainFrame` owns the main notebook and loads XRC resources
+  - `HaView` creates `Data`, `Accounts`, and `Raw` pages, and adds `Import` lazily
+- Feature folders under `src/gui` follow `Doc` / `Table` / `Grid` / `Panel` split
+- Reusable CRTP helpers are `HaCsvTemplate`, `HaTableTemplate`, and `HaGridTemplate`
+- `AccountsDoc` provides account id/name mappings used by `DataDoc`
+- `DataPanel` edits one year per `data/<year>` section and `DataDoc` keeps date/time order while recomputing balances/statistics
+- `ImportPanel` reads external CSV into `import`, stores mappings in `conf/import_col_map`, and merges rows by year into `DataDoc`
+- `RawPanel` edits raw sections directly via a slash-delimited tree view
 
 ## Toolchain and Dependencies
 
@@ -140,6 +158,15 @@ When rules conflict, use this order:
 ## Includes and Headers
 
 - Use include guards (`_HA_<AREA>_<NAME>_H_` style)
+- Include order preference:
+  1. C++ standard headers
+  2. C standard headers
+  3. framework headers (for example wxWidgets)
+  4. the current file header
+  5. same-directory headers
+  6. same-module headers from other directories
+  7. project headers from other modules
+  8. third-party headers
 - Separate system/third-party includes from local includes with one blank line
 - Keep headers lightweight; move heavy includes into `.cpp` where practical
 - In test files, include `doctest/doctest.h` first
@@ -184,7 +211,8 @@ When rules conflict, use this order:
 Repository contains:
 
 - `.github/instructions/cpp.instructions.md`
-- `.github/instructions/coding-style.instructions copy.md`
+- `.github/instructions/coding-style.instructions.md`
+- `.github/copilot-instructions.md`
 
 Rules extracted from those files:
 
@@ -201,9 +229,13 @@ Checked for Cursor rule files:
 
 Checked for Copilot rule file:
 
-- `.github/copilot-instructions.md`: not found
+- `.github/copilot-instructions.md`: found
 
 If any of these files appear later, treat them as mandatory policy.
+
+## Build Configuration Note
+
+- When diagnosing build/link issues, note that top-level `CMakeLists.txt` injects local include/library paths from `$HOME/workspace/devel` for Debug builds and `$HOME/include` / `$HOME/lib` otherwise
 
 ## Recommended Agent Workflow
 
@@ -217,10 +249,6 @@ If any of these files appear later, treat them as mandatory policy.
 
 Read file `spec/features.md` to find the detail description of the feature if only a number is mentioned for the feature.
 
-Read file `spec/memo.md` first to get required informations. If not found, try dig them in source code.
-
 ## Fix a Bug
 
 Read file `spec/features.md` to find the detail description of the bug if only a number is mentioned for the bug.
-
-Read file `spec/memo.md` first to get required informations. If not found, try dig them in source code.

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21.0)
-set(CMAKE_OSX_SYSROOT /Library/Developer/CommandLineTools/SDKs/MacOSX12.sdk)
+#set(CMAKE_OSX_SYSROOT /Library/Developer/CommandLineTools/SDKs/MacOSX12.sdk)
 project(HomeAccounts VERSION 1.0.0 LANGUAGES C CXX)
 
 include(cmake-common/functions.cmake)

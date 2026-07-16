@@ -1,6 +1,9 @@
-# AGENTS.md
+# Instructions for AI Agents
 
-Practical guide for autonomous coding agents in this repository.
+- Do not read/write files in the projects where Agents is not enabled (no `AGENTS.md` in the project root directory)
+- Do not read/write files in other projects if you are working in one project, except being told so explicitly
+- Do not read/write files that are being ignored by `git`, except being told so explicitly, or try to get my permission
+- Refer to file `README.md`/`README.txt` if there is any
 
 ## Project Summary
 
@@ -26,7 +29,6 @@ Practical guide for autonomous coding agents in this repository.
 
 ## Runtime Data Model and GUI Flow
 
-- The app persists feature data as named text sections, not direct typed objects
 - `HaDocument` owns a `Cache` of sections such as `accounts`, `data/<year>`, `import`, and `conf/import_col_map`
 - Normal open/save uses `Sqlite3Store` with encrypted SQLite table `files(name, key, data)`
 - `Cache` loads section names first, reads content lazily, and flushes dirty sections only
@@ -123,7 +125,7 @@ ctest --test-dir build/test -C Debug --rerun-failed --output-on-failure
 ## Linting and Static Gates
 
 - No dedicated lint target exists in CMake.
-- Compiler warnings are strict and fatal in `cmake-common/functions.cmake`:
+- Compiler warnings are strict and fatal in `cmake-common/functions.cmake`
   - `-Werror -Wall -Wextra`
 - Treat successful compile as a quality gate.
 

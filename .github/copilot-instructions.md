@@ -1,3 +1,3 @@
-# HomeAccounts Copilot Instructions
+# Copilot instructions for this repository
 
-All repository guidance is centralized in [../AGENTS.md](../AGENTS.md).
+See [`AGENTS.md`](../AGENTS.md).

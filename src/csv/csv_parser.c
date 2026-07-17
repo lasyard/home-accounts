@@ -129,7 +129,11 @@ set_parser_types(struct parser *parser, int cols, const enum column_type *types,
     struct record_meta *meta = (struct record_meta *)malloc(sizeof(struct record_meta) + cols * sizeof(size_t));
     return_null_if_null(meta);
     meta->cols = cols;
-    meta->types = types;
+    meta->types = mem_dup(types, cols * sizeof(enum column_type));
+    if (meta->types == NULL) {
+        free(meta);
+        return NULL;
+    }
     parser->comment_cols = comment_cols;
     size_t offset = 0;
     for (int i = 0; i < cols; ++i) {
@@ -152,6 +156,9 @@ void set_money_prec(struct parser *parser, int money_prec)
 void release_parser(struct parser *parser)
 {
     if (parser->meta != NULL) {
+        if (parser->meta->types != NULL) {
+            free((void *)parser->meta->types);
+        }
         free((void *)parser->meta);
         parser->meta = NULL;
     }

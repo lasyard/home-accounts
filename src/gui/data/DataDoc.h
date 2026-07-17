@@ -24,16 +24,10 @@ public:
     static constexpr int MEMO_COL = 7;
     static constexpr int AUTO_SET_COL = 8;
 
-    static constexpr int DATETIME_VIRTUAL_COL = 100;
-
     DataDoc(int year);
     virtual ~DataDoc();
 
     static const column_type COL_TYPES[COLS];
-
-    static wxString GetColName(int i);
-    static int GetColByName(const wxString &name);
-    static void GetAllColNames(wxArrayString &colNames);
 
     void SetAccountIdAndNames(const std::vector<int64_t> &ids, const wxArrayString &names);
 

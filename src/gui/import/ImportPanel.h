@@ -25,8 +25,6 @@ public:
 private:
     ImportGrid *m_grid;
 
-    void SettingDocument(HaDocument *doc) override;
-    void OnGridCellChanged(wxGridEvent &event);
     void OnMerge(wxCommandEvent &event);
     void OnReject(wxCommandEvent &event);
 };

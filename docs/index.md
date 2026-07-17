@@ -24,12 +24,11 @@ void HaDocument::SaveOrDeleteSection(const std::string &name, const std::string 
 
 下表为各个段的说明：
 
-| 段名                  | 内容类型 | 说明                                                                        |
-| --------------------- | -------- | --------------------------------------------------------------------------- |
-| `data/xxxx`           | HCSV     | xxxx 为数字，代表一个年份，保存此年度的数据，相关代码在目录 `src/gui/data/` |
-| `accounts`            | HCSV     | 保存账户信息，相关代码在 `src/gui/accounts/`                                |
-| `import`              | CSV      | 导入的 CSV 文件                                                             |
-| `conf/import_col_map` | HCSV     | 导入 CSV 的字段映射配置                                                     |
+| 段名        | 内容类型 | 说明                                                                        |
+| ----------- | -------- | --------------------------------------------------------------------------- |
+| `data/xxxx` | HCSV     | xxxx 为数字，代表一个年份，保存此年度的数据，相关代码在目录 `src/gui/data/` |
+| `accounts`  | HCSV     | 保存账户信息，相关代码在 `src/gui/accounts/`                                |
+| `import`    | CSV      | 导入的 CSV 文件                                                             |
 
 HCSV 类型是一种经过改造的 CSV 格式，由 `CsvDoc` 类实现。
 
@@ -74,15 +73,6 @@ HCSV 类型是一种经过改造的 CSV 格式，由 `CsvDoc` 类实现。
 |    6 | MEMO      | CT_STR   | 备注                                                   |
 
 `comment_cols = 1`
-
-## conf/import_col_map 字段
-
-| 编号 | 字段名称 | 类型   | 含义              |
-| ---: | -------- | ------ | ----------------- |
-|    0 | FIELD    | CT_INT | data 字段编号     |
-|    1 | TITLES   | CT_STR | 导入 CSV 的列标题 |
-
-`comment_cols = 0`
 
 ## 源码结构
 

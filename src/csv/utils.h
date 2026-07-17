@@ -2,10 +2,13 @@
 #define _HA_CSV_UTILS_H_
 
 #include <stdbool.h>
+#include <stddef.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+void *mem_dup(const void *src, size_t size);
 
 static inline bool is_line_end(int c)
 {

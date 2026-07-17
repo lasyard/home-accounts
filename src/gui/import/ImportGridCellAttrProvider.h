@@ -10,11 +10,10 @@ class ImportGridCellAttrProvider : public HaGridCellAttrProvider
 public:
     DECLARE_TM(ImportGridCellAttrProvider)
 
-    ImportGridCellAttrProvider(HaTable *table, const wxArrayString &fieldNames);
+    ImportGridCellAttrProvider(HaTable *table);
     virtual ~ImportGridCellAttrProvider();
 
 protected:
-    wxGridCellAttr *m_fieldSetAttr;
     wxGridCellAttr *m_boldTextAttrRO;
 
     wxGridCellAttr *GetItemCellAttr(int row, int col) const override;

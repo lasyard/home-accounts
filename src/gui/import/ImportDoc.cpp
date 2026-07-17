@@ -7,37 +7,30 @@
 
 #include "ImportDoc.h"
 
-#include "ImportColMapConf.h"
-
 #include "../data/DataDoc.h"
 
 #include "csv/date_time.h"
 #include "csv/str.h"
 
-ImportDoc::ImportDoc()
-    : HaCsvTemplate<ImportDoc>()
-    , m_colMap(nullptr)
-    , m_colTitles()
-    , m_types(nullptr)
-    , m_csvColDataFieldMap()
+std::map<wxString, int> ImportDoc::s_colMap = {
+    {     "Date",         DataDoc::DATE_COL},
+    {     "Time",         DataDoc::TIME_COL},
+    {     "Desc",         DataDoc::DESC_COL},
+    {   "Amount",       DataDoc::AMOUNT_COL},
+    { "DateTime",   ImportDoc::DATETIME_COL},
+    {      "Dir",        ImportDoc::DIR_COL},
+    {"AbsAmount", ImportDoc::ABS_AMOUNT_COL},
+};
+
+ImportDoc::ImportDoc() : HaCsvTemplate<ImportDoc>(), m_colTitles(), m_types(nullptr), m_csvColDataFieldMap()
 {
     wxLog::AddTraceMask(TM);
 }
 
 ImportDoc::~ImportDoc()
 {
-    if (m_colMap != nullptr) {
-        delete m_colMap;
-    }
     if (m_types != nullptr) {
         delete[] m_types;
-    }
-}
-
-void ImportDoc::SaveColMap(std::string &csv) const
-{
-    if (m_colMap != nullptr) {
-        m_colMap->Write(csv);
     }
 }
 
@@ -66,7 +59,7 @@ std::pair<date_t, timo_t> ImportDoc::GetRecordDateTime(const record_t *record) c
     if (date != UNKNOWN_DATE) {
         return {date, time};
     }
-    auto csvCol = m_csvColDataFieldMap.v_k(DataDoc::DATETIME_VIRTUAL_COL);
+    auto csvCol = m_csvColDataFieldMap.v_k(ImportDoc::DATETIME_COL);
     if (csvCol == INVALID_COL) {
         return {UNKNOWN_DATE, UNKNOWN_TIME};
     }
@@ -90,38 +83,9 @@ int ImportDoc::GetDataField(int i) const
     return m_csvColDataFieldMap.k_v(i);
 }
 
-wxString ImportDoc::GetDataFieldName(int i) const
-{
-    return DataDoc::GetColName(GetDataField(i));
-}
-
-bool ImportDoc::SetDataFieldByName(int csvCol, const wxString &name)
-{
-    wxASSERT(0 <= csvCol && (size_t)csvCol < m_colTitles.size());
-    int field = DataDoc::GetColByName(name);
-    if (field != INVALID_COL) {
-        auto oldCol = m_csvColDataFieldMap.v_k(field);
-        if (oldCol != INVALID_COL) {
-            m_colMap->SetMap(INVALID_COL, m_colTitles[oldCol]);
-        }
-    }
-    m_colMap->SetMap(field, m_colTitles[csvCol]);
-    if (field == DataDoc::DATETIME_VIRTUAL_COL) {
-        auto oldK = m_csvColDataFieldMap.erase_v(DataDoc::DATE_COL);
-        if (oldK != INVALID_COL) {
-            m_colMap->SetMap(INVALID_COL, m_colTitles[oldK]);
-        }
-        oldK = m_csvColDataFieldMap.erase_v(DataDoc::TIME_COL);
-        if (oldK != INVALID_COL) {
-            m_colMap->SetMap(INVALID_COL, m_colTitles[oldK]);
-        }
-    }
-    return true;
-}
-
 bool ImportDoc::DateColExists() const
 {
-    return m_csvColDataFieldMap.has_v(DataDoc::DATE_COL) || m_csvColDataFieldMap.has_v(DataDoc::DATETIME_VIRTUAL_COL);
+    return m_csvColDataFieldMap.has_v(DataDoc::DATE_COL) || m_csvColDataFieldMap.has_v(ImportDoc::DATETIME_COL);
 }
 
 int ImportDoc::Reading(std::istream &is)
@@ -148,15 +112,17 @@ int ImportDoc::Reading(std::istream &is)
     m_types = new enum column_type[cols];
     std::fill(m_types, m_types + cols, CT_STR);
 
-    if (m_colMap != nullptr) {
-        for (int i = 0; i < cols; ++i) {
-            int field = m_colMap->GetDataFieldByTitle(m_colTitles[i]);
-            if (field != INVALID_COL) {
-                m_csvColDataFieldMap.set_kv(i, field);
-                if (field != DataDoc::DATETIME_VIRTUAL_COL) {
-                    m_types[i] = DataDoc::COL_TYPES[field];
-                }
+    for (int i = 0; i < cols; ++i) {
+        try {
+            int field = ImportDoc::s_colMap.at(m_colTitles[i]);
+            m_csvColDataFieldMap.set_kv(i, field);
+            if (field < DataDoc::COLS) {
+                m_types[i] = DataDoc::COL_TYPES[field];
+            } else if (field == ImportDoc::ABS_AMOUNT_COL) {
+                m_types[i] = CT_MONEY;
             }
+        } catch (const std::out_of_range &) {
+            // Ignore missing columns
         }
     }
     SetParser(cols, m_types, 0);

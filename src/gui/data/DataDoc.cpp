@@ -30,52 +30,6 @@ DataDoc::~DataDoc()
 {
 }
 
-wxString DataDoc::GetColName(int i)
-{
-    static wxArrayString s;
-    if (0 <= i && i < COLS) {
-        if (s.IsEmpty()) {
-            s.Add(_("Date"));
-            s.Add(_("Time"));
-            s.Add(_("Amount"));
-            s.Add(_("Account"));
-            s.Add(_("Description"));
-            s.Add(_("Real Amount"));
-            s.Add(_("Real Description"));
-            s.Add(_("Memo"));
-            s.Add(_("Auto Set"));
-        }
-        return s[i];
-    }
-    if (i == DATETIME_VIRTUAL_COL) {
-        return _("Date & Time");
-    }
-    return _("Invalid");
-}
-
-int DataDoc::GetColByName(const wxString &name)
-{
-    if (GetColName(DATETIME_VIRTUAL_COL) == name) {
-        return DATETIME_VIRTUAL_COL;
-    }
-    for (int i = 0; i < COLS; ++i) {
-        if (GetColName(i) == name) {
-            return i;
-        }
-    }
-    return INVALID_COL;
-}
-
-void DataDoc::GetAllColNames(wxArrayString &colNames)
-{
-    colNames.Clear();
-    colNames.Add(GetColName(INVALID_COL));
-    for (int i = 0; i < COLS; ++i) {
-        colNames.Add(GetColName(i));
-    }
-    colNames.Add(GetColName(DATETIME_VIRTUAL_COL));
-}
-
 void DataDoc::SetAccountIdAndNames(const std::vector<int64_t> &ids, const wxArrayString &names)
 {
     m_accountNames = names;

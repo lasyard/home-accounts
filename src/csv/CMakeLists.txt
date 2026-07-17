@@ -6,4 +6,5 @@ add_lib(csv
     list.c
     money.c
     str.c
+    utils.c
 )

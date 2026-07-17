@@ -22,7 +22,6 @@ constexpr const char APP_ICON[] = "app_icon.png";
 
 // sections
 constexpr const char ACCOUNTS_SECTION_NAME[] = "accounts";
-constexpr const char IMPORT_COL_MAP_SECTION_NAME[] = "conf/import_col_map";
 constexpr const char DATA_SECTION_NAME_FORMAT[] = "data/%d";
 constexpr const char IMPORT_SECTION_NAME[] = "import";
 

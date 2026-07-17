@@ -17,21 +17,16 @@ public:
     ImportDoc();
     virtual ~ImportDoc();
 
+    static constexpr int DATETIME_COL = 101;
+    static constexpr int DIR_COL = 102;
+    static constexpr int ABS_AMOUNT_COL = 103;
+
     date_t GetRecordDate(const record_t *record) const;
     timo_t GetRecordTime(const record_t *record) const;
     std::pair<date_t, timo_t> GetRecordDateTime(const record_t *record) const;
 
-    void SetColMap(ImportColMapConf *colMap)
-    {
-        m_colMap = colMap;
-    }
-
-    void SaveColMap(std::string &csv) const;
-
     wxString GetCsvTitle(int i) const;
     int GetDataField(int i) const;
-    wxString GetDataFieldName(int i) const;
-    bool SetDataFieldByName(int i, const wxString &name);
     bool DateColExists() const;
 
     int GetCsvCol(int field) const
@@ -41,7 +36,7 @@ public:
     }
 
 private:
-    ImportColMapConf *m_colMap;
+    static std::map<wxString, int> s_colMap;
 
     wxArrayString m_colTitles;
     enum column_type *m_types;

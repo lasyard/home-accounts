@@ -117,7 +117,6 @@ void init_parser(struct parser *parser)
     parser->options.sep = ',';
     parser->options.num_sep = ' ';
     parser->options.date_sep = '-';
-    parser->options.money_sigil = "¥";
     parser->comment_cols = 0;
     parser->meta = NULL;
     set_money_prec(parser, 2);

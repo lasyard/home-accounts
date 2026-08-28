@@ -1,5 +1,6 @@
 #include <wx/aboutdlg.h>
 #include <wx/config.h>
+#include <wx/filename.h>
 #include <wx/menu.h>
 #include <wx/notebook.h>
 #include <wx/stdpaths.h>
@@ -67,6 +68,13 @@ HaMainFrame::HaMainFrame(
     auto *fileMenu = GetMenuBar()->GetMenu(GetMenuBar()->FindMenu(_("File")));
     m_docManager->FileHistoryUseMenu(fileMenu);
     m_docManager->FileHistoryAddFilesToMenu();
+    // open the last opened file if it exists
+    if (auto *history = m_docManager->GetFileHistory(); history != nullptr && history->GetCount() > 0) {
+        const wxString fileName = history->GetHistoryFile(0);
+        if (!fileName.empty() && wxFileName(fileName).FileExists()) {
+            m_docManager->CreateDocument(fileName);
+        }
+    }
 }
 
 HaMainFrame::~HaMainFrame()

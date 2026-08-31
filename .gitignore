@@ -27,3 +27,6 @@ noname.*
 
 # Backup files
 *~
+
+# Python files
+__pycache__/

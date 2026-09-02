@@ -30,7 +30,13 @@ void HaDocument::SaveOrDeleteSection(const std::string &name, const std::string 
 | `accounts`  | HCSV     | 保存账户信息，相关代码在 `src/gui/accounts/`                                |
 | `import`    | CSV      | 导入的 CSV 文件                                                             |
 
-HCSV 类型是一种经过改造的 CSV 格式，由 `CsvDoc` 类实现。
+HCSV 类型是一种经过改造的 CSV 格式，由 `HaCsv` 类实现，具体的读写操作在 `src/csv` 目录中，为 C 语言模块。
+
+其格式简要说明如下：
+
+第一行为各列的标题（字段名），其中一个标题前可以加一个 `#` 号，表示这一列的值将从以 `#` 开头的特殊行中解析。也可以没有这样的标题，此时文件格式退化为普通的 CSV.
+
+各数据行不再包含标有 `#` 号的这一列，这一列的值将从前面最近的 `#` 开头的行得到。如果前面没有出现过这种行，将设为默认值。
 
 ## CSV 字段类型
 

@@ -3,7 +3,21 @@
 #include <fstream>
 #include <sstream>
 
-#include "HaDoc.h"
+#include "HaCsvTemplate.h"
+
+class HaDoc : public HaCsvTemplate<HaDoc>
+{
+public:
+    DECLARE_TM(HaDoc)
+
+    HaDoc()
+    {
+    }
+
+    virtual ~HaDoc()
+    {
+    }
+};
 
 TEST_CASE("read")
 {

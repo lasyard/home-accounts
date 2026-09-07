@@ -13,7 +13,7 @@ DataGridCellAttrProvider::DataGridCellAttrProvider(HaTable *table, const wxArray
     wxLog::AddTraceMask(TM);
 
     auto *renderer = new wxGridCellDateRenderer(_("%Y-%m-%d"));
-    m_commentAttrRO->SetRenderer(renderer);
+    m_hashAttrRO->SetRenderer(renderer);
 
     m_deficitAttrRO = m_moneyAttrRO->Clone();
     m_deficitAttrRO->SetTextColour(HaGdi::DEFICIT_COLOR);

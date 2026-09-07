@@ -45,9 +45,9 @@ public:
         }
     }
 
-    void SetParser(int cols, const enum column_type types[], int comment_cols) override
+    void SetParser(int cols, const enum column_type types[], int hash_cols) override
     {
-        HaCsv::SetParser(cols, types, comment_cols);
+        HaCsv::SetParser(cols, types, hash_cols);
         m_accessors.resize(cols);
         for (int i = 0; i < cols; ++i) {
             if (m_parser.meta->types[i] != CT_STR) {

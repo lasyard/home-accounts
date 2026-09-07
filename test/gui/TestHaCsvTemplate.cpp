@@ -61,7 +61,7 @@ TEST_CASE("write")
     CHECK(os.str() == "1,Alice,100.00,2000-01-01,12:34:56\n");
 }
 
-TEST_CASE("read & write with comments")
+TEST_CASE("read & write with hashs")
 {
     const enum column_type types[] = {CT_INT, CT_STR, CT_MONEY, CT_DATE, CT_TIME};
     std::fstream file("sample1.csv", std::ios::in);

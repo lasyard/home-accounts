@@ -126,9 +126,9 @@ protected:
             }
         } else {
             auto flag = GetRowRecordFlag(row);
-            if (flag == RECORD_FLAG_COMMENT) {
+            if (flag == RECORD_FLAG_HASH) {
                 if (col == 0) {
-                    return GetCommentString(row);
+                    return GetHashString(row);
                 }
             } else if (col < GetColsCount()) {
                 auto &impl = m_colImpls[col];

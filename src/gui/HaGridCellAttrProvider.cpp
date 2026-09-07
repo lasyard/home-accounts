@@ -45,11 +45,11 @@ HaGridCellAttrProvider::HaGridCellAttrProvider(HaTable *table) : wxGridCellAttrP
     m_dateAttrRO = m_dateAttr->Clone();
     m_dateAttrRO->SetReadOnly();
 
-    m_commentAttrRO = m_defaultAttrRO->Clone();
-    m_commentAttrRO->SetSize(1, m_table->GetColsCount());
-    m_commentAttrRO->SetBackgroundColour(HaGdi::COMMENT_BACK_COLOR);
-    m_commentAttrRO->SetAlignment(wxALIGN_CENTER_VERTICAL, wxALIGN_LEFT);
-    m_commentAttrRO->SetReadOnly();
+    m_hashAttrRO = m_defaultAttrRO->Clone();
+    m_hashAttrRO->SetSize(1, m_table->GetColsCount());
+    m_hashAttrRO->SetBackgroundColour(HaGdi::COMMENT_BACK_COLOR);
+    m_hashAttrRO->SetAlignment(wxALIGN_CENTER_VERTICAL, wxALIGN_LEFT);
+    m_hashAttrRO->SetReadOnly();
 
     m_greyOutAttrRO = m_defaultAttrRO->Clone();
     m_greyOutAttrRO->SetReadOnly();
@@ -70,7 +70,7 @@ HaGridCellAttrProvider::~HaGridCellAttrProvider()
     m_boolAttrRO->DecRef();
     m_dateAttr->DecRef();
     m_dateAttrRO->DecRef();
-    m_commentAttrRO->DecRef();
+    m_hashAttrRO->DecRef();
     m_greyOutAttrRO->DecRef();
 }
 
@@ -80,10 +80,10 @@ wxGridCellAttr *HaGridCellAttrProvider::GetAttr(int row, int col, wxGridCellAttr
     if (kind == wxGridCellAttr::wxAttrKind::Any || kind == wxGridCellAttr::wxAttrKind::Cell) {
         auto flag = m_table->GetRowRecordFlag(row);
         switch (flag) {
-        case RECORD_FLAG_COMMENT:
+        case RECORD_FLAG_HASH:
             // do not return colSpan > 1 for col > 0, or there will be index out of bound problem.
             if (col == 0) {
-                return GetCommentCellAttr(row);
+                return GetHashCellAttr(row);
             }
             break;
         case RECORD_FLAG_NORMAL:
@@ -96,10 +96,10 @@ wxGridCellAttr *HaGridCellAttrProvider::GetAttr(int row, int col, wxGridCellAttr
     return m_defaultAttrRO;
 }
 
-wxGridCellAttr *HaGridCellAttrProvider::GetCommentCellAttr([[maybe_unused]] int row) const
+wxGridCellAttr *HaGridCellAttrProvider::GetHashCellAttr([[maybe_unused]] int row) const
 {
-    m_commentAttrRO->IncRef();
-    return m_commentAttrRO;
+    m_hashAttrRO->IncRef();
+    return m_hashAttrRO;
 }
 
 wxGridCellAttr *HaGridCellAttrProvider::GetItemCellAttr([[maybe_unused]] int row, int col) const

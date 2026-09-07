@@ -88,7 +88,7 @@ protected:
         m_doc->SetValueString(row, col, value);
     }
 
-    virtual wxString GetCommentString(int row) const;
+    virtual wxString GetHashString(int row) const;
 
     virtual bool InsertRow(size_t pos);
     virtual bool AppendRow();

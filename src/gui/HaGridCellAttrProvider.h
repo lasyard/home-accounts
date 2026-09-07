@@ -30,7 +30,7 @@ protected:
     wxGridCellAttr *m_boolAttrRO;
     wxGridCellAttr *m_dateAttr;
     wxGridCellAttr *m_dateAttrRO;
-    wxGridCellAttr *m_commentAttrRO;
+    wxGridCellAttr *m_hashAttrRO;
     wxGridCellAttr *m_greyOutAttrRO;
 
     HaTable *m_table;
@@ -46,7 +46,7 @@ protected:
         }
     }
 
-    virtual wxGridCellAttr *GetCommentCellAttr(int row) const;
+    virtual wxGridCellAttr *GetHashCellAttr(int row) const;
     virtual wxGridCellAttr *GetItemCellAttr(int row, int col) const;
     virtual wxGridCellAttr *GetOtherCellAttr(int row, int col) const;
 };

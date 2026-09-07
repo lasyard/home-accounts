@@ -84,7 +84,7 @@ record_t *DataDoc::InsertRecordAtTime(date_t date, timo_t time)
             continue;
         }
         if (date == recordDate) {
-            if (record->flag == RECORD_FLAG_COMMENT) {
+            if (record->flag == RECORD_FLAG_HASH) {
                 continue;
             }
             auto recordTime = GetRecordTime(record);
@@ -137,8 +137,8 @@ bool DataDoc::AfterRead()
 
 bool DataDoc::IsRecordEmpty(record_t *record)
 {
-    if (record->flag == RECORD_FLAG_COMMENT) {
-        return record->list.next == NULL || get_record(record->list.next)->flag == RECORD_FLAG_COMMENT;
+    if (record->flag == RECORD_FLAG_HASH) {
+        return record->list.next == NULL || get_record(record->list.next)->flag == RECORD_FLAG_HASH;
     } else {
         return false;
     }

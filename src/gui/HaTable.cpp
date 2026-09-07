@@ -115,7 +115,7 @@ bool HaTable::DeleteRows(size_t pos, size_t numRows)
     return false;
 }
 
-wxString HaTable::GetCommentString(int row) const
+wxString HaTable::GetHashString(int row) const
 {
     return m_doc->GetValueString(row, 0);
 }

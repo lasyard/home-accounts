@@ -33,7 +33,7 @@ record_t *HaCsv::AddRecord()
     record_t *record = new_record(&m_parser);
     return_null_if_null(record);
     if (m_records.last != NULL) {
-        record = copy_comment_fields(&m_parser, record, get_record(m_records.last));
+        record = copy_hash_fields(&m_parser, record, get_record(m_records.last));
         return_null_if_null(record);
     }
     list_add(&m_records, &record->list);
@@ -51,7 +51,7 @@ record_t *HaCsv::InsertRecord(int pos)
     } else {
         record_t *prev = GetRecord(pos - 1);
         if (prev != nullptr) {
-            record = copy_comment_fields(&m_parser, record, prev);
+            record = copy_hash_fields(&m_parser, record, prev);
             return_null_if_null(record);
         }
         list_ins(&m_records, &prev->list.next, &record->list);
@@ -79,9 +79,9 @@ bool HaCsv::DeleteRecord(int pos)
     return false;
 }
 
-void HaCsv::SetParser(int cols, const enum column_type types[], int comment_cols)
+void HaCsv::SetParser(int cols, const enum column_type types[], int hash_cols)
 {
-    set_parser_types(&m_parser, cols, types, comment_cols);
+    set_parser_types(&m_parser, cols, types, hash_cols);
     list_head_init(&m_records);
 }
 

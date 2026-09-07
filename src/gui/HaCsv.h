@@ -23,9 +23,9 @@ public:
         return m_parser.meta->cols;
     }
 
-    int GetCommentColCount() const
+    int GetHashColCount() const
     {
-        return m_parser.comment_cols;
+        return m_parser.hash_cols;
     }
 
     virtual enum column_type GetColType(int i) const = 0;
@@ -68,7 +68,7 @@ public:
     record_t *InsertRecord(int pos);
     bool DeleteRecord(int pos);
 
-    virtual void SetParser(int cols, const enum column_type types[], int comment_cols);
+    virtual void SetParser(int cols, const enum column_type types[], int hash_cols);
 
     virtual bool ReadStream(std::istream &is);
     virtual void WriteStream(std::ostream &os);

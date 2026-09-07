@@ -29,9 +29,9 @@ typedef struct record {
 #pragma warning(pop)
 #endif
 
-#define RECORD_FLAG_COMMENT '\x02'
-#define RECORD_FLAG_NORMAL  '\x01'
 #define RECORD_FLAG_INVALID '\x00'
+#define RECORD_FLAG_NORMAL  '\x01'
+#define RECORD_FLAG_HASH    '\x02'
 
 #define get_record(ptr) container_of(ptr, record_t, list)
 
@@ -41,13 +41,13 @@ extern "C" {
 
 struct parser {
     struct parser_options options;
-    int comment_cols;               // columns in comment line, 0 means no comment line
+    int hash_cols;                  // columns in hash line, 0 means no hash line
     const struct record_meta *meta; // the meta of record, owned
 };
 
 static inline bool is_index_valid(const struct parser *parser, const record_t *record, int i)
 {
-    return 0 <= i && i < (record->flag == RECORD_FLAG_COMMENT ? parser->comment_cols : parser->meta->cols);
+    return 0 <= i && i < (record->flag == RECORD_FLAG_HASH ? parser->hash_cols : parser->meta->cols);
 }
 
 static inline void *get_field(const struct parser *parser, record_t *record, int i)
@@ -74,21 +74,21 @@ void set_money_prec(struct parser *parser, int money_prec);
 void release_parser(struct parser *parser);
 
 const struct record_meta *
-set_parser_types(struct parser *parser, int cols, const enum column_type *types, int comment_cols);
+set_parser_types(struct parser *parser, int cols, const enum column_type *types, int hash_cols);
 
 record_t *new_record(const struct parser *parser);
 void free_record(const struct parser *parser, record_t *record);
 
 const char *parse_field(const struct parser *parser, const char *buf, record_t *record, int i);
 record_t *parse_line(const struct parser *parser, const char *line);
-record_t *parse_comment(const struct parser *parser, const char *line);
+record_t *parse_hash(const struct parser *parser, const char *line);
 int parse_count(const char *line, char sep);
 int parse_types(const char *line, char sep, enum column_type *types, int max_cols);
 
 char *output_field(const struct parser *parser, char *buf, const record_t *record, int i);
 char *output_line(const struct parser *parser, char *buf, const record_t *record);
 
-record_t *copy_comment_fields(const struct parser *parser, record_t *dst, const record_t *src);
+record_t *copy_hash_fields(const struct parser *parser, record_t *dst, const record_t *src);
 
 int read_lines(
     struct parser *parser,

@@ -117,13 +117,13 @@ void init_parser(struct parser *parser)
     parser->options.sep = ',';
     parser->options.num_sep = ' ';
     parser->options.date_sep = '-';
-    parser->comment_cols = 0;
+    parser->hash_cols = 0;
     parser->meta = NULL;
     set_money_prec(parser, 2);
 }
 
 const struct record_meta *
-set_parser_types(struct parser *parser, int cols, const enum column_type *types, int comment_cols)
+set_parser_types(struct parser *parser, int cols, const enum column_type *types, int hash_cols)
 {
     struct record_meta *meta = (struct record_meta *)malloc(sizeof(struct record_meta) + cols * sizeof(size_t));
     return_null_if_null(meta);
@@ -133,7 +133,7 @@ set_parser_types(struct parser *parser, int cols, const enum column_type *types,
         free(meta);
         return NULL;
     }
-    parser->comment_cols = comment_cols;
+    parser->hash_cols = hash_cols;
     size_t offset = 0;
     for (int i = 0; i < cols; ++i) {
         meta->offsets[i] = offset;
@@ -231,7 +231,7 @@ record_t *parse_line(const struct parser *parser, const char *line)
 {
     record_t *record = new_record(parser);
     return_null_if_null(record);
-    const char *p = raw_parse_line(parser, line, record, parser->comment_cols, parser->meta->cols);
+    const char *p = raw_parse_line(parser, line, record, parser->hash_cols, parser->meta->cols);
     if (p == NULL) {
         free_record(parser, record);
         return NULL;
@@ -239,17 +239,17 @@ record_t *parse_line(const struct parser *parser, const char *line)
     return record;
 }
 
-record_t *parse_comment(const struct parser *parser, const char *line)
+record_t *parse_hash(const struct parser *parser, const char *line)
 {
-    record_t *comment = raw_new_record(parser);
-    return_null_if_null(comment);
-    comment->flag = RECORD_FLAG_COMMENT;
-    const char *p = raw_parse_line(parser, line, comment, 0, parser->comment_cols);
+    record_t *hash = raw_new_record(parser);
+    return_null_if_null(hash);
+    hash->flag = RECORD_FLAG_HASH;
+    const char *p = raw_parse_line(parser, line, hash, 0, parser->hash_cols);
     if (p == NULL) {
-        free_record(parser, comment);
+        free_record(parser, hash);
         return NULL;
     }
-    return comment;
+    return hash;
 }
 
 int parse_count(const char *line, char sep)
@@ -293,12 +293,12 @@ char *output_line(const struct parser *parser, char *buf, const record_t *record
 {
     int start, end;
     char *p = buf;
-    if (record->flag == RECORD_FLAG_COMMENT) { // comment
+    if (record->flag == RECORD_FLAG_HASH) { // hash
         *(p++) = '#';
         start = 0;
-        end = parser->comment_cols;
+        end = parser->hash_cols;
     } else {
-        start = parser->comment_cols;
+        start = parser->hash_cols;
         end = parser->meta->cols;
     }
     for (int i = start; i < end; ++i) {
@@ -310,9 +310,9 @@ char *output_line(const struct parser *parser, char *buf, const record_t *record
     return p;
 }
 
-record_t *copy_comment_fields(const struct parser *parser, record_t *dst, const record_t *src)
+record_t *copy_hash_fields(const struct parser *parser, record_t *dst, const record_t *src)
 {
-    for (int i = 0; i < parser->comment_cols; ++i) {
+    for (int i = 0; i < parser->hash_cols; ++i) {
         if (copy_field(parser, dst, src, i) == NULL) {
             free_record(parser, dst);
             return NULL;
@@ -336,8 +336,8 @@ int read_lines(
             continue;
         }
         if (buf[0] == '#') {
-            record_t *comment = parse_comment(parser, &buf[1]);
-            list_add(records, &comment->list);
+            record_t *hash = parse_hash(parser, &buf[1]);
+            list_add(records, &hash->list);
             continue;
         }
         record_t *record = parse_line(parser, buf);
@@ -347,7 +347,7 @@ int read_lines(
         }
         record_t *last = get_record(records->last);
         if (last != NULL) {
-            record = copy_comment_fields(parser, record, last);
+            record = copy_hash_fields(parser, record, last);
             if (record == NULL) {
                 lines = -lines;
                 break;
@@ -399,26 +399,26 @@ static int get_int_field_32(const struct parser *parser, const record_t *record,
     return (int)*(int32_t *)get_const_field(parser, record, i);
 }
 
-static record_t *new_comment_of_serial_64(const struct parser *parser, int expected)
+static record_t *new_hash_of_serial_64(const struct parser *parser, int expected)
 {
     record_t *record = new_record(parser);
     return_null_if_null(record);
     *(int64_t *)get_field(parser, record, 0) = (int64_t)expected;
-    record->flag = RECORD_FLAG_COMMENT;
+    record->flag = RECORD_FLAG_HASH;
     return record;
 }
 
-static record_t *new_comment_of_serial_32(const struct parser *parser, int expected)
+static record_t *new_hash_of_serial_32(const struct parser *parser, int expected)
 {
     record_t *record = new_record(parser);
     return_null_if_null(record);
     *(int32_t *)get_field(parser, record, 0) = (int32_t)expected;
-    record->flag = RECORD_FLAG_COMMENT;
+    record->flag = RECORD_FLAG_HASH;
     return record;
 }
 
 /**
- * @brief Insert missing serial numbers in comment into the list of records. The serial column must be the first column.
+ * @brief Insert missing serial numbers in hash into the list of records. The serial column must be the first column.
  *
  * @param parser
  * @param records
@@ -429,17 +429,17 @@ static record_t *new_comment_of_serial_32(const struct parser *parser, int expec
 bool fill_serial(const struct parser *parser, struct list_head *records, int start, int end)
 {
     int (*get_int_field)(const struct parser *parser, const record_t *record, int i);
-    record_t *(*new_comment_of_serial)(const struct parser *parser, int expected);
+    record_t *(*new_hash_of_serial)(const struct parser *parser, int expected);
     switch (parser->meta->types[0]) {
     case CT_INT:
     case CT_MONEY:
         get_int_field = get_int_field_64;
-        new_comment_of_serial = new_comment_of_serial_64;
+        new_hash_of_serial = new_hash_of_serial_64;
         break;
     case CT_DATE:
     case CT_TIME:
         get_int_field = get_int_field_32;
-        new_comment_of_serial = new_comment_of_serial_32;
+        new_hash_of_serial = new_hash_of_serial_32;
         break;
     default:
         return false;
@@ -449,7 +449,7 @@ bool fill_serial(const struct parser *parser, struct list_head *records, int sta
     int64_t expected = start;
     while (*p != NULL && expected <= end) {
         record_t *record = get_record(*p);
-        if (record->flag != RECORD_FLAG_COMMENT) {
+        if (record->flag != RECORD_FLAG_HASH) {
             p = &(*p)->next;
             continue;
         }
@@ -461,7 +461,7 @@ bool fill_serial(const struct parser *parser, struct list_head *records, int sta
             return val;
         }
         if (val > expected) {
-            record_t *elem = new_comment_of_serial(parser, expected);
+            record_t *elem = new_hash_of_serial(parser, expected);
             if (elem == NULL) {
                 return false;
             }
@@ -471,7 +471,7 @@ bool fill_serial(const struct parser *parser, struct list_head *records, int sta
         ++expected;
     }
     while (expected <= end) {
-        record_t *elem = new_comment_of_serial(parser, expected);
+        record_t *elem = new_hash_of_serial(parser, expected);
         if (elem == NULL) {
             return false;
         }

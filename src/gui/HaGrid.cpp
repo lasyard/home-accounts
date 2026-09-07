@@ -136,7 +136,7 @@ void HaGrid::OnSelectCell(wxGridEvent &event)
     int row = event.GetRow();
     int col = event.GetCol();
     auto *table = static_cast<HaTable *>(GetTable());
-    if (table->GetRowRecordFlag(row) == RECORD_FLAG_COMMENT) {
+    if (table->GetRowRecordFlag(row) == RECORD_FLAG_HASH) {
         if (col > 0) {
             event.Veto();
             SetGridCursor(row, 0);

@@ -10,15 +10,27 @@ const column_type AccountsDoc::COL_TYPES[] = {
     CT_INT,
     CT_STR,
     CT_STR,
+    CT_STR,
     CT_DATE,
     CT_MONEY,
     CT_STR,
 };
 
+const str AccountsDoc::COL_TITLES[] = {
+    {    "Type", 4, false},
+    {      "Id", 2, false},
+    {   "Owner", 5, false},
+    {    "Bank", 4, false},
+    {  "Number", 6, false},
+    {"OpenDate", 8, false},
+    { "Initial", 7, false},
+    {    "Memo", 4, false},
+};
+
 AccountsDoc::AccountsDoc() : HaCsvTemplate<AccountsDoc>(), m_maxId(0)
 {
     wxLog::AddTraceMask(TM);
-    SetParser(COLS, COL_TYPES, 1);
+    SetParser(COLS, COL_TYPES, COL_TITLES);
     SetAccessor(TYPE_COL, CT_STR, &AccountsDoc::TypeGetter, &AccountsDoc::TypeSetter);
 }
 

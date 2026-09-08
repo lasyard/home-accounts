@@ -25,7 +25,7 @@ TEST_CASE("read")
     std::fstream file("sample.csv", std::ios::in);
     CHECK(file.is_open());
     HaDoc doc;
-    doc.SetParser(5, types, 0);
+    doc.SetParser(5, types);
     CHECK(doc.ReadStream(file));
     CHECK(doc.GetRowCount() == 3);
     CHECK(doc.GetValueString(0, 0) == "1");
@@ -49,7 +49,7 @@ TEST_CASE("write")
 {
     const enum column_type types[] = {CT_INT, CT_STR, CT_MONEY, CT_DATE, CT_TIME};
     HaDoc doc;
-    doc.SetParser(5, types, 0);
+    doc.SetParser(5, types);
     doc.AddRecord();
     doc.SetValueString(0, 0, "1");
     doc.SetValueString(0, 1, "Alice");
@@ -64,10 +64,17 @@ TEST_CASE("write")
 TEST_CASE("read & write with hashs")
 {
     const enum column_type types[] = {CT_INT, CT_STR, CT_MONEY, CT_DATE, CT_TIME};
+    const struct str titles[] = {
+        {    "ID", 2, false},
+        {  "Name", 4, false},
+        {"Amount", 6, false},
+        {  "Date", 4, false},
+        {  "Time", 4, false},
+    };
     std::fstream file("sample1.csv", std::ios::in);
     CHECK(file.is_open());
     HaDoc doc;
-    doc.SetParser(5, types, 1);
+    doc.SetParser(5, types, titles);
     CHECK(doc.ReadStream(file));
     CHECK(doc.GetRowCount() == 7);
     CHECK(doc.GetValueString(0, 0) == "1");

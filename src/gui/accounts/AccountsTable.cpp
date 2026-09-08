@@ -16,7 +16,7 @@ void AccountsTable::Init()
 {
     m_colImpls.resize(COLS);
     SetColImplDoc(_("ID"), ID_COL, AccountsDoc::ID_COL, true);
-    SetColImplDoc(_("Name"), NAME_COL, AccountsDoc::NAME_COL);
+    SetColImplDoc(_("Name"), NAME_COL, AccountsDoc::OWNER_COL);
     SetColImplDoc(_("Bank"), BANK_COL, AccountsDoc::BANK_COL);
     SetColImplDoc(_("Open Date"), OPEN_DATE_COL, AccountsDoc::OPEN_DATE_COL);
     SetColImplDoc(_("Initial"), INITIAL_COL, AccountsDoc::INITIAL_COL);

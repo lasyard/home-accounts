@@ -13,21 +13,19 @@ class DataDoc : public HaCsvTemplate<DataDoc>
 public:
     DECLARE_TM(DataDoc)
 
-    static constexpr int COLS = 9;
     static constexpr int DATE_COL = 0;
     static constexpr int TIME_COL = 1;
-    static constexpr int AMOUNT_COL = 2;
-    static constexpr int ACCOUNT_COL = 3;
+    static constexpr int ACCOUNT_COL = 2;
+    static constexpr int AMOUNT_COL = 3;
     static constexpr int DESC_COL = 4;
-    static constexpr int REAL_AMOUNT_COL = 5;
-    static constexpr int REAL_DESC_COL = 6;
-    static constexpr int MEMO_COL = 7;
-    static constexpr int AUTO_SET_COL = 8;
+    static constexpr int MEMO_COL = 5;
+    static constexpr int COLS = 6;
 
     DataDoc(int year);
     virtual ~DataDoc();
 
     static const column_type COL_TYPES[COLS];
+    static const str COL_TITLES[COLS];
 
     void SetAccountIdAndNames(const std::vector<int64_t> &ids, const wxArrayString &names);
 
@@ -36,10 +34,10 @@ public:
         return m_accountNames;
     }
 
-    money_t GetRecordRealAmount(const record_t *record) const
+    money_t GetRecordAmount(const record_t *record) const
     {
         wxASSERT(record->flag == RECORD_FLAG_NORMAL);
-        return *(money_t *)get_const_field(&m_parser, record, REAL_AMOUNT_COL);
+        return *(money_t *)get_const_field(&m_parser, record, AMOUNT_COL);
     }
 
     date_t GetRecordDate(const record_t *record) const
@@ -90,7 +88,7 @@ public:
     {
         auto *record = GetRecord(row);
         wxASSERT(record != nullptr);
-        money_t m = GetRecordRealAmount(record);
+        money_t m = GetRecordAmount(record);
         if (m < 0) {
             return GetMoneyString(-m);
         }
@@ -101,7 +99,7 @@ public:
     {
         auto *record = GetRecord(row);
         wxASSERT(record != nullptr);
-        money_t m = GetRecordRealAmount(record);
+        money_t m = GetRecordAmount(record);
         if (m > 0) {
             return GetMoneyString(m);
         }

@@ -42,7 +42,6 @@ private:
     enum column_type *m_types;
     BiMap<int, int, INVALID_COL, INVALID_COL> m_csvColDataFieldMap;
 
-    int Reading(std::istream &is) override;
     int Writing(std::ostream &os) override;
 };
 

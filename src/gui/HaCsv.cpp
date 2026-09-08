@@ -7,7 +7,9 @@
 
 #include "Utils.h"
 
-HaCsv::HaCsv()
+#include "csv/str.h"
+
+HaCsv::HaCsv() : m_titles(nullptr)
 {
     wxLog::AddTraceMask(TM);
     init_parser(&m_parser);
@@ -79,10 +81,11 @@ bool HaCsv::DeleteRecord(int pos)
     return false;
 }
 
-void HaCsv::SetParser(int cols, const enum column_type types[], int hash_cols)
+void HaCsv::SetParser(int cols, const enum column_type types[], const struct str titles[])
 {
-    set_parser_types(&m_parser, cols, types, hash_cols);
+    set_parser_types(&m_parser, cols, types);
     list_head_init(&m_records);
+    m_titles = titles;
 }
 
 bool HaCsv::ReadStream(std::istream &is)
@@ -134,7 +137,19 @@ void HaCsv::CreateIndex()
 
 int HaCsv::Reading(std::istream &is)
 {
-    return read_lines(&m_parser, &m_records, ::get_line_from_istream, static_cast<void *>(&is));
+    char buf[MAX_LINE_LENGTH + 1];
+    if (m_titles != nullptr && m_parser.meta->cols > 0) {
+        if (get_line_from_istream(buf, MAX_LINE_LENGTH, static_cast<void *>(&is)) > 0) {
+            if (parse_titles(&m_parser, buf, m_titles) == NULL) {
+                return -1;
+            }
+        }
+    }
+    if (is.eof()) {
+        return 0;
+    }
+    int line = read_lines(&m_parser, &m_records, ::get_line_from_istream, static_cast<void *>(&is));
+    return line + (line > 0 ? 1 : -1); // add 1 for the title line
 }
 
 bool HaCsv::AfterRead()
@@ -160,6 +175,21 @@ bool HaCsv::BeforeWrite()
 
 int HaCsv::Writing(std::ostream &os)
 {
+    if (list_is_empty(&m_records)) {
+        return 0;
+    }
+    for (int i = 0; i < m_parser.hash_cols; ++i) {
+        os.write("#", 1);
+    }
+    for (int i = 0; i < m_parser.meta->cols; ++i) {
+        if (i > 0) {
+            os << m_parser.options.sep;
+        }
+        const struct str *title = &m_titles[i];
+        wxASSERT(!str_is_empty(title));
+        os.write(title->buf, title->len);
+    }
+    os.put('\n');
     return write_lines(&m_parser, &m_records, ::put_line_to_ostream, static_cast<void *>(&os));
 }
 

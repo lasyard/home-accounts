@@ -68,7 +68,7 @@ public:
     record_t *InsertRecord(int pos);
     bool DeleteRecord(int pos);
 
-    virtual void SetParser(int cols, const enum column_type types[], int hash_cols);
+    virtual void SetParser(int cols, const enum column_type types[], const struct str titles[] = nullptr);
 
     virtual bool ReadStream(std::istream &is);
     virtual void WriteStream(std::ostream &os);
@@ -78,6 +78,7 @@ public:
 
 protected:
     struct parser m_parser;
+    const struct str *m_titles;
     struct list_head m_records;
     std::vector<record_t *> m_index;
 

@@ -88,51 +88,6 @@ bool ImportDoc::DateColExists() const
     return m_csvColDataFieldMap.has_v(DataDoc::DATE_COL) || m_csvColDataFieldMap.has_v(ImportDoc::DATETIME_COL);
 }
 
-int ImportDoc::Reading(std::istream &is)
-{
-    std::string line;
-    std::getline(is, line);
-    if (is.fail()) {
-        wxLogError(_("Empty CSV input"));
-        return false;
-    }
-    const char *p = line.c_str();
-    int cols = parse_count(p, m_parser.options.sep);
-    if (cols <= 0) {
-        wxLogError(_("Invalid CSV header"));
-        return false;
-    }
-    for (int i = 0; i < cols; ++i) {
-        struct str s;
-        p = parse_str(p, &s, m_parser.options.sep);
-        m_colTitles.push_back(wxString(s.buf, s.len));
-        ++p;
-    }
-
-    m_types = new enum column_type[cols];
-    std::fill(m_types, m_types + cols, CT_STR);
-
-    for (int i = 0; i < cols; ++i) {
-        try {
-            int field = ImportDoc::s_colMap.at(m_colTitles[i]);
-            m_csvColDataFieldMap.set_kv(i, field);
-            if (field < DataDoc::COLS) {
-                m_types[i] = DataDoc::COL_TYPES[field];
-            } else if (field == ImportDoc::ABS_AMOUNT_COL) {
-                m_types[i] = CT_MONEY;
-            }
-        } catch (const std::out_of_range &) {
-            // Ignore missing columns
-        }
-    }
-    SetParser(cols, m_types, 0);
-    int lines = HaCsv::Reading(is);
-    if (lines < 0) {
-        return lines - 1;
-    }
-    return lines + 1;
-}
-
 int ImportDoc::Writing(std::ostream &os)
 {
     for (size_t i = 0; i < m_colTitles.size(); ++i) {

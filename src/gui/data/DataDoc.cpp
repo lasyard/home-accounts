@@ -10,19 +10,25 @@
 const column_type DataDoc::COL_TYPES[] = {
     CT_DATE,
     CT_TIME,
-    CT_MONEY,
     CT_INT,
-    CT_STR,
     CT_MONEY,
     CT_STR,
     CT_STR,
-    CT_BOOL,
+};
+
+const str DataDoc::COL_TITLES[] = {
+    {   "Date", 4, false},
+    {   "Time", 4, false},
+    {"Account", 7, false},
+    { "Amount", 6, false},
+    {   "Desc", 4, false},
+    {   "Memo", 4, false},
 };
 
 DataDoc::DataDoc(int year) : HaCsvTemplate<DataDoc>(), m_year(year), m_accountNames(), m_accountIdNameMap()
 {
     wxLog::AddTraceMask(TM);
-    SetParser(COLS, COL_TYPES, 1);
+    SetParser(COLS, COL_TYPES, COL_TITLES);
     SetAccessor(ACCOUNT_COL, CT_STR, &DataDoc::AccountGetter, &DataDoc::AccountSetter);
 }
 
@@ -52,7 +58,7 @@ void DataDoc::UpdateBalanceStat()
     money_t balance = m_stat.opening;
     for (struct list_item *pos = m_records.first; pos != NULL; pos = pos->next) {
         record_t *record = get_record(pos);
-        auto amount = (record->flag == RECORD_FLAG_NORMAL ? GetRecordRealAmount(record) : 0);
+        auto amount = (record->flag == RECORD_FLAG_NORMAL ? GetRecordAmount(record) : 0);
         if (amount < 0) {
             m_stat.income -= amount;
         } else if (amount > 0) {
@@ -128,6 +134,7 @@ void DataDoc::AccountSetter(record_t *record, int i, const wxString &value)
 
 bool DataDoc::AfterRead()
 {
+    set_hash_cols(&m_parser, 1);
     int start = jdn(m_year, 1, 1);
     int end = jdn(m_year, 12, 31);
     fill_serial(&m_parser, &m_records, start, end);

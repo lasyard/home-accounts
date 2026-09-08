@@ -3,6 +3,9 @@
 
 #include "AccountsDoc.h"
 
+#include "../Utils.h"
+
+#include "csv/csv_utils.h"
 #include "csv/str.h"
 
 const column_type AccountsDoc::COL_TYPES[] = {
@@ -92,7 +95,7 @@ bool AccountsDoc::AfterRead()
             }
         }
     }
-    fill_serial(&m_parser, &m_records, 1, 3);
+    fill_serial(&m_parser, &m_records, 1, 3, ::record_is_hash, ::get_record_first_int64, ::new_hash_record_int64);
     return HaCsv::AfterRead();
 }
 

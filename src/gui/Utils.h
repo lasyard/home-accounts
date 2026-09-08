@@ -4,9 +4,16 @@
 #include <regex>
 #include <vector>
 
+#include "csv/csv_parser.h"
+
 extern "C" {
 int get_line_from_istream(char *buf, size_t len, void *context);
 int put_line_to_ostream(const char *buf, size_t len, void *context);
+bool record_is_hash(const struct parser *parser, const record_t *record);
+int get_record_first_int64(const struct parser *parser, const record_t *record);
+int get_record_first_int32(const struct parser *parser, const record_t *record);
+record_t *new_hash_record_int64(const struct parser *parser, int expected);
+record_t *new_hash_record_int32(const struct parser *parser, int expected);
 }
 
 inline std::string EscapeRegex(const std::string &str)

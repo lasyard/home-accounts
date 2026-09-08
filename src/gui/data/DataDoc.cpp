@@ -5,6 +5,9 @@
 
 #include "DataDoc.h"
 
+#include "../Utils.h"
+
+#include "csv/csv_utils.h"
 #include "csv/date_time.h"
 
 const column_type DataDoc::COL_TYPES[] = {
@@ -137,7 +140,7 @@ bool DataDoc::AfterRead()
     set_hash_cols(&m_parser, 1);
     int start = jdn(m_year, 1, 1);
     int end = jdn(m_year, 12, 31);
-    fill_serial(&m_parser, &m_records, start, end);
+    fill_serial(&m_parser, &m_records, start, end, ::record_is_hash, ::get_record_first_int32, ::new_hash_record_int32);
     SetOpening(0);
     return HaCsv::AfterRead();
 }

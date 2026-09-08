@@ -115,8 +115,6 @@ int write_lines(
 
 void release_records(const struct parser *parser, struct list_head *records);
 
-bool fill_serial(const struct parser *parser, struct list_head *records, int start, int end);
-
 #ifdef __cplusplus
 }
 #endif

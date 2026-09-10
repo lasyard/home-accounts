@@ -9,7 +9,7 @@
 
 #include "csv/str.h"
 
-HaCsv::HaCsv() : m_titles(nullptr)
+HaCsv::HaCsv() : m_titles(nullptr), m_accessors()
 {
     wxLog::AddTraceMask(TM);
     init_parser(&m_parser);
@@ -22,12 +22,45 @@ HaCsv::~HaCsv()
     release_parser(&m_parser);
 }
 
+wxString HaCsv::GetColTitle(int i) const
+{
+    wxASSERT(i < GetColCount());
+    return wxString(m_titles[i].buf, m_titles[i].len);
+}
+
+enum column_type HaCsv::GetColType(int i) const
+{
+    wxASSERT(i < GetColCount());
+    return m_accessors[i].type;
+}
+
 wxString HaCsv::GetMoneyString(money_t m) const
 {
     char buf[MAX_LINE_LENGTH + 1];
     char *p = output_money(buf, m, m_parser.options.money_prec, m_parser.options.money_scale);
     *p = '\0';
     return wxString(buf);
+}
+
+const wxString HaCsv::GetValueString(int pos, int i) const
+{
+    const record_t *record = GetRecord(pos);
+    wxASSERT(record != nullptr && is_index_valid(&m_parser, record, i));
+    auto &accessor = m_accessors[i];
+    if (accessor.get != nullptr) {
+        return accessor.get(this, record, i);
+    }
+    return wxEmptyString;
+}
+
+void HaCsv::SetValueString(int pos, int i, const wxString &value)
+{
+    record_t *record = GetRecord(pos);
+    wxASSERT(record != nullptr && is_index_valid(&m_parser, record, i));
+    auto &accessor = m_accessors[i];
+    if (accessor.set != nullptr) {
+        accessor.set(this, record, i, value);
+    }
 }
 
 record_t *HaCsv::AddRecord()
@@ -86,6 +119,14 @@ void HaCsv::SetParser(int cols, const enum column_type types[], const struct str
     set_parser_types(&m_parser, cols, types);
     list_head_init(&m_records);
     m_titles = titles;
+    m_accessors.resize(cols);
+    for (int i = 0; i < cols; ++i) {
+        if (m_parser.meta->types[i] != CT_STR) {
+            SetAccessor(i, types[i], DefaultGetter, DefaultSetter);
+        } else {
+            SetAccessor(i, types[i], StrGetter, DefaultSetter);
+        }
+    }
 }
 
 bool HaCsv::ReadStream(std::istream &is)
@@ -124,6 +165,30 @@ void HaCsv::Write(std::string &str)
     std::ostringstream os;
     WriteStream(os);
     str = os.str();
+}
+
+const wxString HaCsv::DefaultGetter(const HaCsv *csv, const record_t *record, int i)
+{
+    char buf[MAX_LINE_LENGTH + 1];
+    char *p = output_field(&csv->m_parser, buf, record, i);
+    *p = '\0';
+    return wxString(buf);
+}
+
+const wxString HaCsv::StrGetter(const HaCsv *csv, const record_t *record, int i)
+{
+    auto *s = (struct str *)get_const_field(&csv->m_parser, record, i);
+    if (!str_is_empty(s)) {
+        return wxString(s->buf, s->len);
+    }
+    return wxEmptyString;
+}
+
+void HaCsv::DefaultSetter(HaCsv *csv, record_t *record, int i, const wxString &value)
+{
+    if (parse_field(&csv->m_parser, value.c_str(), record, i) == NULL) {
+        wxLogError(_("Invalid value: %s"), value);
+    }
 }
 
 void HaCsv::CreateIndex()

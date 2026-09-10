@@ -12,15 +12,20 @@ public:
     HaTable(HaCsv *doc);
     virtual ~HaTable();
 
-    virtual void Init();
+    virtual void Prepare();
+
+    void Init();
 
     int GetNumberRows() override;
+    int GetNumberCols() override;
 
-    virtual enum column_type GetColType(int col) const = 0;
+    virtual enum column_type GetColType(int col) const;
+    virtual bool IsColReadOnly(int col) const;
 
-    virtual bool IsColReadOnly(int col) const = 0;
+    wxString GetColLabelValue(int col) override;
+    wxString GetRowLabelValue(int row) override;
 
-    virtual record_t *GetRowRecord(int row) const = 0;
+    virtual record_t *GetRowRecord(int row) const;
 
     auto GetRowRecordFlag(int row) const
     {
@@ -30,6 +35,16 @@ public:
 
     bool CanHaveAttributes() override;
 
+    const HaCsv *GetDoc() const
+    {
+        return m_doc;
+    }
+
+    HaCsv *GetDoc()
+    {
+        return m_doc;
+    }
+
     wxString GetValue(int row, int col) override;
     void SetValue(int row, int col, const wxString &value) override;
 
@@ -38,8 +53,65 @@ public:
     bool DeleteRows(size_t pos, size_t numRows) override;
 
 protected:
+    struct CellImpl {
+        wxString label;
+        enum column_type type;
+        const wxString (*get)(const HaTable *table, int row, int col);
+        void (*set)(HaTable *table, int row, int col, const wxString &value);
+        int pos; // save corresponding row/col in the doc
+    };
+
     HaCsv *m_doc;
     wxVector<wxArrayString> m_cache;
+    std::vector<struct CellImpl> m_headerImpls;
+    std::vector<struct CellImpl> m_colImpls;
+
+    static const wxString DocGetter(const HaTable *table, int row, int col);
+    static void DocSetter(HaTable *table, int row, int col, const wxString &value);
+
+    void SetImpl(
+        const wxString &label,
+        CellImpl &impl,
+        enum column_type type,
+        const wxString (*get)(const HaTable *table, int row, int col) = nullptr,
+        void (*set)(HaTable *table, int row, int col, const wxString &value) = nullptr,
+        int pos = -1
+    )
+    {
+        impl.label = label;
+        impl.type = type;
+        impl.get = get;
+        impl.set = set;
+        impl.pos = pos;
+    }
+
+    void SetColImpl(
+        const wxString &label,
+        int dst,
+        enum column_type type,
+        const wxString (*get)(const HaTable *table, int row, int col) = nullptr,
+        void (*set)(HaTable *table, int row, int col, const wxString &value) = nullptr,
+        int pos = -1
+    )
+    {
+        SetImpl(label, m_colImpls[dst], type, get, set, pos);
+    }
+
+    void SetColImplDoc(const wxString &label, int dst, int col, bool ro = false)
+    {
+        SetColImpl(label, dst, m_doc->GetColType(col), &HaTable::DocGetter, !ro ? &HaTable::DocSetter : nullptr, col);
+    }
+
+    void SetHeaderImpl(
+        const wxString &label,
+        int row,
+        enum column_type type,
+        const wxString (*get)(const HaTable *table, int row, int col) = nullptr,
+        void (*set)(HaTable *table, int row, int col, const wxString &value) = nullptr
+    )
+    {
+        SetImpl(label, m_headerImpls[row], type, get, set, row);
+    }
 
     void CacheCell(int row, int col)
     {
@@ -78,16 +150,6 @@ protected:
         }
     }
 
-    wxString DocGetter(int row, int col) const
-    {
-        return m_doc->GetValueString(row, col);
-    }
-
-    void DocSetter(int row, int col, const wxString &value)
-    {
-        m_doc->SetValueString(row, col, value);
-    }
-
     virtual wxString GetHashString(int row) const;
 
     virtual bool InsertRow(size_t pos);
@@ -96,8 +158,8 @@ protected:
 
     virtual void OnNewRow(size_t pos);
 
-    virtual const wxString GetCellValue(int row, int col) const = 0;
-    virtual void SetCellValue(int row, int col, const wxString &value) = 0;
+    virtual const wxString GetCellValue(int row, int col) const;
+    virtual void SetCellValue(int row, int col, const wxString &value);
 };
 
 #endif /* _HA_GUI_HA_TABLE_H_ */

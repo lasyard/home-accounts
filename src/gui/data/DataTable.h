@@ -1,11 +1,11 @@
 #ifndef _HA_DATA_DATA_TABLE_H_
 #define _HA_DATA_DATA_TABLE_H_
 
-#include "../HaTableTemplate.h"
+#include "../HaTable.h"
 
 class DataDoc;
 
-class DataTable : public HaTableTemplate<DataTable, DataDoc>
+class DataTable : public HaTable
 {
     DECLARE_DYNAMIC_CLASS(DataTable)
 
@@ -23,19 +23,19 @@ public:
     DataTable(DataDoc *doc = nullptr);
     virtual ~DataTable();
 
-    void Init() override;
+    void Prepare() override;
 
 protected:
     void OnNewRow(size_t pos) override;
 
 private:
-    void UpdateDocAndCache(int row);
+    static const wxString IncomeGetter(const HaTable *table, int row, int col);
+    static void IncomeSetter(HaTable *table, int row, int col, const wxString &value);
+    static const wxString OutlayGetter(const HaTable *table, int row, int col);
+    static void OutlaySetter(HaTable *table, int row, int col, const wxString &value);
+    static const wxString BalanceGetter(const HaTable *table, int row, int col);
 
-    wxString IncomeGetter(int row, int col) const;
-    void IncomeSetter(int row, int col, const wxString &value);
-    wxString OutlayGetter(int row, int col) const;
-    void OutlaySetter(int row, int col, const wxString &value);
-    wxString BalanceGetter(int row, int col) const;
+    void UpdateDocAndCache(int row);
 };
 
 #endif /* _HA_DATA_DATA_TABLE_H_ */

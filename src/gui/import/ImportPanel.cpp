@@ -100,11 +100,6 @@ void ImportPanel::OnMerge([[maybe_unused]] wxCommandEvent &event)
     m_grid->SaveEditControlValue();
     auto *import = dynamic_cast<ImportDoc *>(m_grid->GetTableDoc());
 
-    if (!import->DateColExists()) {
-        wxMessageBox(_("Cannot import: no DATE."));
-        return;
-    }
-
     bool ok;
     auto *accounts = m_doc->LoadCsvDoc<AccountsDoc>(ACCOUNTS_SECTION_NAME, ok);
     if (!ok) {
@@ -132,13 +127,13 @@ void ImportPanel::OnMerge([[maybe_unused]] wxCommandEvent &event)
     std::map<int, std::unique_ptr<DataDoc>> docs;
     for (struct list_item *pos = import->GetRecords()->first; pos != NULL; pos = pos->next) {
         auto *importRecord = get_record(pos);
-        auto dateTime = import->GetRecordDateTime(importRecord);
-        if (dateTime.first == UNKNOWN_DATE) {
+        auto date = import->GetRecordDate(importRecord);
+        if (date == UNKNOWN_DATE) {
             wxMessageBox(_("Cannot import: some records have no DATE."));
             return;
         }
         int year, month, day;
-        jdn_split(dateTime.first, &year, &month, &day);
+        jdn_split(date, &year, &month, &day);
         DataDoc *dataDoc = nullptr;
         if (docs.contains(year)) {
             dataDoc = docs.at(year).get();
@@ -151,18 +146,14 @@ void ImportPanel::OnMerge([[maybe_unused]] wxCommandEvent &event)
             }
             docs[year] = std::unique_ptr<DataDoc>(dataDoc);
         }
-        auto *record = dataDoc->InsertRecordAtTime(dateTime.first, dateTime.second);
+        auto *record = dataDoc->InsertRecordAtTime(date, import->GetRecordTime(importRecord));
         if (record == nullptr) {
             wxLogError(_("Failed to insert record to data of year %d"), year);
             return;
         }
         dataDoc->SetRecordAccount(record, accountId);
-        for (int col = 0; col < DataDoc::COLS; ++col) {
-            int csvCol = import->GetCsvCol(col);
-            if (csvCol == HaCsv::INVALID_COL) {
-                continue;
-            }
-            dataDoc->SetRecordField(record, col, import->GetRecordField(importRecord, csvCol));
+        for (int col = 0; col < ImportDoc::COLS; ++col) {
+            dataDoc->SetRecordField(record, col, import->GetRecordField(importRecord, col));
         }
     }
 

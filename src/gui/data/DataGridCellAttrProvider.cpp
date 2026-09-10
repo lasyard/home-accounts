@@ -32,14 +32,13 @@ DataGridCellAttrProvider::~DataGridCellAttrProvider()
 
 wxGridCellAttr *DataGridCellAttrProvider::GetItemCellAttr(int row, int col) const
 {
-    auto *table = static_cast<DataTable *>(m_table);
-    if (table != nullptr) {
+    if (m_table != nullptr) {
         switch (col) {
         case DataTable::ACCOUNT_COL:
             m_accountChoiceAttr->IncRef();
             return m_accountChoiceAttr;
         case DataTable::BALANCE_COL:
-            if (table->GetDoc()->GetRecordBalance(table->GetRowRecord(row)) < 0) {
+            if (static_cast<const DataDoc *>(m_table->GetDoc())->GetRecordBalance(m_table->GetRowRecord(row)) < 0) {
                 m_deficitAttrRO->IncRef();
                 return m_deficitAttrRO;
             }

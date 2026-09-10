@@ -1,31 +1,20 @@
 #ifndef _HA_DATA_DATA_DOC_H_
 #define _HA_DATA_DATA_DOC_H_
 
-#include "../HaCsvTemplate.h"
+#include "../HaData.h"
 
 #include "../BiMap.h"
 
 #include "csv/date_time.h"
 #include "csv/money.h"
 
-class DataDoc : public HaCsvTemplate<DataDoc>
+class DataDoc : public HaData
 {
 public:
     DECLARE_TM(DataDoc)
 
-    static constexpr int DATE_COL = 0;
-    static constexpr int TIME_COL = 1;
-    static constexpr int ACCOUNT_COL = 2;
-    static constexpr int AMOUNT_COL = 3;
-    static constexpr int DESC_COL = 4;
-    static constexpr int MEMO_COL = 5;
-    static constexpr int COLS = 6;
-
     DataDoc(int year);
     virtual ~DataDoc();
-
-    static const column_type COL_TYPES[COLS];
-    static const str COL_TITLES[COLS];
 
     void SetAccountIdAndNames(const std::vector<int64_t> &ids, const wxArrayString &names);
 
@@ -34,43 +23,12 @@ public:
         return m_accountNames;
     }
 
-    money_t GetRecordAmount(const record_t *record) const
-    {
-        wxASSERT(record->flag == RECORD_FLAG_NORMAL);
-        return *(money_t *)get_const_field(&m_parser, record, AMOUNT_COL);
-    }
-
-    date_t GetRecordDate(const record_t *record) const
-    {
-        return *(date_t *)get_const_field(&m_parser, record, DATE_COL);
-    }
-
-    timo_t GetRecordTime(const record_t *record) const
-    {
-        return *(timo_t *)get_const_field(&m_parser, record, TIME_COL);
-    }
-
     money_t GetRecordBalance(const record_t *record) const
     {
         if (record->udata != NULL) {
             return static_cast<ExtraCols *>(record->udata)->balance;
         }
         return 0;
-    }
-
-    void SetRecordDate(record_t *record, date_t date) const
-    {
-        *(date_t *)get_field(&m_parser, record, DATE_COL) = date;
-    }
-
-    void SetRecordTime(record_t *record, timo_t time) const
-    {
-        *(timo_t *)get_field(&m_parser, record, TIME_COL) = time;
-    }
-
-    void SetRecordAccount(record_t *record, int64_t account) const
-    {
-        *(int64_t *)get_field(&m_parser, record, ACCOUNT_COL) = account;
     }
 
     void SetRecordBalance(record_t *record, money_t balance) const
@@ -82,28 +40,6 @@ public:
             }
         }
         static_cast<ExtraCols *>(record->udata)->balance = balance;
-    }
-
-    const wxString GetIncomeString(int row) const
-    {
-        auto *record = GetRecord(row);
-        wxASSERT(record != nullptr);
-        money_t m = GetRecordAmount(record);
-        if (m < 0) {
-            return GetMoneyString(-m);
-        }
-        return wxEmptyString;
-    }
-
-    const wxString GetOutlayString(int row) const
-    {
-        auto *record = GetRecord(row);
-        wxASSERT(record != nullptr);
-        money_t m = GetRecordAmount(record);
-        if (m > 0) {
-            return GetMoneyString(m);
-        }
-        return wxEmptyString;
     }
 
     const wxString GetBalanceString(int row) const
@@ -142,12 +78,10 @@ public:
     }
 
 protected:
-    const wxString AccountGetter(const record_t *record, int i) const;
-    void AccountSetter(record_t *record, int i, const wxString &value);
+    static const wxString AccountGetter(const HaCsv *csv, const record_t *record, int i);
+    static void AccountSetter(HaCsv *csv, record_t *record, int i, const wxString &value);
 
     bool AfterRead() override;
-
-    bool IsRecordEmpty(record_t *record) override;
 
 private:
     struct ExtraCols {

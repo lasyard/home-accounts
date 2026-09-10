@@ -4,7 +4,7 @@
 
 IMPLEMENT_DYNAMIC_CLASS(AccountsTable, HaTable)
 
-AccountsTable::AccountsTable(AccountsDoc *doc) : HaTableTemplate<AccountsTable, AccountsDoc>(doc)
+AccountsTable::AccountsTable(AccountsDoc *doc) : HaTable(doc)
 {
 }
 
@@ -12,7 +12,7 @@ AccountsTable::~AccountsTable()
 {
 }
 
-void AccountsTable::Init()
+void AccountsTable::Prepare()
 {
     m_colImpls.resize(COLS);
     SetColImplDoc(_("ID"), ID_COL, AccountsDoc::ID_COL, true);
@@ -22,5 +22,4 @@ void AccountsTable::Init()
     SetColImplDoc(_("Initial"), INITIAL_COL, AccountsDoc::INITIAL_COL);
     SetColImplDoc(_("Memo"), MEMO_COL, AccountsDoc::MEMO_COL);
     m_cache.resize(m_doc->GetRowCount());
-    HaTable::Init();
 }

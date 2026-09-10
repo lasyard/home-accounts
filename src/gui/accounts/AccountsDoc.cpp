@@ -30,7 +30,7 @@ const str AccountsDoc::COL_TITLES[] = {
     {    "Memo", 4, false},
 };
 
-AccountsDoc::AccountsDoc() : HaCsvTemplate<AccountsDoc>(), m_maxId(0)
+AccountsDoc::AccountsDoc() : HaCsv(), m_maxId(0)
 {
     wxLog::AddTraceMask(TM);
     SetParser(COLS, COL_TYPES, COL_TITLES);
@@ -57,9 +57,9 @@ void AccountsDoc::GetIdAndNames(std::vector<int64_t> &ids, wxArrayString &names)
     }
 }
 
-const wxString AccountsDoc::TypeGetter(const record_t *record, int i) const
+const wxString AccountsDoc::TypeGetter(const HaCsv *csv, const record_t *record, int i)
 {
-    auto type = *(int64_t *)get_const_field(&m_parser, record, i);
+    auto type = *(int64_t *)get_const_field(&static_cast<const AccountsDoc *>(csv)->m_parser, record, i);
     const wxArrayString &types = GetAccountTypeStrings();
     if (type < 0 || type >= (int64_t)types.size()) {
         type = 0;
@@ -67,7 +67,7 @@ const wxString AccountsDoc::TypeGetter(const record_t *record, int i) const
     return types[type];
 }
 
-void AccountsDoc::TypeSetter(record_t *record, int i, const wxString &value)
+void AccountsDoc::TypeSetter(HaCsv *csv, record_t *record, int i, const wxString &value)
 {
     wxASSERT(i == TYPE_COL);
     int64_t index;
@@ -80,7 +80,7 @@ void AccountsDoc::TypeSetter(record_t *record, int i, const wxString &value)
     if (index == (int64_t)types.size()) {
         index = 0;
     }
-    *(int64_t *)get_field(&m_parser, record, i) = index;
+    *(int64_t *)get_field(&static_cast<AccountsDoc *>(csv)->m_parser, record, i) = index;
 }
 
 bool AccountsDoc::AfterRead()

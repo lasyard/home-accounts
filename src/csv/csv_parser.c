@@ -120,6 +120,7 @@ void init_parser(struct parser *parser)
     set_money_prec(parser, 2);
     parser->meta = NULL;
     parser->hash_cols = 0;
+    parser->real_cols = 0;
     parser->mapping = NULL;
 }
 
@@ -135,7 +136,9 @@ const struct record_meta *set_parser_types(struct parser *parser, int cols, cons
         offset += size_of(types[i]);
     }
     meta->size = offset;
-    return parser->meta = meta;
+    parser->meta = meta;
+    parser->real_cols = cols;
+    return meta;
 }
 
 void set_money_prec(struct parser *parser, int money_prec)
@@ -233,6 +236,7 @@ const int *parse_titles(struct parser *parser, const char *line, const struct st
         ++p; // skip the sep
     }
     set_hash_cols((struct parser *)parser, hash_cols);
+    parser->real_cols = n;
     parser->mapping = mapping;
     return mapping;
 }
@@ -273,7 +277,7 @@ record_t *parse_line(const struct parser *parser, const char *line)
 {
     record_t *record = new_record(parser);
     return_null_if_null(record);
-    const char *p = raw_parse_line(parser, line, record, parser->hash_cols, parser->meta->cols);
+    const char *p = raw_parse_line(parser, line, record, parser->hash_cols, parser->real_cols);
     if (p == NULL) {
         free_record(parser, record);
         return NULL;

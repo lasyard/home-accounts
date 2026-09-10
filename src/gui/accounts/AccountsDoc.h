@@ -1,9 +1,9 @@
 #ifndef _HA_ACCOUNTS_ACCOUNTS_DOC_H_
 #define _HA_ACCOUNTS_ACCOUNTS_DOC_H_
 
-#include "../HaCsvTemplate.h"
+#include "../HaCsv.h"
 
-class AccountsDoc : public HaCsvTemplate<AccountsDoc>
+class AccountsDoc : public HaCsv
 {
 public:
     static constexpr int TYPE_COL = 0;
@@ -39,8 +39,8 @@ public:
     void GetIdAndNames(std::vector<int64_t> &ids, wxArrayString &names) const;
 
 protected:
-    const wxString TypeGetter(const record_t *record, int i) const;
-    void TypeSetter(record_t *record, int i, const wxString &value);
+    static const wxString TypeGetter(const HaCsv *csv, const record_t *record, int i);
+    static void TypeSetter(HaCsv *csv, record_t *record, int i, const wxString &value);
 
     bool AfterRead() override;
 

@@ -35,11 +35,11 @@ public:
     DOC *GetTableDoc()
     {
         TABLE *table = GetHaTable();
-        return table != nullptr ? table->GetDoc() : nullptr;
+        return table != nullptr ? static_cast<DOC *>(table->GetDoc()) : nullptr;
     }
 
 protected:
-    HaTable *CreateHaTable(HaCsv *doc) override
+    TABLE *CreateHaTable(HaCsv *doc) override
     {
         wxASSERT(doc != nullptr);
         return new TABLE(static_cast<DOC *>(doc));

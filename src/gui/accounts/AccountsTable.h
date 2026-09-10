@@ -1,11 +1,11 @@
 #ifndef _HA_ACCOUNTS_ACCOUNTS_TABLE_H_
 #define _HA_ACCOUNTS_ACCOUNTS_TABLE_H_
 
-#include "../HaTableTemplate.h"
+#include "../HaTable.h"
 
 class AccountsDoc;
 
-class AccountsTable : public HaTableTemplate<AccountsTable, AccountsDoc>
+class AccountsTable : public HaTable
 {
     DECLARE_DYNAMIC_CLASS(AccountsTable)
 
@@ -21,7 +21,7 @@ public:
     AccountsTable(AccountsDoc *doc = nullptr);
     virtual ~AccountsTable();
 
-    void Init() override;
+    void Prepare() override;
 };
 
 #endif /* _HA_ACCOUNTS_ACCOUNTS_TABLE_H_ */

@@ -5,14 +5,14 @@ set(TEST_MAIN_SRC ../test.cpp)
 
 include(${wxWidgets_USE_FILE})
 
-add_doctest(TestHaCsvTemplate ${TEST_MAIN_SRC} TestHaCsvTemplate.cpp LIBS ${wxWidgets_LIBRARIES} csv)
-target_sources(TestHaCsvTemplate PRIVATE
+add_doctest(TestHaCsv ${TEST_MAIN_SRC} TestHaCsv.cpp LIBS ${wxWidgets_LIBRARIES} csv)
+target_sources(TestHaCsv PRIVATE
     ${CMAKE_SOURCE_DIR}/src/gui/HaCsv.cpp
     ${CMAKE_SOURCE_DIR}/src/gui/Utils.cpp
 )
 copy_file(sample.csv)
 copy_file(sample1.csv)
-target_sources(TestHaCsvTemplate PRIVATE
+target_sources(TestHaCsv PRIVATE
     ${CMAKE_CURRENT_BINARY_DIR}/sample.csv
     ${CMAKE_CURRENT_BINARY_DIR}/sample1.csv
 )

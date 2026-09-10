@@ -45,6 +45,7 @@ struct parser {
     struct parser_options options;
     struct record_meta *meta; // the meta of record, owned
     int hash_cols;            // columns in hash line, 0 means no hash line
+    int real_cols;            // the actual number of columns in the record
     int *mapping;             // mapping from file column index to field index, owned
 };
 

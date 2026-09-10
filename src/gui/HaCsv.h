@@ -12,9 +12,6 @@ class HaCsv
 public:
     DECLARE_TM(HaCsv)
 
-    static constexpr int INVALID_COL = -1;
-    static constexpr const char INVALID_COL_NAME[] = "";
-
     HaCsv();
     virtual ~HaCsv();
 
@@ -28,7 +25,8 @@ public:
         return m_parser.hash_cols;
     }
 
-    virtual enum column_type GetColType(int i) const = 0;
+    virtual wxString GetColTitle(int i) const;
+    virtual enum column_type GetColType(int i) const;
 
     const struct list_head *GetRecords() const
     {
@@ -45,7 +43,13 @@ public:
         return m_index.size();
     }
 
-    record_t *GetRecord(int pos) const
+    const record_t *GetRecord(int pos) const
+    {
+        wxASSERT(0 <= pos && (size_t)pos < m_index.size());
+        return m_index[pos];
+    }
+
+    record_t *GetRecord(int pos)
     {
         wxASSERT(0 <= pos && (size_t)pos < m_index.size());
         return m_index[pos];
@@ -61,8 +65,8 @@ public:
         set_field(&m_parser, record, i, value);
     }
 
-    virtual const wxString GetValueString(int pos, int i) const = 0;
-    virtual void SetValueString(int pos, int i, const wxString &value) = 0;
+    virtual const wxString GetValueString(int pos, int i) const;
+    virtual void SetValueString(int pos, int i, const wxString &value);
 
     record_t *AddRecord();
     record_t *InsertRecord(int pos);
@@ -77,15 +81,34 @@ public:
     void Write(std::string &str);
 
 protected:
+    struct Accessor {
+        enum column_type type;
+        const wxString (*get)(const HaCsv *csv, const record_t *record, int i);
+        void (*set)(HaCsv *csv, record_t *record, int i, const wxString &value);
+    };
+
     struct parser m_parser;
     const struct str *m_titles;
     struct list_head m_records;
     std::vector<record_t *> m_index;
 
-    const wxString DefaultGetter(const record_t *record, int i) const;
-    const wxString StrGetter(const record_t *record, int i) const;
+    std::vector<Accessor> m_accessors;
 
-    void DefaultSetter(record_t *record, int i, const wxString &value);
+    static const wxString DefaultGetter(const HaCsv *csv, const record_t *record, int i);
+    static const wxString StrGetter(const HaCsv *csv, const record_t *record, int i);
+    static void DefaultSetter(HaCsv *csv, record_t *record, int i, const wxString &value);
+
+    void SetAccessor(
+        int col,
+        enum column_type type,
+        const wxString (*get)(const HaCsv *csv, const record_t *record, int i),
+        void (*set)(HaCsv *csv, record_t *record, int i, const wxString &value)
+    )
+    {
+        m_accessors[col].type = type;
+        m_accessors[col].get = get;
+        m_accessors[col].set = set;
+    }
 
     void CreateIndex();
 

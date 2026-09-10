@@ -3,28 +3,16 @@
 #include <fstream>
 #include <sstream>
 
-#include "HaCsvTemplate.h"
+#include "HaCsv.h"
 
-class HaDoc : public HaCsvTemplate<HaDoc>
-{
-public:
-    DECLARE_TM(HaDoc)
-
-    HaDoc()
-    {
-    }
-
-    virtual ~HaDoc()
-    {
-    }
-};
+#include "csv/str.h"
 
 TEST_CASE("read")
 {
     const enum column_type types[] = {CT_INT, CT_STR, CT_MONEY, CT_DATE, CT_TIME};
     std::fstream file("sample.csv", std::ios::in);
     CHECK(file.is_open());
-    HaDoc doc;
+    HaCsv doc;
     doc.SetParser(5, types);
     CHECK(doc.ReadStream(file));
     CHECK(doc.GetRowCount() == 3);
@@ -48,7 +36,7 @@ TEST_CASE("read")
 TEST_CASE("write")
 {
     const enum column_type types[] = {CT_INT, CT_STR, CT_MONEY, CT_DATE, CT_TIME};
-    HaDoc doc;
+    HaCsv doc;
     doc.SetParser(5, types);
     doc.AddRecord();
     doc.SetValueString(0, 0, "1");
@@ -73,7 +61,7 @@ TEST_CASE("read & write with hashs")
     };
     std::fstream file("sample1.csv", std::ios::in);
     CHECK(file.is_open());
-    HaDoc doc;
+    HaCsv doc;
     doc.SetParser(5, types, titles);
     CHECK(doc.ReadStream(file));
     CHECK(doc.GetRowCount() == 7);

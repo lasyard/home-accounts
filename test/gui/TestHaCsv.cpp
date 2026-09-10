@@ -7,13 +7,21 @@
 
 #include "csv/str.h"
 
+static const struct str titles[] = {
+    {    "ID", 2, false},
+    {  "Name", 4, false},
+    {"Amount", 6, false},
+    {  "Date", 4, false},
+    {  "Time", 4, false},
+};
+
 TEST_CASE("read")
 {
     const enum column_type types[] = {CT_INT, CT_STR, CT_MONEY, CT_DATE, CT_TIME};
     std::fstream file("sample.csv", std::ios::in);
     CHECK(file.is_open());
     HaCsv doc;
-    doc.SetParser(5, types);
+    doc.SetParser(5, types, titles);
     CHECK(doc.ReadStream(file));
     CHECK(doc.GetRowCount() == 3);
     CHECK(doc.GetValueString(0, 0) == "1");
@@ -37,7 +45,7 @@ TEST_CASE("write")
 {
     const enum column_type types[] = {CT_INT, CT_STR, CT_MONEY, CT_DATE, CT_TIME};
     HaCsv doc;
-    doc.SetParser(5, types);
+    doc.SetParser(5, types, titles);
     doc.AddRecord();
     doc.SetValueString(0, 0, "1");
     doc.SetValueString(0, 1, "Alice");
@@ -46,19 +54,12 @@ TEST_CASE("write")
     doc.SetValueString(0, 4, "12:34:56");
     std::ostringstream os;
     doc.WriteStream(os);
-    CHECK(os.str() == "1,Alice,100.00,2000-01-01,12:34:56\n");
+    CHECK(os.str() == "ID,Name,Amount,Date,Time\n1,Alice,100.00,2000-01-01,12:34:56\n");
 }
 
 TEST_CASE("read & write with hashs")
 {
     const enum column_type types[] = {CT_INT, CT_STR, CT_MONEY, CT_DATE, CT_TIME};
-    const struct str titles[] = {
-        {    "ID", 2, false},
-        {  "Name", 4, false},
-        {"Amount", 6, false},
-        {  "Date", 4, false},
-        {  "Time", 4, false},
-    };
     std::fstream file("sample1.csv", std::ios::in);
     CHECK(file.is_open());
     HaCsv doc;
@@ -91,7 +92,8 @@ TEST_CASE("read & write with hashs")
     std::ostringstream os;
     doc.WriteStream(os);
     CHECK(
-        os.str() == "#1\n"
+        os.str() == "#ID,Name,Amount,Date,Time\n"
+                    "#1\n"
                     "Alice,100.01,2000-01-01,12:34:56\n"
                     "#2\n"
                     "Betty,200.00,2025-12-31,\n"

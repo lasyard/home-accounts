@@ -72,7 +72,7 @@ public:
     record_t *InsertRecord(int pos);
     bool DeleteRecord(int pos);
 
-    virtual void SetParser(int cols, const enum column_type types[], const struct str titles[] = nullptr);
+    virtual void SetParser(int cols, const enum column_type types[], const struct str titles[]);
 
     virtual bool ReadStream(std::istream &is);
     virtual void WriteStream(std::ostream &os);

@@ -27,6 +27,7 @@ void HaDocument::SaveOrDeleteSection(const std::string &name, const std::string 
 | 段名        | 内容类型 | 说明                                                                        |
 | ----------- | -------- | --------------------------------------------------------------------------- |
 | `data/xxxx` | HCSV     | xxxx 为数字，代表一个年份，保存此年度的数据，相关代码在目录 `src/gui/data/` |
+| `years`     | CSV      | 保存历年的汇总数据                                                          |
 | `accounts`  | HCSV     | 保存账户信息，相关代码在 `src/gui/accounts/`                                |
 | `import`    | CSV      | 导入的 CSV 文件                                                             |
 
@@ -52,35 +53,40 @@ HCSV 格式简要说明如下：
 - CT_TIME
 - CT_IGNORE
 
-## data 字段
+## data/xxxx 字段
 
-| 编号 | 字段名称    | 类型     | 含义         |
-| ---: | ----------- | -------- | ------------ |
-|    0 | DATE        | CT_DATE  | 交易日期     |
-|    1 | TIME        | CT_TIME  | 交易时间     |
-|    2 | AMOUNT      | CT_MONEY | 金额         |
-|    3 | ACCOUNT     | CT_INT   | 账户 ID      |
-|    4 | DESC        | CT_STR   | 说明         |
-|    5 | REAL_AMOUNT | CT_MONEY | 真实金额     |
-|    6 | REAL_DESC   | CT_STR   | 真实描述     |
-|    7 | MEMO        | CT_STR   | 备注         |
-|    8 | AUTO_SET    | CT_BOOL  | 是否自动处理 |
+标题行：`#Date,Time,Account,Amount,Desc,Memo`
 
-`hash_cols = 1`
+| 编号 | 字段名称 | 类型     | 含义     |
+| ---: | -------- | -------- | -------- |
+|    0 | Date     | CT_DATE  | 交易日期 |
+|    1 | Time     | CT_TIME  | 交易时间 |
+|    2 | Account  | CT_INT   | 账户 ID  |
+|    3 | Amount   | CT_MONEY | 金额     |
+|    4 | Desc     | CT_STR   | 说明     |
+|    5 | Memo     | CT_STR   | 备注     |
+
+## years 字段
+
+标题行：`Year,Income,Outlay,Records`
+
+| 编号 | 字段名称 | 类型     | 含义     |
+| ---: | -------- | -------- | -------- |
+|    0 | Year     | CT_DATE  | 年份     |
+|    1 | Income   | CT_MONEY | 总收入   |
+|    2 | Outlay   | CT_MONEY | 总支出   |
+|    3 | Records  | CT_INT   | 总记录数 |
 
 ## accounts 字段
 
-| 编号 | 字段名称  | 类型     | 含义                                                   |
-| ---: | --------- | -------- | ------------------------------------------------------ |
-|    0 | TYPE      | CT_INT   | 类型（0 - 无效，1 - 借记卡，2 - 信用卡，3 - 支付账户） |
-|    1 | ID        | CT_INT   | 账户 ID                                                |
-|    2 | NAME      | CT_STR   | 名称                                                   |
-|    3 | BANK      | CT_STR   | 开户行                                                 |
-|    4 | OPEN_DATE | CT_STR   | 开户日                                                 |
-|    5 | INITIAL   | CT_MONEY | 初始金额                                               |
-|    6 | MEMO      | CT_STR   | 备注                                                   |
+标题行：`#Type,Id,Name,Initial`
 
-`hash_cols = 1`
+| 编号 | 字段名称 | 类型     | 含义                                                   |
+| ---: | -------- | -------- | ------------------------------------------------------ |
+|    0 | Type     | CT_INT   | 类型（0 - 无效，1 - 借记卡，2 - 信用卡，3 - 支付账户） |
+|    1 | Id       | CT_INT   | 账户 ID                                                |
+|    2 | Name     | CT_STR   | 名称                                                   |
+|    3 | Initial  | CT_MONEY | 初始金额                                               |
 
 ## 源码结构
 

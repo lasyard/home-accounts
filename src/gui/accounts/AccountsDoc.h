@@ -8,13 +8,9 @@ class AccountsDoc : public HaCsv
 public:
     static constexpr int TYPE_COL = 0;
     static constexpr int ID_COL = 1;
-    static constexpr int OWNER_COL = 2;
-    static constexpr int BANK_COL = 3;
-    static constexpr int NUMBER_COL = 4;
-    static constexpr int OPEN_DATE_COL = 5;
-    static constexpr int INITIAL_COL = 6;
-    static constexpr int MEMO_COL = 7;
-    static constexpr int COLS = 8;
+    static constexpr int NAME_COL = 2;
+    static constexpr int INITIAL_COL = 3;
+    static constexpr int COLS = 4;
 
     DECLARE_TM(AccountsDoc)
 
@@ -33,7 +29,7 @@ public:
 
     const struct str *GetRecordName(const record_t *record) const
     {
-        return (const struct str *)get_const_field(&m_parser, record, OWNER_COL);
+        return (const struct str *)get_const_field(&m_parser, record, NAME_COL);
     }
 
     void GetIdAndNames(std::vector<int64_t> &ids, wxArrayString &names) const;

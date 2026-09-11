@@ -12,22 +12,14 @@ const column_type AccountsDoc::COL_TYPES[] = {
     CT_INT,
     CT_INT,
     CT_STR,
-    CT_STR,
-    CT_STR,
-    CT_DATE,
     CT_MONEY,
-    CT_STR,
 };
 
 const str AccountsDoc::COL_TITLES[] = {
-    {    "Type", 4, false},
-    {      "Id", 2, false},
-    {   "Owner", 5, false},
-    {    "Bank", 4, false},
-    {  "Number", 6, false},
-    {"OpenDate", 8, false},
-    { "Initial", 7, false},
-    {    "Memo", 4, false},
+    {   "Type", 4, false},
+    {     "Id", 2, false},
+    {   "Name", 5, false},
+    {"Initial", 7, false},
 };
 
 AccountsDoc::AccountsDoc() : HaCsv(), m_maxId(0)

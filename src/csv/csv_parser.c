@@ -24,6 +24,9 @@ static void init_by_type(enum column_type type, void *data)
     case CT_MONEY:
         *(money_t *)data = 0LL;
         break;
+    case CT_YEAR:
+        *(year_t *)data = UNKNOWN_YEAR;
+        break;
     case CT_DATE:
         *(date_t *)data = UNKNOWN_DATE;
         break;
@@ -51,10 +54,12 @@ parse_by_type(const struct parser_options *options, const char *buf, enum column
         return parse_bool(buf, (bool *)data, options->sep);
     case CT_MONEY:
         return parse_money(buf, (money_t *)data, options);
+    case CT_YEAR:
+        return parse_year(buf, (year_t *)data, options->sep);
     case CT_DATE:
         return parse_date(buf, (date_t *)data, options->sep, options->date_sep);
     case CT_TIME:
-        return parse_time(buf, (date_t *)data, options->sep);
+        return parse_time(buf, (timo_t *)data, options->sep);
     case CT_IGNORE: {
         const char *p;
         for (p = buf; *p != options->sep && !is_line_end(*p); ++p)
@@ -79,11 +84,14 @@ void *copy_by_type(enum column_type type, void *dst, const void *src)
     case CT_MONEY:
         *(money_t *)dst = *(const money_t *)src;
         break;
+    case CT_YEAR:
+        *(year_t *)dst = *(const year_t *)src;
+        break;
     case CT_DATE:
         *(date_t *)dst = *(const date_t *)src;
         break;
     case CT_TIME:
-        *(date_t *)dst = *(const date_t *)src;
+        *(timo_t *)dst = *(const timo_t *)src;
         break;
     case CT_IGNORE:
         break;
@@ -102,6 +110,8 @@ static char *output_by_type(const struct parser_options *options, char *buf, enu
         return output_bool(buf, *(const bool *)data);
     case CT_MONEY:
         return output_money(buf, *(const money_t *)data, options->money_prec, options->money_scale);
+    case CT_YEAR:
+        return output_year(buf, *(const year_t *)data);
     case CT_DATE:
         return output_date(buf, *(const date_t *)data, options->date_sep);
     case CT_TIME:

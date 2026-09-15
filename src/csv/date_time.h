@@ -3,12 +3,15 @@
 
 #include <stdint.h>
 
+#define YEAR_LEN 4
 #define DATE_LEN (4 + 1 + 2 + 1 + 2)
 #define TIME_LEN (2 + 1 + 2 + 1 + 2)
 
+typedef int32_t year_t;
 typedef int32_t date_t;
 typedef int32_t timo_t;
 
+#define UNKNOWN_YEAR (year_t)(-1)
 #define UNKNOWN_DATE (date_t)(-1)
 #define UNKNOWN_TIME (timo_t)(-1)
 
@@ -31,9 +34,11 @@ static inline int make_valid(int data, int min, int max)
 int jdn(int year, int month, int day);
 void jdn_split(int jdn, int *year, int *month, int *day);
 
+const char *parse_year(const char *buf, year_t *data, char sep);
 const char *parse_date(const char *buf, date_t *data, char sep, char date_sep);
 const char *parse_time(const char *buf, timo_t *data, char sep);
 
+char *output_year(char *buf, year_t data);
 char *output_date(char *buf, date_t data, char dateSep);
 char *output_time(char *buf, timo_t data);
 

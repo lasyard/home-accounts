@@ -17,6 +17,8 @@ const char *name_of(enum column_type type)
         return "BOOL";
     case CT_MONEY:
         return "MONEY";
+    case CT_YEAR:
+        return "YEAR";
     case CT_DATE:
         return "DATE";
     case CT_TIME:
@@ -32,6 +34,7 @@ static struct str names[] = {
     {  "INT", 3, false},
     { "BOOL", 4, false},
     {"MONEY", 5, false},
+    { "YEAR", 4, false},
     { "DATE", 4, false},
     { "TIME", 4, false},
 };
@@ -47,8 +50,10 @@ enum column_type value_of(const struct str *str)
     } else if (str_compare_nc(str, &names[3]) == 0) {
         return CT_MONEY;
     } else if (str_compare_nc(str, &names[4]) == 0) {
-        return CT_DATE;
+        return CT_YEAR;
     } else if (str_compare_nc(str, &names[5]) == 0) {
+        return CT_DATE;
+    } else if (str_compare_nc(str, &names[6]) == 0) {
         return CT_TIME;
     }
     return CT_IGNORE;
@@ -65,10 +70,12 @@ size_t size_of(enum column_type type)
         return sizeof(bool);
     case CT_MONEY:
         return sizeof(money_t);
+    case CT_YEAR:
+        return sizeof(year_t);
     case CT_DATE:
         return sizeof(date_t);
     case CT_TIME:
-        return sizeof(date_t);
+        return sizeof(timo_t);
     case CT_IGNORE:
         break;
     }

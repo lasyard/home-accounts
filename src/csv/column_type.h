@@ -10,6 +10,7 @@ enum column_type {
     CT_INT,
     CT_BOOL,
     CT_MONEY,
+    CT_YEAR,
     CT_DATE,
     CT_TIME,
     CT_IGNORE,

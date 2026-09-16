@@ -8,6 +8,7 @@
 
 #include "DataDoc.h"
 #include "DataGrid.h"
+#include "YearsDoc.h"
 
 #include "../HaDefs.h"
 #include "../HaDocument.h"
@@ -64,11 +65,8 @@ void DataPanel::OnUpdate()
 void DataPanel::SaveContents()
 {
     m_grid->SaveEditControlValue();
-    HaCsv *doc = m_grid->GetTableDoc();
-    wxASSERT(doc != nullptr);
-    std::string str;
-    doc->Write(str);
-    m_doc->SaveOrDeleteSection(DataSectionNameOfYear(m_currentYear), str);
+    DataDoc *doc = m_grid->GetTableDoc();
+    m_doc->SaveDataDoc(doc);
 }
 
 void DataPanel::ClearContents()

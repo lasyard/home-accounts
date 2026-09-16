@@ -20,7 +20,6 @@ public:
     virtual ~ImportPanel();
 
     void OnUpdate() override;
-    void SaveContents() override;
 
 private:
     ImportGrid *m_grid;

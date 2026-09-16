@@ -10,7 +10,7 @@
 #include "csv/csv_utils.h"
 #include "csv/date_time.h"
 
-DataDoc::DataDoc(int year) : HaData(), m_year(year), m_accountNames(), m_accountIdNameMap()
+DataDoc::DataDoc(year_t year) : HaData(), m_stat{}, m_year(year), m_accountNames(), m_accountIdNameMap()
 {
     wxLog::AddTraceMask(TM);
     SetAccessor(HaData::ACCOUNT_COL, CT_STR, &DataDoc::AccountGetter, &DataDoc::AccountSetter);
@@ -124,6 +124,5 @@ bool DataDoc::AfterRead()
     int start = jdn(m_year, 1, 1);
     int end = jdn(m_year, 12, 31);
     fill_serial(&m_parser, &m_records, start, end, ::record_is_hash, ::get_record_first_int32, ::new_hash_record_int32);
-    SetOpening(0);
     return HaData::AfterRead();
 }

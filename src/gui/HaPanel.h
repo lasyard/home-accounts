@@ -12,8 +12,8 @@ public:
     virtual ~HaPanel();
 
     virtual void OnUpdate() = 0;
+    virtual void SaveContents();
 
-    virtual void SaveContents() = 0;
     virtual void ClearContents();
 
     virtual void SetDocument(HaDocument *doc);

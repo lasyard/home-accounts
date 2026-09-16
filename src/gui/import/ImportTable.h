@@ -10,7 +10,7 @@ class ImportTable : public HaTable
     DECLARE_DYNAMIC_CLASS(ImportTable)
 
 public:
-    ImportTable(ImportDoc *doc = nullptr);
+    explicit ImportTable(ImportDoc *doc = nullptr);
     virtual ~ImportTable();
 };
 

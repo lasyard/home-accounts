@@ -5,6 +5,8 @@
 
 #include "WxUtils.h"
 
+#include "csv/date_time.h"
+
 class HaView;
 class Cache;
 class DataDoc;
@@ -53,7 +55,8 @@ public:
         return csv;
     }
 
-    DataDoc *LoadDataDoc(int year, bool &ok);
+    DataDoc *LoadDataDoc(year_t year, bool &ok);
+    void SaveDataDoc(DataDoc *doc);
 
 private:
     static constexpr const char IV[] = APP_NAME;

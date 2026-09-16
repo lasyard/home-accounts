@@ -49,6 +49,7 @@ HCSV 格式简要说明如下：
 - CT_INT
 - CT_BOOL
 - CT_MONEY
+- CT_YEAR
 - CT_DATE
 - CT_TIME
 - CT_IGNORE
@@ -72,7 +73,7 @@ HCSV 格式简要说明如下：
 
 | 编号 | 字段名称 | 类型     | 含义     |
 | ---: | -------- | -------- | -------- |
-|    0 | Year     | CT_DATE  | 年份     |
+|    0 | Year     | CT_YEAR  | 年份     |
 |    1 | Income   | CT_MONEY | 总收入   |
 |    2 | Outlay   | CT_MONEY | 总支出   |
 |    3 | Records  | CT_INT   | 总记录数 |

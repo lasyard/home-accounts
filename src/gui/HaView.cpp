@@ -8,6 +8,7 @@
 
 #include "accounts/AccountsPanel.h"
 #include "data/DataPanel.h"
+#include "data/YearsPanel.h"
 #include "import/ImportPanel.h"
 #include "raw/RawPanel.h"
 
@@ -41,6 +42,7 @@ bool HaView::OnCreate([[maybe_unused]] wxDocument *doc, [[maybe_unused]] long fl
     m_book->Show();
     frame->Layout();
     m_book->AddPage(new DataPanel(m_book), _("Data"));
+    m_book->AddPage(new YearsPanel(m_book), _("Years"));
     m_book->AddPage(new AccountsPanel(m_book), _("Accounts"));
     m_book->AddPage(new RawPanel(m_book), _("Raw"));
     Activate(true);

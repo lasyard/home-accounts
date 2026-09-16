@@ -90,11 +90,6 @@ void ImportPanel::OnUpdate()
     m_grid->InitTable(csv);
 }
 
-void ImportPanel::SaveContents()
-{
-    // do nothing, as the contents is read only
-}
-
 void ImportPanel::OnMerge([[maybe_unused]] wxCommandEvent &event)
 {
     m_grid->SaveEditControlValue();
@@ -158,9 +153,8 @@ void ImportPanel::OnMerge([[maybe_unused]] wxCommandEvent &event)
     }
 
     for (const auto &[year, dataDoc] : docs) {
-        std::string out;
-        dataDoc->Write(out);
-        m_doc->SaveOrDeleteSection(DataSectionNameOfYear(year), out);
+        dataDoc->UpdateBalanceStat();
+        m_doc->SaveDataDoc(&*dataDoc);
     }
 
     m_doc->DeleteSection(IMPORT_SECTION_NAME);

@@ -33,6 +33,17 @@ TEST_CASE("jdn_split")
     CHECK(day == 1);
 }
 
+TEST_CASE("parse_year")
+{
+    year_t data;
+    parse_year("1970", &data, '\0');
+    CHECK(data == 1970);
+    parse_year("1900", &data, '\0');
+    CHECK(data == 1900);
+    parse_year("", &data, '\0');
+    CHECK(data == UNKNOWN_YEAR);
+}
+
 TEST_CASE("parse_date")
 {
     date_t data;
@@ -51,6 +62,17 @@ TEST_CASE("parse_time")
     CHECK(data == 40803);
     parse_time("", &data, '\0');
     CHECK(data == UNKNOWN_TIME);
+}
+
+TEST_CASE("output_year")
+{
+    char buf[5];
+    char *p = output_year(buf, 1970);
+    *p = '\0';
+    CHECK(strcmp(buf, "1970") == 0);
+    p = output_year(buf, 1900);
+    *p = '\0';
+    CHECK(strcmp(buf, "1900") == 0);
 }
 
 TEST_CASE("output_date")

@@ -15,7 +15,7 @@ public:
     static constexpr int INITIAL_COL = 2;
     static constexpr int COLS = 3;
 
-    AccountsTable(AccountsDoc *doc = nullptr);
+    explicit AccountsTable(AccountsDoc *doc = nullptr);
     virtual ~AccountsTable();
 
     void Prepare() override;

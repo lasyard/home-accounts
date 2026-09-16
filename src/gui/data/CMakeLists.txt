@@ -4,4 +4,6 @@ target_sources(${APP_NAME} PRIVATE
     DataGridCellAttrProvider.cpp
     DataPanel.cpp
     DataTable.cpp
+    YearsPanel.cpp
+    YearsDoc.cpp
 )

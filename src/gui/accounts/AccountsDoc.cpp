@@ -18,7 +18,7 @@ const column_type AccountsDoc::COL_TYPES[] = {
 const str AccountsDoc::COL_TITLES[] = {
     {   "Type", 4, false},
     {     "Id", 2, false},
-    {   "Name", 5, false},
+    {   "Name", 4, false},
     {"Initial", 7, false},
 };
 
@@ -26,7 +26,7 @@ AccountsDoc::AccountsDoc() : HaCsv(), m_maxId(0)
 {
     wxLog::AddTraceMask(TM);
     SetParser(COLS, COL_TYPES, COL_TITLES);
-    SetAccessor(TYPE_COL, CT_STR, &AccountsDoc::TypeGetter, &AccountsDoc::TypeSetter);
+    SetAccessor(TYPE_COL, CT_STR, &AccountsDoc::TypeGetter, nullptr);
 }
 
 AccountsDoc::~AccountsDoc()
@@ -57,22 +57,6 @@ const wxString AccountsDoc::TypeGetter(const HaCsv *csv, const record_t *record,
         type = 0;
     }
     return types[type];
-}
-
-void AccountsDoc::TypeSetter(HaCsv *csv, record_t *record, int i, const wxString &value)
-{
-    wxASSERT(i == TYPE_COL);
-    int64_t index;
-    const wxArrayString &types = GetAccountTypeStrings();
-    for (index = 0; index < (int64_t)types.size(); ++index) {
-        if (types[index] == value) {
-            break;
-        }
-    }
-    if (index == (int64_t)types.size()) {
-        index = 0;
-    }
-    *(int64_t *)get_field(&static_cast<AccountsDoc *>(csv)->m_parser, record, i) = index;
 }
 
 bool AccountsDoc::AfterRead()

@@ -23,6 +23,7 @@ constexpr const char APP_ICON[] = "app_icon.png";
 // sections
 constexpr const char ACCOUNTS_SECTION_NAME[] = "accounts";
 constexpr const char DATA_SECTION_NAME_FORMAT[] = "data/%d";
+constexpr const char YEARS_SECTION_NAME[] = "years";
 constexpr const char IMPORT_SECTION_NAME[] = "import";
 
 #endif /* _HA_GUI_HA_DEFS_H_ */

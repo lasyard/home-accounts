@@ -9,6 +9,11 @@ HaPanel::~HaPanel()
     ClearContents();
 }
 
+void HaPanel::SaveContents()
+{
+    // do nothing by default, if the contents is read only
+}
+
 void HaPanel::ClearContents()
 {
 }

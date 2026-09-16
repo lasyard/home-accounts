@@ -20,7 +20,7 @@ public:
     static constexpr int CATEGORY_COL = 7;
     static constexpr int COLS = 8;
 
-    DataTable(DataDoc *doc = nullptr);
+    explicit DataTable(DataDoc *doc = nullptr);
     virtual ~DataTable();
 
     void Prepare() override;

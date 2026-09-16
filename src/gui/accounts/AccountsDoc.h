@@ -36,7 +36,6 @@ public:
 
 protected:
     static const wxString TypeGetter(const HaCsv *csv, const record_t *record, int i);
-    static void TypeSetter(HaCsv *csv, record_t *record, int i, const wxString &value);
 
     bool AfterRead() override;
 

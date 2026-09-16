@@ -13,10 +13,15 @@ class DataDoc : public HaData
 public:
     DECLARE_TM(DataDoc)
 
-    DataDoc(int year);
+    DataDoc(year_t year);
     virtual ~DataDoc();
 
     void SetAccountIdAndNames(const std::vector<int64_t> &ids, const wxArrayString &names);
+
+    year_t GetYear() const
+    {
+        return m_year;
+    }
 
     const wxArrayString &GetAccountNames() const
     {
@@ -77,6 +82,27 @@ public:
         return GetMoneyString(m_stat.outlay);
     }
 
+    money_t GetStatIncome() const
+    {
+        return m_stat.income;
+    }
+
+    money_t GetStatOutlay() const
+    {
+        return m_stat.outlay;
+    }
+
+    int64_t GetRecordCount() const
+    {
+        int64_t count = 0;
+        for (auto *pos = m_records.first; pos != nullptr; pos = pos->next) {
+            if (get_record(pos)->flag == RECORD_FLAG_NORMAL) {
+                ++count;
+            }
+        }
+        return count;
+    }
+
 protected:
     static const wxString AccountGetter(const HaCsv *csv, const record_t *record, int i);
     static void AccountSetter(HaCsv *csv, record_t *record, int i, const wxString &value);
@@ -93,9 +119,11 @@ private:
         money_t closing;
         money_t income;
         money_t outlay;
-    } m_stat;
+    };
 
-    int m_year;
+    struct Stat m_stat;
+
+    year_t m_year;
 
     wxArrayString m_accountNames;
     BiMap<int64_t, wxString, INVALID_COL, INVALID_COL_NAME> m_accountIdNameMap;

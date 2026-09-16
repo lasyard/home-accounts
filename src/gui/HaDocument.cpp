@@ -17,6 +17,7 @@
 #include "Utils.h"
 
 #include "data/DataDoc.h"
+#include "data/YearsDoc.h"
 
 #include "file/Cache.h"
 #include "file/Exceptions.h"
@@ -178,12 +179,34 @@ HaView *HaDocument::GetHaView() const
     return dynamic_cast<HaView *>(this->GetFirstView());
 }
 
-DataDoc *HaDocument::LoadDataDoc(int year, bool &ok)
+DataDoc *HaDocument::LoadDataDoc(year_t year, bool &ok)
 {
     auto &data = GetOrCreateSection(DataSectionNameOfYear(year));
     auto *csv = new DataDoc(year);
     ok = csv->Read(data);
+    money_t opening = 0;
+    bool yearsOk = false;
+    auto *years = LoadCsvDoc<YearsDoc>(YEARS_SECTION_NAME, yearsOk);
+    if (yearsOk) {
+        opening = years->CalcBalance(year);
+    }
+    delete years;
+    csv->SetOpening(opening);
     return csv;
+}
+
+void HaDocument::SaveDataDoc(DataDoc *doc)
+{
+    wxASSERT(doc != nullptr);
+    std::string str;
+    doc->Write(str);
+    SaveOrDeleteSection(DataSectionNameOfYear(doc->GetYear()), str);
+    bool ok = false;
+    auto *years = LoadCsvDoc<YearsDoc>(YEARS_SECTION_NAME, ok);
+    years->SetSummary(doc);
+    years->Write(str);
+    SaveOrDeleteSection(YEARS_SECTION_NAME, str);
+    delete years;
 }
 
 bool HaDocument::CreateBackupIfNeeded(const wxString &fileName)

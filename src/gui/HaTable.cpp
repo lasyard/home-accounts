@@ -24,7 +24,7 @@ void HaTable::Prepare()
     int cols = m_doc->GetColCount();
     m_colImpls.resize(cols);
     for (int i = 0; i < cols; ++i) {
-        SetColImplDoc(m_doc->GetColTitle(i), i, i, true);
+        SetColImplDoc(i, i, true);
     }
     m_cache.resize(m_doc->GetRowCount());
 }

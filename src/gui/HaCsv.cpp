@@ -25,7 +25,7 @@ HaCsv::~HaCsv()
 wxString HaCsv::GetColTitle(int i) const
 {
     wxASSERT(i < GetColCount());
-    return wxString(m_titles[i].buf, m_titles[i].len);
+    return wxGetTranslation(wxString(m_titles[i].buf, m_titles[i].len));
 }
 
 enum column_type HaCsv::GetColType(int i) const
@@ -202,18 +202,27 @@ void HaCsv::CreateIndex()
 
 int HaCsv::Reading(std::istream &is)
 {
+    wxASSERT(m_parser.meta != nullptr);
+    if (m_parser.meta->cols == 0) {
+        return 0;
+    }
+
     char buf[MAX_LINE_LENGTH + 1];
-    if (m_titles != nullptr && m_parser.meta->cols > 0) {
+    int *mapping = NULL;
+    if (m_titles != nullptr) {
         if (get_line_from_istream(buf, MAX_LINE_LENGTH, static_cast<void *>(&is)) > 0) {
-            if (parse_titles(&m_parser, buf, m_titles) == NULL) {
+            if ((mapping = parse_titles(&m_parser, buf, m_titles)) == NULL) {
                 return -1;
             }
         }
     }
     if (is.eof()) {
-        return 0;
+        return 1;
     }
-    int line = read_lines(&m_parser, &m_records, ::get_line_from_istream, static_cast<void *>(&is));
+    int line = read_lines(&m_parser, &m_records, ::get_line_from_istream, static_cast<void *>(&is), mapping);
+    if (mapping != NULL) {
+        free(mapping);
+    }
     return line + (line > 0 ? 1 : -1); // add 1 for the title line
 }
 

@@ -6,21 +6,6 @@
 #include "../Utils.h"
 
 #include "csv/csv_utils.h"
-#include "csv/str.h"
-
-const column_type AccountsDoc::COL_TYPES[] = {
-    CT_INT,
-    CT_INT,
-    CT_STR,
-    CT_MONEY,
-};
-
-const str AccountsDoc::COL_TITLES[] = {
-    {   "Type", 4, false},
-    {     "Id", 2, false},
-    {   "Name", 4, false},
-    {"Initial", 7, false},
-};
 
 AccountsDoc::AccountsDoc() : HaCsv(), m_maxId(0)
 {

@@ -4,6 +4,7 @@
 #include "../HaCsv.h"
 
 #include "csv/date_time.h"
+#include "csv/str.h"
 
 class DataDoc;
 
@@ -39,8 +40,19 @@ public:
     money_t CalcBalance(year_t year) const;
 
 private:
-    static const column_type COL_TYPES[COLS];
-    static const str COL_TITLES[COLS];
+    static constexpr const column_type COL_TYPES[] = {
+        CT_YEAR,
+        CT_MONEY,
+        CT_MONEY,
+        CT_INT,
+    };
+
+    static constexpr const str COL_TITLES[] = {
+        {   wxTRANSLATE("Year"), 4, false},
+        { wxTRANSLATE("Income"), 6, false},
+        { wxTRANSLATE("Outlay"), 6, false},
+        {wxTRANSLATE("Records"), 7, false},
+    };
 };
 
 #endif /* _HA_DATA_YEARS_DOC_H_ */

@@ -3,6 +3,8 @@
 
 #include "../HaCsv.h"
 
+#include "csv/str.h"
+
 class AccountsDoc : public HaCsv
 {
 public:
@@ -43,8 +45,19 @@ protected:
     bool IsRecordEmpty(record_t *record) override;
 
 private:
-    static const column_type COL_TYPES[COLS];
-    static const str COL_TITLES[COLS];
+    static constexpr const column_type COL_TYPES[COLS] = {
+        CT_INT,
+        CT_INT,
+        CT_STR,
+        CT_MONEY,
+    };
+
+    static constexpr const str COL_TITLES[COLS] = {
+        {   wxTRANSLATE("Type"), 4, false},
+        {     wxTRANSLATE("Id"), 2, false},
+        {   wxTRANSLATE("Name"), 4, false},
+        {wxTRANSLATE("Initial"), 7, false},
+    };
 
     mutable int m_maxId;
 

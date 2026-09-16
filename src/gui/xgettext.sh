@@ -14,9 +14,18 @@ OPTIONS="--copyright-holder=Lasy
 --package-version=1.0.0
 --msgid-bugs-address=lasyard@yeah.net"
 
-xgettext --c++ -k -k_ -f <(find . -name '*.cpp' -o -name '*.h') -p "${DIR}" -o ${APP_POT_NAME}.pot ${OPTIONS}
+XGETTEXT_ARGS="-C -k_ \
+    -kwxPLURAL:1,2 \
+    -kwxGETTEXT_IN_CONTEXT:1c,2 \
+    -kwxGETTEXT_IN_CONTEXT_PLURAL:1c,2,3 \
+    -kwxTRANSLATE \
+    -kwxTRANSLATE_IN_CONTEXT:1c,2 \
+    -kwxGetTranslation \
+    "
 
-wxrc -g res/*.xrc | xgettext --c++ -k -k_ -p "${DIR}" -o ${XRC_POT_NAME}.pot - ${OPTIONS}
+xgettext ${XGETTEXT_ARGS} -f <(find . -name '*.cpp' -o -name '*.h') -p "${DIR}" -o ${APP_POT_NAME}.pot ${OPTIONS}
+
+wxrc -g res/*.xrc | xgettext ${XGETTEXT_ARGS} -p "${DIR}" -o ${XRC_POT_NAME}.pot - ${OPTIONS}
 
 for domain in "${APP_POT_NAME}" "${XRC_POT_NAME}"; do
     for locale in "en" "zh"; do

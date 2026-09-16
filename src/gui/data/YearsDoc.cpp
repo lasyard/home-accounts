@@ -1,25 +1,6 @@
-#include <algorithm>
-#include <vector>
-
 #include "YearsDoc.h"
 
 #include "DataDoc.h"
-
-#include "csv/date_time.h"
-
-const column_type YearsDoc::COL_TYPES[] = {
-    CT_YEAR,
-    CT_MONEY,
-    CT_MONEY,
-    CT_INT,
-};
-
-const str YearsDoc::COL_TITLES[] = {
-    {   "Year", 4, false},
-    { "Income", 6, false},
-    { "Outlay", 6, false},
-    {"Records", 7, false},
-};
 
 YearsDoc::YearsDoc() : HaCsv()
 {

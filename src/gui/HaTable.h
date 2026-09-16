@@ -97,9 +97,16 @@ protected:
         SetImpl(label, m_colImpls[dst], type, get, set, pos);
     }
 
-    void SetColImplDoc(const wxString &label, int dst, int col, bool ro = false)
+    void SetColImplDoc(int dst, int col, bool ro = false)
     {
-        SetColImpl(label, dst, m_doc->GetColType(col), &HaTable::DocGetter, !ro ? &HaTable::DocSetter : nullptr, col);
+        SetColImpl(
+            m_doc->GetColTitle(col),
+            dst,
+            m_doc->GetColType(col),
+            &HaTable::DocGetter,
+            !ro ? &HaTable::DocSetter : nullptr,
+            col
+        );
     }
 
     void SetHeaderImpl(

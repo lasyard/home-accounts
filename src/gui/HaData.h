@@ -33,16 +33,13 @@ public:
     };
 
     static constexpr const str COL_TITLES[COLS] = {
-        {   "Date", 4, false},
-        {   "Time", 4, false},
-        {"Account", 7, false},
-        { "Amount", 6, false},
-        {   "Desc", 4, false},
-        {   "Memo", 4, false},
+        {   wxTRANSLATE("Date"), 4, false},
+        {   wxTRANSLATE("Time"), 4, false},
+        {wxTRANSLATE("Account"), 7, false},
+        { wxTRANSLATE("Amount"), 6, false},
+        {   wxTRANSLATE("Desc"), 4, false},
+        {   wxTRANSLATE("Memo"), 4, false},
     };
-
-    static constexpr const int INVALID_COL = -1;
-    static constexpr const char INVALID_COL_NAME[] = "";
 
     money_t GetRecordAmount(const record_t *record) const
     {

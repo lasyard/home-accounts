@@ -131,7 +131,6 @@ void init_parser(struct parser *parser)
     parser->meta = NULL;
     parser->hash_cols = 0;
     parser->real_cols = 0;
-    parser->mapping = NULL;
 }
 
 const struct record_meta *set_parser_types(struct parser *parser, int cols, const enum column_type *types)
@@ -165,10 +164,6 @@ void release_parser(struct parser *parser)
     if (parser->meta != NULL) {
         free(parser->meta);
         parser->meta = NULL;
-    }
-    if (parser->mapping != NULL) {
-        free(parser->mapping);
-        parser->mapping = NULL;
     }
 }
 
@@ -212,12 +207,12 @@ void free_record(const struct parser *parser, record_t *record)
     free(record);
 }
 
-const int *parse_titles(struct parser *parser, const char *line, const struct str *titles)
+int *parse_titles(struct parser *parser, const char *line, const struct str *titles)
 {
     int *mapping = malloc(parser->meta->cols * sizeof(int));
     return_null_if_null(mapping);
     for (int i = 0; i < parser->meta->cols; ++i) {
-        mapping[i] = IGNORE_MAPPING;
+        mapping[i] = IGNORE_FIELD;
     }
     const char *p = line;
     p = skip_space(p);
@@ -247,29 +242,24 @@ const int *parse_titles(struct parser *parser, const char *line, const struct st
     }
     set_hash_cols((struct parser *)parser, hash_cols);
     parser->real_cols = n;
-    parser->mapping = mapping;
     return mapping;
 }
 
 const char *parse_field(const struct parser *parser, const char *buf, record_t *record, int i)
 {
-    int *mapping = parser->mapping;
-    if (mapping != NULL) {
-        if (mapping[i] != IGNORE_MAPPING) {
-            i = mapping[i];
-        } else {
-            return parse_by_type(&parser->options, buf, CT_IGNORE, NULL);
-        }
+    if (i == IGNORE_FIELD) {
+        return parse_by_type(&parser->options, buf, CT_IGNORE, NULL);
     }
     return parse_by_type(&parser->options, buf, parser->meta->types[i], get_field(parser, record, i));
 }
 
-const char *raw_parse_line(const struct parser *parser, const char *line, record_t *record, int start, int end)
+static const char *
+raw_parse_line(const struct parser *parser, const char *line, record_t *record, int start, int end, const int *mapping)
 {
     const char *p = line;
     int i = start;
     while (i < end) {
-        p = parse_field(parser, p, record, i);
+        p = parse_field(parser, p, record, mapping != NULL ? mapping[i] : i);
         return_null_if_null(p);
         ++i;
         if (is_line_end(*p)) {
@@ -283,11 +273,11 @@ const char *raw_parse_line(const struct parser *parser, const char *line, record
     return p;
 }
 
-record_t *parse_line(const struct parser *parser, const char *line)
+record_t *parse_line(const struct parser *parser, const char *line, const int *mapping)
 {
     record_t *record = new_record(parser);
     return_null_if_null(record);
-    const char *p = raw_parse_line(parser, line, record, parser->hash_cols, parser->real_cols);
+    const char *p = raw_parse_line(parser, line, record, parser->hash_cols, parser->real_cols, mapping);
     if (p == NULL) {
         free_record(parser, record);
         return NULL;
@@ -295,12 +285,12 @@ record_t *parse_line(const struct parser *parser, const char *line)
     return record;
 }
 
-record_t *parse_hash(const struct parser *parser, const char *line)
+record_t *parse_hash(const struct parser *parser, const char *line, const int *mapping)
 {
     record_t *hash = raw_new_record(parser);
     return_null_if_null(hash);
     hash->flag = RECORD_FLAG_HASH;
-    const char *p = raw_parse_line(parser, line, hash, 0, parser->hash_cols);
+    const char *p = raw_parse_line(parser, line, hash, 0, parser->hash_cols, mapping);
     if (p == NULL) {
         free_record(parser, hash);
         return NULL;
@@ -381,7 +371,8 @@ int read_lines(
     struct parser *parser,
     struct list_head *records,
     int (*get_line)(char *buf, size_t len, void *context),
-    void *context
+    void *context,
+    const int *mapping
 )
 {
     char buf[MAX_LINE_LENGTH + 1];
@@ -392,11 +383,11 @@ int read_lines(
             continue;
         }
         if (buf[0] == '#') {
-            record_t *hash = parse_hash(parser, &buf[1]);
+            record_t *hash = parse_hash(parser, &buf[1], mapping);
             list_add(records, &hash->list);
             continue;
         }
-        record_t *record = parse_line(parser, buf);
+        record_t *record = parse_line(parser, buf, mapping);
         if (record == NULL) {
             lines = -lines;
             break;

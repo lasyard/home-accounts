@@ -46,10 +46,9 @@ struct parser {
     struct record_meta *meta; // the meta of record, owned
     int hash_cols;            // columns in hash line, 0 means no hash line
     int real_cols;            // the actual number of columns in the record
-    int *mapping;             // mapping from file column index to field index, owned
 };
 
-#define IGNORE_MAPPING (-1)
+#define IGNORE_FIELD (-1)
 
 static inline bool is_index_valid(const struct parser *parser, const record_t *record, int i)
 {
@@ -89,10 +88,10 @@ static inline void set_hash_cols(struct parser *parser, int hash_cols)
 record_t *new_record(const struct parser *parser);
 void free_record(const struct parser *parser, record_t *record);
 
-const int *parse_titles(struct parser *parser, const char *line, const struct str *titles);
+int *parse_titles(struct parser *parser, const char *line, const struct str *titles);
 const char *parse_field(const struct parser *parser, const char *buf, record_t *record, int i);
-record_t *parse_line(const struct parser *parser, const char *line);
-record_t *parse_hash(const struct parser *parser, const char *line);
+record_t *parse_line(const struct parser *parser, const char *line, const int *mapping);
+record_t *parse_hash(const struct parser *parser, const char *line, const int *mapping);
 int parse_count(const char *line, char sep);
 int parse_types(const char *line, char sep, enum column_type *types, int max_cols);
 
@@ -105,7 +104,8 @@ int read_lines(
     struct parser *parser,
     struct list_head *records,
     int (*get_line)(char *buf, size_t len, void *context),
-    void *context
+    void *context,
+    const int *mapping
 );
 int write_lines(
     struct parser *parser,

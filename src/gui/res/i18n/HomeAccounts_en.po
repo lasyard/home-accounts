@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HomeAccounts 1.0.0\n"
 "Report-Msgid-Bugs-To: lasyard@yeah.net\n"
-"POT-Creation-Date: 2026-04-02 16:43+0800\n"
+"POT-Creation-Date: 2026-09-16 13:57+0800\n"
 "PO-Revision-Date: 2025-01-10 16:01+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -17,25 +17,25 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: HaCsvTemplate.h:102 data/DataDoc.cpp:171
-#, c-format
-msgid "Invalid value: %s"
-msgstr "Invalid value: %s"
-
-#: HaCsv.cpp:94
+#: HaCsv.cpp:138
 #, c-format
 msgid "Parse error at line %d"
 msgstr "Parse error at line %d"
 
-#: HaCsv.cpp:97
+#: HaCsv.cpp:141
 #, c-format
 msgid "%d lines read"
 msgstr "%d lines read"
 
-#: HaCsv.cpp:108
+#: HaCsv.cpp:152
 #, c-format
 msgid "%d lines written"
 msgstr "%d lines written"
+
+#: HaCsv.cpp:190 data/DataDoc.cpp:117
+#, c-format
+msgid "Invalid value: %s"
+msgstr "Invalid value: %s"
 
 #: ChangePassDialog.cpp:22
 msgid "Wrong password!"
@@ -45,71 +45,63 @@ msgstr "Wrong password!"
 msgid "Confirm new password failed!"
 msgstr "Confirm new password failed!"
 
-#: HaTableTemplate.h:138
-msgid "not implemented"
-msgstr "not implemented"
-
-#: HaMainFrame.cpp:67
+#: HaMainFrame.cpp:68
 msgid "File"
 msgstr "File"
 
-#: HaMainFrame.cpp:107
+#: HaMainFrame.cpp:115
 msgid "License"
 msgstr "License"
 
-#: accounts/AccountsDoc.cpp:101 data/DataDoc.cpp:53
+#: accounts/AccountsDoc.cpp:77
 msgid "Invalid"
 msgstr "Invalid"
 
-#: accounts/AccountsDoc.cpp:102
+#: accounts/AccountsDoc.cpp:78
 msgid "Debit"
 msgstr "Debit"
 
-#: accounts/AccountsDoc.cpp:103
+#: accounts/AccountsDoc.cpp:79
 msgid "Credit"
 msgstr "Credit"
 
-#: accounts/AccountsDoc.cpp:104
+#: accounts/AccountsDoc.cpp:80
 msgid "Transfer"
 msgstr "Transfer"
 
-#: accounts/AccountsTable.cpp:18
-msgid "ID"
-msgstr "ID"
+#: accounts/AccountsDoc.h:56
+msgid "Type"
+msgstr "Type"
 
-#: accounts/AccountsTable.cpp:19
+#: accounts/AccountsDoc.h:57
+msgid "Id"
+msgstr ""
+
+#: accounts/AccountsDoc.h:58
 msgid "Name"
 msgstr "Name"
 
-#: accounts/AccountsTable.cpp:20
-msgid "Bank"
-msgstr "Bank"
-
-#: accounts/AccountsTable.cpp:21
-msgid "Open Date"
-msgstr "Open Date"
-
-#: accounts/AccountsTable.cpp:22
+#: accounts/AccountsDoc.h:59
 msgid "Initial"
 msgstr "Initial"
 
-#: accounts/AccountsTable.cpp:23 data/DataDoc.cpp:45 data/DataTable.cpp:27
-msgid "Memo"
-msgstr "Memo"
-
-#: HaView.cpp:43
+#: HaView.cpp:44
 msgid "Data"
 msgstr "Data"
 
-#: HaView.cpp:44
+#: HaView.cpp:45
+msgid "Years"
+msgstr "Years"
+
+#: HaView.cpp:46
 msgid "Accounts"
 msgstr "Accounts"
 
-#: HaView.cpp:45
+#: HaView.cpp:47
 msgid "Raw"
 msgstr "Raw"
 
-#: HaView.cpp:92
+#: HaView.cpp:94
 msgid "Import"
 msgstr "Import"
 
@@ -121,20 +113,40 @@ msgstr " Doc"
 msgid " View"
 msgstr " View"
 
-#: HaDocument.cpp:68
+#: HaData.h:36
+msgid "Date"
+msgstr "Date"
+
+#: HaData.h:37
+msgid "Time"
+msgstr "Time"
+
+#: HaData.h:38
+msgid "Account"
+msgstr "Accounts"
+
+#: HaData.h:39
+msgid "Amount"
+msgstr "Amount"
+
+#: HaData.h:40
+msgid "Desc"
+msgstr "Description"
+
+#: HaData.h:41
+msgid "Memo"
+msgstr "Memo"
+
+#: HaDocument.cpp:69
 msgid "Input the password for the file:"
 msgstr "Input the password for the file:"
 
-#: HaDocument.cpp:243
+#: HaDocument.cpp:266
 #, c-format
 msgid "Failed to create backup file \"%s\"."
 msgstr "Failed to create backup file \"%s\"."
 
-#: import/ImportTable.cpp:23
-msgid "Field"
-msgstr "Field"
-
-#: import/ImportPanel.cpp:39 import/ImportPanel.cpp:151
+#: import/ImportPanel.cpp:39 import/ImportPanel.cpp:114
 msgid "Merge"
 msgstr "Merge"
 
@@ -142,136 +154,88 @@ msgstr "Merge"
 msgid "Reject"
 msgstr "Reject"
 
-#: import/ImportPanel.cpp:61
-msgid "Invalid import column mapping"
-msgstr "Invalid import column mapping"
-
-#: import/ImportPanel.cpp:72
+#: import/ImportPanel.cpp:65
 msgid "Select CSV file to import"
 msgstr "Select CSV file to import"
 
-#: import/ImportPanel.cpp:85
+#: import/ImportPanel.cpp:79
 #, c-format
 msgid "Failed to open file: %s"
 msgstr "Failed to open file: %s"
 
-#: import/ImportPanel.cpp:131
-msgid "Cannot import: no DATE."
-msgstr "Cannot import: no DATE."
-
-#: import/ImportPanel.cpp:138
+#: import/ImportPanel.cpp:101
 msgid "Invalid accounts"
 msgstr "Invalid accounts"
 
-#: import/ImportPanel.cpp:147
+#: import/ImportPanel.cpp:110
 msgid "Cannot import: no account is available."
 msgstr "Cannot import: no account is available."
 
-#: import/ImportPanel.cpp:151
+#: import/ImportPanel.cpp:114
 msgid "Select an account"
 msgstr "Select an account"
 
-#: import/ImportPanel.cpp:164
+#: import/ImportPanel.cpp:127
 msgid "Cannot import: some records have no DATE."
 msgstr "Cannot import: some records have no DATE."
 
-#: import/ImportPanel.cpp:176
+#: import/ImportPanel.cpp:139
 #, c-format
 msgid "Invalid data of year %d"
 msgstr "Invalid data of year %d"
 
-#: import/ImportPanel.cpp:183
+#: import/ImportPanel.cpp:146
 #, c-format
 msgid "Failed to insert record to data of year %d"
 msgstr "Failed to insert record to data of year %d"
 
-#: import/ImportPanel.cpp:204
+#: import/ImportPanel.cpp:162
 msgid "Merge completed."
 msgstr "Merge completed."
 
-#: import/ImportDoc.cpp:133
-msgid "Empty CSV input"
-msgstr "Empty CSV input"
-
-#: import/ImportDoc.cpp:139
-msgid "Invalid CSV header"
-msgstr "Invalid CSV header"
-
-#: data/DataPanel.cpp:31
+#: data/DataPanel.cpp:32
 msgid "Select Date:"
 msgstr "Select Date:"
 
-#: data/DataPanel.cpp:36
+#: data/DataPanel.cpp:37
 msgid "Opening:"
 msgstr "Opening:"
 
-#: data/DataPanel.cpp:38
+#: data/DataPanel.cpp:39
 msgid "Total Income:"
 msgstr "Total Income:"
 
-#: data/DataPanel.cpp:41
+#: data/DataPanel.cpp:42
 msgid "Total Outlay:"
 msgstr "Total Outlay:"
 
-#: data/DataPanel.cpp:44
+#: data/DataPanel.cpp:45
 msgid "Closing:"
 msgstr "Closing:"
 
-#: data/DataDoc.cpp:38
-msgid "Date"
-msgstr "Date"
-
-#: data/DataDoc.cpp:39 data/DataTable.cpp:19
-msgid "Time"
-msgstr "Time"
-
-#: data/DataDoc.cpp:40 data/DataTable.cpp:20
-msgid "Amount"
-msgstr "Amount"
-
-#: data/DataDoc.cpp:41 data/DataTable.cpp:21
-msgid "Account"
-msgstr "Accounts"
-
-#: data/DataDoc.cpp:42 data/DataTable.cpp:22
-msgid "Description"
-msgstr "Description"
-
-#: data/DataDoc.cpp:43
-msgid "Real Amount"
-msgstr "Real Amount"
-
-#: data/DataDoc.cpp:44
-msgid "Real Description"
-msgstr "Real Description"
-
-#: data/DataDoc.cpp:46
-msgid "Auto Set"
-msgstr "Auto Set"
-
-#: data/DataDoc.cpp:51
-msgid "Date & Time"
-msgstr "Date & Time"
-
-#: data/DataTable.cpp:23
+#: data/DataTable.cpp:21 data/YearsDoc.h:52
 msgid "Income"
 msgstr "Income"
 
-#: data/DataTable.cpp:24
+#: data/DataTable.cpp:22 data/YearsDoc.h:53
 msgid "Outlay"
 msgstr "Outlay"
 
-#: data/DataTable.cpp:25
-msgid "Item"
-msgstr "Item"
-
-#: data/DataTable.cpp:26
+#: data/DataTable.cpp:24
 msgid "Balance"
 msgstr "Balance"
 
-#: data/DataTable.cpp:28
+#: data/DataTable.cpp:26
 msgid "Category"
 msgstr "Category"
+
+#: data/YearsDoc.h:51
+msgid "Year"
+msgstr "Year"
+
+#: data/YearsDoc.h:54
+msgid "Records"
+msgstr "No. of Records"
 
 #: data/DataGridCellAttrProvider.cpp:15 HaGridCellAttrProvider.cpp:44
 msgid "%Y-%m-%d"
@@ -298,3 +262,7 @@ msgstr "Section name cannot be empty."
 #, c-format
 msgid "Section \"%s\" already exists."
 msgstr "Section \"%s\" already exists."
+
+#: HaTable.cpp:222
+msgid "not implemented"
+msgstr "not implemented"

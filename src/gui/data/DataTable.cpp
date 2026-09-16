@@ -16,13 +16,13 @@ DataTable::~DataTable()
 void DataTable::Prepare()
 {
     m_colImpls.resize(COLS);
-    SetColImplDoc(_("Time"), TIME_COL, HaData::TIME_COL);
-    SetColImplDoc(_("Account"), ACCOUNT_COL, HaData::ACCOUNT_COL);
+    SetColImplDoc(TIME_COL, HaData::TIME_COL);
+    SetColImplDoc(ACCOUNT_COL, HaData::ACCOUNT_COL);
     SetColImpl(_("Income"), INCOME_COL, CT_MONEY, &DataTable::IncomeGetter, &DataTable::IncomeSetter);
     SetColImpl(_("Outlay"), OUTLAY_COL, CT_MONEY, &DataTable::OutlayGetter, &DataTable::OutlaySetter);
-    SetColImplDoc(_("Description"), DESC_COL, HaData::DESC_COL);
+    SetColImplDoc(DESC_COL, HaData::DESC_COL);
     SetColImpl(_("Balance"), BALANCE_COL, CT_MONEY, &DataTable::BalanceGetter);
-    SetColImplDoc(_("Memo"), MEMO_COL, HaData::MEMO_COL);
+    SetColImplDoc(MEMO_COL, HaData::MEMO_COL);
     SetColImpl(_("Category"), CATEGORY_COL, CT_IGNORE);
     m_cache.resize(m_doc->GetRowCount());
     SetAttrProvider(new DataGridCellAttrProvider(this, static_cast<DataDoc *>(m_doc)->GetAccountNames()));

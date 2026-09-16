@@ -121,12 +121,15 @@ private:
         money_t outlay;
     };
 
+    static constexpr const int INVALID_ACCOUNT_ID = -1;
+    static constexpr const char INVALID_ACCOUNT_NAME[] = "";
+
     struct Stat m_stat;
 
     year_t m_year;
 
     wxArrayString m_accountNames;
-    BiMap<int64_t, wxString, INVALID_COL, INVALID_COL_NAME> m_accountIdNameMap;
+    BiMap<int64_t, wxString, INVALID_ACCOUNT_ID, INVALID_ACCOUNT_NAME> m_accountIdNameMap;
 };
 
 #endif /* _HA_DATA_DATA_DOC_H_ */

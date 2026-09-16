@@ -39,7 +39,7 @@ TEST_CASE("parse_line")
     set_parser_types(&parser, 6, types);
     SUBCASE("sep = ','")
     {
-        record_t *r = parse_line(&parser, "   abc, def , 10, -100 ,, 123.45\n");
+        record_t *r = parse_line(&parser, "   abc, def , 10, -100 ,, 123.45\n", NULL);
         CHECK(r != NULL);
         struct str *str = (struct str *)get_field(&parser, r, 0);
         CHECK(strncmp(str->buf, "abc", 3) == 0);
@@ -59,13 +59,13 @@ TEST_CASE("parse_line")
     }
     SUBCASE("less fields")
     {
-        record_t *r = parse_line(&parser, "   abc, def , 10, -100 , 123.45");
+        record_t *r = parse_line(&parser, "   abc, def , 10, -100 , 123.45", NULL);
         CHECK(r == NULL);
     }
     SUBCASE("sep == '|'")
     {
         parser.options.sep = '|';
-        record_t *r = parse_line(&parser, "   123| 4567 | -32768| 343 | sdafsfsd| 67 89.10\n");
+        record_t *r = parse_line(&parser, "   123| 4567 | -32768| 343 | sdafsfsd| 67 89.10\n", NULL);
         CHECK(r != NULL);
         struct str *str = (struct str *)get_field(&parser, r, 0);
         CHECK(strncmp(str->buf, "123", 3) == 0);
@@ -94,7 +94,7 @@ TEST_CASE("parse_line_1")
         struct parser parser;
         init_parser(&parser);
         set_parser_types(&parser, 3, types);
-        record_t *r = parse_line(&parser, "1, 123.45,\n");
+        record_t *r = parse_line(&parser, "1, 123.45,\n", NULL);
         CHECK(r != NULL);
         int64_t *i = (int64_t *)get_field(&parser, r, 0);
         CHECK(*i == 1LL);
@@ -113,7 +113,7 @@ TEST_CASE("parse_line_1")
         struct parser parser;
         init_parser(&parser);
         set_parser_types(&parser, 3, types);
-        record_t *r = parse_line(&parser, "1, 123.45,\n");
+        record_t *r = parse_line(&parser, "1, 123.45,\n", NULL);
         CHECK(r != NULL);
         int64_t *i = (int64_t *)get_field(&parser, r, 0);
         CHECK(*i == 1LL);

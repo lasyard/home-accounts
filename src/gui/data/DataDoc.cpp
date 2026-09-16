@@ -101,7 +101,7 @@ const wxString DataDoc::AccountGetter(const HaCsv *csv, const record_t *record, 
     auto *dataDoc = static_cast<const DataDoc *>(csv);
     auto id = *(int64_t *)get_const_field(&dataDoc->m_parser, record, i);
     auto name = dataDoc->m_accountIdNameMap.k_v(id);
-    if (name != HaData::INVALID_COL_NAME) {
+    if (name != INVALID_ACCOUNT_NAME) {
         return name;
     }
     return wxString::Format("%lld", id);
@@ -111,7 +111,7 @@ void DataDoc::AccountSetter(HaCsv *csv, record_t *record, int i, const wxString 
 {
     auto *dataDoc = static_cast<DataDoc *>(csv);
     auto id = dataDoc->m_accountIdNameMap.v_k(value);
-    if (id != HaData::INVALID_COL) {
+    if (id != INVALID_ACCOUNT_ID) {
         *(int64_t *)get_field(&dataDoc->m_parser, record, i) = id;
     } else if (parse_field(&dataDoc->m_parser, value.c_str(), record, i) == NULL) {
         wxLogError(_("Invalid value: %s"), value);

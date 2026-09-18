@@ -50,15 +50,10 @@ def validate_row(row):
             account_name = peer
         else:
             account_number, account_name = peer_parts
-            normalized_account = account_number.replace("-", "")
-            if (
-                not normalized_account.isascii()
-                or not normalized_account.isdigit()
-                or not account_name
-            ):
+            if not account_name:
                 account_number = None
                 account_name = None
-                errors.append("对方账号与户名应为账号和户名，或仅为户名")
+                errors.append("对方账号与户名应为账号/户名，或仅为户名")
 
     if errors:
         return None, errors
@@ -81,8 +76,8 @@ def format_description(summary, note, account_name, account_number):
 def transform(input_path, output_path):
     with input_path.open("r", encoding="utf-8-sig", newline="") as input_file:
         reader = csv.reader(input_file)
-        next(reader, None)
-        next(reader, None)
+        for _ in range(3):
+            next(reader, None)
         header = next(reader, None)
         if header is None:
             raise ValueError("未找到明细数据标题行")

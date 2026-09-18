@@ -17,6 +17,5 @@ void AccountsTable::Prepare()
     m_colImpls.resize(COLS);
     SetColImplDoc(ID_COL, AccountsDoc::ID_COL, true);
     SetColImplDoc(NAME_COL, AccountsDoc::NAME_COL);
-    SetColImplDoc(INITIAL_COL, AccountsDoc::INITIAL_COL);
     m_cache.resize(m_doc->GetRowCount());
 }

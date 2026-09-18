@@ -11,8 +11,7 @@ public:
     static constexpr int TYPE_COL = 0;
     static constexpr int ID_COL = 1;
     static constexpr int NAME_COL = 2;
-    static constexpr int INITIAL_COL = 3;
-    static constexpr int COLS = 4;
+    static constexpr int COLS = 3;
 
     DECLARE_TM(AccountsDoc)
 
@@ -49,14 +48,12 @@ private:
         CT_INT,
         CT_INT,
         CT_STR,
-        CT_MONEY,
     };
 
     static constexpr const str COL_TITLES[COLS] = {
-        {   wxTRANSLATE("Type"), 4, false},
-        {     wxTRANSLATE("Id"), 2, false},
-        {   wxTRANSLATE("Name"), 4, false},
-        {wxTRANSLATE("Initial"), 7, false},
+        {wxTRANSLATE("Type"), 4, false},
+        {  wxTRANSLATE("Id"), 2, false},
+        {wxTRANSLATE("Name"), 4, false},
     };
 
     mutable int m_maxId;

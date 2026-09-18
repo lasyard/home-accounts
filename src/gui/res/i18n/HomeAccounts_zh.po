@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HomeAccounts 1.0.0\n"
 "Report-Msgid-Bugs-To: lasyard@yeah.net\n"
-"POT-Creation-Date: 2026-09-16 13:57+0800\n"
+"POT-Creation-Date: 2026-09-18 18:32+0800\n"
 "PO-Revision-Date: 2025-01-10 16:01+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -68,21 +68,17 @@ msgstr "信用卡"
 msgid "Transfer"
 msgstr "支付账户"
 
-#: accounts/AccountsDoc.h:56
+#: accounts/AccountsDoc.h:54
 msgid "Type"
 msgstr "类型"
 
-#: accounts/AccountsDoc.h:57
+#: accounts/AccountsDoc.h:55
 msgid "Id"
 msgstr "ID"
 
-#: accounts/AccountsDoc.h:58
+#: accounts/AccountsDoc.h:56
 msgid "Name"
 msgstr "名称"
-
-#: accounts/AccountsDoc.h:59
-msgid "Initial"
-msgstr "初始余额"
 
 #: HaView.cpp:44
 msgid "Data"
